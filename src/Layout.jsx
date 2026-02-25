@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger, DropdownMenuSeparator
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
+import NotificationBell from "@/components/notifications/NotificationBell";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
