@@ -54,6 +54,9 @@ import ShopProfile from './pages/ShopProfile';
 import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import RegisterShop from './pages/RegisterShop';
+import AdminDashboard from './pages/AdminDashboard';
+import ShopDashboard from './pages/ShopDashboard';
+import BuyerDashboard from './pages/BuyerDashboard';
 import __Layout from './Layout.jsx';
 
 
@@ -65,6 +68,9 @@ export const PAGES = {
     "ProductDetail": ProductDetail,
     "Cart": Cart,
     "RegisterShop": RegisterShop,
+    "AdminDashboard": AdminDashboard,
+    "ShopDashboard": ShopDashboard,
+    "BuyerDashboard": BuyerDashboard,
 }
 
 export const pagesConfig = {
