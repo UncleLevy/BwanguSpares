@@ -541,6 +541,18 @@ export default function ShopDashboard() {
                 </TableBody>
               </Table>
             </div>
+
+            <Dialog open={trackingDialog} onOpenChange={setTrackingDialog}>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Update Tracking Information</DialogTitle></DialogHeader>
+                <div className="space-y-4">
+                  <div><Label>Tracking Number</Label><Input value={trackingForm.tracking_number} onChange={e => setTrackingForm({...trackingForm, tracking_number: e.target.value})} className="mt-1" placeholder="e.g. TRK123456789" /></div>
+                  <div><Label>Current Location</Label><Input value={trackingForm.current_location} onChange={e => setTrackingForm({...trackingForm, current_location: e.target.value})} className="mt-1" placeholder="e.g. Lusaka Distribution Center" /></div>
+                  <div><Label>Estimated Delivery</Label><Input type="date" value={trackingForm.estimated_delivery} onChange={e => setTrackingForm({...trackingForm, estimated_delivery: e.target.value})} className="mt-1" /></div>
+                </div>
+                <DialogFooter><Button onClick={saveTracking} className="bg-blue-600 hover:bg-blue-700">Update Tracking</Button></DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </main>
