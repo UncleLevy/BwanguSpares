@@ -175,11 +175,16 @@ export default function BuyerDashboard() {
                             </div>
                           ))}
                         </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
+                        {(order.status === "shipped" || order.status === "delivered") && (
+                         <div className="mt-4 pt-4 border-t border-slate-100">
+                           <TrackingInfo order={order} />
+                         </div>
+                        )}
+                        </CardContent>
+                        </Card>
+                        );
+                        })}
+                        </div>
             )}
           </div>
         )}
