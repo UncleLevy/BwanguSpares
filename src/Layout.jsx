@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/notifications/NotificationBell";
+import DarkModeToggle from "@/components/shared/DarkModeToggle";
 
 export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
@@ -48,15 +49,15 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50">
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
               <div className="w-9 h-9 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <Package className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-slate-900 tracking-tight">AutoParts<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">ZM</span></span>
+              <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">AutoParts<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">ZM</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">
@@ -69,10 +70,11 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="flex items-center gap-2">
+              <DarkModeToggle />
               {isAuthenticated && (
                 <>
                   <NotificationBell userEmail={user?.email} />
-                  <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 hover:text-blue-600 transition-colors">
+                  <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="w-5 h-5" />
                     {cartCount > 0 && (
                       <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
@@ -134,11 +136,11 @@ export default function Layout({ children, currentPageName }) {
         </div>
 
         {mobileOpen && (
-          <div className="md:hidden border-t border-slate-100 bg-white pb-4">
+          <div className="md:hidden border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 pb-4">
             <nav className="px-4 pt-2 space-y-1">
               {navLinks.map(l => (
                 <Link key={l.label} to={l.href} onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-blue-50 rounded-lg">
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg">
                   <l.icon className="w-4 h-4 text-slate-400" /> {l.label}
                 </Link>
               ))}

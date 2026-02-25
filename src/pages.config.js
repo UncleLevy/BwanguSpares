@@ -47,30 +47,30 @@
  *
  * The mainPage value must match a key in the PAGES object exactly.
  */
-import Home from './pages/Home';
+import AdminDashboard from './pages/AdminDashboard';
 import BrowseProducts from './pages/BrowseProducts';
 import BrowseShops from './pages/BrowseShops';
-import ShopProfile from './pages/ShopProfile';
-import ProductDetail from './pages/ProductDetail';
-import Cart from './pages/Cart';
-import RegisterShop from './pages/RegisterShop';
-import AdminDashboard from './pages/AdminDashboard';
-import ShopDashboard from './pages/ShopDashboard';
 import BuyerDashboard from './pages/BuyerDashboard';
+import Cart from './pages/Cart';
+import Home from './pages/Home';
+import ProductDetail from './pages/ProductDetail';
+import RegisterShop from './pages/RegisterShop';
+import ShopDashboard from './pages/ShopDashboard';
+import ShopProfile from './pages/ShopProfile';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "Home": Home,
+    "AdminDashboard": AdminDashboard,
     "BrowseProducts": BrowseProducts,
     "BrowseShops": BrowseShops,
-    "ShopProfile": ShopProfile,
-    "ProductDetail": ProductDetail,
-    "Cart": Cart,
-    "RegisterShop": RegisterShop,
-    "AdminDashboard": AdminDashboard,
-    "ShopDashboard": ShopDashboard,
     "BuyerDashboard": BuyerDashboard,
+    "Cart": Cart,
+    "Home": Home,
+    "ProductDetail": ProductDetail,
+    "RegisterShop": RegisterShop,
+    "ShopDashboard": ShopDashboard,
+    "ShopProfile": ShopProfile,
 }
 
 export const pagesConfig = {
