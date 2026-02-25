@@ -16,10 +16,11 @@ export default function RegisterShop() {
   const [existingShop, setExistingShop] = useState(null);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "", description: "", phone: "", address: "",
-    region: "", slot_type: "basic",
+    region: "", slot_type: "basic", logo_url: "", cover_url: ""
   });
 
   useEffect(() => {
@@ -37,6 +38,20 @@ export default function RegisterShop() {
       setLoading(false);
     })();
   }, []);
+
+  const handleFileUpload = async (e, field) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setForm({ ...form, [field]: file_url });
+      toast.success("Photo uploaded");
+    } catch (error) {
+      toast.error("Failed to upload photo");
+    }
+    setUploading(false);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -150,7 +165,19 @@ export default function RegisterShop() {
             </SelectContent>
           </Select>
         </div>
-        <Button type="submit" disabled={submitting} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <Label>Shop Logo</Label>
+            <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "logo_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
+            {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 w-20 h-20 object-cover rounded-lg border" />}
+          </div>
+          <div>
+            <Label>Cover Image</Label>
+            <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "cover_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
+            {form.cover_url && <img src={form.cover_url} alt="Cover" className="mt-2 w-full h-20 object-cover rounded-lg border" />}
+          </div>
+        </div>
+        <Button type="submit" disabled={submitting || uploading} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl">
           {submitting ? "Submitting..." : "Submit Registration"}
         </Button>
       </form>

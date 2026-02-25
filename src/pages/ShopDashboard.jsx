@@ -71,6 +71,8 @@ export default function ShopDashboard() {
     hourly_rate: "", available: true,
   });
 
+  const [uploading, setUploading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -89,6 +91,24 @@ export default function ShopDashboard() {
       setLoading(false);
     })();
   }, []);
+
+  const handleImageUpload = async (e, isProduct = true) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      if (isProduct) {
+        setProductForm({ ...productForm, image_url: file_url });
+      } else {
+        setTechForm({ ...techForm, photo_url: file_url });
+      }
+      toast.success("Photo uploaded");
+    } catch (error) {
+      toast.error("Failed to upload photo");
+    }
+    setUploading(false);
+  };
 
   const saveProduct = async () => {
     const data = {
@@ -383,8 +403,13 @@ export default function ShopDashboard() {
                   </div>
                   <div><Label>Brand</Label><Input value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="mt-1" /></div>
                   <div><Label>Compatible Vehicles</Label><Input value={productForm.compatible_vehicles} onChange={e => setProductForm({...productForm, compatible_vehicles: e.target.value})} placeholder="e.g. Toyota Corolla 2015-2020" className="mt-1" /></div>
+                  <div>
+                    <Label>Product Image</Label>
+                    <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, true)} disabled={uploading} className="mt-1 cursor-pointer" />
+                    {productForm.image_url && <img src={productForm.image_url} alt="Product" className="mt-2 w-32 h-32 object-cover rounded-lg border" />}
+                  </div>
                 </div>
-                <DialogFooter><Button onClick={saveProduct} className="bg-blue-600 hover:bg-blue-700">{editProduct ? "Update" : "Add"} Product</Button></DialogFooter>
+                <DialogFooter><Button onClick={saveProduct} disabled={uploading} className="bg-blue-600 hover:bg-blue-700">{editProduct ? "Update" : "Add"} Product</Button></DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
@@ -441,8 +466,13 @@ export default function ShopDashboard() {
                     <Switch checked={techForm.available} onCheckedChange={v => setTechForm({...techForm, available: v})} />
                     <Label>Available</Label>
                   </div>
+                  <div>
+                    <Label>Technician Photo</Label>
+                    <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, false)} disabled={uploading} className="mt-1 cursor-pointer" />
+                    {techForm.photo_url && <img src={techForm.photo_url} alt="Technician" className="mt-2 w-32 h-32 object-cover rounded-lg border" />}
+                  </div>
                 </div>
-                <DialogFooter><Button onClick={saveTech} className="bg-blue-600 hover:bg-blue-700">{editTech ? "Update" : "Add"} Technician</Button></DialogFooter>
+                <DialogFooter><Button onClick={saveTech} disabled={uploading} className="bg-blue-600 hover:bg-blue-700">{editTech ? "Update" : "Add"} Technician</Button></DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
