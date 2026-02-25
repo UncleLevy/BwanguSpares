@@ -48,7 +48,7 @@ export default function Layout({ children, currentPageName }) {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-slate-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50">
       <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-xl border-b border-slate-200/60 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -56,13 +56,13 @@ export default function Layout({ children, currentPageName }) {
               <div className="w-9 h-9 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <Package className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-slate-900 tracking-tight">AutoParts<span className="bg-gradient-to-r from-purple-600 to-indigo-600 bg-clip-text text-transparent">ZM</span></span>
+              <span className="text-lg font-bold text-slate-900 tracking-tight">AutoParts<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">ZM</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">
               {navLinks.map(l => (
                 <Link key={l.label} to={l.href}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-purple-600 rounded-xl hover:bg-purple-50/80 transition-all duration-200">
+                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-cyan-600 rounded-xl hover:bg-cyan-50/80 transition-all duration-200">
                   {l.label}
                 </Link>
               ))}
@@ -121,7 +121,7 @@ export default function Layout({ children, currentPageName }) {
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <Button onClick={() => base44.auth.redirectToLogin()} className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white text-sm h-9 px-6 rounded-xl shadow-lg shadow-purple-500/30 transition-all duration-200">
+                <Button onClick={() => base44.auth.redirectToLogin()} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white text-sm h-9 px-6 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-200">
                   Sign In
                 </Button>
               )}
@@ -149,7 +149,7 @@ export default function Layout({ children, currentPageName }) {
 
       <main>{children}</main>
 
-      <footer className="bg-gradient-to-br from-slate-900 via-purple-900/20 to-slate-900 text-slate-400 mt-20">
+      <footer className="bg-gradient-to-br from-slate-900 via-cyan-900/20 to-slate-900 text-slate-400 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
