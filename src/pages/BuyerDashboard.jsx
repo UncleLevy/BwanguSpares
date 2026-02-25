@@ -4,15 +4,19 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, ShoppingCart, User, Settings, Package,
-  Clock, CheckCircle2, Truck, XCircle
+  Clock, CheckCircle2, Truck, XCircle, Star
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
@@ -29,6 +33,9 @@ export default function BuyerDashboard() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profileForm, setProfileForm] = useState({ phone: "", address: "" });
+  const [reviewDialog, setReviewDialog] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -44,6 +51,52 @@ export default function BuyerDashboard() {
   const saveProfile = async () => {
     await base44.auth.updateMe(profileForm);
     toast.success("Profile updated");
+  };
+
+  const handleReviewSubmit = async (reviewData) => {
+    setSubmitting(true);
+    try {
+      const existingReview = await base44.entities.Review.filter({
+        order_id: reviewOrder.id,
+        reviewer_email: user.email,
+      });
+
+      if (existingReview.length > 0) {
+        toast.error("You've already reviewed this order");
+        setSubmitting(false);
+        return;
+      }
+
+      await base44.entities.Review.create({
+        order_id: reviewOrder.id,
+        reviewer_email: user.email,
+        reviewer_name: user.full_name,
+        shop_id: reviewOrder.shop_id,
+        shop_name: reviewOrder.shop_name,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        type: "shop",
+      });
+
+      // Update shop rating
+      const allShopReviews = await base44.entities.Review.filter({
+        shop_id: reviewOrder.shop_id,
+        type: "shop",
+      });
+      const avgRating =
+        allShopReviews.reduce((sum, r) => sum + r.rating, 0) /
+        allShopReviews.length;
+      await base44.entities.Shop.update(reviewOrder.shop_id, {
+        rating: avgRating,
+      });
+
+      toast.success("Review submitted successfully!");
+      setReviewDialog(false);
+      setReviewOrder(null);
+    } catch (error) {
+      toast.error("Failed to submit review");
+    }
+    setSubmitting(false);
   };
 
   const sidebarItems = [
@@ -91,7 +144,22 @@ export default function BuyerDashboard() {
                               {new Date(order.created_date).toLocaleDateString()}
                             </p>
                           </div>
-                          <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString()}</p>
+                          <div className="flex flex-col items-end gap-2">
+                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString()}</p>
+                            {order.status === "delivered" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setReviewOrder(order);
+                                  setReviewDialog(true);
+                                }}
+                                className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
+                              >
+                                <Star className="w-3.5 h-3.5" /> Leave Review
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <div className="space-y-2">
                           {order.items?.map((item, i) => (
@@ -142,6 +210,19 @@ export default function BuyerDashboard() {
           </div>
         )}
       </main>
+
+      <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
+          </DialogHeader>
+          <ReviewForm
+            onSubmit={handleReviewSubmit}
+            submitting={submitting}
+            type="shop"
+          />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

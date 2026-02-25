@@ -15,19 +15,22 @@ export default function ShopProfile() {
   const [shop, setShop] = useState(null);
   const [products, setProducts] = useState([]);
   const [technicians, setTechnicians] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!shopId) return;
     (async () => {
-      const [s, p, t] = await Promise.all([
+      const [s, p, t, r] = await Promise.all([
         base44.entities.Shop.filter({ id: shopId }),
         base44.entities.Product.filter({ shop_id: shopId, status: "active" }),
         base44.entities.Technician.filter({ shop_id: shopId }),
+        base44.entities.Review.filter({ shop_id: shopId, type: "shop" }, "-created_date", 50),
       ]);
       setShop(s[0]);
       setProducts(p);
       setTechnicians(t);
+      setReviews(r);
       setLoading(false);
     })();
   }, [shopId]);
@@ -101,6 +104,7 @@ export default function ShopProfile() {
           <TabsList className="bg-slate-100 mb-6">
             <TabsTrigger value="products" className="gap-1.5"><Package className="w-4 h-4" /> Parts ({products.length})</TabsTrigger>
             <TabsTrigger value="technicians" className="gap-1.5"><Wrench className="w-4 h-4" /> Technicians ({technicians.length})</TabsTrigger>
+            <TabsTrigger value="reviews" className="gap-1.5"><Star className="w-4 h-4" /> Reviews ({reviews.length})</TabsTrigger>
           </TabsList>
 
           <TabsContent value="products">
@@ -148,6 +152,10 @@ export default function ShopProfile() {
                 ))}
               </div>
             )}
+          </TabsContent>
+
+          <TabsContent value="reviews">
+            <ReviewList reviews={reviews} loading={false} />
           </TabsContent>
         </Tabs>
       </div>
