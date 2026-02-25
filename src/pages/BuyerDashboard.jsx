@@ -17,6 +17,7 @@ import {
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import ReviewForm from "@/components/reviews/ReviewForm";
+import TrackingInfo from "@/components/orders/TrackingInfo";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },

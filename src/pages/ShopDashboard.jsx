@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
-  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3
+  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -187,10 +187,33 @@ export default function ShopDashboard() {
     setTechDialog(true);
   };
 
+  const [trackingDialog, setTrackingDialog] = useState(false);
+  const [trackingOrder, setTrackingOrder] = useState(null);
+  const [trackingForm, setTrackingForm] = useState({
+    tracking_number: "", current_location: "", estimated_delivery: ""
+  });
+
   const updateOrderStatus = async (order, status) => {
     await base44.entities.Order.update(order.id, { status });
     setOrders(orders.map(o => o.id === order.id ? { ...o, status } : o));
     toast.success("Order status updated");
+  };
+
+  const openTrackingDialog = (order) => {
+    setTrackingOrder(order);
+    setTrackingForm({
+      tracking_number: order.tracking_number || "",
+      current_location: order.current_location || "",
+      estimated_delivery: order.estimated_delivery || ""
+    });
+    setTrackingDialog(true);
+  };
+
+  const saveTracking = async () => {
+    await base44.entities.Order.update(trackingOrder.id, trackingForm);
+    setOrders(orders.map(o => o.id === trackingOrder.id ? { ...o, ...trackingForm } : o));
+    toast.success("Tracking information updated");
+    setTrackingDialog(false);
   };
 
   const sidebarItems = [
@@ -497,14 +520,21 @@ export default function ShopDashboard() {
                       <TableCell className="font-medium">K{o.total_amount?.toLocaleString()}</TableCell>
                       <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
                       <TableCell>
-                        <Select value={o.status} onValueChange={v => updateOrderStatus(o, v)}>
-                          <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            {["pending","confirmed","processing","shipped","delivered","cancelled"].map(s => (
-                              <SelectItem key={s} value={s}>{s}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="flex gap-2">
+                          <Select value={o.status} onValueChange={v => updateOrderStatus(o, v)}>
+                            <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
+                            <SelectContent>
+                              {["pending","confirmed","processing","shipped","delivered","cancelled"].map(s => (
+                                <SelectItem key={s} value={s}>{s}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          {(o.status === "shipped" || o.status === "processing") && (
+                            <Button size="sm" variant="outline" onClick={() => openTrackingDialog(o)} className="h-8 gap-1">
+                              <MapPin className="w-3 h-3" /> Tracking
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
