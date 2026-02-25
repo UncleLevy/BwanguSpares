@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
-  Pencil, Trash2, Store, User, DollarSign, TrendingUp
+  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,10 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import StatsCard from "@/components/analytics/StatsCard";
+import SalesChart from "@/components/analytics/SalesChart";
+import CategoryChart from "@/components/analytics/CategoryChart";
+import TopItemsList from "@/components/analytics/TopItemsList";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -171,6 +175,7 @@ export default function ShopDashboard() {
 
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
+    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
@@ -179,6 +184,69 @@ export default function ShopDashboard() {
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
   const totalRevenue = orders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
+
+  // Analytics calculations
+  const completedOrders = orders.filter(o => o.status === "delivered");
+  const last30Days = completedOrders.filter(o => {
+    const orderDate = new Date(o.created_date);
+    const daysAgo = (Date.now() - orderDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysAgo <= 30;
+  });
+
+  const salesByDay = last30Days.reduce((acc, order) => {
+    const date = new Date(order.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (!acc[date]) acc[date] = 0;
+    acc[date] += order.total_amount || 0;
+    return acc;
+  }, {});
+
+  const salesChartData = Object.entries(salesByDay).slice(-7).map(([name, sales]) => ({ name, sales }));
+
+  const productSales = {};
+  completedOrders.forEach(order => {
+    order.items?.forEach(item => {
+      if (!productSales[item.product_id]) {
+        productSales[item.product_id] = { name: item.product_name, count: 0, revenue: 0 };
+      }
+      productSales[item.product_id].count += item.quantity || 1;
+      productSales[item.product_id].revenue += (item.price || 0) * (item.quantity || 1);
+    });
+  });
+
+  const topProducts = Object.values(productSales)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5)
+    .map(p => ({
+      name: p.name,
+      value: `${p.count} sold`,
+      subtitle: `K${p.revenue.toLocaleString()}`
+    }));
+
+  const techReviews = {};
+  technicians.forEach(tech => {
+    techReviews[tech.id] = { name: tech.name, rating: tech.rating || 0, count: 0 };
+  });
+
+  const topTechnicians = Object.values(techReviews)
+    .filter(t => t.rating > 0)
+    .sort((a, b) => b.rating - a.rating)
+    .slice(0, 5)
+    .map(t => ({
+      name: t.name,
+      value: `${t.rating.toFixed(1)} ★`,
+    }));
+
+  const categoryData = products.reduce((acc, p) => {
+    const cat = p.category || "other";
+    if (!acc[cat]) acc[cat] = 0;
+    acc[cat]++;
+    return acc;
+  }, {});
+
+  const categoryChartData = Object.entries(categoryData)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, value]) => ({ name: name.replace('_', ' '), value }));
 
   const orderStatusColors = {
     pending: "bg-amber-50 text-amber-700", confirmed: "bg-blue-50 text-blue-700",
@@ -214,6 +282,53 @@ export default function ShopDashboard() {
                   </CardContent>
                 </Card>
               ))}
+            </div>
+          </div>
+        )}
+
+        {view === "analytics" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-6">Analytics</h1>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <StatsCard
+                title="Total Revenue"
+                value={`K${totalRevenue.toLocaleString()}`}
+                subtitle="All-time"
+                icon={DollarSign}
+                color="bg-emerald-50 text-emerald-600"
+              />
+              <StatsCard
+                title="Completed Orders"
+                value={completedOrders.length}
+                subtitle={`${orders.filter(o => o.status === "pending").length} pending`}
+                icon={ShoppingCart}
+                color="bg-blue-50 text-blue-600"
+              />
+              <StatsCard
+                title="Active Products"
+                value={products.filter(p => p.status === "active").length}
+                subtitle={`${products.filter(p => p.stock_quantity === 0).length} out of stock`}
+                icon={Package}
+                color="bg-purple-50 text-purple-600"
+              />
+              <StatsCard
+                title="Avg Order Value"
+                value={completedOrders.length > 0 ? `K${Math.round(totalRevenue / completedOrders.length).toLocaleString()}` : "K0"}
+                subtitle="Per completed order"
+                icon={TrendingUp}
+                color="bg-amber-50 text-amber-600"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+              <SalesChart data={salesChartData} title="Sales Trend (Last 7 Days)" />
+              <CategoryChart data={categoryChartData} title="Products by Category" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <TopItemsList items={topProducts} title="Top Selling Products" icon={Package} />
+              <TopItemsList items={topTechnicians} title="Top Rated Technicians" icon={Wrench} />
             </div>
           </div>
         )}

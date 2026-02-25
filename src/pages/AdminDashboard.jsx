@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
-  AlertCircle
+  AlertCircle, BarChart3, DollarSign
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,6 +21,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import StatsCard from "@/components/analytics/StatsCard";
+import SalesChart from "@/components/analytics/SalesChart";
+import CategoryChart from "@/components/analytics/CategoryChart";
+import TopItemsList from "@/components/analytics/TopItemsList";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -75,6 +79,7 @@ export default function AdminDashboard() {
 
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
+    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders") },
@@ -89,6 +94,97 @@ export default function AdminDashboard() {
     { label: "Products", value: products.length, icon: Package, color: "bg-emerald-50 text-emerald-600" },
     { label: "Orders", value: orders.length, icon: ShoppingCart, color: "bg-purple-50 text-purple-600" },
   ];
+
+  // Analytics calculations
+  const totalRevenue = orders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
+  const completedOrders = orders.filter(o => o.status === "delivered");
+  
+  const last30Days = orders.filter(o => {
+    const orderDate = new Date(o.created_date);
+    const daysAgo = (Date.now() - orderDate.getTime()) / (1000 * 60 * 60 * 24);
+    return daysAgo <= 30;
+  });
+
+  const ordersByDay = last30Days.reduce((acc, order) => {
+    const date = new Date(order.created_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    if (!acc[date]) acc[date] = 0;
+    acc[date]++;
+    return acc;
+  }, {});
+
+  const ordersChartData = Object.entries(ordersByDay).slice(-7).map(([name, sales]) => ({ name, sales }));
+
+  const shopGrowth = shops.reduce((acc, shop) => {
+    const month = new Date(shop.created_date).toLocaleDateString('en-US', { month: 'short' });
+    if (!acc[month]) acc[month] = 0;
+    acc[month]++;
+    return acc;
+  }, {});
+
+  const shopGrowthData = Object.entries(shopGrowth).slice(-6).map(([name, sales]) => ({ name, sales }));
+
+  const categoryStats = {};
+  products.forEach(p => {
+    const cat = p.category || "other";
+    if (!categoryStats[cat]) categoryStats[cat] = { count: 0, revenue: 0 };
+    categoryStats[cat].count++;
+  });
+
+  orders.forEach(order => {
+    order.items?.forEach(item => {
+      const product = products.find(p => p.id === item.product_id);
+      if (product) {
+        const cat = product.category || "other";
+        if (categoryStats[cat]) {
+          categoryStats[cat].revenue += (item.price || 0) * (item.quantity || 1);
+        }
+      }
+    });
+  });
+
+  const topCategories = Object.entries(categoryStats)
+    .sort((a, b) => b[1].revenue - a[1].revenue)
+    .slice(0, 5)
+    .map(([name, data]) => ({
+      name: name.replace('_', ' '),
+      value: data.count
+    }));
+
+  const shopRevenue = {};
+  orders.filter(o => o.status !== "cancelled").forEach(order => {
+    if (!shopRevenue[order.shop_id]) {
+      shopRevenue[order.shop_id] = { name: order.shop_name, revenue: 0 };
+    }
+    shopRevenue[order.shop_id].revenue += order.total_amount || 0;
+  });
+
+  const topShops = Object.values(shopRevenue)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5)
+    .map(s => ({
+      name: s.name,
+      value: `K${s.revenue.toLocaleString()}`
+    }));
+
+  const topProducts = {};
+  orders.filter(o => o.status !== "cancelled").forEach(order => {
+    order.items?.forEach(item => {
+      if (!topProducts[item.product_id]) {
+        topProducts[item.product_id] = { name: item.product_name, count: 0, revenue: 0 };
+      }
+      topProducts[item.product_id].count += item.quantity || 1;
+      topProducts[item.product_id].revenue += (item.price || 0) * (item.quantity || 1);
+    });
+  });
+
+  const topProductsList = Object.values(topProducts)
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5)
+    .map(p => ({
+      name: p.name,
+      value: `K${p.revenue.toLocaleString()}`,
+      subtitle: `${p.count} sold`
+    }));
 
   const statusColors = {
     pending: "bg-amber-50 text-amber-700", approved: "bg-emerald-50 text-emerald-700",
@@ -138,6 +234,57 @@ export default function AdminDashboard() {
                 </CardContent>
               </Card>
             )}
+          </div>
+        )}
+
+        {view === "analytics" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 mb-6">Platform Analytics</h1>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <StatsCard
+                title="Total Revenue"
+                value={`K${totalRevenue.toLocaleString()}`}
+                subtitle="All-time platform revenue"
+                icon={DollarSign}
+                color="bg-emerald-50 text-emerald-600"
+              />
+              <StatsCard
+                title="Active Shops"
+                value={shops.filter(s => s.status === "approved").length}
+                subtitle={`${pendingShops.length} pending approval`}
+                icon={Store}
+                color="bg-blue-50 text-blue-600"
+              />
+              <StatsCard
+                title="Completed Orders"
+                value={completedOrders.length}
+                subtitle={`${orders.filter(o => o.status === "pending").length} pending`}
+                icon={ShoppingCart}
+                color="bg-purple-50 text-purple-600"
+              />
+              <StatsCard
+                title="Total Products"
+                value={products.filter(p => p.status === "active").length}
+                subtitle="Active listings"
+                icon={Package}
+                color="bg-amber-50 text-amber-600"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+              <SalesChart data={ordersChartData} title="Orders Volume (Last 7 Days)" />
+              <SalesChart data={shopGrowthData} title="Shop Growth (Last 6 Months)" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
+              <CategoryChart data={topCategories} title="Top Selling Categories" />
+              <TopItemsList items={topShops} title="Top Performing Shops" icon={Store} />
+            </div>
+
+            <div>
+              <TopItemsList items={topProductsList} title="Best Selling Products" icon={Package} />
+            </div>
           </div>
         )}
 
