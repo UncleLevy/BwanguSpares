@@ -1,29 +1,30 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 215 25% 10%;
+    --background: 240 10% 98%;
+    --foreground: 240 10% 8%;
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 10%;
+    --card-foreground: 240 10% 8%;
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 10%;
-    --primary: 217 91% 60%;
+    --popover-foreground: 240 10% 8%;
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 215 16% 93%;
-    --secondary-foreground: 215 25% 27%;
-    --muted: 215 16% 96%;
-    --muted-foreground: 215 16% 46%;
-    --accent: 215 16% 93%;
-    --accent-foreground: 215 25% 27%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 8%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 262 83% 96%;
+    --accent-foreground: 262 83% 58%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 215 16% 90%;
-    --input: 215 16% 90%;
-    --ring: 217 91% 60%;
-    --radius: 0.625rem;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 262 83% 58%;
+    --radius: 0.75rem;
   }
 }
 
@@ -35,16 +36,29 @@
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
+  }
 }
 
 @layer utilities {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-slate-200/60 shadow-sm;
+    @apply bg-white/80 backdrop-blur-xl border border-slate-200/40 shadow-lg;
   }
   .gradient-blue {
-    @apply bg-gradient-to-br from-blue-600 via-blue-500 to-blue-700;
+    @apply bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-700;
+  }
+  .gradient-accent {
+    @apply bg-gradient-to-br from-purple-500 via-indigo-500 to-purple-600;
   }
   .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-xl;
+  }
+  .modern-shadow {
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  }
+  .glow {
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
   }
 }
