@@ -1,0 +1,181 @@
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { base44 } from "@/api/base44Client";
+import { createPageUrl } from "@/utils";
+import {
+  ShoppingCart, Menu, X, Home, Search, Store, User, 
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuTrigger, DropdownMenuSeparator
+} from "@/components/ui/dropdown-menu";
+import { Badge } from "@/components/ui/badge";
+
+export default function Layout({ children, currentPageName }) {
+  const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const authed = await base44.auth.isAuthenticated();
+      setIsAuthenticated(authed);
+      if (authed) {
+        const u = await base44.auth.me();
+        setUser(u);
+        const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
+        setCartCount(cart.length);
+      }
+    })();
+  }, [currentPageName]);
+
+  const isAdmin = user?.role === "admin";
+  const isShopOwner = user?.role === "shop_owner";
+  const hideLayout = ["AdminDashboard", "ShopDashboard", "BuyerDashboard"].includes(currentPageName);
+
+  if (hideLayout) {
+    return <>{children}</>;
+  }
+
+  const navLinks = [
+    { label: "Home", href: createPageUrl("Home"), icon: Home },
+    { label: "Browse Parts", href: createPageUrl("BrowseProducts"), icon: Search },
+    { label: "Shops", href: createPageUrl("BrowseShops"), icon: Store },
+  ];
+
+  return (
+    <div className="min-h-screen bg-slate-50">
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-lg gradient-blue flex items-center justify-center">
+                <Package className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-lg font-bold text-slate-900 tracking-tight">AutoParts<span className="text-blue-600">ZM</span></span>
+            </Link>
+
+            <nav className="hidden md:flex items-center gap-1">
+              {navLinks.map(l => (
+                <Link key={l.label} to={l.href}
+                  className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-blue-600 rounded-lg hover:bg-blue-50/60 transition-colors">
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-2">
+              {isAuthenticated && (
+                <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 hover:text-blue-600 transition-colors">
+                  <ShoppingCart className="w-5 h-5" />
+                  {cartCount > 0 && (
+                    <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
+                      {cartCount}
+                    </Badge>
+                  )}
+                </Link>
+              )}
+
+              {isAuthenticated ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700">
+                      <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center">
+                        <User className="w-3.5 h-3.5 text-blue-600" />
+                      </div>
+                      <span className="hidden sm:inline">{user?.full_name?.split(' ')[0]}</span>
+                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-52">
+                    <DropdownMenuItem asChild>
+                      <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
+                        <LayoutDashboard className="w-4 h-4" /> My Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    {isShopOwner && (
+                      <DropdownMenuItem asChild>
+                        <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2">
+                          <Store className="w-4 h-4" /> Shop Dashboard
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    {isAdmin && (
+                      <DropdownMenuItem asChild>
+                        <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
+                          <ShieldCheck className="w-4 h-4" /> Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    )}
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
+                      <LogOut className="w-4 h-4" /> Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Button onClick={() => base44.auth.redirectToLogin()} className="bg-blue-600 hover:bg-blue-700 text-sm h-9 px-4">
+                  Sign In
+                </Button>
+              )}
+
+              <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
+                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {mobileOpen && (
+          <div className="md:hidden border-t border-slate-100 bg-white pb-4">
+            <nav className="px-4 pt-2 space-y-1">
+              {navLinks.map(l => (
+                <Link key={l.label} to={l.href} onClick={() => setMobileOpen(false)}
+                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-blue-50 rounded-lg">
+                  <l.icon className="w-4 h-4 text-slate-400" /> {l.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
+        )}
+      </header>
+
+      <main>{children}</main>
+
+      <footer className="bg-slate-900 text-slate-400 mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
+                  <Package className="w-4 h-4 text-white" />
+                </div>
+                <span className="text-white font-bold">AutoPartsZM</span>
+              </div>
+              <p className="text-sm leading-relaxed">Zambia's premier virtual marketplace for auto spare parts. Connecting shops, mechanics and buyers.</p>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-3 text-sm">Quick Links</h4>
+              <div className="space-y-2 text-sm">
+                <Link to={createPageUrl("BrowseProducts")} className="block hover:text-white transition-colors">Browse Parts</Link>
+                <Link to={createPageUrl("BrowseShops")} className="block hover:text-white transition-colors">Find Shops</Link>
+                <Link to={createPageUrl("RegisterShop")} className="block hover:text-white transition-colors">Register Your Shop</Link>
+              </div>
+            </div>
+            <div>
+              <h4 className="text-white font-semibold mb-3 text-sm">Contact</h4>
+              <p className="text-sm">Lusaka, Zambia</p>
+              <p className="text-sm">support@autopartszm.com</p>
+            </div>
+          </div>
+          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs">
+            © 2026 AutoPartsZM. All rights reserved.
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
