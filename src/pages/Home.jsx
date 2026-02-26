@@ -98,7 +98,7 @@ export default function Home() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <div key={i} className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 flex items-center justify-center mb-3">
+                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-150 flex items-center justify-center mb-3">
                   <f.icon className="w-5 h-5 text-blue-600" />
                 </div>
                 <h3 className="font-semibold text-sm text-slate-900">{f.title}</h3>
