@@ -16,9 +16,8 @@ export default function HeroSection() {
 
   return (
     <section className="relative overflow-hidden">
-      <div className="absolute inset-0 gradient-blue" />
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')] bg-cover bg-center mix-blend-overlay opacity-20" />
-      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/60 to-transparent" />
+      <div className="absolute inset-0 gradient-blue opacity-90" />
+      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920&q=80')] bg-cover bg-center mix-blend-overlay opacity-30" />
       
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
         <div className="max-w-2xl">
