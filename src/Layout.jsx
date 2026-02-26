@@ -151,7 +151,7 @@ export default function Layout({ children, currentPageName }) {
 
       <main>{children}</main>
 
-      <footer className="bg-gradient-to-br from-slate-800 via-cyan-800/30 to-blue-900 dark:from-slate-950 dark:via-cyan-950/40 dark:to-slate-950 text-slate-300 dark:text-slate-400 mt-20">
+      <footer className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
