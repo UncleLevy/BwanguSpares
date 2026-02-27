@@ -122,7 +122,7 @@ export default function RegisterShop() {
           <Store className="w-7 h-7 text-blue-600" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900">Register Your Shop</h1>
-        <p className="text-slate-500 mt-1">Join AutoPartsZM and reach customers across Zambia</p>
+        <p className="text-slate-500 mt-1">Join Bwangu Spares and reach customers across Zambia</p>
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-6 space-y-5">
