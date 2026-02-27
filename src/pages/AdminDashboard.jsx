@@ -412,6 +412,10 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {view === "reports" && <ReportsPanel />}
+
+        {view === "users" && <UsersPanel adminUser={user} />}
+
         {view === "regions" && (
           <div>
             <div className="flex items-center justify-between mb-6">
