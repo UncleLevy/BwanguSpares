@@ -34,7 +34,7 @@ const REASON_LABELS = {
   other: "Other",
 };
 
-export default function ReportsPanel() {
+export default function ReportsPanel({ adminUser }) {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
@@ -62,6 +62,15 @@ export default function ReportsPanel() {
       status: newStatus,
       admin_note: adminNote,
     });
+    const actionMap = { resolved: "resolve_report", dismissed: "dismiss_report" };
+    if (actionMap[newStatus]) {
+      await logAudit(adminUser, actionMap[newStatus], {
+        entity_type: "Report",
+        entity_id: selected.id,
+        entity_label: `Report on ${selected.reported_name || selected.reported_email}`,
+        details: adminNote || `Status changed to ${newStatus}`,
+      });
+    }
     setReports(reports.map(r => r.id === selected.id ? { ...r, status: newStatus, admin_note: adminNote } : r));
     toast.success("Report updated");
     setSelected(null);

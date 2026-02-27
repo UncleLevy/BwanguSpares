@@ -52,6 +52,12 @@ export default function UsersPanel({ adminUser }) {
       ...banForm,
       banned_by: adminUser?.email,
     });
+    await logAudit(adminUser, banForm.ban_type === "banned" ? "ban_user" : "suspend_user", {
+      entity_type: "User",
+      entity_id: banForm.email,
+      entity_label: banForm.full_name || banForm.email,
+      details: banForm.reason,
+    });
 
     // Send notification email to the banned user
     const isPermBan = banForm.ban_type === "banned";
@@ -74,6 +80,12 @@ export default function UsersPanel({ adminUser }) {
   const removeBan = async (id, email) => {
     await base44.entities.BannedUser.delete(id);
     setBannedUsers(bannedUsers.filter(b => b.id !== id));
+    await logAudit(adminUser, "unban_user", {
+      entity_type: "User",
+      entity_id: email,
+      entity_label: email,
+      details: "Ban/suspension removed by admin",
+    });
     toast.success(`${email} has been unblocked`);
   };
 
