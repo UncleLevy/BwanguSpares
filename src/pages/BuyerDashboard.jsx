@@ -198,6 +198,10 @@ export default function BuyerDashboard() {
           <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
         )}
 
+        {view === "messages" && (
+          <BuyerMessages user={user} />
+        )}
+
         {view === "profile" && (
           <div className="max-w-lg">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Profile</h1>
