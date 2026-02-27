@@ -87,7 +87,7 @@ export default function BrowseProducts() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Browse Auto Parts</h1>
-        <p className="text-slate-500 mt-1">Find the parts you need from verified shops across Zambia</p>
+        <p className="text-slate-500 mt-1">Find the spares you need from verified shops across Zambia</p>
       </div>
 
       <div className="flex flex-col md:flex-row gap-3 mb-6">
