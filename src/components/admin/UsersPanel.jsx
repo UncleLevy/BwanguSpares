@@ -51,7 +51,19 @@ export default function UsersPanel({ adminUser }) {
       ...banForm,
       banned_by: adminUser?.email,
     });
-    toast.success(`User ${banForm.ban_type === "banned" ? "banned" : "suspended"} successfully`);
+
+    // Send notification email to the banned user
+    const isPermBan = banForm.ban_type === "banned";
+    const expiryLine = !isPermBan && banForm.ban_expires
+      ? `\n\nYour suspension will expire on ${new Date(banForm.ban_expires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
+      : "";
+    await base44.integrations.Core.SendEmail({
+      to: banForm.email,
+      subject: `Your BwanguSpares account has been ${isPermBan ? "banned" : "suspended"}`,
+      body: `Dear ${banForm.full_name || "User"},\n\nFollowing an investigation into a report made against your account on BwanguSpares, your account has been ${isPermBan ? "permanently banned" : "temporarily suspended"}.\n\nReason:\n${banForm.reason}${expiryLine}\n\nIf you believe this action was taken in error, please contact our support team at admin@bwangu.com.\n\nRegards,\nThe BwanguSpares Team`,
+    }).catch(() => {}); // fire-and-forget, don't block on email failure
+
+    toast.success(`User ${isPermBan ? "banned" : "suspended"} successfully — notification email sent`);
     setBanDialog(false);
     setBanForm({ email: "", phone: "", full_name: "", ban_type: "suspended", reason: "", ban_expires: "" });
     setSubmitting(false);
