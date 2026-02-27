@@ -17,6 +17,7 @@ export default function RegisterShop() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [banRecord, setBanRecord] = useState(null);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "", description: "", phone: "", address: "",
@@ -29,11 +30,21 @@ export default function RegisterShop() {
       if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("RegisterShop")); return; }
       const u = await base44.auth.me();
       setUser(u);
-      const [r, shops] = await Promise.all([
+      const [r, shops, bannedCheck] = await Promise.all([
         base44.entities.Region.list(),
         base44.entities.Shop.filter({ owner_email: u.email }),
+        base44.entities.BannedUser.filter({ email: u.email }),
       ]);
       setRegions(r);
+      if (bannedCheck.length > 0) {
+        const ban = bannedCheck[0];
+        const isExpired = ban.ban_expires && new Date(ban.ban_expires) < new Date();
+        if (!isExpired) {
+          setBanRecord(ban);
+          setLoading(false);
+          return;
+        }
+      }
       if (shops.length > 0) setExistingShop(shops[0]);
       setLoading(false);
     })();
