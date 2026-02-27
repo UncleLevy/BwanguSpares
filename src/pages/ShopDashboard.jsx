@@ -569,6 +569,10 @@ export default function ShopDashboard() {
         {view === "parts_requests" && (
           <ShopPartsRequests shop={shop} />
         )}
+
+        {view === "messages" && (
+          <ShopMessages shop={shop} user={user} />
+        )}
       </main>
     </div>
   );
