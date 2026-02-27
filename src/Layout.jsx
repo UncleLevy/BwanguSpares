@@ -159,7 +159,7 @@ export default function Layout({ children, currentPageName }) {
                 <div className="w-8 h-8 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                   <Package className="w-4 h-4 text-white" />
                 </div>
-                <span className="text-white font-bold">AutoPartsZM</span>
+                <span className="text-white font-bold">BwanguSpares</span>
               </div>
               <p className="text-sm leading-relaxed">Zambia's premier virtual marketplace for auto spare parts. Connecting shops, mechanics and buyers.</p>
             </div>
@@ -178,7 +178,7 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </div>
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs">
-            © 2026 AutoPartsZM. All rights reserved.
+            © 2026 BwanguSpares. All rights reserved.
           </div>
         </div>
       </footer>
