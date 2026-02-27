@@ -25,6 +25,8 @@ import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
 import CategoryChart from "@/components/analytics/CategoryChart";
 import TopItemsList from "@/components/analytics/TopItemsList";
+import ReportsPanel from "@/components/admin/ReportsPanel";
+import UsersPanel from "@/components/admin/UsersPanel";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
