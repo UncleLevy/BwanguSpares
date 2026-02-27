@@ -104,7 +104,7 @@ export default function AdminDashboard() {
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports"), badge: reportCount || null },
-    { id: "users", label: "Banned Users", icon: ShieldOff, onClick: () => setView("users") },
+    { id: "users", label: "Users", icon: Users, onClick: () => setView("users") },
     { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit") },
   ];
 
