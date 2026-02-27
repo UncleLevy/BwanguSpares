@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
-  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff
+  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -27,6 +27,8 @@ import CategoryChart from "@/components/analytics/CategoryChart";
 import TopItemsList from "@/components/analytics/TopItemsList";
 import ReportsPanel from "@/components/admin/ReportsPanel";
 import UsersPanel from "@/components/admin/UsersPanel";
+import AuditLogPanel from "@/components/admin/AuditLogPanel";
+import { logAudit } from "@/components/shared/auditLog";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
