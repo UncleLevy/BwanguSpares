@@ -121,6 +121,11 @@ export default function PartsRequestForm({ open, onClose, onSuccess }) {
             <Input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })}
               placeholder="+260..." className="mt-1 rounded-xl" />
           </div>
+          <div>
+            <Label>Your Town / Region</Label>
+            <Input value={form.buyer_region} onChange={e => setForm({ ...form, buyer_region: e.target.value })}
+              placeholder="e.g. Lusaka, Kitwe, Ndola..." className="mt-1 rounded-xl" />
+          </div>
         </div>
         <div className="flex justify-end gap-2 mt-2">
           <Button variant="outline" onClick={onClose}>Cancel</Button>
