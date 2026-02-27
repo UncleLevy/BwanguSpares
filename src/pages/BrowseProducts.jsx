@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Search, SlidersHorizontal, X } from "lucide-react";
+import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
+import PartsRequestForm from "@/components/parts/PartsRequestForm";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
@@ -37,6 +38,7 @@ export default function BrowseProducts() {
   const [category, setCategory] = useState("all");
   const [condition, setCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [requestFormOpen, setRequestFormOpen] = useState(false);
 
   useEffect(() => {
     loadProducts();
@@ -158,12 +160,34 @@ export default function BrowseProducts() {
           <SlidersHorizontal className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700">No parts found</h3>
           <p className="text-sm text-slate-500 mt-1">Try adjusting your search or filters</p>
+          <div className="mt-6 p-5 bg-blue-50 rounded-2xl border border-blue-100 max-w-sm mx-auto">
+            <FileSearch className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+            <p className="text-sm font-medium text-slate-800">Can't find what you need?</p>
+            <p className="text-xs text-slate-500 mt-1 mb-3">Submit a parts request and verified shops will contact you directly.</p>
+            <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2">
+              <FileSearch className="w-4 h-4" /> Request this Part
+            </Button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {filteredProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />)}
         </div>
       )}
+
+      {filteredProducts.length > 0 && (
+        <div className="mt-12 p-6 bg-blue-50 rounded-2xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div>
+            <p className="font-semibold text-slate-800">Can't find the exact part?</p>
+            <p className="text-sm text-slate-500 mt-0.5">Submit a request and verified shops will contact you directly.</p>
+          </div>
+          <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2 shrink-0">
+            <FileSearch className="w-4 h-4" /> Request a Part
+          </Button>
+        </div>
+      )}
+
+      <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
     </div>
   );
 }
