@@ -53,6 +53,8 @@ export default function AdminDashboard() {
         base44.entities.Region.list(),
       ]);
       setShops(s); setProducts(p); setOrders(o); setRegions(r);
+      const reports = await base44.entities.Report.filter({ status: "pending" });
+      setReportCount(reports.length);
       setLoading(false);
     })();
   }, []);
