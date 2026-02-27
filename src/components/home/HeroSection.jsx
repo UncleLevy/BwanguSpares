@@ -24,7 +24,7 @@ export default function HeroSection() {
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-6">
             <MapPin className="w-3.5 h-3.5" />
-            Zambia's Auto Parts Marketplace
+            Zambia's Auto Spares Marketplace
           </div>
           
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
