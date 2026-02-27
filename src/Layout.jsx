@@ -166,9 +166,9 @@ export default function Layout({ children, currentPageName }) {
             <div>
               <h4 className="text-white font-semibold mb-3 text-sm">Quick Links</h4>
               <div className="space-y-2 text-sm">
-                <Link to={createPageUrl("BrowseProducts")} className="block hover:text-white transition-colors">Browse Parts</Link>
-                <Link to={createPageUrl("BrowseShops")} className="block hover:text-white transition-colors">Find Shops</Link>
-                <Link to={createPageUrl("RegisterShop")} className="block hover:text-white transition-colors">Register Your Shop</Link>
+                <Link to={createPageUrl("BrowseProducts")} className="flex items-center gap-2 hover:text-white transition-colors"><Search className="w-4 h-4 shrink-0" /> Browse Parts</Link>
+                <Link to={createPageUrl("BrowseShops")} className="flex items-center gap-2 hover:text-white transition-colors"><Store className="w-4 h-4 shrink-0" /> Find Shops</Link>
+                <Link to={createPageUrl("RegisterShop")} className="flex items-center gap-2 hover:text-white transition-colors"><ExternalLink className="w-4 h-4 shrink-0" /> Register Your Shop</Link>
               </div>
             </div>
             <div>
