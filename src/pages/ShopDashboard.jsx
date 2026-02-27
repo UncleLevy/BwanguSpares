@@ -27,6 +27,7 @@ import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import MarketInsights from "@/components/analytics/MarketInsights";
 import ShopMessages from "@/components/messaging/ShopMessages";
+import DocumentPrinter from "@/components/documents/DocumentPrinter";
 import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
 import CategoryChart from "@/components/analytics/CategoryChart";
