@@ -167,6 +167,13 @@ export default function BuyerDashboard() {
                                 <Star className="w-3.5 h-3.5" /> Leave Review
                               </Button>
                             )}
+                            <ReportButton
+                              reportedEmail={order.shop_name}
+                              reportedName={order.shop_name}
+                              reportedType="shop"
+                              reportedId={order.shop_id}
+                              size="sm"
+                            />
                           </div>
                         </div>
                         <div className="space-y-2">
