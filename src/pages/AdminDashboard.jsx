@@ -89,6 +89,8 @@ export default function AdminDashboard() {
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
+    { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports"), badge: reportCount || null },
+    { id: "users", label: "Banned Users", icon: ShieldOff, onClick: () => setView("users") },
   ];
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
