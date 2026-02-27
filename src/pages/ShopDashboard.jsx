@@ -441,6 +441,11 @@ export default function ShopDashboard() {
                     <div><Label>Category</Label><Select value={productForm.category} onValueChange={v => setProductForm({...productForm, category: v})}><SelectTrigger className="mt-1"><SelectValue /></SelectTrigger><SelectContent>{CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent></Select></div>
                     <div><Label>Condition</Label><Select value={productForm.condition} onValueChange={v => setProductForm({...productForm, condition: v})}><SelectTrigger className="mt-1"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="new">New</SelectItem><SelectItem value="used">Used</SelectItem><SelectItem value="refurbished">Refurbished</SelectItem></SelectContent></Select></div>
                   </div>
+                  <div><Label>Sub-Category</Label><Input value={productForm.sub_category} onChange={e => setProductForm({...productForm, sub_category: e.target.value})} placeholder="e.g. Spark Plugs, Brake Pads…" className="mt-1" /></div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div><Label>SKU</Label><Input value={productForm.sku} onChange={e => setProductForm({...productForm, sku: e.target.value})} placeholder="e.g. ENG-SP-001" className="mt-1" /></div>
+                    <div><Label>Low Stock Alert ≤</Label><Input type="number" min="0" value={productForm.low_stock_threshold} onChange={e => setProductForm({...productForm, low_stock_threshold: e.target.value})} className="mt-1" /></div>
+                  </div>
                   <div><Label>Brand</Label><Input value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="mt-1" /></div>
                   <div><Label>Compatible Vehicles</Label><Input value={productForm.compatible_vehicles} onChange={e => setProductForm({...productForm, compatible_vehicles: e.target.value})} placeholder="e.g. Toyota Corolla 2015-2020" className="mt-1" /></div>
                   <div>
