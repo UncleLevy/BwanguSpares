@@ -235,6 +235,10 @@ export default function ShopDashboard() {
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
+    {
+      id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => setView("inventory"),
+      badge: products.filter(p => p.stock_quantity <= (p.low_stock_threshold ?? 5)).length || null
+    },
   ];
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
