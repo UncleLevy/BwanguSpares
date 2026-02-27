@@ -4,7 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
-  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin, FileSearch, MessageSquare
+  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin, FileSearch, MessageSquare,
+  ClipboardList, AlertTriangle
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import MarketInsights from "@/components/analytics/MarketInsights";
 import ShopMessages from "@/components/messaging/ShopMessages";
 import DocumentPrinter from "@/components/documents/DocumentPrinter";
+import InventoryPanel from "@/components/inventory/InventoryPanel";
 import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
 import CategoryChart from "@/components/analytics/CategoryChart";
@@ -64,8 +66,8 @@ export default function ShopDashboard() {
   const [productDialog, setProductDialog] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [productForm, setProductForm] = useState({
-    name: "", description: "", price: "", category: "other", brand: "",
-    compatible_vehicles: "", condition: "new", stock_quantity: "",
+    name: "", description: "", price: "", category: "other", sub_category: "", brand: "",
+    compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5",
   });
 
   const [techDialog, setTechDialog] = useState(false);

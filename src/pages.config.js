@@ -53,11 +53,11 @@ import BrowseShops from './pages/BrowseShops';
 import BuyerDashboard from './pages/BuyerDashboard';
 import Cart from './pages/Cart';
 import Home from './pages/Home';
+import Messages from './pages/Messages';
 import ProductDetail from './pages/ProductDetail';
 import RegisterShop from './pages/RegisterShop';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
-import Messages from './pages/Messages';
 import __Layout from './Layout.jsx';
 
 
@@ -68,11 +68,11 @@ export const PAGES = {
     "BuyerDashboard": BuyerDashboard,
     "Cart": Cart,
     "Home": Home,
+    "Messages": Messages,
     "ProductDetail": ProductDetail,
     "RegisterShop": RegisterShop,
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
-    "Messages": Messages,
 }
 
 export const pagesConfig = {
