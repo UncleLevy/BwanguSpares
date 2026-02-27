@@ -110,6 +110,12 @@ export default function ShopProfile() {
                 <Badge className="bg-amber-50 text-amber-700 border-amber-200 gap-1"><ShieldCheck className="w-3 h-3" /> Pro Shop</Badge>
               ) : null}
               <MessageShopButton shop={shop} />
+              <ReportButton
+                reportedEmail={shop.owner_email}
+                reportedName={shop.name}
+                reportedType="shop"
+                reportedId={shop.id}
+              />
             </div>
           </div>
           {shop.description && <p className="text-slate-600 text-sm mt-4 leading-relaxed">{shop.description}</p>}
