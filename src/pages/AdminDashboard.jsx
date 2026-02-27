@@ -38,6 +38,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [regionDialog, setRegionDialog] = useState(false);
   const [newRegion, setNewRegion] = useState({ name: "", province: "" });
+  const [reportCount, setReportCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
