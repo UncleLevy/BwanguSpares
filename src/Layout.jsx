@@ -4,7 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
-  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
