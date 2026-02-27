@@ -27,12 +27,12 @@ export default function HeroSection() {
             Zambia's Auto Spares Marketplace
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight" style={{textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.15)'}}>
             Find the right parts,<br />
             <span className="text-blue-200">close to you.</span>
           </h1>
           
-          <p className="mt-5 text-lg text-blue-100/80 leading-relaxed max-w-lg">
+          <p className="mt-5 text-lg text-blue-100/80 leading-relaxed max-w-lg" style={{textShadow: '0 1px 3px rgba(0,0,0,0.5)'}}>
             Browse thousands of auto spare parts from verified shops across Zambia. Get expert mechanics and fast delivery.
           </p>
 
