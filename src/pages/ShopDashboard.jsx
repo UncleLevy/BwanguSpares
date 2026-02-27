@@ -560,6 +560,10 @@ export default function ShopDashboard() {
           </div>
         )}
 
+        {view === "market_insights" && (
+          <MarketInsights shop={shop} />
+        )}
+
         {view === "parts_requests" && (
           <ShopPartsRequests shop={shop} />
         )}
