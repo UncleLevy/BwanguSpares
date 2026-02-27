@@ -20,6 +20,7 @@ import BuyerPartsRequests from "@/components/parts/BuyerPartsRequests";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import BuyerMessages from "@/components/messaging/BuyerMessages";
+import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 
 const orderStatusConfig = {
