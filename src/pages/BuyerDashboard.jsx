@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, ShoppingCart, User, Settings, Package,
-  Clock, CheckCircle2, Truck, XCircle, Star
+  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,8 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import BuyerPartsRequests from "@/components/parts/BuyerPartsRequests";
+import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 
@@ -37,6 +39,7 @@ export default function BuyerDashboard() {
   const [reviewDialog, setReviewDialog] = useState(false);
   const [reviewOrder, setReviewOrder] = useState(null);
   const [submitting, setSubmitting] = useState(false);
+  const [partsRequestOpen, setPartsRequestOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -102,6 +105,7 @@ export default function BuyerDashboard() {
 
   const sidebarItems = [
     { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => setView("orders") },
+    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
   ];
 
@@ -189,6 +193,10 @@ export default function BuyerDashboard() {
           </div>
         )}
 
+        {view === "parts_requests" && (
+          <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
+        )}
+
         {view === "profile" && (
           <div className="max-w-lg">
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Profile</h1>
@@ -216,6 +224,8 @@ export default function BuyerDashboard() {
           </div>
         )}
       </main>
+
+      <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
 
       <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
         <DialogContent>
