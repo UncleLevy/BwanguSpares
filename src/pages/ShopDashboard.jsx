@@ -541,6 +541,7 @@ export default function ShopDashboard() {
                               <MapPin className="w-3 h-3" /> Tracking
                             </Button>
                           )}
+                          <DocumentPrinter shop={shop} order={o} triggerLabel="Print" />
                         </div>
                       </TableCell>
                     </TableRow>
