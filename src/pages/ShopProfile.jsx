@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { MapPin, Star, Phone, Package, Wrench, ShoppingCart, Store, User, ShieldCheck } from "lucide-react";
+import MessageShopButton from "@/components/messaging/MessageShopButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
