@@ -74,6 +74,9 @@ export default function Layout({ children, currentPageName }) {
               {isAuthenticated && (
                 <>
                   <NotificationBell userEmail={user?.email} />
+                  <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                    <MessageSquare className="w-5 h-5" />
+                  </Link>
                   <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                     <ShoppingCart className="w-5 h-5" />
                     {cartCount > 0 && (
