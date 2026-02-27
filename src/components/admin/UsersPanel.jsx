@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { ShieldOff, RotateCcw, Ban, Users } from "lucide-react";
+import { logAudit } from "@/components/shared/auditLog";
 
 export default function UsersPanel({ adminUser }) {
   const [bannedUsers, setBannedUsers] = useState([]);

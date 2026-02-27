@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Eye, Flag } from "lucide-react";
+import { logAudit } from "@/components/shared/auditLog";
 
 const STATUS_COLORS = {
   pending: "bg-amber-50 text-amber-700",
