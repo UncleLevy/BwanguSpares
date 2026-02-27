@@ -173,8 +173,9 @@ export default function Layout({ children, currentPageName }) {
             </div>
             <div>
               <h4 className="text-white font-semibold mb-3 text-sm">Contact</h4>
-              <p className="text-sm">Lusaka, Zambia</p>
-              <p className="text-sm">support@autopartszm.com</p>
+              <p className="text-sm">Flat 15C Kalewa Complex, Ndola</p>
+              <a href="mailto:admin@bwangu.com" className="text-sm block hover:text-white transition-colors">admin@bwangu.com</a>
+              <a href="tel:+260763109823" className="text-sm block hover:text-white transition-colors">+260 763 109 823</a>
             </div>
           </div>
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs">
