@@ -57,7 +57,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="w-9 h-9 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <Package className="w-5 h-5 text-white" />
               </div>
-              <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">AutoParts<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">ZM</span></span>
+              <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">
