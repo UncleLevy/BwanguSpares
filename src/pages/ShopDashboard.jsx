@@ -574,6 +574,10 @@ export default function ShopDashboard() {
           </div>
         )}
 
+        {view === "inventory" && (
+          <InventoryPanel products={products} orders={orders} onProductsChange={setProducts} />
+        )}
+
         {view === "market_insights" && (
           <MarketInsights shop={shop} />
         )}
