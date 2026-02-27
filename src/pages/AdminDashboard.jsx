@@ -66,6 +66,15 @@ export default function AdminDashboard() {
   const handleShopStatus = async (shop, status) => {
     await base44.entities.Shop.update(shop.id, { status });
     setShops(shops.map(s => s.id === shop.id ? { ...s, status } : s));
+    const actionMap = { approved: "approve_shop", rejected: "reject_shop", suspended: "suspend_shop" };
+    if (actionMap[status]) {
+      await logAudit(user, actionMap[status], {
+        entity_type: "Shop",
+        entity_id: shop.id,
+        entity_label: shop.name,
+        details: `Shop status changed to ${status}`,
+      });
+    }
     toast.success(`Shop ${status}`);
   };
 
@@ -73,14 +82,17 @@ export default function AdminDashboard() {
     if (!newRegion.name) return;
     const r = await base44.entities.Region.create(newRegion);
     setRegions([...regions, r]);
+    await logAudit(user, "add_region", { entity_type: "Region", entity_id: r.id, entity_label: r.name });
     setNewRegion({ name: "", province: "" });
     setRegionDialog(false);
     toast.success("Region added");
   };
 
   const deleteRegion = async (id) => {
+    const r = regions.find(r => r.id === id);
     await base44.entities.Region.delete(id);
     setRegions(regions.filter(r => r.id !== id));
+    await logAudit(user, "delete_region", { entity_type: "Region", entity_id: id, entity_label: r?.name });
     toast.success("Region deleted");
   };
 
@@ -93,6 +105,7 @@ export default function AdminDashboard() {
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports"), badge: reportCount || null },
     { id: "users", label: "Banned Users", icon: ShieldOff, onClick: () => setView("users") },
+    { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit") },
   ];
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
@@ -414,7 +427,8 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {view === "reports" && <ReportsPanel />}
+        {view === "reports" && <ReportsPanel adminUser={user} />}
+        {view === "audit" && <AuditLogPanel />}
 
         {view === "users" && <UsersPanel adminUser={user} />}
 
