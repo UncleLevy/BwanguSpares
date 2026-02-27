@@ -102,6 +102,23 @@ export default function RegisterShop() {
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-12"><div className="h-96 bg-slate-100 rounded-2xl animate-pulse" /></div>;
 
+  if (banRecord) {
+    return (
+      <div className="max-w-lg mx-auto px-4 py-20 text-center">
+        <div className="w-16 h-16 mx-auto rounded-2xl bg-red-50 flex items-center justify-center mb-4">
+          <ShieldOff className="w-8 h-8 text-red-600" />
+        </div>
+        <h2 className="text-xl font-bold text-slate-900">Account {banRecord.ban_type === "banned" ? "Banned" : "Suspended"}</h2>
+        <p className="text-slate-500 mt-2">Your account has been {banRecord.ban_type} from this platform.</p>
+        <p className="text-sm text-slate-400 mt-1">Reason: {banRecord.reason}</p>
+        {banRecord.ban_expires && (
+          <p className="text-sm text-slate-400 mt-1">Expires: {new Date(banRecord.ban_expires).toLocaleDateString()}</p>
+        )}
+        <p className="text-xs text-slate-300 mt-4">If you believe this is an error, please contact support.</p>
+      </div>
+    );
+  }
+
   if (existingShop) {
     const statusConfig = {
       pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", label: "Pending Approval" },
