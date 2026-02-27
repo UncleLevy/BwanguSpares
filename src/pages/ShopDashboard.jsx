@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
-  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin
+  Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin, FileSearch
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +24,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
 import CategoryChart from "@/components/analytics/CategoryChart";
@@ -222,6 +223,7 @@ export default function ShopDashboard() {
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
+    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
   ];
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
@@ -554,6 +556,10 @@ export default function ShopDashboard() {
               </DialogContent>
             </Dialog>
           </div>
+        )}
+
+        {view === "parts_requests" && (
+          <ShopPartsRequests shop={shop} />
         )}
       </main>
     </div>
