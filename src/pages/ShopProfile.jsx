@@ -101,7 +101,11 @@ export default function ShopProfile() {
                 {shop.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {shop.phone}</span>}
               </div>
             </div>
-            <Badge className="bg-blue-50 text-blue-700 border-blue-200">{shop.slot_type || "basic"} plan</Badge>
+            {user?.role === "admin" ? (
+              <Badge className="bg-blue-50 text-blue-700 border-blue-200 capitalize">{shop.slot_type || "basic"} plan</Badge>
+            ) : (shop.slot_type === "premium" || shop.slot_type === "standard") ? (
+              <Badge className="bg-amber-50 text-amber-700 border-amber-200 gap-1"><ShieldCheck className="w-3 h-3" /> Pro Shop</Badge>
+            ) : null}
           </div>
           {shop.description && <p className="text-slate-600 text-sm mt-4 leading-relaxed">{shop.description}</p>}
         </div>
