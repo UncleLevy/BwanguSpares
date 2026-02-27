@@ -117,13 +117,15 @@ export default function ShopDashboard() {
   };
 
   const saveProduct = async () => {
+    const qty = parseInt(productForm.stock_quantity) || 0;
     const data = {
       ...productForm,
       price: parseFloat(productForm.price) || 0,
-      stock_quantity: parseInt(productForm.stock_quantity) || 0,
+      stock_quantity: qty,
+      low_stock_threshold: parseInt(productForm.low_stock_threshold) || 5,
       shop_id: shop.id,
       shop_name: shop.name,
-      status: "active",
+      status: qty === 0 ? "out_of_stock" : "active",
     };
     if (editProduct) {
       await base44.entities.Product.update(editProduct.id, data);
@@ -136,7 +138,7 @@ export default function ShopDashboard() {
     }
     setProductDialog(false);
     setEditProduct(null);
-    setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "" });
+    setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5" });
   };
 
   const deleteProduct = async (id) => {
@@ -149,8 +151,10 @@ export default function ShopDashboard() {
     setEditProduct(p);
     setProductForm({
       name: p.name, description: p.description || "", price: String(p.price),
-      category: p.category, brand: p.brand || "", compatible_vehicles: p.compatible_vehicles || "",
-      condition: p.condition, stock_quantity: String(p.stock_quantity || 0),
+      category: p.category, sub_category: p.sub_category || "", brand: p.brand || "",
+      compatible_vehicles: p.compatible_vehicles || "", condition: p.condition,
+      stock_quantity: String(p.stock_quantity || 0), sku: p.sku || "",
+      low_stock_threshold: String(p.low_stock_threshold ?? 5),
     });
     setProductDialog(true);
   };
