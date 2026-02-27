@@ -23,7 +23,7 @@ const CATEGORIES = [
 export default function PartsRequestForm({ open, onClose, onSuccess }) {
   const [form, setForm] = useState({
     part_name: "", description: "", category: "other",
-    compatible_vehicles: "", budget: "", phone: ""
+    compatible_vehicles: "", budget: "", phone: "", buyer_region: ""
   });
   const [submitting, setSubmitting] = useState(false);
 
