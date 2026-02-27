@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
+import ReviewList from "@/components/reviews/ReviewList";
 
 export default function ShopProfile() {
   const params = new URLSearchParams(window.location.search);
