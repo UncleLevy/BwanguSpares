@@ -166,6 +166,28 @@ export default function ShopPartsRequests({ shop, acceptedRequests = [] }) {
           ))}
         </div>
       )}
+
+      {/* Accepted Requests — print quotations */}
+      {acceptedList.length > 0 && (
+        <div className="mt-10">
+          <h2 className="text-lg font-semibold text-slate-800 mb-4">Accepted Requests — Print Quotation</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {acceptedList.map(req => (
+              <Card key={req.id} className="border-emerald-100">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold text-sm text-slate-900">{req.part_name}</p>
+                      <p className="text-xs text-slate-500">{req.buyer_name} • {new Date(req.accepted_date || req.created_date).toLocaleDateString()}</p>
+                    </div>
+                    <DocumentPrinter shop={shop} partsRequest={req} triggerLabel="Quotation" />
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
