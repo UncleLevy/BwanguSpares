@@ -221,6 +221,7 @@ export default function ShopDashboard() {
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
+    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
