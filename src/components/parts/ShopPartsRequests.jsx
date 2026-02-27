@@ -5,8 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Inbox, Car, DollarSign, Phone, CheckCircle2, Clock, Star, Crown } from "lucide-react";
 import { toast } from "sonner";
+import DocumentPrinter from "@/components/documents/DocumentPrinter";
 
-export default function ShopPartsRequests({ shop }) {
+export default function ShopPartsRequests({ shop, acceptedRequests = [] }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [accepting, setAccepting] = useState(null);
@@ -55,6 +56,13 @@ export default function ShopPartsRequests({ shop }) {
     setRequests(prev => prev.filter(r => r.id !== request.id));
     setAccepting(null);
   };
+
+  const [acceptedList, setAcceptedList] = useState([]);
+  useEffect(() => {
+    if (!shop) return;
+    base44.entities.PartsRequest.filter({ accepted_by_shop_id: shop.id, status: "accepted" }, "-created_date", 50)
+      .then(setAcceptedList);
+  }, [shop]);
 
   if (shop?.slot_type === "basic") {
     return (
