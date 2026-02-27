@@ -118,9 +118,11 @@ export default function BrowseShops() {
                 ) : (
                   <div className="flex items-center justify-center h-full"><Store className="w-14 h-14 text-white/20" /></div>
                 )}
-                <Badge className="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white border-0 text-[10px]">
-                  {shop.slot_type || "basic"}
-                </Badge>
+                {(shop.slot_type === "premium" || shop.slot_type === "standard") && (
+                  <Badge className="absolute top-3 right-3 bg-amber-500/90 backdrop-blur-sm text-white border-0 text-[10px] gap-1">
+                    <ShieldCheck className="w-3 h-3" /> Pro
+                  </Badge>
+                )}
               </div>
               <div className="p-5">
                 <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
