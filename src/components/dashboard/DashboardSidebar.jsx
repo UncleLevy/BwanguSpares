@@ -15,7 +15,7 @@ export default function DashboardSidebar({ items, active, title, accent = "blue"
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <Package className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-slate-900 text-sm">AutoParts<span className="text-blue-600">ZM</span></span>
+          <span className="font-bold text-slate-900 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
         </Link>
         <p className="text-[11px] text-slate-400 mt-2 font-medium uppercase tracking-wider">{title}</p>
       </div>
