@@ -56,6 +56,7 @@ export default function PartsRequestForm({ open, onClose, onSuccess }) {
       buyer_email: user.email,
       buyer_name: user.full_name,
       buyer_phone: form.phone,
+      buyer_region: form.buyer_region,
       part_name: form.part_name,
       description: form.description,
       category: form.category,
@@ -65,7 +66,7 @@ export default function PartsRequestForm({ open, onClose, onSuccess }) {
     });
 
     toast.success("Request submitted! Shops will contact you shortly.");
-    setForm({ part_name: "", description: "", category: "other", compatible_vehicles: "", budget: "", phone: "" });
+    setForm({ part_name: "", description: "", category: "other", compatible_vehicles: "", budget: "", phone: "", buyer_region: "" });
     setSubmitting(false);
     onClose();
     if (onSuccess) onSuccess();
