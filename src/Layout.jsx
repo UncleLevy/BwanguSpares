@@ -180,8 +180,9 @@ export default function Layout({ children, currentPageName }) {
               </div>
             </div>
           </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs">
-            © 2026 BwanguSpares. All rights reserved.
+          <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs space-y-1">
+            <p>© 2026 BwanguSpares. All rights reserved.</p>
+            <p className="text-slate-500">Site was Designed and Developed by Ikhumbi-Tech Center</p>
           </div>
         </div>
       </footer>
