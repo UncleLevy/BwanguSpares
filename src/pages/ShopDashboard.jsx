@@ -969,22 +969,36 @@ export default function ShopDashboard() {
          )}
 
         <Dialog open={reportDialog} onOpenChange={setReportDialog}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Download Sales Report</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div><Label>Start Date</Label><Input type="date" value={reportForm.start_date} onChange={e => setReportForm({...reportForm, start_date: e.target.value})} className="mt-1" /></div>
-              <div><Label>End Date</Label><Input type="date" value={reportForm.end_date} onChange={e => setReportForm({...reportForm, end_date: e.target.value})} className="mt-1" /></div>
-              <p className="text-xs text-slate-500">The report will include: sales summary, products inventory, orders, and technicians for the selected period.</p>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setReportDialog(false)}>Cancel</Button>
-              <Button onClick={handleGenerateReport} disabled={generatingReport} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5">
-                <Download className="w-4 h-4" /> {generatingReport ? "Generating..." : "Download"}
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-        </main>
-        </div>
-        );
-        }
+           <DialogContent>
+             <DialogHeader><DialogTitle>Download Sales Report</DialogTitle></DialogHeader>
+             <div className="space-y-4">
+               <div><Label>Start Date</Label><Input type="date" value={reportForm.start_date} onChange={e => setReportForm({...reportForm, start_date: e.target.value})} className="mt-1" /></div>
+               <div><Label>End Date</Label><Input type="date" value={reportForm.end_date} onChange={e => setReportForm({...reportForm, end_date: e.target.value})} className="mt-1" /></div>
+               <p className="text-xs text-slate-500">The report will include: sales summary, products inventory, orders, and technicians for the selected period.</p>
+             </div>
+             <DialogFooter>
+               <Button variant="outline" onClick={() => setReportDialog(false)}>Cancel</Button>
+               <Button onClick={handleGenerateReport} disabled={generatingReport} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5">
+                 <Download className="w-4 h-4" /> {generatingReport ? "Generating..." : "Download"}
+               </Button>
+             </DialogFooter>
+           </DialogContent>
+         </Dialog>
+
+        <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
+           <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
+             <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
+             {receiptOrder && (
+               <div className="space-y-4">
+                 <OrderReceipt order={receiptOrder} shop={shop} />
+                 <DialogFooter>
+                   <ReceiptDownloader order={receiptOrder} />
+                 </DialogFooter>
+               </div>
+             )}
+           </DialogContent>
+         </Dialog>
+         </main>
+         </div>
+         );
+         }
