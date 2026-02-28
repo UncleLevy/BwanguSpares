@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, ShoppingCart, User, Settings, Package,
-  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch, MessageSquare
+  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch, MessageSquare, Eye
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
