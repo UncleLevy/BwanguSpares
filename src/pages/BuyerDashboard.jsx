@@ -59,7 +59,7 @@ export default function BuyerDashboard() {
       const nameParts = (u.full_name || "").split(" ");
       const first_name = nameParts[0] || "";
       const last_name = nameParts.slice(1).join(" ") || "";
-      setProfileForm({ first_name, last_name, phone: u.phone || "", address: u.address || "" });
+      setProfileForm({ first_name, last_name, phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "" });
       const o = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
       setOrders(o);
       setLoading(false);
