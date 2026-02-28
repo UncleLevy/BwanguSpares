@@ -25,6 +25,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import MarketInsights from "@/components/analytics/MarketInsights";
 import ShopMessages from "@/components/messaging/ShopMessages";
@@ -525,6 +526,10 @@ export default function ShopDashboard() {
         )}
 
         {view === "orders" && (
+          <PullToRefresh onRefresh={async () => {
+            const o = await base44.entities.Order.filter({ shop_id: shop?.id }, "-created_date", 50);
+            setOrders(o);
+          }}>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Orders</h1>
             <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
@@ -578,6 +583,7 @@ export default function ShopDashboard() {
               </DialogContent>
             </Dialog>
           </div>
+          </PullToRefresh>
         )}
 
         {view === "inventory" && (
