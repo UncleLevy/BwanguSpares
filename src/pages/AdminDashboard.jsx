@@ -28,6 +28,7 @@ import TopItemsList from "@/components/analytics/TopItemsList";
 import ReportsPanel from "@/components/admin/ReportsPanel";
 import UsersPanel from "@/components/admin/UsersPanel";
 import AuditLogPanel from "@/components/admin/AuditLogPanel";
+import OrdersPanel from "@/components/admin/OrdersPanel";
 import { logAudit } from "@/components/shared/auditLog";
 
 export default function AdminDashboard() {
@@ -396,35 +397,12 @@ export default function AdminDashboard() {
         )}
 
         {view === "orders" && (
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">All Orders</h1>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Order</TableHead>
-                    <TableHead>Buyer</TableHead>
-                    <TableHead>Shop</TableHead>
-                    <TableHead>Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {orders.map(o => (
-                    <TableRow key={o.id}>
-                      <TableCell className="font-mono text-xs">{o.id?.slice(0,8)}</TableCell>
-                      <TableCell className="text-sm">{o.buyer_name || o.buyer_email}</TableCell>
-                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{o.shop_name}</TableCell>
-                      <TableCell className="font-medium">K{o.total_amount?.toLocaleString()}</TableCell>
-                      <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
-                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{new Date(o.created_date).toLocaleDateString()}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+          <OrdersPanel 
+            orders={orders} 
+            onOrderUpdate={(updatedOrder) => {
+              setOrders(orders.map(o => o.id === updatedOrder.id ? updatedOrder : o));
+            }}
+          />
         )}
 
         {view === "reports" && <ReportsPanel adminUser={user} />}
