@@ -37,6 +37,12 @@ export default function ProductDetail() {
       setProduct(data[0]);
       setLoading(false);
     })();
+    const unsubscribe = base44.entities.Product.subscribe((event) => {
+      if (event.id === id) {
+        setProduct(event.data);
+      }
+    });
+    return unsubscribe;
   }, [id]);
 
   useEffect(() => {

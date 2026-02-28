@@ -23,6 +23,10 @@ export default function Cart() {
 
   useEffect(() => {
     loadCart();
+    const unsubscribe = base44.entities.CartItem.subscribe((event) => {
+      loadCart();
+    });
+    return unsubscribe;
   }, []);
 
   const loadCart = async () => {

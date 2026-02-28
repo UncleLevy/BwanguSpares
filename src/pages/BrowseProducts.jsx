@@ -43,6 +43,12 @@ export default function BrowseProducts() {
 
   useEffect(() => {
     loadProducts();
+    const unsubscribe = base44.entities.Product.subscribe((event) => {
+      if (event.type === 'update' || event.type === 'create') {
+        loadProducts();
+      }
+    });
+    return unsubscribe;
   }, [category, condition, sortBy]);
 
   const loadProducts = async () => {
