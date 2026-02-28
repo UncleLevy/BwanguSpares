@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { base44 } from "@/api/base44Client";
 import { Package, ShoppingCart, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,19 @@ const conditionColors = {
 };
 
 export default function ProductCard({ product, onAddToCart }) {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      }
+    })();
+  }, []);
+
+  const canAddToCart = !user || (user.role !== 'shop_owner' && user.role !== 'admin');
   return (
     <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-700 overflow-hidden hover-lift">
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
