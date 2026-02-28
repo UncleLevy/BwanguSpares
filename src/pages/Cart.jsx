@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, AlertTriangle } from "lucide-react";
+import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
