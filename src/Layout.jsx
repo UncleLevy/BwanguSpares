@@ -89,42 +89,51 @@ export default function Layout({ children, currentPageName }) {
               )}
 
               {isAuthenticated ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700">
-                      <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center">
-                        <User className="w-3.5 h-3.5 text-blue-600" />
-                      </div>
-                      <span className="hidden sm:inline">{user?.full_name?.split(' ')[0]}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem asChild>
-                      <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
-                        <LayoutDashboard className="w-4 h-4" /> My Dashboard
-                      </Link>
-                    </DropdownMenuItem>
-                    {isShopOwner && (
-                      <DropdownMenuItem asChild>
-                        <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2">
-                          <Store className="w-4 h-4" /> Shop Dashboard
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    {isAdmin && (
-                      <DropdownMenuItem asChild>
-                        <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4" /> Admin Panel
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
-                      <LogOut className="w-4 h-4" /> Sign Out
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+                <>
+                  {/* Desktop: full dropdown */}
+                  <div className="hidden sm:block">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700">
+                          <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center">
+                            <User className="w-3.5 h-3.5 text-blue-600" />
+                          </div>
+                          <span>{user?.full_name?.split(' ')[0]}</span>
+                          <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-52">
+                        <DropdownMenuItem asChild>
+                          <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
+                            <LayoutDashboard className="w-4 h-4" /> My Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        {isShopOwner && (
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2">
+                              <Store className="w-4 h-4" /> Shop Dashboard
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        {isAdmin && (
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
+                              <ShieldCheck className="w-4 h-4" /> Admin Panel
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
+                          <LogOut className="w-4 h-4" /> Sign Out
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                  {/* Mobile: just a direct link to dashboard */}
+                  <Link to={createPageUrl("BuyerDashboard")} className="sm:hidden p-2 rounded-full bg-blue-100 flex items-center justify-center">
+                    <User className="w-4 h-4 text-blue-600" />
+                  </Link>
+                </>
               ) : (
                 <Button onClick={() => base44.auth.redirectToLogin()} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white text-sm h-9 px-6 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-200">
                   Sign In
