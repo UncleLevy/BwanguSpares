@@ -272,16 +272,20 @@ export default function ShopDashboard() {
   const handleSwitchShop = async (shopId) => {
     const selectedShop = shops.find(s => s.id === shopId);
     setShop(selectedShop);
-    const [p, t, o, c] = await Promise.all([
+    const [p, t, o, c, camps, codes] = await Promise.all([
       base44.entities.Product.filter({ shop_id: shopId }),
       base44.entities.Technician.filter({ shop_id: shopId }),
       base44.entities.Order.filter({ shop_id: shopId }, "-created_date", 50),
-      base44.entities.Customer.filter({ shop_id: shopId })
+      base44.entities.Customer.filter({ shop_id: shopId }),
+      base44.entities.Campaign.filter({ shop_id: shopId }),
+      base44.entities.DiscountCode.filter({ shop_id: shopId })
     ]);
     setProducts(p);
     setTechnicians(t);
     setOrders(o);
     setCustomers(c);
+    setCampaigns(camps);
+    setDiscountCodes(codes);
   };
 
   const handleAddShop = async () => {
