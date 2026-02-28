@@ -400,7 +400,7 @@ export default function ShopDashboard() {
               <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "" }); setProductDialog(true); }}
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Product</Button>
             </div>
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50">
@@ -526,7 +526,7 @@ export default function ShopDashboard() {
         {view === "orders" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Orders</h1>
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="bg-white rounded-2xl border border-slate-100 overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50">
