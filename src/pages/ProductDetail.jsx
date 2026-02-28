@@ -93,7 +93,7 @@ export default function ProductDetail() {
               <Badge variant="outline">{categoryLabels[product.category] || product.category}</Badge>
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900">{product.name}</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{product.name}</h1>
 
             <Link to={createPageUrl("ShopProfile") + `?id=${product.shop_id}`}
               className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mt-2">
@@ -104,7 +104,7 @@ export default function ProductDetail() {
               <span className="text-3xl font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
             </div>
 
-            <div className="mt-4 space-y-2 text-sm text-slate-600">
+            <div className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
               {product.brand && <p><span className="text-slate-400">Brand:</span> {product.brand}</p>}
               {product.compatible_vehicles && <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles}</p>}
               <p className="flex items-center gap-1.5">
@@ -118,14 +118,14 @@ export default function ProductDetail() {
             </div>
 
             {product.description && (
-              <p className="mt-4 text-sm text-slate-600 leading-relaxed">{product.description}</p>
+              <p className="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{product.description}</p>
             )}
 
             <div className="mt-6 flex items-center gap-3">
-              <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden">
-                <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">−</button>
-                <span className="px-4 py-2 text-sm font-medium border-x border-slate-200">{qty}</span>
-                <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">+</button>
+              <div className="flex items-center border border-slate-200 dark:border-slate-600 rounded-xl overflow-hidden">
+                <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">−</button>
+                <span className="px-4 py-2 text-sm font-medium border-x border-slate-200 dark:border-slate-600 dark:text-slate-100">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">+</button>
               </div>
               <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
                 disabled={product.stock_quantity === 0}>

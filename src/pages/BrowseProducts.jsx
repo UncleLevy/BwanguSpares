@@ -159,11 +159,11 @@ export default function BrowseProducts() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {[1,2,3,4,5,6,7,8].map(i => (
-            <div key={i} className="bg-white rounded-2xl overflow-hidden animate-pulse">
-              <div className="h-44 bg-slate-100" />
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
+              <div className="h-44 bg-slate-100 dark:bg-slate-700" />
               <div className="p-4 space-y-3">
-                <div className="h-4 bg-slate-100 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 rounded w-1/2" />
+                <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4" />
+                <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded w-1/2" />
               </div>
             </div>
           ))}
@@ -171,12 +171,12 @@ export default function BrowseProducts() {
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-20">
           <SlidersHorizontal className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700">No parts found</h3>
-          <p className="text-sm text-slate-500 mt-1">Try adjusting your search or filters</p>
-          <div className="mt-6 p-5 bg-blue-50 rounded-2xl border border-blue-100 max-w-sm mx-auto">
+          <h3 className="font-semibold text-slate-700 dark:text-slate-300">No parts found</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Try adjusting your search or filters</p>
+          <div className="mt-6 p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 max-w-sm mx-auto">
             <FileSearch className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-            <p className="text-sm font-medium text-slate-800">Can't find what you need?</p>
-            <p className="text-xs text-slate-500 mt-1 mb-3">Submit a parts request and verified shops will contact you directly.</p>
+            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Can't find what you need?</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Submit a parts request and verified shops will contact you directly.</p>
             <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2">
               <FileSearch className="w-4 h-4" /> Request this Part
             </Button>
@@ -189,10 +189,10 @@ export default function BrowseProducts() {
       )}
 
       {filteredProducts.length > 0 && (
-        <div className="mt-12 p-6 bg-blue-50 rounded-2xl border border-blue-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-12 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="font-semibold text-slate-800">Can't find the exact part?</p>
-            <p className="text-sm text-slate-500 mt-0.5">Submit a request and verified shops will contact you directly.</p>
+            <p className="font-semibold text-slate-800 dark:text-slate-200">Can't find the exact part?</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Submit a request and verified shops will contact you directly.</p>
           </div>
           <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2 shrink-0">
             <FileSearch className="w-4 h-4" /> Request a Part

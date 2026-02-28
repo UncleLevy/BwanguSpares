@@ -101,9 +101,9 @@ export default function BrowseShops() {
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="bg-white rounded-2xl animate-pulse">
-              <div className="h-36 bg-slate-100 rounded-t-2xl" />
-              <div className="p-5 space-y-3"><div className="h-5 bg-slate-100 rounded w-2/3" /></div>
+            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl animate-pulse">
+              <div className="h-36 bg-slate-100 dark:bg-slate-700 rounded-t-2xl" />
+              <div className="p-5 space-y-3"><div className="h-5 bg-slate-100 dark:bg-slate-700 rounded w-2/3" /></div>
             </div>
           ))}
         </div>
@@ -111,7 +111,7 @@ export default function BrowseShops() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredShops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-              className="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover-lift">
+              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
               <div className="relative h-36 bg-gradient-to-br from-blue-500 to-blue-700">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt="" className="w-full h-full object-cover opacity-80" />
@@ -125,8 +125,8 @@ export default function BrowseShops() {
                 )}
               </div>
               <div className="p-5">
-                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
-                <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
+                <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {shop.region_name || "Zambia"}</span>
                   {shop.rating > 0 && (
                     <span className="flex items-center gap-1"><Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" /> {shop.rating.toFixed(1)}</span>

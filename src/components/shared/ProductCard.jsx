@@ -30,16 +30,16 @@ export default function ProductCard({ product, onAddToCart }) {
       </Link>
       <div className="p-4">
         <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
-          <h3 className="font-semibold text-sm text-slate-900 line-clamp-1 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+          <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-1 group-hover:text-blue-600 transition-colors">{product.name}</h3>
         </Link>
         <div className="flex items-center gap-1.5 mt-1">
           <MapPin className="w-3 h-3 text-slate-400" />
-          <p className="text-xs text-slate-500 truncate">{product.shop_name}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
         </div>
         {product.compatible_vehicles && (
-          <p className="text-[11px] text-slate-400 mt-1 truncate">Fits: {product.compatible_vehicles}</p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {product.compatible_vehicles}</p>
         )}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50">
+        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 dark:border-slate-700">
           <span className="text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
           <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
             onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}>

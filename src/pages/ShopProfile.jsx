@@ -98,8 +98,8 @@ export default function ShopProfile() {
               {shop.logo_url ? <img src={shop.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-blue-400" />}
             </div>
             <div className="flex-1">
-              <h1 className="text-2xl font-bold text-slate-900">{shop.name}</h1>
-              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-sm text-slate-500">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{shop.name}</h1>
+              <div className="flex flex-wrap items-center gap-3 mt-1.5 text-sm text-slate-500 dark:text-slate-400">
                 <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {shop.address}</span>
                 {shop.rating > 0 && <span className="flex items-center gap-1"><Star className="w-4 h-4 fill-amber-400 text-amber-400" /> {shop.rating.toFixed(1)}</span>}
                 {shop.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {shop.phone}</span>}
@@ -120,11 +120,11 @@ export default function ShopProfile() {
               />
             </div>
           </div>
-          {shop.description && <p className="text-slate-600 text-sm mt-4 leading-relaxed">{shop.description}</p>}
+          {shop.description && <p className="text-slate-600 dark:text-slate-400 text-sm mt-4 leading-relaxed">{shop.description}</p>}
         </div>
 
         <Tabs defaultValue="products">
-          <TabsList className="bg-slate-100 mb-6">
+          <TabsList className="bg-slate-100 dark:bg-slate-800 mb-6">
             <TabsTrigger value="products" className="gap-1.5"><Package className="w-4 h-4" /> Parts ({products.length})</TabsTrigger>
             <TabsTrigger value="technicians" className="gap-1.5"><Wrench className="w-4 h-4" /> Technicians ({technicians.length})</TabsTrigger>
             <TabsTrigger value="reviews" className="gap-1.5"><Star className="w-4 h-4" /> Reviews ({reviews.length})</TabsTrigger>
@@ -152,15 +152,15 @@ export default function ShopProfile() {
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {technicians.map(tech => (
-                  <div key={tech.id} className="bg-white rounded-2xl border border-slate-100 p-5 hover-lift">
+                  <div key={tech.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5 hover-lift">
                     <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+                      <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                         {tech.photo_url ? <img src={tech.photo_url} alt="" className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-slate-400" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-slate-900">{tech.name}</h3>
+                        <h3 className="font-semibold text-slate-900 dark:text-slate-100">{tech.name}</h3>
                         <Badge variant="outline" className="mt-1 text-[11px]">{specLabels[tech.specialization] || tech.specialization}</Badge>
-                        <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                        <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
                           {tech.experience_years && <span>{tech.experience_years} yrs exp</span>}
                           {tech.hourly_rate && <span className="font-medium text-blue-600">K{tech.hourly_rate}/hr</span>}
                         </div>
