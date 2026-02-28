@@ -66,9 +66,11 @@ export default function RegisterShop() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name || !form.address || !form.region) {
-      toast.error("Please fill in all required fields");
-      return;
+    if (!form.name.trim()) { toast.error("Shop name is required"); return; }
+    if (!form.region) { toast.error("Please select a region"); return; }
+    if (!form.address.trim()) { toast.error("Address is required"); return; }
+    if (form.phone && !/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) {
+      toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return;
     }
     setSubmitting(true);
 
