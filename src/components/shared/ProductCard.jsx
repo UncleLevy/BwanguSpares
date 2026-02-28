@@ -13,7 +13,7 @@ const conditionColors = {
 
 export default function ProductCard({ product, onAddToCart }) {
   return (
-    <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
+    <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover-lift">
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
         <div className="relative h-44 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
           {product.image_url ? (
