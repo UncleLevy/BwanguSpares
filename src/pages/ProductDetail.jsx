@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
+import WishlistButton from "@/components/products/WishlistButton";
 
 const conditionColors = {
   new: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -104,12 +105,16 @@ export default function ProductDetail() {
               <Badge variant="outline">{categoryLabels[product.category] || product.category}</Badge>
             </div>
 
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{product.name}</h1>
-
-            <Link to={createPageUrl("ShopProfile") + `?id=${product.shop_id}`}
-              className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mt-2">
-              <Store className="w-4 h-4" /> {product.shop_name}
-            </Link>
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex-1">
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{product.name}</h1>
+                <Link to={createPageUrl("ShopProfile") + `?id=${product.shop_id}`}
+                  className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mt-2">
+                  <Store className="w-4 h-4" /> {product.shop_name}
+                </Link>
+              </div>
+              <WishlistButton product={product} className="mt-1" />
+            </div>
 
             <div className="mt-6">
               <span className="text-3xl font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
