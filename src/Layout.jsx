@@ -47,6 +47,9 @@ export default function Layout({ children, currentPageName }) {
   const isShopOwner = user?.role === "shop_owner";
   const hideLayout = ["AdminDashboard", "ShopDashboard", "BuyerDashboard"].includes(currentPageName);
 
+  // Pages that have their own AppHeader — hide the logo header on mobile for these
+  const hasAppHeader = ["ProductDetail", "ShopProfile", "Cart", "Messages"].includes(currentPageName);
+
   if (hideLayout) {
     return (
       <AnimatePresence mode="wait">
