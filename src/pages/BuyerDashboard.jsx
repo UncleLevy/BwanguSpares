@@ -131,8 +131,8 @@ export default function BuyerDashboard() {
             {orders.length === 0 ? (
               <div className="text-center py-20">
                 <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-                <h3 className="font-semibold text-slate-700">No orders yet</h3>
-                <p className="text-sm text-slate-500 mt-1">Browse parts and place your first order</p>
+                <h3 className="font-semibold text-slate-700 dark:text-slate-300">No orders yet</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Browse parts and place your first order</p>
                 <Link to={createPageUrl("BrowseProducts")}>
                   <Button className="mt-4 bg-blue-600 hover:bg-blue-700">Browse Parts</Button>
                 </Link>
