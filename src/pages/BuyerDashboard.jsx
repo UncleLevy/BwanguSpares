@@ -20,6 +20,7 @@ import BuyerPartsRequests from "@/components/parts/BuyerPartsRequests";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import BuyerMessages from "@/components/messaging/BuyerMessages";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 
@@ -123,6 +124,7 @@ export default function BuyerDashboard() {
         {view === "orders" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-6">My Orders</h1>
+            {/* PullToRefresh wrapper handled inline */}
             {orders.length === 0 ? (
               <div className="text-center py-20">
                 <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
