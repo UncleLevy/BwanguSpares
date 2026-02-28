@@ -38,6 +38,9 @@ export default function ShopMessages({ shop, user }) {
 
   const totalUnread = conversations.reduce((s, c) => s + (c.shop_unread || 0), 0);
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const showChat = isMobile && selected;
+
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
@@ -49,16 +52,26 @@ export default function ShopMessages({ shop, user }) {
         )}
       </div>
       <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "65vh" }}>
-        <div className="w-64 border-r border-slate-100 overflow-y-auto flex-shrink-0">
-          <ConversationList
-            conversations={conversations}
-            selectedId={selected?.id}
-            onSelect={handleSelect}
-            currentEmail={user?.email}
-            role="shop"
-          />
+        <div className={`${showChat ? "hidden" : "flex"} md:flex w-full md:w-64 border-r border-slate-100 overflow-y-auto flex-shrink-0 flex-col`}>
+          <PullToRefresh onRefresh={loadConversations}>
+            <ConversationList
+              conversations={conversations}
+              selectedId={selected?.id}
+              onSelect={handleSelect}
+              currentEmail={user?.email}
+              role="shop"
+            />
+          </PullToRefresh>
         </div>
-        <div className="flex-1 flex flex-col overflow-hidden">
+        <div className={`${!showChat && isMobile ? "hidden" : "flex"} md:flex flex-1 flex-col overflow-hidden`}>
+          {showChat && isMobile && (
+            <button
+              onClick={() => setSelected(null)}
+              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 text-sm text-blue-600 font-medium"
+            >
+              ← Back to conversations
+            </button>
+          )}
           <ChatWindow
             conversation={selected}
             currentUser={user}

@@ -37,20 +37,37 @@ export default function BuyerMessages({ user }) {
 
   if (loading) return <div className="animate-pulse h-40 bg-slate-100 rounded-xl" />;
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+
+  // On mobile: show either the list OR the chat (not both)
+  const showChat = isMobile && selected;
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-slate-900 mb-6">Messages</h1>
       <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "65vh" }}>
-        <div className="w-64 border-r border-slate-100 overflow-y-auto flex-shrink-0">
-          <ConversationList
-            conversations={conversations}
-            selectedId={selected?.id}
-            onSelect={handleSelect}
-            currentEmail={user.email}
-            role="buyer"
-          />
+        {/* Conversation list — hidden on mobile when chat is open */}
+        <div className={`${showChat ? "hidden" : "flex"} md:flex w-full md:w-64 border-r border-slate-100 overflow-y-auto flex-shrink-0 flex-col`}>
+          <PullToRefresh onRefresh={loadConversations}>
+            <ConversationList
+              conversations={conversations}
+              selectedId={selected?.id}
+              onSelect={handleSelect}
+              currentEmail={user.email}
+              role="buyer"
+            />
+          </PullToRefresh>
         </div>
-        <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Chat — full width on mobile when open */}
+        <div className={`${!showChat && isMobile ? "hidden" : "flex"} md:flex flex-1 flex-col overflow-hidden`}>
+          {showChat && isMobile && (
+            <button
+              onClick={() => setSelected(null)}
+              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 text-sm text-blue-600 font-medium"
+            >
+              ← Back to conversations
+            </button>
+          )}
           <ChatWindow
             conversation={selected}
             currentUser={user}
