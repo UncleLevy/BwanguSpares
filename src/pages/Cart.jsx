@@ -121,21 +121,36 @@ export default function Cart() {
               </div>
               <div className="divide-y divide-slate-50">
                 {group.items.map(item => (
-                  <div key={item.id} className="flex items-center gap-4 p-4">
-                    <div className="w-16 h-16 rounded-xl bg-slate-50 flex-shrink-0 overflow-hidden flex items-center justify-center">
-                      {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-6 h-6 text-slate-300" />}
+                  <div key={item.id} className="p-4">
+                    <div className="flex items-center gap-4">
+                      <div className="w-16 h-16 rounded-xl bg-slate-50 flex-shrink-0 overflow-hidden flex items-center justify-center">
+                        {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-6 h-6 text-slate-300" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-sm font-medium text-slate-900 truncate">{item.product_name}</h4>
+                        <p className="text-sm font-semibold text-blue-600 mt-0.5">K{item.price?.toLocaleString()}</p>
+                        <p className="text-xs text-slate-400 mt-0.5">{item._stock > 0 ? `${item._stock} in stock` : <span className="text-red-500">Out of stock</span>}</p>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50"><Minus className="w-3 h-3" /></button>
+                        <span className="w-8 text-center text-sm font-medium">{item.quantity || 1}</span>
+                        <button onClick={() => updateQty(item, 1)} className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50"><Plus className="w-3 h-3" /></button>
+                      </div>
+                      <span className="text-sm font-semibold text-slate-900 w-20 text-right">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
+                      <button onClick={() => removeItem(item)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-medium text-slate-900 truncate">{item.product_name}</h4>
-                      <p className="text-sm font-semibold text-blue-600 mt-0.5">K{item.price?.toLocaleString()}</p>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50"><Minus className="w-3 h-3" /></button>
-                      <span className="w-8 text-center text-sm font-medium">{item.quantity || 1}</span>
-                      <button onClick={() => updateQty(item, 1)} className="w-7 h-7 rounded-lg border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50"><Plus className="w-3 h-3" /></button>
-                    </div>
-                    <span className="text-sm font-semibold text-slate-900 w-20 text-right">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
-                    <button onClick={() => removeItem(item)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                    {item._stock === 0 && (
+                      <div className="mt-2 flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">
+                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
+                        <span>This item is out of stock.</span>
+                        <button
+                          className="ml-auto text-blue-600 font-medium hover:underline"
+                          onClick={() => navigate(createPageUrl("BrowseProducts") + `?request=${encodeURIComponent(item.product_name)}&shop=${encodeURIComponent(item.shop_name)}&shop_id=${item.shop_id}`)}
+                        >
+                          Submit a parts request →
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
