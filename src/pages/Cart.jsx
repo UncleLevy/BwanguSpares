@@ -59,7 +59,21 @@ export default function Cart() {
     toast.success("Item removed");
   };
 
-  const total = items.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 1), 0);
+  const subtotal = items.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 1), 0);
+  
+  let discountAmount = 0;
+  if (appliedCoupon) {
+    if (appliedCoupon.discount_type === "percentage") {
+      discountAmount = Math.floor((subtotal * appliedCoupon.discount_value) / 100);
+      if (appliedCoupon.max_discount_amount) {
+        discountAmount = Math.min(discountAmount, appliedCoupon.max_discount_amount);
+      }
+    } else {
+      discountAmount = appliedCoupon.discount_value;
+    }
+  }
+  
+  const total = Math.max(0, subtotal - discountAmount);
 
   const groupedByShop = items.reduce((acc, item) => {
     if (!acc[item.shop_id]) acc[item.shop_id] = { shop_name: item.shop_name, items: [] };
