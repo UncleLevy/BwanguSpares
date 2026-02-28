@@ -13,7 +13,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import { MapPin, Plus, Pencil, Trash2, Clock, User } from "lucide-react";
+import { MapPin, Plus, Pencil, Trash2, Clock, User, CheckCircle2, XCircle } from "lucide-react";
 import { toast } from "sonner";
 
 export default function BranchManager({ shopId }) {
