@@ -52,7 +52,11 @@ export default function BuyerDashboard() {
     (async () => {
       const u = await base44.auth.me();
       setUser(u);
-      setProfileForm({ phone: u.phone || "", address: u.address || "" });
+      // Split full_name into first/last
+      const nameParts = (u.full_name || "").split(" ");
+      const first_name = nameParts[0] || "";
+      const last_name = nameParts.slice(1).join(" ") || "";
+      setProfileForm({ first_name, last_name, phone: u.phone || "", address: u.address || "" });
       const o = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
       setOrders(o);
       setLoading(false);
