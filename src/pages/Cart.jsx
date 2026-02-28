@@ -174,9 +174,19 @@ export default function Cart() {
           ))}
 
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-300 dark:border-slate-700 p-6">
-            <div className="flex justify-between text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
-              <span>Total</span>
-              <span className="text-blue-600">K{total.toLocaleString()}</span>
+            <div className="space-y-2 mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                <span>Subtotal</span>
+                <span>K{(total / 1.16).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              </div>
+              <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
+                <span>VAT (16%)</span>
+                <span>K{(total - total / 1.16).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+              </div>
+              <div className="flex justify-between text-lg font-bold text-slate-900 dark:text-slate-100">
+                <span>Total</span>
+                <span className="text-blue-600">K{total.toLocaleString()}</span>
+              </div>
             </div>
 
             {!checkout ? (
