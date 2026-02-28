@@ -105,8 +105,10 @@ export default function Cart() {
   );
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
-      <h1 className="text-2xl font-bold text-slate-900 mb-6">Shopping Cart</h1>
+    <div>
+      <AppHeader title="Shopping Cart" backTo="BrowseProducts" />
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+      <h1 className="hidden md:block text-2xl font-bold text-slate-900 mb-6">Shopping Cart</h1>
 
       {items.length === 0 ? (
         <div className="text-center py-20">
