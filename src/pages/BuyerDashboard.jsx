@@ -126,6 +126,7 @@ export default function BuyerDashboard() {
 
   const sidebarItems = [
     { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => setView("orders") },
+    { id: "cart", label: "Cart", icon: ShoppingCart, href: createPageUrl("Cart") },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
