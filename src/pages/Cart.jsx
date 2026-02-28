@@ -99,6 +99,7 @@ export default function Cart() {
           delivery_address: form.address,
           delivery_phone: form.phone,
           notes: form.notes,
+          coupon_code: form.coupon,
           status: "pending",
         });
       }
