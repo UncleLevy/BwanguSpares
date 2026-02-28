@@ -4,12 +4,12 @@ import { createPageUrl } from "@/utils";
 import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
+import MobileSelect from "@/components/shared/MobileSelect";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
@@ -109,30 +109,36 @@ export default function BrowseProducts() {
             </button>
           )}
         </div>
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full md:w-44 h-11 rounded-xl"><SelectValue placeholder="Category" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
-          </SelectContent>
-        </Select>
-        <Select value={condition} onValueChange={setCondition}>
-          <SelectTrigger className="w-full md:w-36 h-11 rounded-xl"><SelectValue placeholder="Condition" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Conditions</SelectItem>
-            <SelectItem value="new">New</SelectItem>
-            <SelectItem value="used">Used</SelectItem>
-            <SelectItem value="refurbished">Refurbished</SelectItem>
-          </SelectContent>
-        </Select>
-        <Select value={sortBy} onValueChange={setSortBy}>
-          <SelectTrigger className="w-full md:w-40 h-11 rounded-xl"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="newest">Newest First</SelectItem>
-            <SelectItem value="price_low">Price: Low to High</SelectItem>
-            <SelectItem value="price_high">Price: High to Low</SelectItem>
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={category}
+          onValueChange={setCategory}
+          placeholder="Category"
+          triggerClassName="w-full md:w-44"
+          options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
+        />
+        <MobileSelect
+          value={condition}
+          onValueChange={setCondition}
+          placeholder="Condition"
+          triggerClassName="w-full md:w-36"
+          options={[
+            { value: "all", label: "All Conditions" },
+            { value: "new", label: "New" },
+            { value: "used", label: "Used" },
+            { value: "refurbished", label: "Refurbished" },
+          ]}
+        />
+        <MobileSelect
+          value={sortBy}
+          onValueChange={setSortBy}
+          placeholder="Sort"
+          triggerClassName="w-full md:w-40"
+          options={[
+            { value: "newest", label: "Newest First" },
+            { value: "price_low", label: "Price: Low to High" },
+            { value: "price_high", label: "Price: High to Low" },
+          ]}
+        />
       </div>
 
       {(category !== "all" || condition !== "all") && (
