@@ -367,11 +367,11 @@ export default function AdminDashboard() {
 
         {view === "products" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-6">All Products</h1>
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">All Products</h1>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50">
+                  <TableRow className="bg-slate-50 dark:bg-slate-800">
                     <TableHead>Product</TableHead>
                     <TableHead>Shop</TableHead>
                     <TableHead>Price</TableHead>
