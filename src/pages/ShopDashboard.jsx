@@ -448,14 +448,16 @@ export default function ShopDashboard() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <Select value={shop?.id} onValueChange={handleSwitchShop}>
-                  <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {shops.map(s => (
-                      <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                {shops.length > 1 && (
+                  <Select value={shop?.id} onValueChange={handleSwitchShop}>
+                    <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      {shops.map(s => (
+                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
                 <Button onClick={() => {
                   const tierLimits = { free: 1, standard: 3, premium: 5 };
                   const maxShops = tierLimits[subscription?.tier || "free"];
