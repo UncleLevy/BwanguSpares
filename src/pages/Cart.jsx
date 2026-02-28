@@ -66,39 +66,54 @@ export default function Cart() {
   }, {});
 
   const handleCheckout = async () => {
-    if (!form.address.trim()) { toast.error("Please enter your delivery address"); return; }
-    if (!form.phone.trim()) { toast.error("Please enter your phone number"); return; }
-    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return; }
+    if (!form.address.trim()) { 
+      toast.error("Please enter your delivery address"); 
+      return; 
+    }
+    if (!form.phone.trim()) { 
+      toast.error("Please enter your phone number"); 
+      return; 
+    }
+    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { 
+      toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); 
+      return; 
+    }
+    
     setSubmitting(true);
+    try {
+      for (const [shopId, group] of Object.entries(groupedByShop)) {
+        const shopTotal = group.items.reduce((s, i) => s + (i.price||0)*(i.quantity||1), 0);
+        await base44.entities.Order.create({
+          buyer_email: user.email,
+          buyer_name: user.full_name,
+          shop_id: shopId,
+          shop_name: group.shop_name,
+          items: group.items.map(i => ({
+            product_id: i.product_id,
+            product_name: i.product_name,
+            quantity: i.quantity || 1,
+            price: i.price,
+            image_url: i.image_url,
+          })),
+          total_amount: shopTotal,
+          delivery_address: form.address,
+          delivery_phone: form.phone,
+          notes: form.notes,
+          status: "pending",
+        });
+      }
 
-    for (const [shopId, group] of Object.entries(groupedByShop)) {
-      const shopTotal = group.items.reduce((s, i) => s + (i.price||0)*(i.quantity||1), 0);
-      await base44.entities.Order.create({
-        buyer_email: user.email,
-        buyer_name: user.full_name,
-        shop_id: shopId,
-        shop_name: group.shop_name,
-        items: group.items.map(i => ({
-          product_id: i.product_id,
-          product_name: i.product_name,
-          quantity: i.quantity || 1,
-          price: i.price,
-          image_url: i.image_url,
-        })),
-        total_amount: shopTotal,
-        delivery_address: form.address,
-        delivery_phone: form.phone,
-        notes: form.notes,
-        status: "pending",
-      });
+      for (const item of items) {
+        await base44.entities.CartItem.delete(item.id);
+      }
+
+      toast.success("Order placed successfully!");
+      navigate(createPageUrl("BuyerDashboard"));
+    } catch (error) {
+      toast.error("Failed to place order. Please try again.");
+    } finally {
+      setSubmitting(false);
     }
-
-    for (const item of items) {
-      await base44.entities.CartItem.delete(item.id);
-    }
-
-    toast.success("Order placed successfully!");
-    navigate(createPageUrl("BuyerDashboard"));
   };
 
   if (loading) return (
