@@ -465,7 +465,7 @@ export default function ShopDashboard() {
         {view === "technicians" && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">Technicians</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Technicians</h1>
               <Button onClick={() => { setEditTech(null); setTechForm({ name: "", phone: "", specialization: "general", experience_years: "", hourly_rate: "", available: true }); setTechDialog(true); }}
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Technician</Button>
             </div>
