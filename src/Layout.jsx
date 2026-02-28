@@ -48,7 +48,13 @@ export default function Layout({ children, currentPageName }) {
   const hideLayout = ["AdminDashboard", "ShopDashboard", "BuyerDashboard"].includes(currentPageName);
 
   if (hideLayout) {
-    return <>{children}</>;
+    return (
+      <AnimatePresence mode="wait">
+        <motion.div key={location.pathname + location.search} {...pageVariants}>
+          {children}
+        </motion.div>
+      </AnimatePresence>
+    );
   }
 
   const navLinks = [
