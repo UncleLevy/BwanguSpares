@@ -163,9 +163,6 @@ export default function BranchManager({ shopId }) {
     return <div className="flex items-center justify-center h-64">Loading branches...</div>;
   }
 
-  // Valid branches for map
-  const validBranches = branches.filter(b => b.latitude && b.longitude);
-
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -174,32 +171,6 @@ export default function BranchManager({ shopId }) {
           <Plus className="w-4 h-4" /> Add Branch
         </Button>
       </div>
-
-      {/* Map View */}
-      {validBranches.length > 0 && (
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5" /> Branch Locations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="h-96 rounded-lg overflow-hidden border">
-              <MapContainer center={[validBranches[0].latitude, validBranches[0].longitude]} zoom={8} style={{ height: "100%" }}>
-                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="&copy; OpenStreetMap contributors" />
-                {validBranches.map(branch => (
-                  <Marker key={branch.id} position={[branch.latitude, branch.longitude]}>
-                    <Popup>
-                      <div className="text-sm">
-                        <h4 className="font-semibold">{branch.name}</h4>
-                        <p className="text-xs text-slate-500">{branch.town}, {branch.region}</p>
-                      </div>
-                    </Popup>
-                  </Marker>
-                ))}
-              </MapContainer>
-            </div>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Branches Grid */}
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
