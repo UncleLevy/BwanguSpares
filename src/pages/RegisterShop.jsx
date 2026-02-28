@@ -233,35 +233,25 @@ export default function RegisterShop() {
         )}
 
         {/* Step 2: Location */}
-        {step === 2 && (
-          <>
-            <div>
-              <Label>Region *</Label>
-              <Select value={form.region} onValueChange={v => setForm({...form, region: v})}>
-                <SelectTrigger className="mt-1 rounded-xl"><SelectValue placeholder="Select region" /></SelectTrigger>
-                <SelectContent>
-                  {regions.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
-                </SelectContent>
-              </Select>
-            </div>
-            <div>
-              <Label>Address *</Label>
-              <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Full physical address" className="mt-1 rounded-xl" />
-              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> We'll use this to show your location on the map</p>
-            </div>
-            <div>
-              <Label>Slot Plan</Label>
-              <Select value={form.slot_type} onValueChange={v => setForm({...form, slot_type: v})}>
-                <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="basic">Basic – Free</SelectItem>
-                  <SelectItem value="standard">Standard</SelectItem>
-                  <SelectItem value="premium">Premium</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </>
-        )}
+         {step === 2 && (
+           <>
+             <AddressInput 
+               value={{ region: form.region, town: form.town, address: form.address }}
+               onChange={(newAddr) => setForm({...form, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
+             />
+             <div>
+               <Label>Slot Plan</Label>
+               <Select value={form.slot_type} onValueChange={v => setForm({...form, slot_type: v})}>
+                 <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
+                 <SelectContent>
+                   <SelectItem value="basic">Basic – Free</SelectItem>
+                   <SelectItem value="standard">Standard</SelectItem>
+                   <SelectItem value="premium">Premium</SelectItem>
+                 </SelectContent>
+               </Select>
+             </div>
+           </>
+         )}
 
         {/* Step 3: Images */}
         {step === 3 && (
