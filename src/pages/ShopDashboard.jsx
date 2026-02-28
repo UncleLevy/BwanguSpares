@@ -91,6 +91,12 @@ export default function ShopDashboard() {
   });
 
   const [uploading, setUploading] = useState(false);
+  const [reportDialog, setReportDialog] = useState(false);
+  const [reportForm, setReportForm] = useState({
+    start_date: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+    end_date: new Date().toISOString().split('T')[0]
+  });
+  const [generatingReport, setGeneratingReport] = useState(false);
 
   const navigate = useNavigate();
 
