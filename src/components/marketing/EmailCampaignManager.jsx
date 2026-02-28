@@ -174,7 +174,14 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
                     <TableRow key={c.id}>
                       <TableCell className="font-medium">{c.name}</TableCell>
                       <TableCell className="text-sm capitalize">{c.target_segment.replace(/_/g, " ")}</TableCell>
-                      <TableCell>{c.recipient_count}</TableCell>
+                      <TableCell>
+                        <div className="flex flex-col gap-0.5">
+                          <span>{c.recipient_count}</span>
+                          {c.status === "sent" && (
+                            <span className="text-xs text-slate-500">Open: {c.estimated_open_rate}% | Click: {c.estimated_click_rate}%</span>
+                          )}
+                        </div>
+                      </TableCell>
                       <TableCell><Badge className={c.status === "sent" ? "bg-emerald-50 text-emerald-700" : c.status === "scheduled" ? "bg-blue-50 text-blue-700" : "bg-slate-100 text-slate-600"}>{c.status}</Badge></TableCell>
                       <TableCell className="text-sm text-slate-500">{new Date(c.created_date).toLocaleDateString()}</TableCell>
                       <TableCell>
