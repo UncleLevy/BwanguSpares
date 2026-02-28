@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
-  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart
 } from "lucide-react";
 import BottomNav from "@/components/shared/BottomNav";
 import { Button } from "@/components/ui/button";
@@ -113,14 +113,19 @@ export default function Layout({ children, currentPageName }) {
                        <MessageSquare className="w-5 h-5" />
                      </Link>
                      {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
-                       <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors z-10">
-                         <ShoppingCart className="w-5 h-5" />
-                         {cartCount > 0 && (
-                           <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 pointer-events-none">
-                             {cartCount}
-                           </Badge>
-                         )}
-                       </Link>
+                       <>
+                         <Link to={createPageUrl("Wishlist")} className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-500 transition-colors">
+                           <Heart className="w-5 h-5" />
+                         </Link>
+                         <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors z-10">
+                           <ShoppingCart className="w-5 h-5" />
+                           {cartCount > 0 && (
+                             <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 pointer-events-none">
+                               {cartCount}
+                             </Badge>
+                           )}
+                         </Link>
+                       </>
                      )}
                    </>
                  )}
@@ -198,12 +203,19 @@ export default function Layout({ children, currentPageName }) {
                           </Link>
                         </DropdownMenuItem>
                         {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
-                          <DropdownMenuItem asChild>
-                            <Link to={createPageUrl("Cart")} className="flex items-center gap-2">
-                              <ShoppingCart className="w-4 h-4" /> Cart
-                              {cartCount > 0 && <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">{cartCount}</Badge>}
-                            </Link>
-                          </DropdownMenuItem>
+                          <>
+                            <DropdownMenuItem asChild>
+                              <Link to={createPageUrl("Wishlist")} className="flex items-center gap-2">
+                                <Heart className="w-4 h-4" /> Wishlist
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem asChild>
+                              <Link to={createPageUrl("Cart")} className="flex items-center gap-2">
+                                <ShoppingCart className="w-4 h-4" /> Cart
+                                {cartCount > 0 && <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">{cartCount}</Badge>}
+                              </Link>
+                            </DropdownMenuItem>
+                          </>
                         )}
                         <DropdownMenuItem asChild>
                           <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
