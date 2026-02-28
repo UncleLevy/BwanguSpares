@@ -203,27 +203,41 @@ export default function BranchManager({ shopId }) {
       )}
 
       {/* Branches Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {branches.map(branch => (
-          <Card key={branch.id} className="border-slate-100">
-            <CardHeader className="pb-3">
-              <div className="flex items-start justify-between">
-                <div>
-                  <CardTitle className="text-lg">{branch.name}</CardTitle>
-                  <Badge className={branch.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-2" : "bg-amber-50 text-amber-700 mt-2"}>
-                    {branch.status}
-                  </Badge>
-                </div>
-                <div className="flex gap-1">
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(branch)}>
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => handleDelete(branch.id)}>
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardHeader>
+       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+         {branches.map(branch => (
+           <Card key={branch.id} className={`border-slate-100 ${branch.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
+             <CardHeader className="pb-3">
+               <div className="flex items-start justify-between">
+                 <div>
+                   <CardTitle className="text-lg">{branch.name}</CardTitle>
+                   <Badge className={branch.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-2" : "bg-amber-50 text-amber-700 mt-2"}>
+                     {branch.status}
+                   </Badge>
+                 </div>
+                 <div className="flex gap-1">
+                   {branch.status === "pending" && (
+                     <>
+                       <Button size="icon" variant="ghost" className="h-8 w-8 text-emerald-600 hover:text-emerald-700" onClick={() => handleApprove(branch.id)} title="Approve">
+                         <CheckCircle2 className="w-4 h-4" />
+                       </Button>
+                       <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500 hover:text-red-700" onClick={() => handleReject(branch.id)} title="Reject">
+                         <XCircle className="w-4 h-4" />
+                       </Button>
+                     </>
+                   )}
+                   {branch.status === "approved" && (
+                     <>
+                       <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEdit(branch)}>
+                         <Pencil className="w-4 h-4" />
+                       </Button>
+                       <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => handleDelete(branch.id)}>
+                         <Trash2 className="w-4 h-4" />
+                       </Button>
+                     </>
+                   )}
+                 </div>
+               </div>
+             </CardHeader>
             <CardContent className="space-y-3">
               <div>
                 <p className="text-xs text-slate-500 mb-1">Location</p>
