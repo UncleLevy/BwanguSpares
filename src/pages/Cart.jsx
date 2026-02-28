@@ -81,6 +81,62 @@ export default function Cart() {
     return acc;
   }, {});
 
+  const applyCoupon = async () => {
+    if (!form.coupon.trim()) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+
+    try {
+      const coupons = await base44.entities.DiscountCode.filter({ code: form.coupon });
+      if (coupons.length === 0) {
+        setCouponError("Invalid coupon code");
+        setAppliedCoupon(null);
+        return;
+      }
+
+      const coupon = coupons[0];
+      const now = new Date();
+
+      if (coupon.status !== "active") {
+        setCouponError("This coupon is inactive");
+        setAppliedCoupon(null);
+        return;
+      }
+
+      if (coupon.valid_from && new Date(coupon.valid_from) > now) {
+        setCouponError("This coupon is not yet valid");
+        setAppliedCoupon(null);
+        return;
+      }
+
+      if (coupon.valid_until && new Date(coupon.valid_until) < now) {
+        setCouponError("This coupon has expired");
+        setAppliedCoupon(null);
+        return;
+      }
+
+      if (coupon.usage_limit && coupon.usage_count >= coupon.usage_limit) {
+        setCouponError("This coupon has reached its usage limit");
+        setAppliedCoupon(null);
+        return;
+      }
+
+      if (coupon.min_purchase_amount && subtotal < coupon.min_purchase_amount) {
+        setCouponError(`Minimum purchase of K${coupon.min_purchase_amount} required`);
+        setAppliedCoupon(null);
+        return;
+      }
+
+      setAppliedCoupon(coupon);
+      setCouponError("");
+      toast.success("Coupon applied successfully!");
+    } catch (error) {
+      setCouponError("Failed to apply coupon");
+      setAppliedCoupon(null);
+    }
+  };
+
   const handleCheckout = async () => {
     if (!form.address.trim()) { 
       toast.error("Please enter your delivery address"); 
