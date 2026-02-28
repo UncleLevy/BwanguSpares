@@ -122,15 +122,31 @@ export default function ProductDetail() {
             <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden">
               <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">−</button>
               <span className="px-4 py-2 text-sm font-medium border-x border-slate-200">{qty}</span>
-              <button onClick={() => setQty(qty+1)} className="px-3 py-2 text-slate-600 hover:bg-slate-50">+</button>
+              <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">+</button>
             </div>
             <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
               disabled={product.stock_quantity === 0}>
               <ShoppingCart className="w-4 h-4" /> Add to Cart
             </Button>
           </div>
+
+          {product.stock_quantity === 0 && (
+            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+              <p className="text-sm text-amber-800 font-medium">This product is currently out of stock.</p>
+              <p className="text-xs text-amber-600 mt-1">Submit a parts request and the shop will contact you when it's available.</p>
+              <Button onClick={() => setRequestOpen(true)} size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700 gap-1.5">
+                <FileSearch className="w-3.5 h-3.5" /> Request this Part
+              </Button>
+            </div>
+          )}
         </div>
       </div>
+
+      <PartsRequestForm
+        open={requestOpen}
+        onClose={() => setRequestOpen(false)}
+        prefill={{ part_name: product.name, compatible_vehicles: product.compatible_vehicles || "" }}
+      />
     </div>
   );
 }
