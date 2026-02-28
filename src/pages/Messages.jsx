@@ -21,6 +21,12 @@ export default function Messages() {
       setRole(r);
       await loadConversations(u, r);
       setLoading(false);
+      
+      // Real-time updates for messages
+      const unsubscribe = base44.entities.Message.subscribe(() => {
+        loadConversations(u, r);
+      });
+      return unsubscribe;
     })();
   }, []);
 
