@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package } from "lucide-react";
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,9 +29,15 @@ export default function Cart() {
   }, []);
 
   const updateQty = async (item, delta) => {
-    const newQty = Math.max(1, (item.quantity || 1) + delta);
+    const products = await base44.entities.Product.filter({ id: item.product_id });
+    const stock = products[0]?.stock_quantity ?? 999;
+    const newQty = Math.min(stock, Math.max(1, (item.quantity || 1) + delta));
+    if (delta > 0 && newQty === (item.quantity || 1)) {
+      toast.error(`Only ${stock} unit(s) available`);
+      return;
+    }
     await base44.entities.CartItem.update(item.id, { quantity: newQty });
-    setItems(items.map(i => i.id === item.id ? { ...i, quantity: newQty } : i));
+    setItems(items.map(i => i.id === item.id ? { ...i, quantity: newQty, _stock: stock } : i));
   };
 
   const removeItem = async (item) => {
