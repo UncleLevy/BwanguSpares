@@ -154,7 +154,6 @@ export default function Cart() {
                       <div className="flex-1 min-w-0">
                         <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</h4>
                         <p className="text-sm font-semibold text-blue-600 mt-0.5">K{item.price?.toLocaleString()}</p>
-                        <p className="text-xs text-slate-400 mt-0.5">{item._stock > 0 ? `${item._stock} in stock` : <span className="text-red-500">Out of stock</span>}</p>
                       </div>
                       <div className="flex items-center gap-1">
                         <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"><Minus className="w-3 h-3" /></button>
