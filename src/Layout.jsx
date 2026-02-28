@@ -17,7 +17,14 @@ import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import DarkModeToggle from "@/components/shared/DarkModeToggle";
 
+const pageVariants = {
+  initial: { opacity: 0, x: 24 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } },
+  exit:    { opacity: 0, x: -16, transition: { duration: 0.15 } },
+};
+
 export default function Layout({ children, currentPageName }) {
+  const location = useLocation();
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [mobileOpen, setMobileOpen] = useState(false);
