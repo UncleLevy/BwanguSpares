@@ -4,9 +4,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
 import { TrendingUp, Mail, Gift, Users, DollarSign, ArrowUpRight, ArrowDownRight } from "lucide-react";
 import StatsCard from "@/components/analytics/StatsCard";
-import CampaignMetricsSection from "@/components/marketing/sections/CampaignMetricsSection";
-import DiscountMetricsSection from "@/components/marketing/sections/DiscountMetricsSection";
-import CustomerMetricsSection from "@/components/marketing/sections/CustomerMetricsSection";
+import CampaignMetricsSection from "@/components/marketing/sections/CampaignMetricsSection.jsx";
+import DiscountMetricsSection from "@/components/marketing/sections/DiscountMetricsSection.jsx";
+import CustomerMetricsSection from "@/components/marketing/sections/CustomerMetricsSection.jsx";
 
 // Metrics calculation functions
 const calculateCampaignMetrics = (campaigns = []) => {
