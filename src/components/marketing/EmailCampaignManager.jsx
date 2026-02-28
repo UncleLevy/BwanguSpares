@@ -104,13 +104,34 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
     if (!confirm(`Send campaign to ${campaign.recipient_count} customers?`)) return;
     setSending(true);
     try {
-      const segmentCustomers = getFilteredCustomers().filter(c => campaign.target_segment === "all_customers" || 
-        (campaign.target_segment === "high_spenders" && (c.total_spent || 0) >= 500000) ||
-        (campaign.target_segment === "medium_spenders" && (c.total_spent || 0) >= 100000 && (c.total_spent || 0) < 500000) ||
-        (campaign.target_segment === "low_spenders" && (c.total_spent || 0) < 100000)
-      );
+      // Filter customers by segment
+      let segmentCustomers = [...customers];
       
-      const customerEmails = segmentCustomers.map(c => c.email);
+      if (campaign.target_segment === "high_spenders") {
+        segmentCustomers = segmentCustomers.filter(c => (c.total_spent || 0) >= 500000);
+      } else if (campaign.target_segment === "medium_spenders") {
+        segmentCustomers = segmentCustomers.filter(c => (c.total_spent || 0) >= 100000 && (c.total_spent || 0) < 500000);
+      } else if (campaign.target_segment === "low_spenders") {
+        segmentCustomers = segmentCustomers.filter(c => (c.total_spent || 0) < 100000);
+      } else if (campaign.target_segment === "recent_customers") {
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        segmentCustomers = segmentCustomers.filter(c => new Date(c.created_date) > thirtyDaysAgo);
+      } else if (campaign.target_segment === "by_location" && campaign.location_filter) {
+        if (campaign.location_filter.region) {
+          segmentCustomers = segmentCustomers.filter(c => c.region === campaign.location_filter.region);
+        }
+        if (campaign.location_filter.town) {
+          segmentCustomers = segmentCustomers.filter(c => c.town === campaign.location_filter.town);
+        }
+      }
+      
+      const customerEmails = segmentCustomers.map(c => c.email).filter(e => e);
+
+      if (customerEmails.length === 0) {
+        toast.error("No customers to send to");
+        setSending(false);
+        return;
+      }
 
       const response = await base44.functions.invoke('sendEmailCampaign', {
         campaign_id: campaign.id,

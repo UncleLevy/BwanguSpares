@@ -37,9 +37,17 @@ export default function MarketInsights({ shop }) {
   }, []);
 
   const filterByPeriod = (items) => {
+    if (!items || items.length === 0) return [];
     if (period === "all") return items;
     const cutoff = subDays(new Date(), parseInt(period));
-    return items.filter(item => isAfter(parseISO(item.created_date), cutoff));
+    return items.filter(item => {
+      if (!item.created_date) return false;
+      try {
+        return isAfter(parseISO(item.created_date), cutoff);
+      } catch {
+        return false;
+      }
+    });
   };
 
   const filteredRequests = filterByPeriod(requests);
