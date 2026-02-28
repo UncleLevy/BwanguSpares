@@ -481,6 +481,72 @@ export default function AdminDashboard() {
             </Dialog>
           </div>
         )}
+
+        {view === "cities" && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cities/Towns</h1>
+              <Button onClick={() => setTownDialog(true)} className="bg-blue-600 hover:bg-blue-700">
+                <MapPin className="w-4 h-4 mr-1.5" /> Add City/Town
+              </Button>
+            </div>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50 dark:bg-slate-800">
+                    <TableHead>City/Town Name</TableHead>
+                    <TableHead>Region</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {towns.map(t => (
+                    <TableRow key={t.id}>
+                      <TableCell className="font-medium">{t.name}</TableCell>
+                      <TableCell>{t.region_name}</TableCell>
+                      <TableCell>
+                        <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => deleteTown(t.id)}>
+                          <XCircle className="w-4 h-4" />
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            <Dialog open={townDialog} onOpenChange={setTownDialog}>
+              <DialogContent>
+                <DialogHeader><DialogTitle>Add City/Town</DialogTitle></DialogHeader>
+                <div className="space-y-4">
+                  <div>
+                    <Label>City/Town Name *</Label>
+                    <Input value={newTown.name} onChange={e => setNewTown({...newTown, name: e.target.value})} placeholder="e.g. Lusaka City, Ndola" className="mt-1" />
+                  </div>
+                  <div>
+                    <Label>Region *</Label>
+                    <select 
+                      value={newTown.region_id} 
+                      onChange={e => {
+                        const region = regions.find(r => r.id === e.target.value);
+                        setNewTown({...newTown, region_id: e.target.value, region_name: region?.name || ""});
+                      }}
+                      className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-900 dark:border-slate-700 text-slate-900 dark:text-slate-100"
+                    >
+                      <option value="">Select a region</option>
+                      {regions.map(r => (
+                        <option key={r.id} value={r.id}>{r.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button onClick={addTown} className="bg-blue-600 hover:bg-blue-700">Add City/Town</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
       </main>
     </div>
   );
