@@ -171,8 +171,18 @@ export default function ShopProfile() {
                 <p>No parts listed yet</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                {products.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />)}
+              <div>
+                <div className="flex items-center justify-between mb-5">
+                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                    Showing {products.length} part{products.length !== 1 ? 's' : ''}
+                  </p>
+                  <a href={createPageUrl("ShopCatalog") + `?id=${shopId}`} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                    View Full Catalog →
+                  </a>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                  {products.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />)}
+                </div>
               </div>
             )}
           </TabsContent>
