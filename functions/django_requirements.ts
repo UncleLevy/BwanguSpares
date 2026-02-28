@@ -1,0 +1,13 @@
+Django==4.2.11
+djangorestframework==3.14.0
+django-cors-headers==4.3.1
+python-dotenv==1.0.0
+psycopg2-binary==2.9.9
+django-filter==23.5
+django-celery-beat==2.5.0
+celery==5.3.4
+redis==5.0.1
+stripe==7.8.0
+pillow==10.1.0
+gunicorn==21.2.0
+python-decouple==3.8
