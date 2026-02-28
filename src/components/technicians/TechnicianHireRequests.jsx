@@ -1,0 +1,144 @@
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { toast } from "sonner";
+import { Wrench } from "lucide-react";
+
+const statusColors = {
+  pending: "bg-amber-50 text-amber-700",
+  accepted: "bg-emerald-50 text-emerald-700",
+  rejected: "bg-red-50 text-red-700",
+  completed: "bg-blue-50 text-blue-700",
+};
+
+const problemLabels = {
+  engine: "Engine", electrical: "Electrical", body_work: "Body Work", transmission: "Transmission",
+  brakes: "Brakes", general: "General", diagnostics: "Diagnostics", ac_heating: "AC/Heating", tyres: "Tyres"
+};
+
+export default function TechnicianHireRequests({ shop }) {
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [respondDialog, setRespondDialog] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [responseText, setResponseText] = useState("");
+  const [responseStatus, setResponseStatus] = useState("accepted");
+
+  useEffect(() => {
+    if (!shop?.id) return;
+    base44.entities.TechnicianHireRequest.filter({ shop_id: shop.id }, "-created_date", 50)
+      .then(r => { setRequests(r); setLoading(false); });
+  }, [shop?.id]);
+
+  const openRespond = (req) => {
+    setSelectedRequest(req);
+    setResponseText("");
+    setResponseStatus("accepted");
+    setRespondDialog(true);
+  };
+
+  const submitResponse = async () => {
+    await base44.entities.TechnicianHireRequest.update(selectedRequest.id, {
+      status: responseStatus,
+      shop_response: responseText,
+    });
+    setRequests(requests.map(r => r.id === selectedRequest.id
+      ? { ...r, status: responseStatus, shop_response: responseText }
+      : r
+    ));
+    toast.success("Response sent");
+    setRespondDialog(false);
+  };
+
+  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
+
+  return (
+    <div>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Technician Hire Requests</h1>
+
+      {requests.length === 0 ? (
+        <div className="text-center py-16 text-slate-500">
+          <Wrench className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+          <p>No hire requests yet</p>
+        </div>
+      ) : (
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="bg-slate-50 dark:bg-slate-800">
+                <TableHead>Customer</TableHead>
+                <TableHead>Technician</TableHead>
+                <TableHead>Problem</TableHead>
+                <TableHead>Preferred Date</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {requests.map(req => (
+                <TableRow key={req.id}>
+                  <TableCell>
+                    <div>
+                      <p className="font-medium text-sm">{req.buyer_name}</p>
+                      <p className="text-xs text-slate-500">{req.buyer_phone || req.buyer_email}</p>
+                    </div>
+                  </TableCell>
+                  <TableCell className="text-sm">{req.technician_name}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline" className="text-[11px]">{problemLabels[req.problem_type] || req.problem_type}</Badge>
+                  </TableCell>
+                  <TableCell className="text-sm text-slate-500">{req.preferred_date || "—"}</TableCell>
+                  <TableCell><Badge className={statusColors[req.status]}>{req.status}</Badge></TableCell>
+                  <TableCell>
+                    {req.status === "pending" && (
+                      <Button size="sm" variant="outline" onClick={() => openRespond(req)}>Respond</Button>
+                    )}
+                    {req.status !== "pending" && req.shop_response && (
+                      <span className="text-xs text-slate-400 italic">"{req.shop_response.slice(0, 30)}..."</span>
+                    )}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      <Dialog open={respondDialog} onOpenChange={setRespondDialog}>
+        <DialogContent>
+          <DialogHeader><DialogTitle>Respond to Hire Request</DialogTitle></DialogHeader>
+          <div className="space-y-4">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm">
+              <p className="font-medium">{selectedRequest?.buyer_name}</p>
+              <p className="text-slate-500 mt-1">{selectedRequest?.description}</p>
+            </div>
+            <div>
+              <Label>Decision</Label>
+              <div className="flex gap-2 mt-2">
+                <Button size="sm" onClick={() => setResponseStatus("accepted")}
+                  className={responseStatus === "accepted" ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
+                  variant={responseStatus === "accepted" ? "default" : "outline"}>Accept</Button>
+                <Button size="sm" onClick={() => setResponseStatus("rejected")}
+                  className={responseStatus === "rejected" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
+                  variant={responseStatus === "rejected" ? "default" : "outline"}>Decline</Button>
+              </div>
+            </div>
+            <div>
+              <Label>Message to Customer (optional)</Label>
+              <Textarea value={responseText} onChange={e => setResponseText(e.target.value)} className="mt-1" rows={3} placeholder="e.g. We'll be available on that date, please come at 9am..." />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRespondDialog(false)}>Cancel</Button>
+            <Button onClick={submitResponse} className="bg-blue-600 hover:bg-blue-700">Send Response</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+}
