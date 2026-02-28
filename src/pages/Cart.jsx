@@ -200,9 +200,13 @@ export default function Cart() {
                   <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
                 </div>
                 <div>
-                  <Label className="text-sm text-slate-700 dark:text-slate-300">Notes (optional)</Label>
-                  <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-1 rounded-xl" rows={2} />
-                </div>
+                   <Label className="text-sm text-slate-700 dark:text-slate-300">Coupon Code (optional)</Label>
+                   <Input value={form.coupon} onChange={e => setForm({...form, coupon: e.target.value})} placeholder="Enter coupon or discount code" className="mt-1 rounded-xl" />
+                 </div>
+                 <div>
+                   <Label className="text-sm text-slate-700 dark:text-slate-300">Notes (optional)</Label>
+                   <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-1 rounded-xl" rows={2} />
+                 </div>
                 <Button onClick={handleCheckout} disabled={submitting} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm gap-2">
                   {submitting ? "Placing Order..." : "Place Order"}
                 </Button>
