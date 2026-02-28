@@ -185,7 +185,7 @@ export default function BuyerDashboard() {
                         <div className="space-y-2">
                           {order.items?.map((item, i) => (
                             <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 first:border-0">
-                              <div className="w-10 h-10 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                              <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
                                 {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
                               </div>
                               <div className="flex-1 min-w-0">
