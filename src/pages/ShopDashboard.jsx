@@ -344,6 +344,7 @@ export default function ShopDashboard() {
    { id: "shops", label: "My Shops", icon: Store, onClick: () => setView("shops") },
    { id: "branches", label: "Branches", icon: MapPin, onClick: () => setView("branches") },
    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
+   { id: "customers", label: "Customers", icon: User, onClick: () => setView("customers") },
    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
    { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
    { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
