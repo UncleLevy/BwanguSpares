@@ -70,11 +70,9 @@ export default function Messages() {
   const showChat = isMobile && selected;
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-2 mb-6">
-        <MessageSquare className="w-6 h-6 text-blue-600" />
-        <h1 className="text-2xl font-bold text-slate-900">Messages</h1>
-      </div>
+    <div>
+      <AppHeader title="Messages" backTo="Home" />
+      <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "70vh" }}>
         {/* Conversation list — hidden on mobile when chat open */}
         <div className={`${showChat ? "hidden" : "flex"} md:flex flex-col w-full md:w-72 border-r border-slate-100 overflow-y-auto flex-shrink-0`}>
