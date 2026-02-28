@@ -391,8 +391,55 @@ export default function ShopDashboard() {
       <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
 
+        {view === "shops" && (
+           <div>
+             <div className="flex items-center justify-between mb-6">
+               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">My Shops</h1>
+               <Button onClick={() => {
+                 const tierLimits = { free: 1, standard: 3, premium: 5 };
+                 const maxShops = tierLimits[subscription?.tier || "free"];
+                 if (shops.length >= maxShops) {
+                   toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to add more branches.`);
+                 } else {
+                   setShowNewShopDialog(true);
+                 }
+               }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Branch</Button>
+             </div>
+
+             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+               {shops.map(s => (
+                 <Card key={s.id} className="border-slate-100 hover-lift cursor-pointer transition-all" onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
+                   <CardContent className="p-5">
+                     <div className="flex items-start justify-between mb-3">
+                       <div>
+                         <h3 className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</h3>
+                         <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{s.status}</Badge>
+                       </div>
+                       <Store className="w-5 h-5 text-blue-600" />
+                     </div>
+                     <div className="space-y-2 text-xs text-slate-500">
+                       {s.phone && <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {s.phone}</p>}
+                       {s.town && <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {s.town}</p>}
+                     </div>
+                     <div className="mt-4 pt-4 border-t border-slate-100 flex gap-2">
+                       <div className="flex-1 text-center">
+                         <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{products.filter(p => p.shop_id === s.id).length}</p>
+                         <p className="text-xs text-slate-500">Products</p>
+                       </div>
+                       <div className="flex-1 text-center">
+                         <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{orders.filter(o => o.shop_id === s.id).length}</p>
+                         <p className="text-xs text-slate-500">Orders</p>
+                       </div>
+                     </div>
+                   </CardContent>
+                 </Card>
+               ))}
+             </div>
+           </div>
+         )}
+
         {view === "overview" && (
-          <div>
+           <div>
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{shop?.name}</h1>
