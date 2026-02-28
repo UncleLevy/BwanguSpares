@@ -35,25 +35,32 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      const [prods, allShops] = await Promise.all([
-        base44.entities.Product.filter({ status: "active" }, "-created_date", 8),
-        base44.entities.Shop.filter({ status: "approved" }, "-created_date", 20),
-      ]);
-      setProducts(prods);
+      try {
+        const [prods, allShops] = await Promise.all([
+          base44.entities.Product.filter({ status: "active" }, "-created_date", 8),
+          base44.entities.Shop.filter({ status: "approved" }, "-created_date", 20),
+        ]);
+        setProducts(prods);
 
-      let sortedShops = allShops;
-      if (userLocation) {
-        sortedShops = allShops
-          .map(s => ({
-            ...s,
-            distance: s.latitude && s.longitude
-              ? getDistance(userLocation.lat, userLocation.lng, s.latitude, s.longitude)
-              : 9999
-          }))
-          .sort((a, b) => a.distance - b.distance);
+        let sortedShops = allShops;
+        if (userLocation) {
+          sortedShops = allShops
+            .map(s => ({
+              ...s,
+              distance: s.latitude && s.longitude
+                ? getDistance(userLocation.lat, userLocation.lng, s.latitude, s.longitude)
+                : 9999
+            }))
+            .sort((a, b) => a.distance - b.distance);
+        }
+        setShops(sortedShops.slice(0, 6));
+      } catch (error) {
+        console.error("Failed to load products and shops:", error);
+        setProducts([]);
+        setShops([]);
+      } finally {
+        setLoading(false);
       }
-      setShops(sortedShops.slice(0, 6));
-      setLoading(false);
     })();
   }, [userLocation]);
 
