@@ -600,6 +600,10 @@ export default function ShopDashboard() {
           <ShopPartsRequests shop={shop} />
         )}
 
+        {view === "hire_requests" && (
+          <TechnicianHireRequests shop={shop} />
+        )}
+
         {view === "messages" && (
           <ShopMessages shop={shop} user={user} />
         )}
