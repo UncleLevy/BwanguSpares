@@ -82,9 +82,9 @@ export default function BranchManager({ shopId }) {
         setBranches(branches.map(b => b.id === editBranch.id ? { ...b, ...branchData } : b));
         toast.success("Branch updated");
       } else {
-        const created = await base44.entities.Branch.create(branchData);
+        const created = await base44.entities.Branch.create({...branchData, status: "pending"});
         setBranches([...branches, created]);
-        toast.success("Branch added");
+        toast.success("Branch added - pending approval");
       }
       setShowDialog(false);
       resetForm();
