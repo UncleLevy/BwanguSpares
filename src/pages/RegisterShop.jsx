@@ -25,7 +25,7 @@ export default function RegisterShop() {
   const [termsModalOpen, setTermsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
-    name: "", description: "", phone: "", address: "",
+    name: "", description: "", phone: "", address: "", town: "",
     region: "", slot_type: "basic", logo_url: "", cover_url: "",
     business_registration_number: "", tax_identification_number: "", terms_accepted: false
   });
