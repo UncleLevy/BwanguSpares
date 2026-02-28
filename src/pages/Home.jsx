@@ -93,16 +93,16 @@ export default function Home() {
     <div>
       <HeroSection />
 
-      <section className="py-12 border-b border-slate-100">
+      <section className="py-12 border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {features.map((f, i) => (
               <div key={i} className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-150 flex items-center justify-center mb-3">
-                  <f.icon className="w-5 h-5 text-blue-600" />
+                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-3">
+                  <f.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="font-semibold text-sm text-slate-900">{f.title}</h3>
-                <p className="text-xs text-slate-500 mt-1">{f.desc}</p>
+                <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100">{f.title}</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{f.desc}</p>
               </div>
             ))}
           </div>
