@@ -43,7 +43,8 @@ export default function PartsRequestForm({ open, onClose, onSuccess, prefill = {
 
   const handleSubmit = async () => {
     if (!form.part_name.trim()) { toast.error("Please enter the part name"); return; }
-    if (!form.phone.trim()) { toast.error("Please enter your phone number"); return; }
+    if (!form.phone.trim()) { toast.error("Phone number is required"); return; }
+    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return; }
 
     const isAuth = await base44.auth.isAuthenticated();
     if (!isAuth) {
