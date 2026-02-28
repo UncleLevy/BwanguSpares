@@ -120,12 +120,13 @@ export default function ShopDashboard() {
       // Load the first shop's data
       const firstShop = userShops[0];
       setShop(firstShop);
-      const [p, t, o] = await Promise.all([
+      const [p, t, o, c] = await Promise.all([
         base44.entities.Product.filter({ shop_id: firstShop.id }),
         base44.entities.Technician.filter({ shop_id: firstShop.id }),
         base44.entities.Order.filter({ shop_id: firstShop.id }, "-created_date", 50),
+        base44.entities.Customer.filter({ shop_id: firstShop.id })
       ]);
-      setProducts(p); setTechnicians(t); setOrders(o);
+      setProducts(p); setTechnicians(t); setOrders(o); setCustomers(c);
       setLoading(false);
     })();
   }, []);
