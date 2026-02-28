@@ -105,6 +105,26 @@ export default function BranchManager({ shopId }) {
     }
   };
 
+  const handleApprove = async (branchId) => {
+    try {
+      await base44.entities.Branch.update(branchId, { status: "approved" });
+      setBranches(branches.map(b => b.id === branchId ? { ...b, status: "approved" } : b));
+      toast.success("Branch approved");
+    } catch (error) {
+      toast.error("Failed to approve branch");
+    }
+  };
+
+  const handleReject = async (branchId) => {
+    try {
+      await base44.entities.Branch.delete(branchId);
+      setBranches(branches.filter(b => b.id !== branchId));
+      toast.success("Branch rejected and removed");
+    } catch (error) {
+      toast.error("Failed to reject branch");
+    }
+  };
+
   const openEdit = (branch) => {
     setEditBranch(branch);
     setFormData({
