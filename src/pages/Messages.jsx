@@ -65,6 +65,9 @@ export default function Messages() {
     );
   }
 
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const showChat = isMobile && selected;
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <div className="flex items-center gap-2 mb-6">
@@ -72,8 +75,8 @@ export default function Messages() {
         <h1 className="text-2xl font-bold text-slate-900">Messages</h1>
       </div>
       <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "70vh" }}>
-        {/* Conversation list */}
-        <div className="w-72 border-r border-slate-100 overflow-y-auto flex-shrink-0">
+        {/* Conversation list — hidden on mobile when chat open */}
+        <div className={`${showChat ? "hidden" : "flex"} md:flex flex-col w-full md:w-72 border-r border-slate-100 overflow-y-auto flex-shrink-0`}>
           <ConversationList
             conversations={conversations}
             selectedId={selected?.id}
@@ -82,8 +85,16 @@ export default function Messages() {
             role={role}
           />
         </div>
-        {/* Chat */}
-        <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Chat — full-screen on mobile when open */}
+        <div className={`${!showChat && isMobile ? "hidden" : "flex"} md:flex flex-1 flex-col overflow-hidden`}>
+          {showChat && isMobile && (
+            <button
+              onClick={() => setSelected(null)}
+              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 text-sm text-blue-600 font-medium"
+            >
+              ← Back to conversations
+            </button>
+          )}
           {user && (
             <ChatWindow
               conversation={selected}
