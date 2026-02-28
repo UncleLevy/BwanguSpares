@@ -232,6 +232,8 @@ export default function ShopDashboard() {
   const [trackingForm, setTrackingForm] = useState({
     tracking_number: "", current_location: "", estimated_delivery: ""
   });
+  const [receiptDialog, setReceiptDialog] = useState(false);
+  const [receiptOrder, setReceiptOrder] = useState(null);
 
   const updateOrderStatus = async (order, status) => {
     // Optimistic update
