@@ -442,11 +442,11 @@ export default function AdminDashboard() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {regions.map(r => (
-                <Card key={r.id} className="border-slate-100">
+                <Card key={r.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-5 flex items-center justify-between">
                     <div>
-                      <h3 className="font-semibold text-slate-900">{r.name}</h3>
-                      {r.province && <p className="text-xs text-slate-500">{r.province}</p>}
+                      <h3 className="font-semibold text-slate-900 dark:text-slate-100">{r.name}</h3>
+                      {r.province && <p className="text-xs text-slate-500 dark:text-slate-400">{r.province}</p>}
                     </div>
                     <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => deleteRegion(r.id)}>
                       <XCircle className="w-4 h-4" />
