@@ -52,6 +52,8 @@ export default function BuyerDashboard() {
   const [deleteAccountDialog, setDeleteAccountDialog] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [passwordResetSent, setPasswordResetSent] = useState(false);
+  const [receiptDialog, setReceiptDialog] = useState(false);
+  const [receiptOrder, setReceiptOrder] = useState(null);
 
   useEffect(() => {
     (async () => {
