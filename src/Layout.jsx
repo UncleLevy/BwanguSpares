@@ -195,12 +195,14 @@ export default function Layout({ children, currentPageName }) {
                             <MessageSquare className="w-4 h-4" /> Messages
                           </Link>
                         </DropdownMenuItem>
-                        <DropdownMenuItem asChild>
-                          <Link to={createPageUrl("Cart")} className="flex items-center gap-2">
-                            <ShoppingCart className="w-4 h-4" /> Cart
-                            {cartCount > 0 && <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">{cartCount}</Badge>}
-                          </Link>
-                        </DropdownMenuItem>
+                        {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("Cart")} className="flex items-center gap-2">
+                              <ShoppingCart className="w-4 h-4" /> Cart
+                              {cartCount > 0 && <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">{cartCount}</Badge>}
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
                         <DropdownMenuItem asChild>
                           <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
                             <LayoutDashboard className="w-4 h-4" /> My Dashboard
