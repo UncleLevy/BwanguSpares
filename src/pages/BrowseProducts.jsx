@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
@@ -89,6 +90,7 @@ export default function BrowseProducts() {
   };
 
   return (
+    <PullToRefresh onRefresh={loadProducts}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Browse Auto Parts</h1>
@@ -194,5 +196,6 @@ export default function BrowseProducts() {
 
       <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
     </div>
+    </PullToRefresh>
   );
 }
