@@ -43,18 +43,12 @@ export default function Cart() {
 
   const updateQty = async (item, delta) => {
     const newQty = Math.max(1, (item.quantity || 1) + delta);
-    // Optimistic update immediately
-    setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i));
-    // Validate stock then persist
-    const products = await base44.entities.Product.filter({ id: item.product_id });
-    const stock = products[0]?.stock_quantity ?? 999;
-    if (delta > 0 && newQty > stock) {
-      toast.error(`Only ${stock} unit(s) available`);
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: item.quantity, _stock: stock } : i));
-      return;
+    try {
+      await base44.entities.CartItem.update(item.id, { quantity: newQty });
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i));
+    } catch (error) {
+      toast.error("Failed to update quantity");
     }
-    await base44.entities.CartItem.update(item.id, { quantity: newQty });
-    setItems(prev => prev.map(i => i.id === item.id ? { ...i, _stock: stock } : i));
   };
 
   const removeItem = async (item) => {
