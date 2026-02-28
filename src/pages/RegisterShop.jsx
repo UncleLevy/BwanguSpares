@@ -123,29 +123,35 @@ export default function RegisterShop() {
     });
     if (geoRes?.latitude) { lat = geoRes.latitude; lng = geoRes.longitude; }
 
-    const shop = await base44.entities.Shop.create({
-      name: form.name,
-      description: form.description,
-      phone: form.phone,
-      address: form.address,
-      region: form.region,
-      slot_type: form.slot_type,
-      logo_url: form.logo_url,
-      cover_url: form.cover_url,
-      business_registration_number: form.business_registration_number,
-      tax_identification_number: form.tax_identification_number,
-      owner_email: user.email,
-      owner_name: user.full_name,
-      region_name: regionObj?.name || "",
-      latitude: lat,
-      longitude: lng,
-      status: "pending",
-    });
+    try {
+      const shop = await base44.entities.Shop.create({
+        name: form.name,
+        description: form.description,
+        phone: form.phone,
+        address: form.address,
+        town: form.town,
+        region: form.region,
+        slot_type: form.slot_type,
+        logo_url: form.logo_url,
+        cover_url: form.cover_url,
+        business_registration_number: form.business_registration_number,
+        tax_identification_number: form.tax_identification_number,
+        owner_email: user.email,
+        owner_name: user.full_name,
+        region_name: regionObj?.name || "",
+        latitude: lat,
+        longitude: lng,
+        status: "pending",
+      });
 
-    await base44.auth.updateMe({ role: "shop_owner", shop_id: shop.id });
-    toast.success("Shop registration submitted! Awaiting admin approval.");
-    navigate(createPageUrl("ShopDashboard"));
-    setSubmitting(false);
+      await base44.auth.updateMe({ role: "shop_owner", shop_id: shop.id });
+      toast.success("✓ Shop registered successfully! Awaiting admin approval.");
+      navigate(createPageUrl("ShopDashboard"));
+    } catch (error) {
+      toast.error("✗ Failed to register shop. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-12"><div className="h-96 bg-slate-100 rounded-2xl animate-pulse" /></div>;
