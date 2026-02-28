@@ -1,5 +1,7 @@
-import React, { useRef } from "react";
+import React from "react";
+import { base44 } from "@/api/base44Client";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
@@ -7,7 +9,8 @@ import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Printer, X } from "lucide-react";
+import { Printer, Mail, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 const DOC_TYPES = [
   { value: "invoice", label: "Invoice" },
@@ -127,11 +130,37 @@ function DocumentView({ type, shop, order, partsRequest, docNumber }) {
 export default function DocumentPrinter({ shop, order, partsRequest, triggerLabel = "Print Document" }) {
   const [open, setOpen] = React.useState(false);
   const [docType, setDocType] = React.useState("invoice");
+  const [emailDialog, setEmailDialog] = React.useState(false);
+  const [emailTo, setEmailTo] = React.useState("");
+  const [sending, setSending] = React.useState(false);
+
   const docNumber = React.useMemo(() => {
     const prefix = { invoice: "INV", receipt: "REC", quotation: "QUO" }[docType];
     const id = (order?.id || partsRequest?.id || "").slice(0, 6).toUpperCase();
     return `${prefix}-${id}-${Date.now().toString().slice(-4)}`;
   }, [docType, order, partsRequest]);
+
+  const handleEmailOpen = () => {
+    const defaultEmail = order?.buyer_email || partsRequest?.buyer_email || "";
+    setEmailTo(defaultEmail);
+    setEmailDialog(true);
+  };
+
+  const handleSendEmail = async () => {
+    if (!emailTo) { toast.error("Please enter an email address"); return; }
+    setSending(true);
+    await base44.functions.invoke("emailDocument", {
+      to: emailTo,
+      docType,
+      docNumber,
+      shop,
+      order: order || null,
+      partsRequest: partsRequest || null,
+    });
+    toast.success(`${docType.charAt(0).toUpperCase() + docType.slice(1)} sent to ${emailTo}`);
+    setSending(false);
+    setEmailDialog(false);
+  };
 
   const handlePrint = () => {
     const content = document.getElementById("printable-document");
@@ -186,8 +215,11 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
             />
           </div>
 
-          <DialogFooter className="mt-4 gap-2">
+          <DialogFooter className="mt-4 gap-2 flex-wrap">
             <Button variant="outline" onClick={() => setOpen(false)}>Close</Button>
+            <Button variant="outline" onClick={handleEmailOpen} className="gap-2 border-blue-200 text-blue-600 hover:bg-blue-50">
+              <Mail className="w-4 h-4" /> Email to Client
+            </Button>
             <Button onClick={handlePrint} className="bg-blue-600 hover:bg-blue-700 gap-2">
               <Printer className="w-4 h-4" /> Print / Save as PDF
             </Button>
