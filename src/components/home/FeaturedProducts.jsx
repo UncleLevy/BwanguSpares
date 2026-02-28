@@ -38,8 +38,8 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Featured Parts</h2>
-            <p className="text-slate-500 mt-1">Top-selling parts from verified shops</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Featured Parts</h2>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">Top-selling parts from verified shops</p>
           </div>
           <Link to={createPageUrl("BrowseProducts")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
             View all <ArrowRight className="w-4 h-4" />
@@ -48,9 +48,9 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {products.map(product => (
-            <div key={product.id} className="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover-lift">
+            <div key={product.id} className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
               <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
-                <div className="relative h-48 bg-slate-50 overflow-hidden">
+                <div className="relative h-48 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
                   {product.image_url ? (
                     <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                   ) : (
@@ -65,9 +65,9 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
               </Link>
               <div className="p-4">
                 <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
-                  <h3 className="font-semibold text-slate-900 text-sm line-clamp-1 group-hover:text-blue-600 transition-colors">{product.name}</h3>
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm line-clamp-1 group-hover:text-blue-600 transition-colors">{product.name}</h3>
                 </Link>
-                <p className="text-xs text-slate-500 mt-0.5">{product.shop_name}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{product.shop_name}</p>
                 <div className="flex items-center justify-between mt-3">
                   <span className="text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
                   <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
