@@ -71,9 +71,12 @@ export default function ProductDetail() {
   if (!product) return <div className="text-center py-20 text-slate-500">Product not found</div>;
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link to={createPageUrl("BrowseProducts")} className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to results
+    <div>
+      <AppHeader title={product?.name || "Product"} backTo="BrowseProducts" />
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Desktop back link */}
+      <Link to={createPageUrl("BrowseProducts")} className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
+        ← Back to results
       </Link>
 
       <div className="grid md:grid-cols-2 gap-8">
