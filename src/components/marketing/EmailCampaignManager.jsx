@@ -66,7 +66,6 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
     }
 
     try {
-      // Get shop name from first campaign or fetch it
       let shopName = "Shop";
       if (campaigns.length > 0 && campaigns[0].shop_name) {
         shopName = campaigns[0].shop_name;
@@ -81,7 +80,7 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
         estimated_click_rate: 0,
         estimated_opens: 0,
         estimated_clicks: 0,
-        status: form.scheduled_for ? "scheduled" : "draft"
+        status: "draft"
       };
 
       if (editingCampaign) {
@@ -102,30 +101,42 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
   };
 
   const handleSend = async (campaign) => {
-   if (!confirm(`Send campaign to ${campaign.recipient_count} customers?`)) return;
-   setSending(true);
-   try {
-     // Calculate estimated open and click rates based on segment
-     const estimated_open_rate = Math.floor(Math.random() * 30) + 15; // 15-45%
-     const estimated_click_rate = Math.floor(Math.random() * 15) + 5; // 5-20%
-     const estimated_opens = Math.floor((campaign.recipient_count * estimated_open_rate) / 100);
-     const estimated_clicks = Math.floor((estimated_opens * estimated_click_rate) / 100);
+    if (!confirm(`Send campaign to ${campaign.recipient_count} customers?`)) return;
+    setSending(true);
+    try {
+      const segmentCustomers = getFilteredCustomers().filter(c => campaign.target_segment === "all_customers" || 
+        (campaign.target_segment === "high_spenders" && (c.total_spent || 0) >= 500000) ||
+        (campaign.target_segment === "medium_spenders" && (c.total_spent || 0) >= 100000 && (c.total_spent || 0) < 500000) ||
+        (campaign.target_segment === "low_spenders" && (c.total_spent || 0) < 100000)
+      );
+      
+      const customerEmails = segmentCustomers.map(c => c.email);
 
-     // In production, you'd send actual emails via backend function
-     await base44.entities.Campaign.update(campaign.id, {
-       status: "sent",
-       sent_at: new Date().toISOString(),
-       estimated_open_rate,
-       estimated_click_rate,
-       estimated_opens,
-       estimated_clicks
-     });
-     onCampaignsChange(campaigns.map(c => c.id === campaign.id ? { ...c, status: "sent", sent_at: new Date().toISOString(), estimated_open_rate, estimated_click_rate, estimated_opens, estimated_clicks } : c));
-     toast.success("Campaign sent successfully");
-   } catch (error) {
-     toast.error("Failed to send campaign");
-   }
-   setSending(false);
+      const response = await base44.functions.invoke('sendEmailCampaign', {
+        campaign_id: campaign.id,
+        customer_emails: customerEmails
+      });
+
+      if (response.data.success) {
+        onCampaignsChange(campaigns.map(c => 
+          c.id === campaign.id ? { 
+            ...c, 
+            status: "sent", 
+            sent_at: new Date().toISOString(),
+            estimated_open_rate: response.data.estimated_open_rate,
+            estimated_click_rate: response.data.estimated_click_rate,
+            estimated_opens: response.data.estimated_opens,
+            estimated_clicks: response.data.estimated_clicks
+          } : c
+        ));
+        toast.success(`Campaign sent to ${response.data.sent_count} customers`);
+      } else {
+        toast.error(response.data.error || "Failed to send campaign");
+      }
+    } catch (error) {
+      toast.error("Failed to send campaign");
+    }
+    setSending(false);
   };
 
   const handleDelete = async (id) => {
@@ -193,7 +204,7 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
                           )}
                         </div>
                       </TableCell>
-                      <TableCell><Badge className={c.status === "sent" ? "bg-emerald-50 text-emerald-700" : c.status === "scheduled" ? "bg-blue-50 text-blue-700" : "bg-slate-100 text-slate-600"}>{c.status}</Badge></TableCell>
+                      <TableCell><Badge className={c.status === "sent" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}>{c.status}</Badge></TableCell>
                       <TableCell className="text-sm text-slate-500">{new Date(c.created_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
