@@ -418,7 +418,7 @@ export default function AdminDashboard() {
                       <TableCell className="text-sm text-slate-500 dark:text-slate-400">{o.shop_name}</TableCell>
                       <TableCell className="font-medium">K{o.total_amount?.toLocaleString()}</TableCell>
                       <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
-                      <TableCell className="text-xs text-slate-400">{new Date(o.created_date).toLocaleDateString()}</TableCell>
+                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{new Date(o.created_date).toLocaleDateString()}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
