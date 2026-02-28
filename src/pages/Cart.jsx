@@ -205,7 +205,7 @@ export default function Cart() {
   return (
     <div>
       <AppHeader title="Shopping Cart" backTo="BrowseProducts" />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
       <h1 className="hidden md:block text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shopping Cart</h1>
 
       {items.length === 0 ? (
@@ -235,13 +235,13 @@ export default function Cart() {
                         <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</h4>
                         <p className="text-sm font-semibold text-blue-600 mt-0.5">K{item.price?.toLocaleString()}</p>
                       </div>
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"><Minus className="w-3 h-3" /></button>
+                      <div className="flex items-center gap-0.5">
+                        <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"><Minus className="w-3 h-3" /></button>
                         <span className="w-8 text-center text-sm font-medium dark:text-slate-200">{item.quantity || 1}</span>
-                        <button onClick={() => updateQty(item, 1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700"><Plus className="w-3 h-3" /></button>
+                        <button onClick={() => updateQty(item, 1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"><Plus className="w-3 h-3" /></button>
                       </div>
-                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 w-20 text-right">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
-                      <button onClick={() => removeItem(item)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
+                      <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 ml-2 text-right min-w-max">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
+                      <button onClick={() => removeItem(item)} className="ml-1 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </div>
                 ))}
@@ -278,26 +278,26 @@ export default function Cart() {
             ) : (
               <div className="space-y-4">
                 <div>
-                  <Label className="text-sm text-slate-700 dark:text-slate-300">Delivery Address *</Label>
-                  <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Enter your delivery address" className="mt-1 rounded-xl" />
-                </div>
-                <div>
-                  <Label className="text-sm text-slate-700 dark:text-slate-300">Phone Number *</Label>
-                  <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
-                </div>
-                <div>
-                   <Label className="text-sm text-slate-700 dark:text-slate-300">Coupon Code (optional)</Label>
-                   <div className="flex gap-2 mt-1">
-                     <Input value={form.coupon} onChange={e => { setForm({...form, coupon: e.target.value}); setCouponError(""); }} placeholder="Enter coupon or discount code" className="rounded-xl" />
-                     <Button onClick={applyCoupon} variant="outline" className="rounded-xl">Apply</Button>
-                   </div>
-                   {couponError && <p className="text-xs text-red-600 mt-1">{couponError}</p>}
-                   {appliedCoupon && <p className="text-xs text-emerald-600 mt-1">✓ {appliedCoupon.code} applied</p>}
+                   <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Delivery Address *</Label>
+                   <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Enter your delivery address" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" />
                  </div>
                  <div>
-                   <Label className="text-sm text-slate-700 dark:text-slate-300">Notes (optional)</Label>
-                   <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-1 rounded-xl" rows={2} />
+                   <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Phone Number *</Label>
+                   <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" />
                  </div>
+                 <div>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Coupon Code (optional)</Label>
+                    <div className="flex flex-col sm:flex-row gap-2 mt-2">
+                      <Input value={form.coupon} onChange={e => { setForm({...form, coupon: e.target.value}); setCouponError(""); }} placeholder="Enter coupon code" className="rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" />
+                      <Button onClick={applyCoupon} variant="outline" className="rounded-xl sm:w-auto">Apply</Button>
+                    </div>
+                    {couponError && <p className="text-xs text-red-600 dark:text-red-400 mt-1">{couponError}</p>}
+                    {appliedCoupon && <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">✓ {appliedCoupon.code} applied</p>}
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes (optional)</Label>
+                    <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" rows={2} />
+                  </div>
                 <Button onClick={handleCheckout} disabled={submitting} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm gap-2">
                   {submitting ? "Placing Order..." : "Place Order"}
                 </Button>
