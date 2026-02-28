@@ -27,11 +27,9 @@ export default function ShopProfile() {
   const [problemFilter, setProblemFilter] = useState("all");
   const [hireDialog, setHireDialog] = useState(false);
   const [selectedTech, setSelectedTech] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
-    base44.auth.isAuthenticated().then(setIsAuthenticated);
   }, []);
 
   useEffect(() => {
@@ -90,17 +88,17 @@ export default function ShopProfile() {
     brakes: "Brakes", general: "General", diagnostics: "Diagnostics", ac_heating: "AC/Heating", tyres: "Tyres"
   };
 
-  const PROBLEM_TYPES = [
+  const PROBLEM_OPTIONS = [
     { value: "all", label: "All Problems" },
-    { value: "engine", label: "Engine" },
-    { value: "electrical", label: "Electrical" },
+    { value: "engine", label: "Engine Issues" },
+    { value: "electrical", label: "Electrical Problems" },
     { value: "body_work", label: "Body Work" },
     { value: "transmission", label: "Transmission" },
-    { value: "brakes", label: "Brakes" },
+    { value: "brakes", label: "Brake Problems" },
     { value: "diagnostics", label: "Diagnostics" },
-    { value: "ac_heating", label: "AC/Heating" },
+    { value: "ac_heating", label: "AC / Heating" },
     { value: "tyres", label: "Tyres" },
-    { value: "general", label: "General" },
+    { value: "general", label: "General Repair" },
   ];
 
   const filteredTechnicians = problemFilter === "all"
@@ -178,16 +176,34 @@ export default function ShopProfile() {
           </TabsContent>
 
           <TabsContent value="technicians">
-            {technicians.length === 0 ? (
+            {/* Problem type filter */}
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-sm text-slate-500 shrink-0">Filter by problem:</span>
+              <Select value={problemFilter} onValueChange={setProblemFilter}>
+                <SelectTrigger className="w-48">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {PROBLEM_OPTIONS.map(o => (
+                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {problemFilter !== "all" && (
+                <span className="text-xs text-slate-400">{filteredTechnicians.length} technician{filteredTechnicians.length !== 1 ? "s" : ""} found</span>
+              )}
+            </div>
+
+            {filteredTechnicians.length === 0 ? (
               <div className="text-center py-16 text-slate-500">
                 <Wrench className="w-12 h-12 mx-auto mb-3 text-slate-300" />
-                <p>No technicians listed yet</p>
+                <p>{problemFilter === "all" ? "No technicians listed yet" : "No technicians specialise in this area"}</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {technicians.map(tech => (
-                  <div key={tech.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5 hover-lift">
-                    <div className="flex items-start gap-4">
+                {filteredTechnicians.map(tech => (
+                  <div key={tech.id} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 p-5 hover-lift flex flex-col">
+                    <div className="flex items-start gap-4 flex-1">
                       <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center overflow-hidden flex-shrink-0">
                         {tech.photo_url ? <img src={tech.photo_url} alt="" className="w-full h-full object-cover" /> : <User className="w-6 h-6 text-slate-400" />}
                       </div>
@@ -205,9 +221,27 @@ export default function ShopProfile() {
                         </div>
                       </div>
                     </div>
+                    <Button
+                      size="sm"
+                      className="mt-4 w-full bg-blue-600 hover:bg-blue-700 gap-1.5"
+                      disabled={!tech.available}
+                      onClick={() => handleHireClick(tech)}
+                    >
+                      <Wrench className="w-3.5 h-3.5" />
+                      {tech.available ? "Request Hire" : "Unavailable"}
+                    </Button>
                   </div>
                 ))}
               </div>
+            )}
+
+            {selectedTech && (
+              <HireTechnicianDialog
+                technician={selectedTech}
+                shop={shop}
+                open={hireDialog}
+                onClose={() => { setHireDialog(false); setSelectedTech(null); }}
+              />
             )}
           </TabsContent>
 
