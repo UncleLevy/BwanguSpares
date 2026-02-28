@@ -43,6 +43,7 @@ import AddressInput from "@/components/shared/AddressInput";
 import BranchManager from "@/components/branches/BranchManager";
 import OrderReceipt from "@/components/receipts/OrderReceipt";
 import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
+import CustomerManager from "@/components/customers/CustomerManager";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
