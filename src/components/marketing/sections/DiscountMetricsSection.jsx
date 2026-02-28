@@ -16,7 +16,6 @@ export default function DiscountMetricsSection({ metrics }) {
 
   return (
     <>
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatsCard
           title="Total Codes"
@@ -44,7 +43,6 @@ export default function DiscountMetricsSection({ metrics }) {
         />
       </div>
 
-      {/* Chart */}
       {metrics.chartData && metrics.chartData.length > 0 && (
         <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
           <CardHeader className="pb-4">
