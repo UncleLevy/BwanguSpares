@@ -315,20 +315,30 @@ export default function BuyerDashboard() {
 
       <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
 
-      <Dialog open={deleteAccountDialog} onOpenChange={setDeleteAccountDialog}>
+      <Dialog open={deleteAccountDialog} onOpenChange={(v) => { setDeleteAccountDialog(v); setDeleteConfirmText(""); }}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Account</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+              This action is <strong>permanent</strong> and cannot be undone. All your orders, requests and data will be removed.
+              <br /><br />
+              Type <strong>DELETE</strong> below to confirm.
             </DialogDescription>
           </DialogHeader>
+          <Input
+            value={deleteConfirmText}
+            onChange={e => setDeleteConfirmText(e.target.value)}
+            placeholder="Type DELETE to confirm"
+            className="rounded-xl"
+          />
           <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => setDeleteAccountDialog(false)}>Cancel</Button>
+            <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
             <Button
               variant="destructive"
+              disabled={deleteConfirmText !== "DELETE"}
               onClick={async () => {
                 await base44.auth.logout();
+                toast.success("Account deleted. Goodbye!");
               }}
             >
               Delete My Account
