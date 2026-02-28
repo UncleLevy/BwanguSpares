@@ -106,26 +106,26 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="px-5 py-3.5 border-b border-slate-100 bg-white">
-        <p className="font-semibold text-slate-900 text-sm">
-          {role === "buyer" ? conversation.shop_name : conversation.buyer_name}
-        </p>
-        {conversation.subject && (
-          <p className="text-xs text-slate-500 mt-0.5">{conversation.subject}</p>
-        )}
-      </div>
+       <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
+         <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+           {role === "buyer" ? conversation.shop_name : conversation.buyer_name}
+         </p>
+         {conversation.subject && (
+           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{conversation.subject}</p>
+         )}
+       </div>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+       {/* Messages */}
+       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50 dark:bg-slate-900">
         {messages.map((msg) => {
           const isMe = msg.sender_email === currentUser.email;
           return (
             <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               <div className={`max-w-[75%] rounded-2xl px-4 py-2.5 text-sm ${
-                isMe
-                  ? "bg-blue-600 text-white rounded-br-md"
-                  : "bg-white text-slate-800 border border-slate-200 rounded-bl-md"
-              }`}>
+                 isMe
+                   ? "bg-blue-600 dark:bg-blue-700 text-white rounded-br-md"
+                   : "bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-600 rounded-bl-md"
+               }`}>
                 <p className="leading-relaxed">{msg.content}</p>
                 <p className={`text-[10px] mt-1 ${isMe ? "text-blue-200" : "text-slate-400"}`}>
                   {msg.created_date ? format(new Date(msg.created_date), "h:mm a") : ""}
@@ -138,7 +138,7 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
       </div>
 
       {/* Input */}
-      <div className="px-4 py-3 border-t border-slate-100 bg-white flex items-center gap-2">
+      <div className="px-4 py-3 border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center gap-2">
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
