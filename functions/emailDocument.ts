@@ -23,9 +23,9 @@ Deno.serve(async (req) => {
       ? (order.items || [])
       : [{ product_name: partsRequest?.part_name, quantity: 1, price: partsRequest?.budget || 0 }];
 
-    const subtotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
-    const vat = docType !== 'quotation' ? subtotal * 0.16 : 0;
-    const total = subtotal + vat;
+    const total = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
+    const vat = docType !== 'quotation' ? total - (total / 1.16) : 0;
+    const subtotal = total - vat;
 
     const typeColorMap = { invoice: '#1e40af', receipt: '#065f46', quotation: '#92400e' };
     const color = typeColorMap[docType] || '#1e40af';
