@@ -11,6 +11,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import TermsAndConditionsModal from "@/components/shop/TermsAndConditionsModal";
+import AddressInput from "@/components/shared/AddressInput";
 
 export default function RegisterShop() {
   const [user, setUser] = useState(null);
