@@ -23,6 +23,7 @@ import BuyerMessages from "@/components/messaging/BuyerMessages";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
+import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
@@ -126,7 +127,7 @@ export default function BuyerDashboard() {
 
   const sidebarItems = [
     { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => setView("orders") },
-    { id: "cart", label: "Cart", icon: ShoppingCart, href: createPageUrl("Cart") },
+    { id: "cart", label: "Cart", icon: ShoppingCart, onClick: () => setView("cart") },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
@@ -234,6 +235,17 @@ export default function BuyerDashboard() {
 
         {view === "messages" && (
           <BuyerMessages user={user} />
+        )}
+
+        {view === "cart" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 max-w-2xl">
+              <CardContent className="p-6">
+                <DashboardCartPreview userEmail={user?.email} />
+              </CardContent>
+            </Card>
+          </div>
         )}
 
         {view === "profile" && (
