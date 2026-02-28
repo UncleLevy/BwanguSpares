@@ -223,7 +223,7 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-slate-50">
       <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
-      <main className="flex-1 p-6 lg:p-8 overflow-auto">
+      <main className="flex-1 pt-14 lg:pt-0 p-4 lg:p-8 overflow-auto min-w-0">
         {view === "overview" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-6">Dashboard Overview</h1>
