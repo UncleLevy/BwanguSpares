@@ -963,6 +963,10 @@ export default function ShopDashboard() {
           <MarketingTools shopId={shop?.id} customers={customers} />
         )}
 
+        {view === "marketing_analytics" && (
+          <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
+        )}
+
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
            <DialogContent>
              <DialogHeader><DialogTitle>Add New Branch</DialogTitle></DialogHeader>
