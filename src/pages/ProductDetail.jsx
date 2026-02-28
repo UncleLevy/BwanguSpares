@@ -132,17 +132,19 @@ export default function ProductDetail() {
               <p className="mt-4 text-sm text-slate-600 dark:text-slate-400 leading-relaxed">{product.description}</p>
             )}
 
-            <div className="mt-6 flex items-center gap-3">
-              <div className="flex items-center border border-slate-200 dark:border-slate-600 rounded-xl overflow-hidden">
-                <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">−</button>
-                <span className="px-4 py-2 text-sm font-medium border-x border-slate-200 dark:border-slate-600 dark:text-slate-100">{qty}</span>
-                <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">+</button>
+            {(!user || (user.role !== 'shop_owner' && user.role !== 'admin')) && (
+              <div className="mt-6 flex items-center gap-3">
+                <div className="flex items-center border border-slate-200 dark:border-slate-600 rounded-xl overflow-hidden">
+                  <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">−</button>
+                  <span className="px-4 py-2 text-sm font-medium border-x border-slate-200 dark:border-slate-600 dark:text-slate-100">{qty}</span>
+                  <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">+</button>
+                </div>
+                <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
+                  disabled={product.stock_quantity === 0}>
+                  <ShoppingCart className="w-4 h-4" /> Add to Cart
+                </Button>
               </div>
-              <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
-                disabled={product.stock_quantity === 0}>
-                <ShoppingCart className="w-4 h-4" /> Add to Cart
-              </Button>
-            </div>
+            )}
 
             {product.stock_quantity === 0 && (
               <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
