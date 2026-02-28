@@ -58,12 +58,13 @@ export default function BuyerDashboard() {
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
+      // Redirect to profile completion if not completed
+      if (!u.profile_completed) {
+        window.location.href = createPageUrl("ProfileCompletion");
+        return;
+      }
       setUser(u);
-      // Split full_name into first/last
-      const nameParts = (u.full_name || "").split(" ");
-      const first_name = nameParts[0] || "";
-      const last_name = nameParts.slice(1).join(" ") || "";
-      setProfileForm({ first_name, last_name, phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "" });
+      setProfileForm({ first_name: u.first_name || "", last_name: u.last_name || "", phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "" });
       const o = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
       setOrders(o);
       setLoading(false);
@@ -95,6 +96,8 @@ export default function BuyerDashboard() {
      setSubmitting(true);
      try {
        await base44.auth.updateMe({ 
+         first_name: profileForm.first_name,
+         last_name: profileForm.last_name,
          phone: profileForm.phone, 
          region: profileForm.region,
          town: profileForm.town,
