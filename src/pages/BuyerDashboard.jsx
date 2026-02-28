@@ -152,8 +152,8 @@ export default function BuyerDashboard() {
                                 <sc.icon className="w-3 h-3 mr-1" /> {order.status}
                               </Badge>
                             </div>
-                            <p className="text-sm text-slate-500 mt-1">
-                              From: <span className="font-medium text-slate-700">{order.shop_name}</span>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                              From: <span className="font-medium text-slate-700 dark:text-slate-300">{order.shop_name}</span>
                               <span className="mx-2">•</span>
                               {new Date(order.created_date).toLocaleDateString()}
                             </p>
