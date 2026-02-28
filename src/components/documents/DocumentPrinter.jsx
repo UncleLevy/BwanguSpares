@@ -80,8 +80,8 @@ function DocumentView({ type, shop, order, partsRequest, docNumber }) {
             <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9fafb" }}>
               <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>{item.product_name || item.name || "Item"}</td>
               <td style={{ padding: "10px 12px", textAlign: "center", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>{item.quantity || 1}</td>
-              <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{(item.price || 0).toLocaleString()}</td>
-              <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{((item.price || 0) * (item.quantity || 1)).toLocaleString()}</td>
+              <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+               <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{((item.price || 0) * (item.quantity || 1)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
             </tr>
           ))}
         </tbody>
@@ -91,16 +91,16 @@ function DocumentView({ type, shop, order, partsRequest, docNumber }) {
       <div style={{ display: "flex", justifyContent: "flex-end" }}>
         <div style={{ width: "260px" }}>
           <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px", color: "#555" }}>
-            <span>Subtotal</span><span>K{subtotal.toLocaleString()}</span>
-          </div>
-          {type !== "quotation" && (
-            <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px", color: "#555" }}>
-              <span>VAT (16%)</span><span>K{vat.toLocaleString()}</span>
-            </div>
-          )}
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: color, color: "#fff", borderRadius: "6px", fontWeight: "bold", fontSize: "15px", marginTop: "8px" }}>
-            <span>TOTAL</span><span>K{total.toLocaleString()}</span>
-          </div>
+             <span>Subtotal</span><span>K{subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+           </div>
+           {type !== "quotation" && (
+             <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px", color: "#555" }}>
+               <span>VAT (16%)</span><span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+             </div>
+           )}
+           <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: color, color: "#fff", borderRadius: "6px", fontWeight: "bold", fontSize: "15px", marginTop: "8px" }}>
+             <span>TOTAL</span><span>K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+           </div>
         </div>
       </div>
 
