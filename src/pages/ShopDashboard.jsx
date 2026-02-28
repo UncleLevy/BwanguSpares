@@ -958,7 +958,7 @@ export default function ShopDashboard() {
         )}
 
         {view === "marketing" && (
-          <MarketingTools shopId={shop?.id} customers={[]} />
+          <MarketingTools shopId={shop?.id} customers={customers} />
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
