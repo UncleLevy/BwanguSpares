@@ -57,7 +57,7 @@ export default function DashboardSidebar({ items, active, title }) {
       <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex items-center gap-3 px-4 h-14">
         <button
           onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+          className="p-2 rounded-lg text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800"
         >
           <Menu className="w-5 h-5" />
         </button>
