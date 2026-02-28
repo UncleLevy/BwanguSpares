@@ -224,12 +224,12 @@ export default function BuyerDashboard() {
             <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
               <CardContent className="p-6 space-y-5">
                 <div>
-                  <Label className="text-sm text-slate-500">Name</Label>
-                  <p className="font-medium text-slate-900 mt-0.5">{user?.full_name}</p>
+                  <Label className="text-sm text-slate-500 dark:text-slate-400">Name</Label>
+                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5">{user?.full_name}</p>
                 </div>
                 <div>
-                  <Label className="text-sm text-slate-500">Email</Label>
-                  <p className="font-medium text-slate-900 mt-0.5">{user?.email}</p>
+                  <Label className="text-sm text-slate-500 dark:text-slate-400">Email</Label>
+                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5">{user?.email}</p>
                 </div>
                 <div>
                   <Label>Phone</Label>
