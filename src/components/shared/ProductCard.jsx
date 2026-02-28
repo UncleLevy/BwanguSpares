@@ -5,6 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { Package, ShoppingCart, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import WishlistButton from "@/components/products/WishlistButton";
 
 const conditionColors = {
   new: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -40,7 +41,10 @@ export default function ProductCard({ product, onAddToCart }) {
           <Badge className={`absolute top-3 left-3 text-[10px] border ${conditionColors[product.condition] || conditionColors.new}`}>
             {product.condition}
           </Badge>
-        </div>
+          <div className="absolute top-3 right-3 bg-white dark:bg-slate-800 rounded-full p-2 shadow-md">
+            <WishlistButton product={product} />
+          </div>
+          </div>
       </Link>
       <div className="p-4">
         <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
