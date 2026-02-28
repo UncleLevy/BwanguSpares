@@ -1,15 +1,13 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { base44 } from "@/api/base44Client";
-import { Package, LogOut, ChevronLeft } from "lucide-react";
+import { Package, LogOut, ChevronLeft, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-export default function DashboardSidebar({ items, active, title, accent = "blue" }) {
-  const navigate = useNavigate();
-
+function SidebarContent({ items, active, title, onItemClick }) {
   return (
-    <aside className="w-64 bg-white border-r border-slate-200 min-h-screen flex flex-col">
+    <>
       <div className="p-5 border-b border-slate-100">
         <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
@@ -19,25 +17,25 @@ export default function DashboardSidebar({ items, active, title, accent = "blue"
         </Link>
         <p className="text-[11px] text-slate-400 mt-2 font-medium uppercase tracking-wider">{title}</p>
       </div>
-      <nav className="flex-1 p-3 space-y-0.5">
+      <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {items.map(item => (
-          <button key={item.id} onClick={() => item.onClick?.()}
+          <button key={item.id} onClick={() => { item.onClick?.(); onItemClick?.(); }}
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left",
               active === item.id
                 ? "bg-blue-50 text-blue-700"
                 : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
             )}>
-            <item.icon className="w-4 h-4" />
-            {item.label}
-            {item.badge && (
-              <span className="ml-auto bg-blue-600 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold">{item.badge}</span>
-            )}
+            <item.icon className="w-4 h-4 shrink-0" />
+            <span className="truncate">{item.label}</span>
+            {item.badge ? (
+              <span className="ml-auto bg-blue-600 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold shrink-0">{item.badge}</span>
+            ) : null}
           </button>
         ))}
       </nav>
       <div className="p-3 border-t border-slate-100 space-y-1">
-        <Link to={createPageUrl("Home")}
+        <Link to={createPageUrl("Home")} onClick={onItemClick}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:bg-slate-50">
           <ChevronLeft className="w-4 h-4" /> Back to Site
         </Link>
@@ -46,6 +44,58 @@ export default function DashboardSidebar({ items, active, title, accent = "blue"
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
-    </aside>
+    </>
+  );
+}
+
+export default function DashboardSidebar({ items, active, title }) {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  return (
+    <>
+      {/* Mobile top bar */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-200 flex items-center gap-3 px-4 h-14">
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+            <Package className="w-3.5 h-3.5 text-white" />
+          </div>
+          <span className="font-bold text-slate-900 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
+        </div>
+        <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider ml-1">{title}</span>
+      </div>
+
+      {/* Mobile overlay */}
+      {mobileOpen && (
+        <div
+          className="lg:hidden fixed inset-0 z-50 bg-black/40"
+          onClick={() => setMobileOpen(false)}
+        >
+          <aside
+            className="w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-end p-3 border-b border-slate-100">
+              <button onClick={() => setMobileOpen(false)} className="p-2 rounded-lg text-slate-500 hover:bg-slate-100">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 flex flex-col overflow-hidden">
+              <SidebarContent items={items} active={active} title={title} onItemClick={() => setMobileOpen(false)} />
+            </div>
+          </aside>
+        </div>
+      )}
+
+      {/* Desktop sidebar */}
+      <aside className="hidden lg:flex w-64 bg-white border-r border-slate-200 min-h-screen flex-col">
+        <SidebarContent items={items} active={active} title={title} />
+      </aside>
+    </>
   );
 }
