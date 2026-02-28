@@ -296,10 +296,11 @@ export default function BuyerDashboard() {
                   <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
                   {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
                 </div>
-                <div>
-                  <Label>Delivery Address</Label>
-                  <Input value={profileForm.address} onChange={e => setProfileForm({...profileForm, address: e.target.value})} placeholder="Your physical address" className="mt-1 rounded-xl" />
-                </div>
+                <AddressInput 
+                  value={{ region: profileForm.region, town: profileForm.town, address: profileForm.address }}
+                  onChange={(newAddr) => setProfileForm({...profileForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
+                  errors={profileErrors}
+                />
                 <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
               </CardContent>
             </Card>
