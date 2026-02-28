@@ -122,8 +122,8 @@ export default function Cart() {
       ) : (
         <div className="space-y-6">
           {Object.entries(groupedByShop).map(([shopId, group]) => (
-            <div key={shopId} className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-              <div className="px-5 py-3 bg-slate-50 border-b border-slate-100 text-sm font-medium text-slate-700">
+            <div key={shopId} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+              <div className="px-5 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-100 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300">
                 {group.shop_name}
               </div>
               <div className="divide-y divide-slate-50">

@@ -74,8 +74,8 @@ export default function BrowseShops() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Auto Parts Shops</h1>
-          <p className="text-slate-500 mt-1">Verified dealers across Zambia</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Auto Parts Shops</h1>
+          <p className="text-slate-500 dark:text-slate-400 mt-1">Verified dealers across Zambia</p>
         </div>
         <Button variant="outline" onClick={getLocation} disabled={locating}
           className="gap-2 text-sm border-blue-200 text-blue-600 hover:bg-blue-50">

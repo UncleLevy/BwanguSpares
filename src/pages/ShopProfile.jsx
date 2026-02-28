@@ -92,7 +92,7 @@ export default function ShopProfile() {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-16 relative z-10">
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 mb-8">
+        <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm p-6 mb-8">
           <div className="flex flex-col md:flex-row md:items-end gap-4">
             <div className="w-20 h-20 rounded-2xl bg-blue-50 border-4 border-white shadow-md flex items-center justify-center overflow-hidden">
               {shop.logo_url ? <img src={shop.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-8 h-8 text-blue-400" />}

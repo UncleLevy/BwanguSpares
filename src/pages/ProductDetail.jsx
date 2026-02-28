@@ -79,7 +79,7 @@ export default function ProductDetail() {
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-slate-50 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
+          <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
             {product.image_url ? (
               <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
             ) : (
