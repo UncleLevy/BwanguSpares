@@ -287,7 +287,12 @@ export default function Cart() {
                 </div>
                 <div>
                    <Label className="text-sm text-slate-700 dark:text-slate-300">Coupon Code (optional)</Label>
-                   <Input value={form.coupon} onChange={e => setForm({...form, coupon: e.target.value})} placeholder="Enter coupon or discount code" className="mt-1 rounded-xl" />
+                   <div className="flex gap-2 mt-1">
+                     <Input value={form.coupon} onChange={e => { setForm({...form, coupon: e.target.value}); setCouponError(""); }} placeholder="Enter coupon or discount code" className="rounded-xl" />
+                     <Button onClick={applyCoupon} variant="outline" className="rounded-xl">Apply</Button>
+                   </div>
+                   {couponError && <p className="text-xs text-red-600 mt-1">{couponError}</p>}
+                   {appliedCoupon && <p className="text-xs text-emerald-600 mt-1">✓ {appliedCoupon.code} applied</p>}
                  </div>
                  <div>
                    <Label className="text-sm text-slate-700 dark:text-slate-300">Notes (optional)</Label>
