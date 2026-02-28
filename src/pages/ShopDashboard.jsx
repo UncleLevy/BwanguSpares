@@ -240,6 +240,50 @@ export default function ShopDashboard() {
     setTrackingDialog(false);
   };
 
+  const handleSwitchShop = async (shopId) => {
+    const selectedShop = shops.find(s => s.id === shopId);
+    setShop(selectedShop);
+    const [p, t, o] = await Promise.all([
+      base44.entities.Product.filter({ shop_id: shopId }),
+      base44.entities.Technician.filter({ shop_id: shopId }),
+      base44.entities.Order.filter({ shop_id: shopId }, "-created_date", 50),
+    ]);
+    setProducts(p);
+    setTechnicians(t);
+    setOrders(o);
+  };
+
+  const handleAddShop = async () => {
+    if (!newShopForm.name || !newShopForm.address || !newShopForm.region) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    const tierLimits = { free: 1, standard: 3, premium: 5 };
+    const maxShops = tierLimits[subscription?.tier || "free"];
+    if (shops.length >= maxShops) {
+      if (maxShops < 5) {
+        toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Contact us for an Enterprise plan with more branch slots.`);
+      } else {
+        toast.error("You've reached the maximum number of shops. Contact us for an Enterprise plan.");
+      }
+      return;
+    }
+    try {
+      const newShop = await base44.entities.Shop.create({
+        ...newShopForm,
+        owner_email: user.email,
+        owner_name: user.full_name,
+        status: "pending"
+      });
+      setShops([...shops, newShop]);
+      setShowNewShopDialog(false);
+      setNewShopForm({ name: "", phone: "", address: "", region: "" });
+      toast.success("Branch added successfully");
+    } catch (error) {
+      toast.error("Failed to add branch");
+    }
+  };
+
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
