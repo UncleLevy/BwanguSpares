@@ -394,6 +394,110 @@ export default function ShopDashboard() {
       <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
 
+        {view === "shop_info" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shop Information</h1>
+            {shop && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Basic Info Card */}
+                <Card className="lg:col-span-2 border-slate-100">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Basic Information</h2>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Shop Name</p>
+                        <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-1">{shop.name}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Description</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{shop.description || "No description added"}</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Contact Phone</p>
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.phone || "Not provided"}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Status</p>
+                          <Badge className={shop.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{shop.status}</Badge>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Stats Card */}
+                <Card className="border-slate-100">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Stats</h2>
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Products</p>
+                        <p className="text-2xl font-bold text-blue-600 mt-1">{products.length}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Orders</p>
+                        <p className="text-2xl font-bold text-purple-600 mt-1">{orders.length}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Revenue</p>
+                        <p className="text-xl font-bold text-emerald-600 mt-1">K{totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Location Card */}
+                <Card className="border-slate-100">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Location</h2>
+                    <div className="space-y-3">
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Region</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.region_name || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Town</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.town || "Not specified"}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Address</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{shop.address || "Not specified"}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Settings Card */}
+                <Card className="lg:col-span-2 border-slate-100">
+                  <CardContent className="p-6">
+                    <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Settings</h2>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Subscription Tier</p>
+                          <p className="text-xs text-slate-500 mt-0.5">Your current plan</p>
+                        </div>
+                        <Badge className="bg-blue-50 text-blue-700 capitalize">{subscription?.tier || "free"}</Badge>
+                      </div>
+                      <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Shop Slot Type</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{shop.slot_type}</p>
+                        <Badge className="bg-slate-100 text-slate-700 mt-2 capitalize">{shop.slot_type}</Badge>
+                      </div>
+                      <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Rating</p>
+                        <p className="text-xs text-slate-500 mt-0.5">Customer reviews</p>
+                        <p className="text-lg font-bold text-amber-600 mt-1">{shop.rating?.toFixed(1) || "0.0"} ★</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+          </div>
+        )}
+
         {view === "shops" && (
            <div>
              <div className="flex items-center justify-between mb-6">
