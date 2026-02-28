@@ -513,44 +513,58 @@ export default function ShopDashboard() {
                }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Branch</Button>
              </div>
 
-             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-               {shops.map(s => {
-                 const shopProducts = products.filter(p => p.shop_id === s.id);
-                 const shopOrders = orders.filter(o => o.shop_id === s.id);
-                 const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
-                 return (
-                   <Card key={s.id} className={`border-slate-100 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
-                     <CardContent className="p-5">
-                       <div className="flex items-start justify-between mb-3">
-                         <div>
-                           <h3 className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</h3>
-                           <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{s.status}</Badge>
+             {shops.length === 0 ? (
+               <Card className="border-amber-200 bg-amber-50/30">
+                 <CardContent className="p-8 text-center">
+                   <Store className="w-12 h-12 mx-auto mb-3 text-amber-600" />
+                   <h3 className="text-lg font-semibold text-amber-900 mb-2">No Shops Yet</h3>
+                   <p className="text-sm text-amber-800 mb-4">Create your first shop to get started.</p>
+                   <Button onClick={() => setShowNewShopDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-1.5">
+                     <Plus className="w-4 h-4" /> Create Shop
+                   </Button>
+                 </CardContent>
+               </Card>
+             ) : (
+               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                 {shops.map(s => {
+                   const shopProducts = products.filter(p => p.shop_id === s.id);
+                   const shopOrders = orders.filter(o => o.shop_id === s.id);
+                   const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
+                   return (
+                     <Card key={s.id} className={`border-slate-100 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
+                       <CardContent className="p-6">
+                         <div className="flex items-start justify-between mb-4">
+                           <div className="flex-1">
+                             <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{s.name}</h3>
+                             <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-2" : "bg-amber-50 text-amber-700 mt-2"}>{s.status}</Badge>
+                           </div>
+                           <Store className="w-6 h-6 text-blue-600 flex-shrink-0" />
                          </div>
-                         <Store className="w-5 h-5 text-blue-600" />
-                       </div>
-                       <div className="space-y-2 text-xs text-slate-500">
-                         {s.phone && <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {s.phone}</p>}
-                         {s.town && <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {s.town}</p>}
-                       </div>
-                       <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 gap-2">
-                         <div className="text-center">
-                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{shopProducts.length}</p>
-                           <p className="text-xs text-slate-500">Products</p>
+                         <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                           {s.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 flex-shrink-0" /> {s.phone}</p>}
+                           {s.address && <p className="flex items-start gap-2"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" /> <span>{s.address}</span></p>}
+                           {s.town && <p className="flex items-center gap-2"><MapPin className="w-4 h-4 flex-shrink-0" /> {s.town}{s.region_name ? `, ${s.region_name}` : ''}</p>}
                          </div>
-                         <div className="text-center">
-                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{shopOrders.length}</p>
-                           <p className="text-xs text-slate-500">Orders</p>
+                         <div className="grid grid-cols-3 gap-3">
+                           <div className="bg-blue-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
+                             <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{shopProducts.length}</p>
+                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Products</p>
+                           </div>
+                           <div className="bg-purple-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
+                             <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{shopOrders.length}</p>
+                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Orders</p>
+                           </div>
+                           <div className="bg-emerald-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
+                             <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">K{shopRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Revenue</p>
+                           </div>
                          </div>
-                         <div className="text-center">
-                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">K{shopRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                           <p className="text-xs text-slate-500">Revenue</p>
-                         </div>
-                       </div>
-                     </CardContent>
-                   </Card>
-                 );
-               })}
-             </div>
+                       </CardContent>
+                     </Card>
+                   );
+                 })}
+               </div>
+             )}
            </div>
          )}
 
