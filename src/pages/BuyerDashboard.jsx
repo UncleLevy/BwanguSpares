@@ -64,7 +64,17 @@ export default function BuyerDashboard() {
   }, []);
 
   const saveProfile = async () => {
-    await base44.auth.updateMe(profileForm);
+    const errors = {};
+    if (!profileForm.first_name.trim()) errors.first_name = "First name is required";
+    if (!profileForm.last_name.trim()) errors.last_name = "Last name is required";
+    if (profileForm.phone && !/^\+?\d{7,15}$/.test(profileForm.phone.replace(/\s/g, ""))) {
+      errors.phone = "Enter a valid phone number (e.g. +260...)";
+    }
+    if (Object.keys(errors).length > 0) { setProfileErrors(errors); return; }
+    setProfileErrors({});
+    const full_name = `${profileForm.first_name.trim()} ${profileForm.last_name.trim()}`;
+    await base44.auth.updateMe({ full_name, phone: profileForm.phone, address: profileForm.address });
+    setUser(u => ({ ...u, full_name, phone: profileForm.phone, address: profileForm.address }));
     toast.success("Profile updated");
   };
 
