@@ -66,10 +66,21 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
     }
 
     try {
+      // Get shop name from first campaign or fetch it
+      let shopName = "Shop";
+      if (campaigns.length > 0 && campaigns[0].shop_name) {
+        shopName = campaigns[0].shop_name;
+      }
+
       const data = {
         ...form,
         shop_id: shopId,
+        shop_name: shopName,
         recipient_count: previewCustomers.length,
+        estimated_open_rate: 0,
+        estimated_click_rate: 0,
+        estimated_opens: 0,
+        estimated_clicks: 0,
         status: form.scheduled_for ? "scheduled" : "draft"
       };
 
