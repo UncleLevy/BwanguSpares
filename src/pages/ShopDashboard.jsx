@@ -398,7 +398,7 @@ export default function ShopDashboard() {
         {view === "products" && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">Products</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Products</h1>
               <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "" }); setProductDialog(true); }}
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Product</Button>
             </div>
