@@ -27,9 +27,11 @@ export default function ShopProfile() {
   const [problemFilter, setProblemFilter] = useState("all");
   const [hireDialog, setHireDialog] = useState(false);
   const [selectedTech, setSelectedTech] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.isAuthenticated().then(setIsAuthenticated);
   }, []);
 
   useEffect(() => {
@@ -88,17 +90,17 @@ export default function ShopProfile() {
     brakes: "Brakes", general: "General", diagnostics: "Diagnostics", ac_heating: "AC/Heating", tyres: "Tyres"
   };
 
-  const PROBLEM_OPTIONS = [
+  const PROBLEM_TYPES = [
     { value: "all", label: "All Problems" },
-    { value: "engine", label: "Engine Issues" },
-    { value: "electrical", label: "Electrical Problems" },
+    { value: "engine", label: "Engine" },
+    { value: "electrical", label: "Electrical" },
     { value: "body_work", label: "Body Work" },
     { value: "transmission", label: "Transmission" },
-    { value: "brakes", label: "Brake Problems" },
+    { value: "brakes", label: "Brakes" },
     { value: "diagnostics", label: "Diagnostics" },
-    { value: "ac_heating", label: "AC / Heating" },
+    { value: "ac_heating", label: "AC/Heating" },
     { value: "tyres", label: "Tyres" },
-    { value: "general", label: "General Repair" },
+    { value: "general", label: "General" },
   ];
 
   const filteredTechnicians = problemFilter === "all"
