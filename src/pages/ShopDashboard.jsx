@@ -887,6 +887,11 @@ export default function ShopDashboard() {
                               <MapPin className="w-3 h-3" /> Tracking
                             </Button>
                           )}
+                          {o.status === "confirmed" && (
+                            <Button size="sm" variant="outline" onClick={() => { setReceiptOrder(o); setReceiptDialog(true); }} className="h-8 gap-1">
+                              <Eye className="w-3 h-3" /> Receipt
+                            </Button>
+                          )}
                           <DocumentPrinter shop={shop} order={o} triggerLabel="Print" />
                         </div>
                       </TableCell>
