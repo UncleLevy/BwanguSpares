@@ -262,7 +262,7 @@ export default function ShopDashboard() {
   };
 
   const handleAddShop = async () => {
-    if (!newShopForm.name || !newShopForm.address || !newShopForm.region) {
+    if (!newShopForm.name || !newShopForm.address || !newShopForm.region || !newShopForm.town) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -278,17 +278,21 @@ export default function ShopDashboard() {
     }
     try {
       const newShop = await base44.entities.Shop.create({
-        ...newShopForm,
+        name: newShopForm.name,
+        phone: newShopForm.phone,
+        address: newShopForm.address,
+        region: newShopForm.region,
+        town: newShopForm.town,
         owner_email: user.email,
         owner_name: user.full_name,
         status: "pending"
       });
       setShops([...shops, newShop]);
       setShowNewShopDialog(false);
-      setNewShopForm({ name: "", phone: "", address: "", region: "" });
-      toast.success("Branch added successfully");
+      setNewShopForm({ name: "", phone: "", address: "", region: "", town: "" });
+      toast.success("✓ Branch added successfully. Awaiting admin approval.");
     } catch (error) {
-      toast.error("Failed to add branch");
+      toast.error("✗ Failed to add branch. Please try again.");
     }
   };
 
