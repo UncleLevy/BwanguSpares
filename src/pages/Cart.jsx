@@ -253,12 +253,12 @@ export default function Cart() {
             <div className="space-y-2 mb-4 pb-4 border-b border-slate-200 dark:border-slate-700">
                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                  <span>Subtotal</span>
-                 <span>K{(subtotal / 1.16).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                 <span>K{subtotal.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                </div>
                {discountAmount > 0 && (
                  <div className="flex justify-between text-sm text-emerald-600">
                    <span>Discount ({appliedCoupon.discount_type === "percentage" ? `${appliedCoupon.discount_value}%` : "Fixed"})</span>
-                   <span>-K{discountAmount.toLocaleString()}</span>
+                   <span>-K{discountAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                  </div>
                )}
                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
@@ -267,7 +267,7 @@ export default function Cart() {
                </div>
                <div className="flex justify-between text-lg font-bold text-slate-900 dark:text-slate-100">
                  <span>Total</span>
-                 <span className="text-blue-600">K{total.toLocaleString()}</span>
+                 <span className="text-blue-600">K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                </div>
              </div>
 
