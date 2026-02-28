@@ -74,86 +74,82 @@ export default function ProductDetail() {
     <div>
       <AppHeader title={product?.name || "Product"} backTo="BrowseProducts" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        {/* Desktop back link */}
         <Link to={createPageUrl("BrowseProducts")} className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
           ← Back to results
         </Link>
 
         <div className="grid md:grid-cols-2 gap-8">
-...
-        <div className="bg-slate-50 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
-          {product.image_url ? (
-            <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
-          ) : (
-            <Package className="w-20 h-20 text-slate-200" />
-          )}
-        </div>
-
-        <div>
-          <div className="flex gap-2 mb-3">
-            <Badge className={`border ${conditionColors[product.condition] || conditionColors.new}`}>{product.condition}</Badge>
-            <Badge variant="outline">{categoryLabels[product.category] || product.category}</Badge>
+          <div className="bg-slate-50 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
+            {product.image_url ? (
+              <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
+            ) : (
+              <Package className="w-20 h-20 text-slate-200" />
+            )}
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-900">{product.name}</h1>
-
-          <Link to={createPageUrl("ShopProfile") + `?id=${product.shop_id}`}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mt-2">
-            <Store className="w-4 h-4" /> {product.shop_name}
-          </Link>
-
-          <div className="mt-6">
-            <span className="text-3xl font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
-          </div>
-
-          <div className="mt-4 space-y-2 text-sm text-slate-600">
-            {product.brand && <p><span className="text-slate-400">Brand:</span> {product.brand}</p>}
-            {product.compatible_vehicles && <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles}</p>}
-            <p className="flex items-center gap-1.5">
-              <span className="text-slate-400">Stock:</span>
-              {product.stock_quantity > 0 ? (
-                <span className="text-emerald-600 flex items-center gap-1"><Check className="w-4 h-4" /> {product.stock_quantity} in stock</span>
-              ) : (
-                <span className="text-red-500">Out of stock</span>
-              )}
-            </p>
-          </div>
-
-          {product.description && (
-            <p className="mt-4 text-sm text-slate-600 leading-relaxed">{product.description}</p>
-          )}
-
-          <div className="mt-6 flex items-center gap-3">
-            <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden">
-              <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">−</button>
-              <span className="px-4 py-2 text-sm font-medium border-x border-slate-200">{qty}</span>
-              <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">+</button>
+          <div>
+            <div className="flex gap-2 mb-3">
+              <Badge className={`border ${conditionColors[product.condition] || conditionColors.new}`}>{product.condition}</Badge>
+              <Badge variant="outline">{categoryLabels[product.category] || product.category}</Badge>
             </div>
-            <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
-              disabled={product.stock_quantity === 0}>
-              <ShoppingCart className="w-4 h-4" /> Add to Cart
-            </Button>
-          </div>
 
-          {product.stock_quantity === 0 && (
-            <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
-              <p className="text-sm text-amber-800 font-medium">This product is currently out of stock.</p>
-              <p className="text-xs text-amber-600 mt-1">Submit a parts request and the shop will contact you when it's available.</p>
-              <Button onClick={() => setRequestOpen(true)} size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700 gap-1.5">
-                <FileSearch className="w-3.5 h-3.5" /> Request this Part
+            <h1 className="text-2xl font-bold text-slate-900">{product.name}</h1>
+
+            <Link to={createPageUrl("ShopProfile") + `?id=${product.shop_id}`}
+              className="inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mt-2">
+              <Store className="w-4 h-4" /> {product.shop_name}
+            </Link>
+
+            <div className="mt-6">
+              <span className="text-3xl font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+            </div>
+
+            <div className="mt-4 space-y-2 text-sm text-slate-600">
+              {product.brand && <p><span className="text-slate-400">Brand:</span> {product.brand}</p>}
+              {product.compatible_vehicles && <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles}</p>}
+              <p className="flex items-center gap-1.5">
+                <span className="text-slate-400">Stock:</span>
+                {product.stock_quantity > 0 ? (
+                  <span className="text-emerald-600 flex items-center gap-1"><Check className="w-4 h-4" /> {product.stock_quantity} in stock</span>
+                ) : (
+                  <span className="text-red-500">Out of stock</span>
+                )}
+              </p>
+            </div>
+
+            {product.description && (
+              <p className="mt-4 text-sm text-slate-600 leading-relaxed">{product.description}</p>
+            )}
+
+            <div className="mt-6 flex items-center gap-3">
+              <div className="flex items-center border border-slate-200 rounded-xl overflow-hidden">
+                <button onClick={() => setQty(Math.max(1, qty-1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">−</button>
+                <span className="px-4 py-2 text-sm font-medium border-x border-slate-200">{qty}</span>
+                <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 hover:bg-slate-50">+</button>
+              </div>
+              <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
+                disabled={product.stock_quantity === 0}>
+                <ShoppingCart className="w-4 h-4" /> Add to Cart
               </Button>
             </div>
-          )}
+
+            {product.stock_quantity === 0 && (
+              <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+                <p className="text-sm text-amber-800 font-medium">This product is currently out of stock.</p>
+                <p className="text-xs text-amber-600 mt-1">Submit a parts request and the shop will contact you when it's available.</p>
+                <Button onClick={() => setRequestOpen(true)} size="sm" className="mt-3 bg-blue-600 hover:bg-blue-700 gap-1.5">
+                  <FileSearch className="w-3.5 h-3.5" /> Request this Part
+                </Button>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
 
-      </div>
-
-      <PartsRequestForm
-        open={requestOpen}
-        onClose={() => setRequestOpen(false)}
-        prefill={{ part_name: product.name, compatible_vehicles: product.compatible_vehicles || "" }}
-      />
+        <PartsRequestForm
+          open={requestOpen}
+          onClose={() => setRequestOpen(false)}
+          prefill={{ part_name: product.name, compatible_vehicles: product.compatible_vehicles || "" }}
+        />
       </div>
     </div>
   );
