@@ -44,8 +44,8 @@ import BranchManager from "@/components/branches/BranchManager";
 import OrderReceipt from "@/components/receipts/OrderReceipt";
 import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
 import CustomerManager from "@/components/customers/CustomerManager";
-import CustomerSegmentation from "@/components/marketing/CustomerSegmentation";
-import TargetedCampaigns from "@/components/marketing/TargetedCampaigns";
+import MarketingTools from "@/components/marketing/MarketingTools";
+import MarketingAnalyticsDashboard from "@/components/marketing/MarketingAnalyticsDashboard";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -968,11 +968,11 @@ export default function ShopDashboard() {
         )}
 
         {view === "marketing" && (
-          <CustomerSegmentation shopId={shop?.id} customers={customers} />
+          <MarketingTools shopId={shop?.id} customers={customers} />
         )}
 
         {view === "marketing_analytics" && (
-          <TargetedCampaigns shopId={shop?.id} customers={customers} segments={[]} />
+          <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
