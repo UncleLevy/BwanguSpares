@@ -38,6 +38,16 @@ export default function ProductDetail() {
     })();
   }, [id]);
 
+  useEffect(() => {
+    (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      }
+    })();
+  }, []);
+
   const handleAddToCart = async () => {
     const isAuth = await base44.auth.isAuthenticated();
     if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("ProductDetail") + `?id=${id}`); return; }
