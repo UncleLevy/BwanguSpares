@@ -847,7 +847,12 @@ export default function ShopDashboard() {
             setOrders(o);
           }}>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Orders</h1>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Orders</h1>
+              <Button onClick={() => setReportDialog(true)} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5">
+                <Download className="w-4 h-4" /> Download Report
+              </Button>
+            </div>
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-x-auto">
               <Table>
                 <TableHeader>
