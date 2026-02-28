@@ -407,33 +407,42 @@ export default function ShopDashboard() {
              </div>
 
              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-               {shops.map(s => (
-                 <Card key={s.id} className="border-slate-100 hover-lift cursor-pointer transition-all" onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
-                   <CardContent className="p-5">
-                     <div className="flex items-start justify-between mb-3">
-                       <div>
-                         <h3 className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</h3>
-                         <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{s.status}</Badge>
+               {shops.map(s => {
+                 const shopProducts = products.filter(p => p.shop_id === s.id);
+                 const shopOrders = orders.filter(o => o.shop_id === s.id);
+                 const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
+                 return (
+                   <Card key={s.id} className={`border-slate-100 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
+                     <CardContent className="p-5">
+                       <div className="flex items-start justify-between mb-3">
+                         <div>
+                           <h3 className="font-semibold text-slate-900 dark:text-slate-100">{s.name}</h3>
+                           <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{s.status}</Badge>
+                         </div>
+                         <Store className="w-5 h-5 text-blue-600" />
                        </div>
-                       <Store className="w-5 h-5 text-blue-600" />
-                     </div>
-                     <div className="space-y-2 text-xs text-slate-500">
-                       {s.phone && <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {s.phone}</p>}
-                       {s.town && <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {s.town}</p>}
-                     </div>
-                     <div className="mt-4 pt-4 border-t border-slate-100 flex gap-2">
-                       <div className="flex-1 text-center">
-                         <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{products.filter(p => p.shop_id === s.id).length}</p>
-                         <p className="text-xs text-slate-500">Products</p>
+                       <div className="space-y-2 text-xs text-slate-500">
+                         {s.phone && <p className="flex items-center gap-2"><Phone className="w-3 h-3" /> {s.phone}</p>}
+                         {s.town && <p className="flex items-center gap-2"><MapPin className="w-3 h-3" /> {s.town}</p>}
                        </div>
-                       <div className="flex-1 text-center">
-                         <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{orders.filter(o => o.shop_id === s.id).length}</p>
-                         <p className="text-xs text-slate-500">Orders</p>
+                       <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-3 gap-2">
+                         <div className="text-center">
+                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{shopProducts.length}</p>
+                           <p className="text-xs text-slate-500">Products</p>
+                         </div>
+                         <div className="text-center">
+                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">{shopOrders.length}</p>
+                           <p className="text-xs text-slate-500">Orders</p>
+                         </div>
+                         <div className="text-center">
+                           <p className="text-lg font-bold text-slate-900 dark:text-slate-100">K{shopRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                           <p className="text-xs text-slate-500">Revenue</p>
+                         </div>
                        </div>
-                     </div>
-                   </CardContent>
-                 </Card>
-               ))}
+                     </CardContent>
+                   </Card>
+                 );
+               })}
              </div>
            </div>
          )}
