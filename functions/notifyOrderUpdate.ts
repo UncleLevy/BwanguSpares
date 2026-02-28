@@ -6,6 +6,22 @@ Deno.serve(async (req) => {
     const { event, data, old_data } = await req.json();
 
     if (event.type === 'create') {
+      // Deduct stock for each ordered item
+      const items = data.items || [];
+      for (const item of items) {
+        if (item.product_id) {
+          const products = await base44.asServiceRole.entities.Product.filter({ id: item.product_id });
+          if (products.length > 0) {
+            const product = products[0];
+            const newQty = Math.max(0, (product.stock_quantity || 0) - (item.quantity || 1));
+            await base44.asServiceRole.entities.Product.update(product.id, {
+              stock_quantity: newQty,
+              status: newQty === 0 ? 'out_of_stock' : product.status === 'out_of_stock' ? 'active' : product.status,
+            });
+          }
+        }
+      }
+
       // Notify shop owner about new order
       const shops = await base44.asServiceRole.entities.Shop.filter({ id: data.shop_id });
       const shop = shops[0];
