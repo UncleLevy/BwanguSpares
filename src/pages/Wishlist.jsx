@@ -6,6 +6,7 @@ import { Heart, ShoppingCart, Trash2, ArrowRight } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 export default function WishlistPage() {
   const [items, setItems] = useState([]);
@@ -79,6 +80,7 @@ export default function WishlistPage() {
     <div>
       <AppHeader title="Wishlist" backTo="BrowseProducts" />
       <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        <Breadcrumbs items={[{ label: "Wishlist" }]} />
         <h1 className="hidden md:block text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wishlist</h1>
 
         {items.length === 0 ? (
