@@ -12,13 +12,17 @@ Deno.serve(async (req) => {
     const partsRequest = data;
 
     // Get all standard and premium shops for the region
-    const shops = await base44.entities.Shop.filter({
-      region_id: partsRequest.buyer_region,
-      status: 'approved'
-    });
+    const allShops = await base44.entities.Shop.filter(
+      { status: 'approved' },
+      null,
+      1000
+    );
 
-    // Filter for standard and premium shops only
-    const eligibleShops = shops.filter(s => ['standard', 'premium'].includes(s.slot_type));
+    // Filter for shops in same region with standard or premium tier
+    const eligibleShops = allShops.filter(s => 
+      ['standard', 'premium'].includes(s.slot_type) && 
+      s.region_name === partsRequest.buyer_region
+    );
 
     // Create notifications for each eligible shop
     const notifications = eligibleShops.map(shop => ({
