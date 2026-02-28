@@ -80,9 +80,10 @@ export default function RegisterShop() {
       return true;
     }
     if (currentStep === 2) {
-      if (!form.region) { toast.error("Please select a region"); return false; }
-      if (!form.address.trim()) { toast.error("Address is required"); return false; }
-      return true;
+       if (!form.region) { toast.error("Please select a region"); return false; }
+       if (!form.town) { toast.error("Please select a town"); return false; }
+       if (!form.address.trim()) { toast.error("Address is required"); return false; }
+       return true;
     }
     if (currentStep === 3) {
       if (!form.logo_url) { toast.error("Shop logo is required"); return false; }
