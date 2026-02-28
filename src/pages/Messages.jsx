@@ -4,6 +4,7 @@ import { MessageSquare } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import ConversationList from "@/components/messaging/ConversationList";
 import ChatWindow from "@/components/messaging/ChatWindow";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 export default function Messages() {
   const [user, setUser] = useState(null);
@@ -79,6 +80,7 @@ export default function Messages() {
     <div>
       <AppHeader title="Messages" backTo="Home" />
       <div className="max-w-6xl mx-auto px-4 py-8">
+        <Breadcrumbs items={[{ label: "Messages" }]} />
         <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "70vh" }}>
         {/* Conversation list — hidden on mobile when chat open */}
         <div className={`${showChat ? "hidden" : "flex"} md:flex flex-col w-full md:w-72 border-r border-slate-100 overflow-y-auto flex-shrink-0`}>
