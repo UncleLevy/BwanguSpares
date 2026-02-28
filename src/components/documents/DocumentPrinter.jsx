@@ -31,12 +31,12 @@ function DocumentView({ type, shop, order, partsRequest, docNumber }) {
   const color = typeColors[type];
 
   const items = isOrder
-    ? (order.items || [])
-    : [{ product_name: partsRequest?.part_name, quantity: 1, price: partsRequest?.budget || 0 }];
+     ? (order.items || [])
+     : [{ product_name: partsRequest?.part_name, quantity: 1, price: partsRequest?.budget || 0 }];
 
-  const subtotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
-  const vat = type !== "quotation" ? subtotal * 0.16 : 0;
-  const total = subtotal + vat;
+   const total = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
+   const subtotal = type !== "quotation" ? Math.round((total / 1.16) * 100) / 100 : total;
+   const vat = type !== "quotation" ? Math.round((total - subtotal) * 100) / 100 : 0;
 
   return (
     <div id="printable-document" style={{ fontFamily: "Arial, sans-serif", padding: "32px", maxWidth: "700px", margin: "0 auto", background: "#fff", color: "#1a1a1a" }}>
