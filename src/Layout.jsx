@@ -16,6 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import DarkModeToggle from "@/components/shared/DarkModeToggle";
+import PageLoader from "@/components/shared/PageLoader";
 
 const pageVariants = {
   initial: { opacity: 0, x: 24 },
