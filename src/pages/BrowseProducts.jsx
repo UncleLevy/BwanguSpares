@@ -75,6 +75,10 @@ export default function BrowseProducts() {
       return;
     }
     const user = await base44.auth.me();
+    if (user.role !== 'buyer') {
+      toast.error("Only buyers can place orders");
+      return;
+    }
     const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
     if (existing.length > 0) {
       const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + 1);
