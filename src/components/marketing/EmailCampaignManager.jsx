@@ -187,11 +187,18 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
   return (
     <>
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Email Campaigns</h2>
-        <Button onClick={() => { setEditingCampaign(null); setForm({ name: "", subject: "", content: "", target_segment: "all_customers", location_filter: { region: "", town: "" }, promo_code: "" }); setDialog(true); }} className="bg-blue-600 hover:bg-blue-700 gap-1.5">
-          <Plus className="w-4 h-4" /> Create Campaign
-        </Button>
-      </div>
+         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Email Campaigns</h2>
+         <Button 
+           onClick={() => {
+             setEditingCampaign(null);
+             setForm({ name: "", subject: "", content: "", target_segment: "all_customers", location_filter: { region: "", town: "" }, promo_code: "" });
+             setDialog(true);
+           }}
+           className="bg-blue-600 hover:bg-blue-700 gap-1.5"
+         >
+           <Plus className="w-4 h-4" /> Create Campaign
+         </Button>
+       </div>
 
       <Card className="border-slate-100">
         <CardContent className="p-0">
