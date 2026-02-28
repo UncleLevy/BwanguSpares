@@ -29,6 +29,7 @@ import ReportsPanel from "@/components/admin/ReportsPanel";
 import UsersPanel from "@/components/admin/UsersPanel";
 import AuditLogPanel from "@/components/admin/AuditLogPanel";
 import OrdersPanel from "@/components/admin/OrdersPanel";
+import ReportingPanel from "@/components/admin/ReportingPanel";
 import { logAudit } from "@/components/shared/auditLog";
 
 export default function AdminDashboard() {
@@ -100,11 +101,11 @@ export default function AdminDashboard() {
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
+    { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
-    { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports"), badge: reportCount || null },
     { id: "users", label: "Users", icon: Users, onClick: () => setView("users") },
     { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit") },
   ];
@@ -405,7 +406,7 @@ export default function AdminDashboard() {
           />
         )}
 
-        {view === "reports" && <ReportsPanel adminUser={user} />}
+        {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
 
         {view === "users" && <UsersPanel adminUser={user} />}
