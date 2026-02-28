@@ -81,8 +81,8 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
             <Input value={form.buyer_name} onChange={e => setForm({ ...form, buyer_name: e.target.value })} className="mt-1" placeholder="Full name" />
           </div>
           <div>
-            <Label>Phone Number</Label>
-            <Input value={form.buyer_phone} onChange={e => setForm({ ...form, buyer_phone: e.target.value })} className="mt-1" placeholder="+260..." />
+            <Label>Phone Number *</Label>
+            <Input type="tel" value={form.buyer_phone} onChange={e => setForm({ ...form, buyer_phone: e.target.value })} className="mt-1" placeholder="+260 7XX XXX XXX" />
           </div>
           <div>
             <Label>Describe the Problem *</Label>
