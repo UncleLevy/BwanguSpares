@@ -176,7 +176,13 @@ export default function Layout({ children, currentPageName }) {
         )}
       </header>
 
-      <main className="pb-16 md:pb-0">{children}</main>
+      <main className="pb-16 md:pb-0">
+        <AnimatePresence mode="wait">
+          <motion.div key={location.pathname + location.search} {...pageVariants}>
+            {children}
+          </motion.div>
+        </AnimatePresence>
+      </main>
       <BottomNav />
 
       <footer className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
