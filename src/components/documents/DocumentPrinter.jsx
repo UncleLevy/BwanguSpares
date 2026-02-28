@@ -226,6 +226,36 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      {/* Email Dialog */}
+      <Dialog open={emailDialog} onOpenChange={setEmailDialog}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Mail className="w-5 h-5 text-blue-600" />
+              Email {docType.charAt(0).toUpperCase() + docType.slice(1)}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="py-2 space-y-3">
+            <p className="text-sm text-slate-500">Send this {docType} to the client by email.</p>
+            <div>
+              <label className="text-sm font-medium text-slate-700">Recipient Email</label>
+              <Input
+                className="mt-1"
+                type="email"
+                placeholder="client@example.com"
+                value={emailTo}
+                onChange={e => setEmailTo(e.target.value)}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEmailDialog(false)}>Cancel</Button>
+            <Button onClick={handleSendEmail} disabled={sending} className="bg-blue-600 hover:bg-blue-700 gap-2">
+              {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending…</> : <><Mail className="w-4 h-4" /> Send</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
