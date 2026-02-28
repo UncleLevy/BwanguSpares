@@ -759,17 +759,19 @@ export default function ShopDashboard() {
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
-          <DialogContent>
-            <DialogHeader><DialogTitle>Add New Branch</DialogTitle></DialogHeader>
-            <div className="space-y-4">
-              <div><Label>Branch Name *</Label><Input value={newShopForm.name} onChange={e => setNewShopForm({...newShopForm, name: e.target.value})} placeholder="e.g. Main Branch, Lusaka Outlet" className="mt-1" /></div>
-              <div><Label>Phone</Label><Input value={newShopForm.phone} onChange={e => setNewShopForm({...newShopForm, phone: e.target.value})} className="mt-1" /></div>
-              <div><Label>Address *</Label><Input value={newShopForm.address} onChange={e => setNewShopForm({...newShopForm, address: e.target.value})} className="mt-1" /></div>
-              <div><Label>Region *</Label><Input value={newShopForm.region} onChange={e => setNewShopForm({...newShopForm, region: e.target.value})} className="mt-1" /></div>
-            </div>
-            <DialogFooter><Button onClick={handleAddShop} className="bg-blue-600 hover:bg-blue-700">Add Branch</Button></DialogFooter>
-          </DialogContent>
-        </Dialog>
+           <DialogContent>
+             <DialogHeader><DialogTitle>Add New Branch</DialogTitle></DialogHeader>
+             <div className="space-y-4">
+               <div><Label>Branch Name *</Label><Input value={newShopForm.name} onChange={e => setNewShopForm({...newShopForm, name: e.target.value})} placeholder="e.g. Main Branch, Lusaka Outlet" className="mt-1" /></div>
+               <div><Label>Phone</Label><Input value={newShopForm.phone} onChange={e => setNewShopForm({...newShopForm, phone: e.target.value})} className="mt-1" /></div>
+               <AddressInput 
+                 value={{ region: newShopForm.region, town: newShopForm.town, address: newShopForm.address }}
+                 onChange={(newAddr) => setNewShopForm({...newShopForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
+               />
+             </div>
+             <DialogFooter><Button onClick={handleAddShop} className="bg-blue-600 hover:bg-blue-700">Add Branch</Button></DialogFooter>
+           </DialogContent>
+         </Dialog>
 
         {selectedProductForVariations && (
           <Dialog open={!!selectedProductForVariations} onOpenChange={() => setSelectedProductForVariations(null)}>
