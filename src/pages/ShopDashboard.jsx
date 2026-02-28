@@ -36,6 +36,9 @@ import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
 import CategoryChart from "@/components/analytics/CategoryChart";
 import TopItemsList from "@/components/analytics/TopItemsList";
+import ProductVariationsPanel from "@/components/products/ProductVariationsPanel";
+import BulkEditPanel from "@/components/products/BulkEditPanel";
+import LowStockAlerts from "@/components/products/LowStockAlerts";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -71,9 +74,11 @@ export default function ShopDashboard() {
 
   const [productDialog, setProductDialog] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
+  const [selectedProductForVariations, setSelectedProductForVariations] = useState(null);
   const [productForm, setProductForm] = useState({
     name: "", description: "", price: "", category: "other", sub_category: "", brand: "",
     compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5",
+    tags: []
   });
 
   const [techDialog, setTechDialog] = useState(false);
@@ -139,6 +144,7 @@ export default function ShopDashboard() {
       shop_id: shop.id,
       shop_name: shop.name,
       status: qty === 0 ? "out_of_stock" : "active",
+      tags: productForm.tags
     };
     if (editProduct) {
       await base44.entities.Product.update(editProduct.id, data);
@@ -151,7 +157,7 @@ export default function ShopDashboard() {
     }
     setProductDialog(false);
     setEditProduct(null);
-    setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5" });
+    setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [] });
   };
 
   const deleteProduct = async (id) => {
@@ -168,6 +174,7 @@ export default function ShopDashboard() {
       compatible_vehicles: p.compatible_vehicles || "", condition: p.condition,
       stock_quantity: String(p.stock_quantity || 0), sku: p.sku || "",
       low_stock_threshold: String(p.low_stock_threshold ?? 5),
+      tags: p.tags || []
     });
     setProductDialog(true);
   };
@@ -483,14 +490,15 @@ export default function ShopDashboard() {
           <div>
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Products</h1>
-              <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "" }); setProductDialog(true); }}
+              <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", tags: [] }); setProductDialog(true); }}
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Product</Button>
             </div>
+            <BulkEditPanel products={products} onUpdate={setProducts} />
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Name</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead>Stock</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                    <TableHead>Name</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead>Stock</TableHead><TableHead>Status</TableHead><TableHead>Tags</TableHead><TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -501,8 +509,10 @@ export default function ShopDashboard() {
                       <TableCell>K{p.price?.toLocaleString()}</TableCell>
                       <TableCell>{p.stock_quantity}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
+                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div></TableCell>
                       <TableCell>
                         <div className="flex gap-1">
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setSelectedProductForVariations(p); }}><Wrench className="w-3.5 h-3.5" title="Variations" /></Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEditProduct(p)}><Pencil className="w-3.5 h-3.5" /></Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => deleteProduct(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                         </div>
@@ -534,6 +544,7 @@ export default function ShopDashboard() {
                   </div>
                   <div><Label>Brand</Label><Input value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="mt-1" /></div>
                   <div><Label>Compatible Vehicles</Label><Input value={productForm.compatible_vehicles} onChange={e => setProductForm({...productForm, compatible_vehicles: e.target.value})} placeholder="e.g. Toyota Corolla 2015-2020" className="mt-1" /></div>
+                  <div><Label>Tags</Label><Input value={productForm.tags.join(", ")} onChange={e => setProductForm({...productForm, tags: e.target.value.split(",").map(t => t.trim())})} placeholder="e.g. new, popular, sale" className="mt-1" /></div>
                   <div>
                     <Label>Product Image</Label>
                     <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, true)} disabled={uploading} className="mt-1 cursor-pointer" />
@@ -671,7 +682,11 @@ export default function ShopDashboard() {
         )}
 
         {view === "inventory" && (
-          <InventoryPanel products={products} orders={orders} onProductsChange={setProducts} />
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Inventory</h1>
+            <LowStockAlerts shopId={shop?.id} products={products} />
+            <InventoryPanel products={products} orders={orders} onProductsChange={setProducts} />
+          </div>
         )}
 
         {view === "market_insights" && (
@@ -702,6 +717,15 @@ export default function ShopDashboard() {
             <DialogFooter><Button onClick={handleAddShop} className="bg-blue-600 hover:bg-blue-700">Add Branch</Button></DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {selectedProductForVariations && (
+          <Dialog open={!!selectedProductForVariations} onOpenChange={() => setSelectedProductForVariations(null)}>
+            <DialogContent className="max-w-lg">
+              <DialogHeader><DialogTitle>Variations - {selectedProductForVariations.name}</DialogTitle></DialogHeader>
+              <ProductVariationsPanel product={selectedProductForVariations} />
+            </DialogContent>
+          </Dialog>
+        )}
       </main>
     </div>
   );
