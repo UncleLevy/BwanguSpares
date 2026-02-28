@@ -40,9 +40,14 @@ export default function ProductDetail() {
     const isAuth = await base44.auth.isAuthenticated();
     if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("ProductDetail") + `?id=${id}`); return; }
     const user = await base44.auth.me();
+    if ((product.stock_quantity || 0) < qty) {
+      toast.error(`Only ${product.stock_quantity} unit(s) available. Submit a parts request for more.`);
+      return;
+    }
     const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
     if (existing.length > 0) {
-      await base44.entities.CartItem.update(existing[0].id, { quantity: (existing[0].quantity || 1) + qty });
+      const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + qty);
+      await base44.entities.CartItem.update(existing[0].id, { quantity: newQty });
     } else {
       await base44.entities.CartItem.create({
         buyer_email: user.email, product_id: product.id, product_name: product.name,
