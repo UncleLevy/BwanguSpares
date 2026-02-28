@@ -323,7 +323,7 @@ export default function ShopDashboard() {
 
         {view === "overview" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-1">{shop?.name}</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{shop?.name}</h1>
             <p className="text-sm text-slate-500 mb-6">
               Status: <Badge className={shop?.status === "approved" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}>{shop?.status}</Badge>
             </p>
