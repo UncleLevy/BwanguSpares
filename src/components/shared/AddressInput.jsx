@@ -12,7 +12,9 @@ export default function AddressInput({
   const [regions, setRegions] = useState([]);
   const [towns, setTowns] = useState([]);
   const [loadingRegions, setLoadingRegions] = useState(true);
+  const [loadingTowns, setLoadingTowns] = useState(false);
 
+  // Load regions on mount
   useEffect(() => {
     (async () => {
       try {
@@ -26,31 +28,42 @@ export default function AddressInput({
     })();
   }, []);
 
+  // Load towns when region changes
   useEffect(() => {
-    if (value.region) {
-      (async () => {
-        try {
-          const t = await base44.entities.Town.filter({ region_id: value.region });
-          setTowns(t);
-        } catch (e) {
-          console.error("Failed to load towns:", e);
-        }
-      })();
-    } else {
+    if (!value.region) {
       setTowns([]);
+      return;
     }
+
+    setLoadingTowns(true);
+    (async () => {
+      try {
+        const t = await base44.entities.Town.filter({ region_id: value.region });
+        setTowns(t || []);
+      } catch (e) {
+        console.error("Failed to load towns:", e);
+        setTowns([]);
+      } finally {
+        setLoadingTowns(false);
+      }
+    })();
   }, [value.region]);
+
+  const handleRegionChange = (regionId) => {
+    onChange({ ...value, region: regionId, town: "" });
+  };
+
+  const handleTownChange = (townName) => {
+    onChange({ ...value, town: townName });
+  };
 
   return (
     <div className="space-y-4">
       <div>
         <Label>Region *</Label>
-        <Select value={value.region || ""} onValueChange={(v) => {
-          const selectedRegion = regions.find(r => r.id === v);
-          onChange({ ...value, region: selectedRegion?.name || v, town: "" });
-        }}>
+        <Select value={value.region || ""} onValueChange={handleRegionChange} disabled={loadingRegions}>
           <SelectTrigger className="mt-1 rounded-xl">
-            <SelectValue placeholder="Select region" />
+            <SelectValue placeholder={loadingRegions ? "Loading regions..." : "Select region"} />
           </SelectTrigger>
           <SelectContent>
             {regions.map(r => (
@@ -63,9 +76,13 @@ export default function AddressInput({
 
       <div>
         <Label>Town *</Label>
-        <Select value={value.town || ""} onValueChange={(v) => onChange({ ...value, town: v })} disabled={!value.region}>
+        <Select value={value.town || ""} onValueChange={handleTownChange} disabled={!value.region || loadingTowns}>
           <SelectTrigger className="mt-1 rounded-xl">
-            <SelectValue placeholder={value.region ? "Select town" : "Select region first"} />
+            <SelectValue placeholder={
+              loadingTowns ? "Loading towns..." : 
+              !value.region ? "Select region first" : 
+              "Select town"
+            } />
           </SelectTrigger>
           <SelectContent>
             {towns.map(t => (
