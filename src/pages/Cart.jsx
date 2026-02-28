@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, AlertTriangle } from "lucide-react";
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,26 +20,26 @@ export default function Cart() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    (async () => {
+    loadCart();
+  }, []);
+
+  const loadCart = async () => {
+    try {
       const u = await base44.auth.me();
-      setUser(u);
-      
-      // Only buyers can access cart
-      if (u.role !== 'buyer') {
+      if (!u) {
         navigate(createPageUrl('Home'));
         return;
       }
       
+      setUser(u);
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
-      // Enrich with current stock
-      const enriched = await Promise.all(cart.map(async (item) => {
-        const products = await base44.entities.Product.filter({ id: item.product_id });
-        return { ...item, _stock: products[0]?.stock_quantity ?? 0 };
-      }));
-      setItems(enriched);
+      setItems(cart || []);
+    } catch (error) {
+      toast.error("Failed to load cart");
+    } finally {
       setLoading(false);
-    })();
-  }, []);
+    }
+  };
 
   const updateQty = async (item, delta) => {
     const newQty = Math.max(1, (item.quantity || 1) + delta);
