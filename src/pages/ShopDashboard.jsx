@@ -91,14 +91,21 @@ export default function ShopDashboard() {
     (async () => {
       const u = await base44.auth.me();
       setUser(u);
-      if (!u.shop_id) { navigate(createPageUrl("RegisterShop")); return; }
-      const [shops, p, t, o] = await Promise.all([
-        base44.entities.Shop.filter({ id: u.shop_id }),
-        base44.entities.Product.filter({ shop_id: u.shop_id }),
-        base44.entities.Technician.filter({ shop_id: u.shop_id }),
-        base44.entities.Order.filter({ shop_id: u.shop_id }, "-created_date", 50),
+      // Fetch all shops for this user
+      const userShops = await base44.entities.Shop.filter({ owner_email: u.email });
+      setShops(userShops);
+      if (!userShops || userShops.length === 0) { navigate(createPageUrl("RegisterShop")); return; }
+      // Fetch subscription tier
+      const subs = await base44.entities.Subscription.filter({ user_email: u.email });
+      setSubscription(subs[0]);
+      // Load the first shop's data
+      const firstShop = userShops[0];
+      setShop(firstShop);
+      const [p, t, o] = await Promise.all([
+        base44.entities.Product.filter({ shop_id: firstShop.id }),
+        base44.entities.Technician.filter({ shop_id: firstShop.id }),
+        base44.entities.Order.filter({ shop_id: firstShop.id }, "-created_date", 50),
       ]);
-      setShop(shops[0]);
       setProducts(p); setTechnicians(t); setOrders(o);
       setLoading(false);
     })();
