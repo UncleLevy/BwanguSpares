@@ -395,17 +395,31 @@ export default function BuyerDashboard() {
       </Dialog>
 
       <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
-          </DialogHeader>
-          <ReviewForm
-            onSubmit={handleReviewSubmit}
-            submitting={submitting}
-            type="shop"
-          />
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
-}
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
+           </DialogHeader>
+           <ReviewForm
+             onSubmit={handleReviewSubmit}
+             submitting={submitting}
+             type="shop"
+           />
+         </DialogContent>
+       </Dialog>
+
+       <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
+         <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
+           <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
+           {receiptOrder && (
+             <div className="space-y-4">
+               <OrderReceipt order={receiptOrder} shop={receiptOrder} />
+               <DialogFooter>
+                 <ReceiptDownloader order={receiptOrder} />
+               </DialogFooter>
+             </div>
+           )}
+         </DialogContent>
+       </Dialog>
+      </div>
+      );
+      }
