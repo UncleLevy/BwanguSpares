@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -72,6 +73,7 @@ export default function BrowseShops() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Breadcrumbs items={[{ label: "Shops" }]} />
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Auto Parts Shops</h1>

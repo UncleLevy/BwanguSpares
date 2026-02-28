@@ -10,6 +10,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import MobileSelect from "@/components/shared/MobileSelect";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
@@ -102,6 +103,7 @@ export default function BrowseProducts() {
   return (
     <PullToRefresh onRefresh={loadProducts}>
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <Breadcrumbs items={[{ label: "Browse Parts" }]} />
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Browse Auto Parts</h1>
         <p className="text-slate-500 dark:text-slate-400 mt-1">Find the spares you need from verified shops across Zambia</p>
