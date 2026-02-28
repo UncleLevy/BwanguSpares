@@ -38,12 +38,15 @@ export default function BuyerDashboard() {
   const [view, setView] = useState("orders");
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [profileForm, setProfileForm] = useState({ phone: "", address: "" });
+  const [profileForm, setProfileForm] = useState({ first_name: "", last_name: "", phone: "", address: "" });
+  const [profileErrors, setProfileErrors] = useState({});
   const [reviewDialog, setReviewDialog] = useState(false);
   const [reviewOrder, setReviewOrder] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [partsRequestOpen, setPartsRequestOpen] = useState(false);
   const [deleteAccountDialog, setDeleteAccountDialog] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [passwordResetSent, setPasswordResetSent] = useState(false);
 
   useEffect(() => {
     (async () => {
