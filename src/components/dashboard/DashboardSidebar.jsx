@@ -54,7 +54,7 @@ export default function DashboardSidebar({ items, active, title }) {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white border-b border-slate-200 flex items-center gap-3 px-4 h-14">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex items-center gap-3 px-4 h-14">
         <button
           onClick={() => setMobileOpen(true)}
           className="p-2 rounded-lg text-slate-600 hover:bg-slate-100"
