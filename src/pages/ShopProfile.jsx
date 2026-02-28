@@ -27,9 +27,11 @@ export default function ShopProfile() {
   const [problemFilter, setProblemFilter] = useState("all");
   const [hireDialog, setHireDialog] = useState(false);
   const [selectedTech, setSelectedTech] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
+    base44.auth.isAuthenticated().then(setIsAuthenticated);
   }, []);
 
   useEffect(() => {
