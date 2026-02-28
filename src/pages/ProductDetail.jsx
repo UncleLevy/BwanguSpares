@@ -151,6 +151,7 @@ export default function ProductDetail() {
         onClose={() => setRequestOpen(false)}
         prefill={{ part_name: product.name, compatible_vehicles: product.compatible_vehicles || "" }}
       />
+      </div>
     </div>
   );
 }
