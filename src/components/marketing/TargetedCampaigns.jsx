@@ -22,8 +22,7 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
     name: "",
     subject: "",
     content: "",
-    segment_id: "",
-    promo_code: ""
+    segment_id: ""
   });
 
   const getSegmentMembers = (segmentId) => {
@@ -66,7 +65,6 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
         content: form.content,
         segment_id: form.segment_id,
         segment_name: segments.find(s => s.id === form.segment_id)?.name,
-        promo_code: form.promo_code,
         recipient_count: previewMembers.length,
         status: "draft",
         created_date: new Date().toISOString()
@@ -74,7 +72,7 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
 
       setCampaigns([newCampaign, ...campaigns]);
       setDialog(false);
-      setForm({ name: "", subject: "", content: "", segment_id: "", promo_code: "" });
+      setForm({ name: "", subject: "", content: "", segment_id: "" });
       toast.success("Campaign created");
     } catch (error) {
       toast.error("Failed to create campaign");
@@ -122,7 +120,7 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
           <p className="text-sm text-slate-500 mt-1">Send personalized campaigns to specific customer segments</p>
         </div>
         <Button
-          onClick={() => { setForm({ name: "", subject: "", content: "", segment_id: "", promo_code: "" }); setDialog(true); }}
+          onClick={() => { setForm({ name: "", subject: "", content: "", segment_id: "" }); setDialog(true); }}
           className="bg-blue-600 hover:bg-blue-700 gap-1.5"
         >
           <Plus className="w-4 h-4" /> New Campaign
@@ -251,15 +249,6 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
                 placeholder="Write your campaign message..."
               />
             </div>
-            <div>
-              <Label>Promo Code (optional)</Label>
-              <Input
-                value={form.promo_code}
-                onChange={e => setForm({ ...form, promo_code: e.target.value })}
-                className="mt-1"
-                placeholder="e.g., SPRING20"
-              />
-            </div>
             <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
               <p className="text-xs text-slate-600 dark:text-slate-400 font-semibold">PREVIEW</p>
               <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">
@@ -296,19 +285,12 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
                   <p className="text-xs text-slate-500 uppercase font-semibold">Recipients</p>
                   <p className="text-lg font-bold mt-1">{selectedCampaign.recipient_count}</p>
                 </div>
-                <div>
-                  <p className="text-xs text-slate-500 uppercase font-semibold">Status</p>
+                    <p className="text-xs text-slate-500 uppercase font-semibold">Status</p>
                   <Badge className={selectedCampaign.status === "sent" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>
                     {selectedCampaign.status}
                   </Badge>
                 </div>
               </div>
-              {selectedCampaign.promo_code && (
-                <div>
-                  <p className="text-xs text-slate-500 uppercase font-semibold">Promo Code</p>
-                  <p className="text-sm font-mono font-bold text-blue-600 mt-1">{selectedCampaign.promo_code}</p>
-                </div>
-              )}
             </div>
           )}
         </DialogContent>
