@@ -163,18 +163,6 @@ export default function Cart() {
                       <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 w-20 text-right">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
                       <button onClick={() => removeItem(item)} className="text-slate-400 hover:text-red-500"><Trash2 className="w-4 h-4" /></button>
                     </div>
-                    {item._stock === 0 && (
-                      <div className="mt-2 flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-700">
-                        <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
-                        <span>This item is out of stock.</span>
-                        <button
-                          className="ml-auto text-blue-600 font-medium hover:underline"
-                          onClick={() => navigate(createPageUrl("BrowseProducts") + `?request=${encodeURIComponent(item.product_name)}&shop=${encodeURIComponent(item.shop_name)}&shop_id=${item.shop_id}`)}
-                        >
-                          Submit a parts request →
-                        </button>
-                      </div>
-                    )}
                   </div>
                 ))}
               </div>
