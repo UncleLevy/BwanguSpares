@@ -56,6 +56,11 @@
   body {
     @apply bg-background text-foreground antialiased;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    overscroll-behavior: none;
+  }
+  button, a, [role="tab"], [role="button"] {
+    @apply select-none;
+    min-height: 44px;
   }
   
   h1, h2, h3, h4, h5, h6 {

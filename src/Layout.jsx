@@ -162,7 +162,7 @@ export default function Layout({ children, currentPageName }) {
         )}
       </header>
 
-      <main className="pb-16 md:pb-0" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 4rem)" }}>{children}</main>
+      <main className="pb-16 md:pb-0">{children}</main>
       <BottomNav />
 
       <footer className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
