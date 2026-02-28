@@ -129,7 +129,6 @@ export default function AdminDashboard() {
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
-    { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
     { id: "cities", label: "Cities", icon: MapPin, onClick: () => setView("cities") },
     { id: "users", label: "Users", icon: Users, onClick: () => setView("users") },
