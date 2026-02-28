@@ -189,8 +189,8 @@ export default function BuyerDashboard() {
                                 {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
                               </div>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-900 truncate">{item.product_name}</p>
-                                <p className="text-xs text-slate-500">Qty: {item.quantity} × K{item.price?.toLocaleString()}</p>
+                                <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString()}</p>
                               </div>
                             </div>
                           ))}
