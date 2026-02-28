@@ -19,7 +19,6 @@ export default function CustomerMetricsSection({ metrics }) {
 
   return (
     <>
-      {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <StatsCard
           title="Total Customers"
@@ -47,11 +46,9 @@ export default function CustomerMetricsSection({ metrics }) {
         />
       </div>
 
-      {/* Charts & Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Revenue Trend */}
-        <div className="lg:col-span-2">
-          {metrics.chartData && metrics.chartData.length > 0 && (
+        {metrics.chartData && metrics.chartData.length > 0 && (
+          <div className="lg:col-span-2">
             <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
               <CardHeader className="pb-4">
                 <CardTitle className="text-lg">Monthly Revenue Trend</CardTitle>
@@ -78,10 +75,9 @@ export default function CustomerMetricsSection({ metrics }) {
                 </ResponsiveContainer>
               </CardContent>
             </Card>
-          )}
-        </div>
+          </div>
+        )}
 
-        {/* Key Metrics Summary */}
         <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
           <CardHeader className="pb-4">
             <CardTitle className="text-lg">Key Metrics</CardTitle>
