@@ -65,7 +65,9 @@ export default function Cart() {
   }, {});
 
   const handleCheckout = async () => {
-    if (!form.address || !form.phone) { toast.error("Please fill in delivery details"); return; }
+    if (!form.address.trim()) { toast.error("Please enter your delivery address"); return; }
+    if (!form.phone.trim()) { toast.error("Please enter your phone number"); return; }
+    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return; }
     setSubmitting(true);
 
     for (const [shopId, group] of Object.entries(groupedByShop)) {
