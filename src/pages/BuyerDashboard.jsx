@@ -122,9 +122,12 @@ export default function BuyerDashboard() {
       <main className="flex-1 pt-14 lg:pt-0 p-4 lg:p-8 overflow-auto min-w-0">
 
         {view === "orders" && (
+          <PullToRefresh onRefresh={async () => {
+            const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
+            setOrders(o);
+          }}>
           <div>
             <h1 className="text-2xl font-bold text-slate-900 mb-6">My Orders</h1>
-            {/* PullToRefresh wrapper handled inline */}
             {orders.length === 0 ? (
               <div className="text-center py-20">
                 <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
@@ -204,6 +207,7 @@ export default function BuyerDashboard() {
                         </div>
             )}
           </div>
+          </PullToRefresh>
         )}
 
         {view === "parts_requests" && (
