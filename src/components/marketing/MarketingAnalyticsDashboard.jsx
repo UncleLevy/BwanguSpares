@@ -7,7 +7,79 @@ import StatsCard from "@/components/analytics/StatsCard";
 import CampaignMetricsSection from "@/components/marketing/sections/CampaignMetricsSection";
 import DiscountMetricsSection from "@/components/marketing/sections/DiscountMetricsSection";
 import CustomerMetricsSection from "@/components/marketing/sections/CustomerMetricsSection";
-import { calculateCampaignMetrics, calculateDiscountMetrics, calculateCustomerMetrics } from "@/lib/marketingMetrics";
+
+// Metrics calculation functions
+const calculateCampaignMetrics = (campaigns = []) => {
+  const sent = campaigns.filter(c => c.status === "sent");
+  const totalOpens = sent.reduce((sum, c) => sum + (c.estimated_opens || 0), 0);
+  const totalClicks = sent.reduce((sum, c) => sum + (c.estimated_clicks || 0), 0);
+  const totalRecipients = sent.reduce((sum, c) => sum + (c.recipient_count || 0), 0);
+  return {
+    totalSent: sent.length,
+    totalRecipients,
+    totalOpens,
+    totalClicks,
+    avgOpenRate: totalRecipients > 0 ? ((totalOpens / totalRecipients) * 100).toFixed(1) : 0,
+    avgClickRate: totalRecipients > 0 ? ((totalClicks / totalRecipients) * 100).toFixed(1) : 0,
+    chartData: sent.map(c => ({
+      name: c.name.substring(0, 12),
+      opens: c.estimated_opens || 0,
+      clicks: c.estimated_clicks || 0,
+      recipients: c.recipient_count || 0
+    }))
+  };
+};
+
+const calculateDiscountMetrics = (discountCodes = [], orders = []) => {
+  const codesUsed = discountCodes.filter(c => c.usage_count > 0);
+  const totalRedemptions = codesUsed.reduce((sum, c) => sum + c.usage_count, 0);
+  const totalDiscountGiven = codesUsed.reduce((sum, c) => {
+    if (c.discount_type === "fixed_amount") {
+      return sum + (c.discount_value * c.usage_count);
+    } else {
+      return sum + (c.max_discount_amount * c.usage_count || 0);
+    }
+  }, 0);
+  const discountedOrders = orders.filter(o => o.promo_code && codesUsed.some(c => c.code === o.promo_code));
+  const revenueFromDiscounts = discountedOrders.reduce((sum, o) => sum + o.total_amount, 0);
+  return {
+    totalCodes: discountCodes.length,
+    totalRedemptions,
+    redemptionRate: discountCodes.length > 0 ? ((codesUsed.length / discountCodes.length) * 100).toFixed(1) : 0,
+    totalDiscountGiven,
+    revenueFromDiscounts,
+    chartData: codesUsed.slice(0, 8).map(c => ({
+      code: c.code,
+      uses: c.usage_count,
+      discount: c.discount_value
+    }))
+  };
+};
+
+const calculateCustomerMetrics = (customers = [], orders = [], campaigns = []) => {
+  const totalSpent = orders.reduce((sum, o) => sum + o.total_amount, 0);
+  const totalCustomers = customers.length;
+  const estimatedMarketingSpend = campaigns.length * 50;
+  const cac = totalCustomers > 0 ? (estimatedMarketingSpend / totalCustomers).toFixed(2) : 0;
+  const clv = totalCustomers > 0 ? (totalSpent / totalCustomers).toFixed(2) : 0;
+  const ordersByMonth = {};
+  orders.forEach(o => {
+    const month = new Date(o.created_date).toLocaleString('default', { month: 'short', year: '2-digit' });
+    ordersByMonth[month] = (ordersByMonth[month] || 0) + o.total_amount;
+  });
+  return {
+    totalCustomers,
+    totalRevenue: totalSpent,
+    cac,
+    clv,
+    avgOrderValue: orders.length > 0 ? (totalSpent / orders.length).toFixed(2) : 0,
+    totalOrders: orders.length,
+    chartData: Object.entries(ordersByMonth).map(([month, revenue]) => ({
+      month,
+      revenue
+    }))
+  };
+};
 
 export default function MarketingAnalyticsDashboard({ shopId, campaigns = [], orders = [], customers = [], discountCodes = [] }) {
   const [campaignMetrics, setCampaignMetrics] = useState({});
