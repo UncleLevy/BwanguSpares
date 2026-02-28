@@ -292,7 +292,7 @@ export default function BuyerDashboard() {
                   <Label>Delivery Address</Label>
                   <Input value={profileForm.address} onChange={e => setProfileForm({...profileForm, address: e.target.value})} placeholder="Your physical address" className="mt-1 rounded-xl" />
                 </div>
-                <Button onClick={saveProfile} className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
               </CardContent>
             </Card>
 
