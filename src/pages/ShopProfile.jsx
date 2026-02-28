@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import ReviewList from "@/components/reviews/ReviewList";
 import HireTechnicianDialog from "@/components/technicians/HireTechnicianDialog";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 export default function ShopProfile() {
   const params = new URLSearchParams(window.location.search);
@@ -120,7 +121,11 @@ export default function ShopProfile() {
   return (
     <div>
       <AppHeader title={shop?.name || "Shop"} backTo="BrowseShops" />
-      <div className="relative h-48 md:h-64 bg-gradient-to-br from-blue-600 to-blue-800">
+      <div className="relative h-48 md:h-64 bg-gradient-to-br from-blue-600 to-blue-800 flex items-start pt-4 px-4">
+        <div className="hidden md:block"><Breadcrumbs items={[
+          { label: "Shops", href: createPageUrl("BrowseShops") },
+          { label: shop?.name }
+        ]} /></div>
         {shop.cover_url && <img src={shop.cover_url} alt="" className="w-full h-full object-cover opacity-40" />}
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
       </div>

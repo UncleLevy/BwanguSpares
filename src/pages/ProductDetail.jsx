@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import WishlistButton from "@/components/products/WishlistButton";
+import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 const conditionColors = {
   new: "bg-emerald-50 text-emerald-700 border-emerald-200",
@@ -92,9 +93,10 @@ export default function ProductDetail() {
     <div>
       <AppHeader title={product?.name || "Product"} backTo="BrowseProducts" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <Link to={createPageUrl("BrowseProducts")} className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
-          ← Back to results
-        </Link>
+        <Breadcrumbs items={[
+          { label: "Browse Parts", href: createPageUrl("BrowseProducts") },
+          { label: product?.name }
+        ]} />
 
         <div className="grid md:grid-cols-2 gap-8">
           <div className="bg-slate-50 dark:bg-slate-800 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
