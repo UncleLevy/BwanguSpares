@@ -45,7 +45,10 @@ export default function AddressInput({
     <div className="space-y-4">
       <div>
         <Label>Region *</Label>
-        <Select value={value.region || ""} onValueChange={(v) => onChange({ ...value, region: v, town: "" })}>
+        <Select value={value.region || ""} onValueChange={(v) => {
+          const selectedRegion = regions.find(r => r.id === v);
+          onChange({ ...value, region: selectedRegion?.name || v, town: "" });
+        }}>
           <SelectTrigger className="mt-1 rounded-xl">
             <SelectValue placeholder="Select region" />
           </SelectTrigger>
