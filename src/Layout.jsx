@@ -110,14 +110,16 @@ export default function Layout({ children, currentPageName }) {
                     <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                       <MessageSquare className="w-5 h-5" />
                     </Link>
-                    <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
-                      <ShoppingCart className="w-5 h-5" />
-                      {cartCount > 0 && (
-                        <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
-                          {cartCount}
-                        </Badge>
-                      )}
-                    </Link>
+                    {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
+                      <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                        <ShoppingCart className="w-5 h-5" />
+                        {cartCount > 0 && (
+                          <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
+                            {cartCount}
+                          </Badge>
+                        )}
+                      </Link>
+                    )}
                   </>
                 )}
               </div>
