@@ -90,8 +90,8 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>Preferred Date</Label>
-              <Input type="date" value={form.preferred_date} onChange={e => setForm({ ...form, preferred_date: e.target.value })} className="mt-1" />
+              <Label>Preferred Date *</Label>
+              <Input type="date" min={new Date().toISOString().split("T")[0]} value={form.preferred_date} onChange={e => setForm({ ...form, preferred_date: e.target.value })} className="mt-1" />
             </div>
             <div>
               <Label>Your Location</Label>
