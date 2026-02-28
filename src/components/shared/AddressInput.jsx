@@ -30,7 +30,7 @@ export default function AddressInput({
     if (value.region) {
       (async () => {
         try {
-          const t = await base44.entities.Town.filter({ region_id: value.region });
+          const t = await base44.entities.Town.filter({ region_name: value.region });
           setTowns(t);
         } catch (e) {
           console.error("Failed to load towns:", e);
