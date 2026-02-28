@@ -70,6 +70,8 @@ export default function BuyerDashboard() {
      const errors = {};
      if (!profileForm.first_name.trim()) errors.first_name = "First name is required";
      if (!profileForm.last_name.trim()) errors.last_name = "Last name is required";
+     if (!profileForm.region) errors.region = "Region is required";
+     if (!profileForm.town) errors.town = "Town is required";
      if (profileForm.phone && !/^\+?\d{7,15}$/.test(profileForm.phone.replace(/\s/g, ""))) {
        errors.phone = "Enter a valid phone number (e.g. +260...)";
      }
@@ -77,7 +79,12 @@ export default function BuyerDashboard() {
      setProfileErrors({});
      setSubmitting(true);
      try {
-       await base44.auth.updateMe({ phone: profileForm.phone, address: profileForm.address });
+       await base44.auth.updateMe({ 
+         phone: profileForm.phone, 
+         region: profileForm.region,
+         town: profileForm.town,
+         address: profileForm.address 
+       });
        const updatedUser = await base44.auth.me();
        setUser(updatedUser);
        toast.success("✓ Profile updated successfully!");
