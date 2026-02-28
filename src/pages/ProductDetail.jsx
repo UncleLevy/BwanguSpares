@@ -74,12 +74,13 @@ export default function ProductDetail() {
     <div>
       <AppHeader title={product?.name || "Product"} backTo="BrowseProducts" />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      {/* Desktop back link */}
-      <Link to={createPageUrl("BrowseProducts")} className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
-        ← Back to results
-      </Link>
+        {/* Desktop back link */}
+        <Link to={createPageUrl("BrowseProducts")} className="hidden md:inline-flex items-center gap-1.5 text-sm text-slate-500 hover:text-blue-600 mb-6">
+          ← Back to results
+        </Link>
 
-      <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-8">
+...
         <div className="bg-slate-50 rounded-2xl overflow-hidden aspect-square flex items-center justify-center">
           {product.image_url ? (
             <img src={product.image_url} alt={product.name} className="w-full h-full object-cover" />
