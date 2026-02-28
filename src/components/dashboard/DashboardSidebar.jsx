@@ -8,14 +8,14 @@ import { cn } from "@/lib/utils";
 function SidebarContent({ items, active, title, onItemClick }) {
   return (
     <>
-      <div className="p-5 border-b border-slate-100">
+      <div className="p-5 border-b border-slate-100 dark:border-slate-700">
         <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
             <Package className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-slate-900 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
+          <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
         </Link>
-        <p className="text-[11px] text-slate-400 mt-2 font-medium uppercase tracking-wider">{title}</p>
+        <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 font-medium uppercase tracking-wider">{title}</p>
       </div>
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
         {items.map(item => (
@@ -23,8 +23,8 @@ function SidebarContent({ items, active, title, onItemClick }) {
             className={cn(
               "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left",
               active === item.id
-                ? "bg-blue-50 text-blue-700"
-                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400"
+                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
             )}>
             <item.icon className="w-4 h-4 shrink-0" />
             <span className="truncate">{item.label}</span>
@@ -34,13 +34,13 @@ function SidebarContent({ items, active, title, onItemClick }) {
           </button>
         ))}
       </nav>
-      <div className="p-3 border-t border-slate-100 space-y-1">
+      <div className="p-3 border-t border-slate-100 dark:border-slate-700 space-y-1">
         <Link to={createPageUrl("Home")} onClick={onItemClick}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 hover:bg-slate-50">
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
           <ChevronLeft className="w-4 h-4" /> Back to Site
         </Link>
         <button onClick={() => base44.auth.logout()}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50">
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
