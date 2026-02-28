@@ -435,7 +435,7 @@ export default function AdminDashboard() {
         {view === "regions" && (
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-bold text-slate-900">Regions</h1>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Regions</h1>
               <Button onClick={() => setRegionDialog(true)} className="bg-blue-600 hover:bg-blue-700">
                 <MapPin className="w-4 h-4 mr-1.5" /> Add Region
               </Button>
