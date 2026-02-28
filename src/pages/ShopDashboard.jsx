@@ -951,14 +951,31 @@ export default function ShopDashboard() {
          </Dialog>
 
         {selectedProductForVariations && (
-          <Dialog open={!!selectedProductForVariations} onOpenChange={() => setSelectedProductForVariations(null)}>
-            <DialogContent className="max-w-lg">
-              <DialogHeader><DialogTitle>Variations - {selectedProductForVariations.name}</DialogTitle></DialogHeader>
-              <ProductVariationsPanel product={selectedProductForVariations} />
-            </DialogContent>
-          </Dialog>
-        )}
-      </main>
-    </div>
-  );
-}
+           <Dialog open={!!selectedProductForVariations} onOpenChange={() => setSelectedProductForVariations(null)}>
+             <DialogContent className="max-w-lg">
+               <DialogHeader><DialogTitle>Variations - {selectedProductForVariations.name}</DialogTitle></DialogHeader>
+               <ProductVariationsPanel product={selectedProductForVariations} />
+             </DialogContent>
+           </Dialog>
+         )}
+
+        <Dialog open={reportDialog} onOpenChange={setReportDialog}>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Download Sales Report</DialogTitle></DialogHeader>
+            <div className="space-y-4">
+              <div><Label>Start Date</Label><Input type="date" value={reportForm.start_date} onChange={e => setReportForm({...reportForm, start_date: e.target.value})} className="mt-1" /></div>
+              <div><Label>End Date</Label><Input type="date" value={reportForm.end_date} onChange={e => setReportForm({...reportForm, end_date: e.target.value})} className="mt-1" /></div>
+              <p className="text-xs text-slate-500">The report will include: sales summary, products inventory, orders, and technicians for the selected period.</p>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setReportDialog(false)}>Cancel</Button>
+              <Button onClick={handleGenerateReport} disabled={generatingReport} className="bg-emerald-600 hover:bg-emerald-700 gap-1.5">
+                <Download className="w-4 h-4" /> {generatingReport ? "Generating..." : "Download"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        </main>
+        </div>
+        );
+        }
