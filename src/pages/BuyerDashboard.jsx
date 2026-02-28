@@ -178,7 +178,7 @@ export default function BuyerDashboard() {
                             </p>
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString()}</p>
+                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                             {order.status === "delivered" && (
                               <Button
                                 size="sm"
@@ -209,7 +209,7 @@ export default function BuyerDashboard() {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString()}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                               </div>
                             </div>
                           ))}

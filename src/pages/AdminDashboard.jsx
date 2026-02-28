@@ -187,7 +187,7 @@ export default function AdminDashboard() {
     .slice(0, 5)
     .map(s => ({
       name: s.name,
-      value: `K${s.revenue.toLocaleString()}`
+      value: `K${s.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     }));
 
   const topProducts = {};
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
     .slice(0, 5)
     .map(p => ({
       name: p.name,
-      value: `K${p.revenue.toLocaleString()}`,
+      value: `K${p.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
       subtitle: `${p.count} sold`
     }));
 
@@ -268,7 +268,7 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <StatsCard
                 title="Total Revenue"
-                value={`K${totalRevenue.toLocaleString()}`}
+                value={`K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 subtitle="All-time platform revenue"
                 icon={DollarSign}
                 color="bg-emerald-50 text-emerald-600"
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.name}</TableCell>
                       <TableCell className="text-sm text-slate-500 dark:text-slate-400">{p.shop_name}</TableCell>
-                      <TableCell>K{p.price?.toLocaleString()}</TableCell>
+                      <TableCell>K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell>{p.stock_quantity}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
                     </TableRow>

@@ -345,7 +345,7 @@ export default function ShopDashboard() {
     .map(p => ({
       name: p.name,
       value: `${p.count} sold`,
-      subtitle: `K${p.revenue.toLocaleString()}`
+      subtitle: `K${p.revenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
     }));
 
   const techReviews = {};
@@ -423,7 +423,7 @@ export default function ShopDashboard() {
                 { label: "Products", value: products.length, icon: Package, color: "bg-blue-50 text-blue-600" },
                 { label: "Technicians", value: technicians.length, icon: Wrench, color: "bg-emerald-50 text-emerald-600" },
                 { label: "Orders", value: orders.length, icon: ShoppingCart, color: "bg-purple-50 text-purple-600" },
-                { label: "Revenue", value: `K${totalRevenue.toLocaleString()}`, icon: DollarSign, color: "bg-amber-50 text-amber-600" },
+                { label: "Revenue", value: `K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-amber-50 text-amber-600" },
               ].map((s, i) => (
                 <Card key={i} className="border-slate-100">
                   <CardContent className="p-5 flex items-center gap-4">
@@ -446,7 +446,7 @@ export default function ShopDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
               <StatsCard
                 title="Total Revenue"
-                value={`K${totalRevenue.toLocaleString()}`}
+                value={`K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 subtitle="All-time"
                 icon={DollarSign}
                 color="bg-emerald-50 text-emerald-600"
@@ -467,7 +467,7 @@ export default function ShopDashboard() {
               />
               <StatsCard
                 title="Avg Order Value"
-                value={completedOrders.length > 0 ? `K${Math.round(totalRevenue / completedOrders.length).toLocaleString()}` : "K0"}
+                value={completedOrders.length > 0 ? `K${Math.round(totalRevenue / completedOrders.length).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "K0.00"}
                 subtitle="Per completed order"
                 icon={TrendingUp}
                 color="bg-amber-50 text-amber-600"
@@ -506,7 +506,7 @@ export default function ShopDashboard() {
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{p.category}</Badge></TableCell>
-                      <TableCell>K{p.price?.toLocaleString()}</TableCell>
+                      <TableCell>K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell>{p.stock_quantity}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
                       <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div></TableCell>
@@ -640,7 +640,7 @@ export default function ShopDashboard() {
                       <TableCell className="font-mono text-xs">{o.id?.slice(0,8)}</TableCell>
                       <TableCell className="text-sm">{o.buyer_name || o.buyer_email}</TableCell>
                       <TableCell className="text-sm">{o.items?.length || 0} items</TableCell>
-                      <TableCell className="font-medium">K{o.total_amount?.toLocaleString()}</TableCell>
+                      <TableCell className="font-medium">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
                       <TableCell>
                         <div className="flex gap-2">

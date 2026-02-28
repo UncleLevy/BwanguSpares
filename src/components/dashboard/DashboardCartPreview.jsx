@@ -53,7 +53,7 @@ export default function DashboardCartPreview({ userEmail }) {
               <div className="flex-1 min-w-0">
                 <h4 className="font-medium text-sm text-slate-900 dark:text-slate-100 truncate">{item.product_name}</h4>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{item.shop_name}</p>
-                <p className="text-sm font-medium text-blue-600 mt-2">K{item.price?.toLocaleString()} × {item.quantity}</p>
+                <p className="text-sm font-medium text-blue-600 mt-2">K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} × {item.quantity}</p>
               </div>
               <Button
                 size="sm"
@@ -71,7 +71,7 @@ export default function DashboardCartPreview({ userEmail }) {
       <div className="border-t border-slate-100 pt-4">
         <div className="flex items-center justify-between mb-4">
           <span className="font-semibold text-slate-900 dark:text-slate-100">Total:</span>
-          <span className="text-xl font-bold text-blue-600">K{total.toLocaleString()}</span>
+          <span className="text-xl font-bold text-blue-600">K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
         </div>
         <Link to={createPageUrl("Cart")} className="block">
           <Button className="w-full bg-blue-600 hover:bg-blue-700">Proceed to Checkout</Button>
