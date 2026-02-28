@@ -204,8 +204,9 @@ export default function ShopDashboard() {
   });
 
   const updateOrderStatus = async (order, status) => {
+    // Optimistic update
+    setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status } : o));
     await base44.entities.Order.update(order.id, { status });
-    setOrders(orders.map(o => o.id === order.id ? { ...o, status } : o));
     toast.success("Order status updated");
   };
 
