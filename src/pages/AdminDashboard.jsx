@@ -39,9 +39,12 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [regions, setRegions] = useState([]);
+  const [towns, setTowns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [regionDialog, setRegionDialog] = useState(false);
   const [newRegion, setNewRegion] = useState({ name: "", province: "" });
+  const [townDialog, setTownDialog] = useState(false);
+  const [newTown, setNewTown] = useState({ name: "", region_id: "", region_name: "" });
   const [reportCount, setReportCount] = useState(0);
   const navigate = useNavigate();
 
