@@ -78,12 +78,22 @@ export default function OrderReceipt({ order, shop }) {
       <div className="flex justify-end mb-8">
         <div className="w-64">
           <div className="flex justify-between text-sm text-slate-600 mb-2">
-            <span>Subtotal:</span>
+            <span>Subtotal (incl. discount):</span>
             <span>K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+          {order.coupon_code && (
+            <div className="flex justify-between text-sm text-emerald-600 mb-2">
+              <span>Coupon ({order.coupon_code}):</span>
+              <span>Applied</span>
+            </div>
+          )}
+          <div className="flex justify-between text-sm text-slate-600 mb-2">
+            <span>VAT (16%):</span>
+            <span>K{((order.total_amount / 1.16) * 0.16).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
           <div className="border-t-2 border-slate-900 pt-3 flex justify-between text-lg font-bold text-slate-900">
             <span>Total:</span>
-            <span>K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span>K{(order.total_amount / 1.16 * 1.16).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </div>
         </div>
       </div>
