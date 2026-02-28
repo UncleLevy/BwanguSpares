@@ -23,6 +23,13 @@ export default function Cart() {
     (async () => {
       const u = await base44.auth.me();
       setUser(u);
+      
+      // Only buyers can access cart
+      if (u.role !== 'buyer') {
+        navigate(createPageUrl('Home'));
+        return;
+      }
+      
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
       // Enrich with current stock
       const enriched = await Promise.all(cart.map(async (item) => {
