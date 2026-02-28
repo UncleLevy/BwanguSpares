@@ -1,5 +1,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import XLSX from 'npm:xlsx@0.18.5';
+
+const escapeCSV = (value) => {
+  if (value === null || value === undefined) return '';
+  const str = String(value);
+  if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+    return `"${str.replace(/"/g, '""')}"`;
+  }
+  return str;
+};
+
+const arrayToCSV = (rows) => {
+  return rows.map(row => row.map(escapeCSV).join(',')).join('\n');
+};
 
 Deno.serve(async (req) => {
   try {
@@ -56,10 +68,10 @@ Deno.serve(async (req) => {
       });
     });
 
-    // Create workbook
-    const wb = XLSX.utils.book_new();
+    // Build CSV sections
+    let csv = '';
 
-    // Summary sheet
+    // Summary section
     const summaryData = [
       ['Sales Report', shop[0].name],
       ['Report Period', `${start_date} to ${end_date}`],
@@ -73,11 +85,10 @@ Deno.serve(async (req) => {
       ['Active Products', products.filter(p => p.status === 'active').length],
       ['Total Technicians', technicians.length]
     ];
-    const wsSummary = XLSX.utils.aoa_to_sheet(summaryData);
-    wsSummary['!cols'] = [{ wch: 25 }, { wch: 20 }];
-    XLSX.utils.book_append_sheet(wb, wsSummary, 'Summary');
+    csv += arrayToCSV(summaryData) + '\n\n';
 
-    // Products sheet
+    // Products section
+    csv += 'PRODUCTS\n';
     const productsData = [['Product Name', 'Category', 'Stock', 'Price (ZMW)', 'Units Sold', 'Revenue (ZMW)', 'Status']];
     products.forEach(p => {
       const sales = productSales[p.id] || { sold_quantity: 0, revenue: 0 };
@@ -91,11 +102,10 @@ Deno.serve(async (req) => {
         p.status
       ]);
     });
-    const wsProducts = XLSX.utils.aoa_to_sheet(productsData);
-    wsProducts['!cols'] = [{ wch: 25 }, { wch: 15 }, { wch: 10 }, { wch: 12 }, { wch: 12 }, { wch: 15 }, { wch: 12 }];
-    XLSX.utils.book_append_sheet(wb, wsProducts, 'Products');
+    csv += arrayToCSV(productsData) + '\n\n';
 
-    // Orders sheet
+    // Orders section
+    csv += 'ORDERS\n';
     const ordersData = [['Order ID', 'Date', 'Buyer', 'Items Count', 'Amount (ZMW)', 'Status']];
     ordersInRange.forEach(o => {
       ordersData.push([
@@ -107,12 +117,11 @@ Deno.serve(async (req) => {
         o.status
       ]);
     });
-    const wsOrders = XLSX.utils.aoa_to_sheet(ordersData);
-    wsOrders['!cols'] = [{ wch: 12 }, { wch: 12 }, { wch: 20 }, { wch: 12 }, { wch: 15 }, { wch: 12 }];
-    XLSX.utils.book_append_sheet(wb, wsOrders, 'Orders');
+    csv += arrayToCSV(ordersData) + '\n\n';
 
-    // Technicians sheet (if any)
+    // Technicians section (if any)
     if (technicians.length > 0) {
+      csv += 'TECHNICIANS\n';
       const techData = [['Name', 'Specialization', 'Experience (yrs)', 'Hourly Rate (ZMW)', 'Rating', 'Available']];
       technicians.forEach(t => {
         techData.push([
@@ -124,20 +133,17 @@ Deno.serve(async (req) => {
           t.available !== false ? 'Yes' : 'No'
         ]);
       });
-      const wsTech = XLSX.utils.aoa_to_sheet(techData);
-      wsTech['!cols'] = [{ wch: 20 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 10 }, { wch: 12 }];
-      XLSX.utils.book_append_sheet(wb, wsTech, 'Technicians');
+      csv += arrayToCSV(techData);
     }
 
-    // Generate file
-    const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-    const blob = new Uint8Array(buffer);
+    const encoder = new TextEncoder();
+    const blob = encoder.encode(csv);
 
     return new Response(blob, {
       status: 200,
       headers: {
-        'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Disposition': `attachment; filename="Sales_Report_${shop[0].name.replace(/\s+/g, '_')}_${start_date}.xlsx"`
+        'Content-Type': 'text/csv',
+        'Content-Disposition': `attachment; filename="Sales_Report_${shop[0].name.replace(/\s+/g, '_')}_${start_date}.csv"`
       }
     });
   } catch (error) {
