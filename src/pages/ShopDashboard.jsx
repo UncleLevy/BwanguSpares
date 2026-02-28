@@ -319,7 +319,7 @@ export default function ShopDashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50">
       <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
-      <main className="flex-1 pt-14 lg:pt-0 p-4 lg:p-8 overflow-auto min-w-0">
+      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0">
 
         {view === "overview" && (
           <div>
