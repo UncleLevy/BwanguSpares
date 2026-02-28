@@ -78,6 +78,8 @@ export default function ShopDashboard() {
   const [showNewShopDialog, setShowNewShopDialog] = useState(false);
   const [newShopForm, setNewShopForm] = useState({ name: "", phone: "", address: "", region: "", town: "" });
 
+  const [customers, setCustomers] = useState([]);
+
   const [productDialog, setProductDialog] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
   const [selectedProductForVariations, setSelectedProductForVariations] = useState(null);
