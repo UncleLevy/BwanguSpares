@@ -15,7 +15,7 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [checkout, setCheckout] = useState(false);
-  const [form, setForm] = useState({ address: "", phone: "", notes: "" });
+  const [form, setForm] = useState({ address: "", phone: "", notes: "", coupon: "" });
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
 
