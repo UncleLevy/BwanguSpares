@@ -78,6 +78,7 @@ Deno.serve(async (req) => {
             ${itemRows}
             <tr><td colspan="4" style="height:8px"></td></tr>
             <tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#555">Subtotal</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#555">K${subtotal.toLocaleString()}</td></tr>
+            ${isOrder && order.coupon_code ? `<tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#16a34a">Coupon (${order.coupon_code})</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#16a34a">Applied</td></tr>` : ''}
             ${vatRow}
             <tr>
               <td colspan="2"></td>
