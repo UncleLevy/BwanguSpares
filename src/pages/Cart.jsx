@@ -184,7 +184,7 @@ export default function Cart() {
                 </div>
                 <div>
                   <Label className="text-sm text-slate-700 dark:text-slate-300">Phone Number *</Label>
-                  <Input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260..." className="mt-1 rounded-xl" />
+                  <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
                 </div>
                 <div>
                   <Label className="text-sm text-slate-700 dark:text-slate-300">Notes (optional)</Label>
