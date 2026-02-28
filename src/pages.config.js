@@ -56,9 +56,9 @@ import Home from './pages/Home';
 import Messages from './pages/Messages';
 import ProductDetail from './pages/ProductDetail';
 import RegisterShop from './pages/RegisterShop';
+import ShopCatalog from './pages/ShopCatalog';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
-import ShopCatalog from './pages/ShopCatalog';
 import __Layout from './Layout.jsx';
 
 
@@ -72,9 +72,9 @@ export const PAGES = {
     "Messages": Messages,
     "ProductDetail": ProductDetail,
     "RegisterShop": RegisterShop,
+    "ShopCatalog": ShopCatalog,
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
-    "ShopCatalog": ShopCatalog,
 }
 
 export const pagesConfig = {
