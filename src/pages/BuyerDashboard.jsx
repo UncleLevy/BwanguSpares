@@ -24,6 +24,7 @@ import PullToRefresh from "@/components/shared/PullToRefresh";
 import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
+import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
