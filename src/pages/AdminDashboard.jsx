@@ -223,20 +223,20 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
-      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0">
+      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
         {view === "overview" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-6">Dashboard Overview</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Dashboard Overview</h1>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {stats.map((s, i) => (
-                <Card key={i} className="border-slate-100">
+                <Card key={i} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-5 flex items-center gap-4">
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${s.color}`}>
                       <s.icon className="w-5 h-5" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-slate-900">{s.value}</p>
-                      <p className="text-xs text-slate-500">{s.label}</p>
+                      <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">{s.value}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{s.label}</p>
                     </div>
                   </CardContent>
                 </Card>
