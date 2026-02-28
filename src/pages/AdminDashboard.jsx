@@ -220,7 +220,7 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0">
