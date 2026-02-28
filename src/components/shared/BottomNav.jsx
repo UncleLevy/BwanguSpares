@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Search, MessageSquare, User, Bell } from "lucide-react";
+import { Home, Search, MessageSquare, User, Bell, ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { base44 } from "@/api/base44Client";
 
@@ -11,14 +11,20 @@ export default function BottomNav() {
   const [unreadCount, setUnreadCount] = useState(0);
   const [userEmail, setUserEmail] = useState(null);
 
+  const [user, setUser] = useState(null);
+  const [cartCount, setCartCount] = useState(0);
+
   useEffect(() => {
     (async () => {
       const authed = await base44.auth.isAuthenticated();
       if (!authed) return;
       const u = await base44.auth.me();
+      setUser(u);
       setUserEmail(u.email);
       const notifs = await base44.entities.Notification.filter({ user_email: u.email, read: false });
       setUnreadCount(notifs.length);
+      const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
+      setCartCount(cart.length);
     })();
   }, [location.pathname]);
 
@@ -33,8 +39,8 @@ export default function BottomNav() {
   const navItems = [
     { label: "Home",     icon: Home,          page: "Home" },
     { label: "Browse",   icon: Search,        page: "BrowseProducts" },
+    { label: "Cart",     icon: ShoppingCart,  page: "Cart", badge: cartCount, hidden: user?.role === 'shop_owner' || user?.role === 'admin' },
     { label: "Messages", icon: MessageSquare, page: "Messages" },
-    { label: "Alerts",   icon: Bell,          page: "BuyerDashboard", badge: unreadCount },
     { label: "Account",  icon: User,          page: "BuyerDashboard" },
   ];
 
@@ -43,7 +49,8 @@ export default function BottomNav() {
       className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-t border-slate-200 dark:border-slate-700 flex md:hidden select-none"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {navItems.map(({ label, icon: Icon, page, badge }) => {
+      {navItems.map(({ label, icon: Icon, page, badge, hidden }) => {
+        if (hidden) return null;
         const href = createPageUrl(page);
         const active = location.pathname === href || location.pathname.startsWith(href + "?");
         return (
