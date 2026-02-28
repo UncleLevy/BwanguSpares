@@ -299,6 +299,7 @@ export default function ShopDashboard() {
 
   const sidebarItems = [
    { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
+   { id: "shop_info", label: "Shop Info", icon: Store, onClick: () => setView("shop_info") },
    { id: "shops", label: "My Shops", icon: Store, onClick: () => setView("shops") },
    { id: "branches", label: "Branches", icon: MapPin, onClick: () => setView("branches") },
    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
