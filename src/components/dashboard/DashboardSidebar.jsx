@@ -77,7 +77,7 @@ export default function DashboardSidebar({ items, active, title }) {
           onClick={() => setMobileOpen(false)}
         >
           <aside
-            className="w-72 max-w-[85vw] bg-white h-full flex flex-col shadow-2xl"
+            className="w-72 max-w-[85vw] bg-white dark:bg-slate-900 h-full flex flex-col shadow-2xl"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex items-center justify-end p-3 border-b border-slate-100">
