@@ -65,9 +65,9 @@ export default function DashboardSidebar({ items, active, title }) {
           <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
             <Package className="w-3.5 h-3.5 text-white" />
           </div>
-          <span className="font-bold text-slate-900 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
+          <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
         </div>
-        <span className="text-[11px] text-slate-400 font-medium uppercase tracking-wider ml-1">{title}</span>
+        <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider ml-1">{title}</span>
       </div>
 
       {/* Mobile overlay */}
