@@ -76,12 +76,12 @@ export default function BuyerDashboard() {
      setProfileErrors({});
      setSubmitting(true);
      try {
-       const full_name = `${profileForm.first_name.trim()} ${profileForm.last_name.trim()}`;
-       await base44.auth.updateMe({ full_name, phone: profileForm.phone, address: profileForm.address });
-       setUser(u => ({ ...u, full_name, phone: profileForm.phone, address: profileForm.address }));
-       toast.success("Profile updated");
+       await base44.auth.updateMe({ phone: profileForm.phone, address: profileForm.address });
+       const updatedUser = await base44.auth.me();
+       setUser(updatedUser);
+       toast.success("✓ Profile updated successfully!");
      } catch (error) {
-       toast.error("Failed to update profile");
+       toast.error("✗ Failed to update profile. Please try again.");
      } finally {
        setSubmitting(false);
      }
