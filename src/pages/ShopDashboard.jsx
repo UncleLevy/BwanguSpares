@@ -236,6 +236,7 @@ export default function ShopDashboard() {
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
     { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
+    { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => setView("hire_requests") },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     {
