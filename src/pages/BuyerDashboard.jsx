@@ -199,6 +199,16 @@ export default function BuyerDashboard() {
                           </div>
                           <div className="flex flex-col items-end gap-2">
                             <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            {order.status === "confirmed" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => { setReceiptOrder(order); setReceiptDialog(true); }}
+                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                              >
+                                <Eye className="w-3.5 h-3.5" /> Receipt
+                              </Button>
+                            )}
                             {order.status === "delivered" && (
                               <Button
                                 size="sm"
