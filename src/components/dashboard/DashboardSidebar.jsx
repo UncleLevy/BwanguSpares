@@ -18,22 +18,38 @@ function SidebarContent({ items, active, title, onItemClick }) {
         <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 font-medium uppercase tracking-wider">{title}</p>
       </div>
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
-        {items.map(item => (
-          <button key={item.id} onClick={() => { item.onClick?.(); onItemClick?.(); }}
-            className={cn(
-              "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left",
-              active === item.id
-                ? "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400"
-                : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
-            )}>
-            <item.icon className="w-4 h-4 shrink-0" />
-            <span className="truncate">{item.label}</span>
-            {item.badge ? (
-              <span className="ml-auto bg-blue-600 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold shrink-0">{item.badge}</span>
-            ) : null}
-          </button>
-        ))}
-      </nav>
+         {items.map(item => 
+           item.href ? (
+             <Link key={item.id} to={item.href} onClick={onItemClick}
+               className={cn(
+                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left",
+                 active === item.id
+                   ? "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400"
+                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
+               )}>
+               <item.icon className="w-4 h-4 shrink-0" />
+               <span className="truncate">{item.label}</span>
+               {item.badge ? (
+                 <span className="ml-auto bg-blue-600 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold shrink-0">{item.badge}</span>
+               ) : null}
+             </Link>
+           ) : (
+             <button key={item.id} onClick={() => { item.onClick?.(); onItemClick?.(); }}
+               className={cn(
+                 "w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors text-left",
+                 active === item.id
+                   ? "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400"
+                   : "text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100"
+               )}>
+               <item.icon className="w-4 h-4 shrink-0" />
+               <span className="truncate">{item.label}</span>
+               {item.badge ? (
+                 <span className="ml-auto bg-blue-600 text-white text-[10px] rounded-full px-1.5 py-0.5 font-bold shrink-0">{item.badge}</span>
+               ) : null}
+             </button>
+           )
+         )}
+       </nav>
       <div className="p-3 border-t border-slate-100 dark:border-slate-700 space-y-1">
         <Link to={createPageUrl("Home")} onClick={onItemClick}
           className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
