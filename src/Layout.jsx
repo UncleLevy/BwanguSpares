@@ -111,10 +111,10 @@ export default function Layout({ children, currentPageName }) {
                       <MessageSquare className="w-5 h-5" />
                     </Link>
                     {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
-                      <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                      <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors z-10">
                         <ShoppingCart className="w-5 h-5" />
                         {cartCount > 0 && (
-                          <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
+                          <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 pointer-events-none">
                             {cartCount}
                           </Badge>
                         )}
