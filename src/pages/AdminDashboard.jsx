@@ -102,6 +102,27 @@ export default function AdminDashboard() {
     toast.success("Region deleted");
   };
 
+  const addTown = async () => {
+    if (!newTown.name || !newTown.region_id) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    const t = await base44.entities.Town.create(newTown);
+    setTowns([...towns, t]);
+    await logAudit(user, "add_region", { entity_type: "Town", entity_id: t.id, entity_label: t.name });
+    setNewTown({ name: "", region_id: "", region_name: "" });
+    setTownDialog(false);
+    toast.success("Town added");
+  };
+
+  const deleteTown = async (id) => {
+    const t = towns.find(t => t.id === id);
+    await base44.entities.Town.delete(id);
+    setTowns(towns.filter(t => t.id !== id));
+    await logAudit(user, "delete_region", { entity_type: "Town", entity_id: id, entity_label: t?.name });
+    toast.success("Town deleted");
+  };
+
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
