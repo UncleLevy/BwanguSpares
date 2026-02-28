@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import ConversationList from "./ConversationList";
 import ChatWindow from "./ChatWindow";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import { MessageSquare } from "lucide-react";
 
 export default function BuyerMessages({ user }) {
