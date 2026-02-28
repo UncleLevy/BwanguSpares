@@ -383,7 +383,7 @@ export default function AdminDashboard() {
                   {products.map(p => (
                     <TableRow key={p.id}>
                       <TableCell className="font-medium">{p.name}</TableCell>
-                      <TableCell className="text-sm text-slate-500">{p.shop_name}</TableCell>
+                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{p.shop_name}</TableCell>
                       <TableCell>K{p.price?.toLocaleString()}</TableCell>
                       <TableCell>{p.stock_quantity}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
