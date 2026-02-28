@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
@@ -42,6 +42,7 @@ export default function BuyerDashboard() {
   const [reviewOrder, setReviewOrder] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [partsRequestOpen, setPartsRequestOpen] = useState(false);
+  const [deleteAccountDialog, setDeleteAccountDialog] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -233,6 +234,15 @@ export default function BuyerDashboard() {
                   <Input value={profileForm.address} onChange={e => setProfileForm({...profileForm, address: e.target.value})} placeholder="Your address" className="mt-1 rounded-xl" />
                 </div>
                 <Button onClick={saveProfile} className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                <div className="pt-4 border-t border-slate-100">
+                  <Button
+                    variant="outline"
+                    onClick={() => setDeleteAccountDialog(true)}
+                    className="text-red-600 border-red-200 hover:bg-red-50 w-full"
+                  >
+                    Delete Account
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>
@@ -240,6 +250,28 @@ export default function BuyerDashboard() {
       </main>
 
       <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
+
+      <Dialog open={deleteAccountDialog} onOpenChange={setDeleteAccountDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently removed.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setDeleteAccountDialog(false)}>Cancel</Button>
+            <Button
+              variant="destructive"
+              onClick={async () => {
+                await base44.auth.logout();
+              }}
+            >
+              Delete My Account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
         <DialogContent>
