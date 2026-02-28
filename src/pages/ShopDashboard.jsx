@@ -303,6 +303,36 @@ export default function ShopDashboard() {
     }
   };
 
+  const handleGenerateReport = async () => {
+    setGeneratingReport(true);
+    try {
+      const response = await base44.functions.invoke('generateSalesReport', {
+        shop_id: shop.id,
+        start_date: reportForm.start_date,
+        end_date: reportForm.end_date
+      });
+      
+      // Create blob and download
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `Sales_Report_${shop.name.replace(/\s+/g, '_')}_${reportForm.start_date}.xlsx`;
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+      
+      toast.success("Report downloaded successfully");
+      setReportDialog(false);
+    } catch (error) {
+      toast.error("Failed to generate report");
+    }
+    setGeneratingReport(false);
+  };
+
   const sidebarItems = [
    { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
    { id: "shop_info", label: "Shop Info", icon: Store, onClick: () => setView("shop_info") },
