@@ -29,6 +29,18 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [pageLoading, setPageLoading] = useState(false);
+  const prevPage = React.useRef(currentPageName);
+
+  // Show loader on page transitions
+  useEffect(() => {
+    if (prevPage.current !== currentPageName) {
+      setPageLoading(true);
+      const t = setTimeout(() => setPageLoading(false), 600);
+      prevPage.current = currentPageName;
+      return () => clearTimeout(t);
+    }
+  }, [currentPageName]);
 
   useEffect(() => {
     (async () => {
