@@ -20,10 +20,11 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
-    if (!form.buyer_name || !form.description) {
-      toast.error("Please fill in your name and describe the problem");
-      return;
-    }
+    if (!form.buyer_name.trim()) { toast.error("Please enter your name"); return; }
+    if (!form.buyer_phone.trim()) { toast.error("Phone number is required"); return; }
+    if (!/^\+?\d{7,15}$/.test(form.buyer_phone.replace(/\s/g, ""))) { toast.error("Enter a valid phone number (e.g. +260...)"); return; }
+    if (!form.description.trim()) { toast.error("Please describe the problem"); return; }
+    if (!form.preferred_date) { toast.error("Please select a preferred date"); return; }
     setLoading(true);
     const user = await base44.auth.me();
     await base44.entities.TechnicianHireRequest.create({
