@@ -146,6 +146,8 @@ export default function ProductDetail() {
         </div>
       </div>
 
+      </div>
+
       <PartsRequestForm
         open={requestOpen}
         onClose={() => setRequestOpen(false)}
