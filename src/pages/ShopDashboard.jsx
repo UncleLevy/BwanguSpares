@@ -315,20 +315,20 @@ export default function ShopDashboard() {
         start_date: reportForm.start_date,
         end_date: reportForm.end_date
       });
-      
+
       // Create blob and download
       const blob = new Blob([response.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        type: 'text/csv'
       });
       const url = window.URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `Sales_Report_${shop.name.replace(/\s+/g, '_')}_${reportForm.start_date}.xlsx`;
+      link.download = `Sales_Report_${shop.name.replace(/\s+/g, '_')}_${reportForm.start_date}.csv`;
       document.body.appendChild(link);
       link.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
-      
+
       toast.success("Report downloaded successfully");
       setReportDialog(false);
     } catch (error) {
