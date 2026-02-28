@@ -23,7 +23,12 @@ export default function Cart() {
       const u = await base44.auth.me();
       setUser(u);
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
-      setItems(cart);
+      // Enrich with current stock
+      const enriched = await Promise.all(cart.map(async (item) => {
+        const products = await base44.entities.Product.filter({ id: item.product_id });
+        return { ...item, _stock: products[0]?.stock_quantity ?? 0 };
+      }));
+      setItems(enriched);
       setLoading(false);
     })();
   }, []);
