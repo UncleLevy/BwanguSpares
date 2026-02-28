@@ -40,6 +40,7 @@ import ProductVariationsPanel from "@/components/products/ProductVariationsPanel
 import BulkEditPanel from "@/components/products/BulkEditPanel";
 import LowStockAlerts from "@/components/products/LowStockAlerts";
 import AddressInput from "@/components/shared/AddressInput";
+import BranchManager from "@/components/branches/BranchManager";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
