@@ -27,6 +27,7 @@ import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
+import TechnicianHireRequests from "@/components/technicians/TechnicianHireRequests";
 import MarketInsights from "@/components/analytics/MarketInsights";
 import ShopMessages from "@/components/messaging/ShopMessages";
 import DocumentPrinter from "@/components/documents/DocumentPrinter";
