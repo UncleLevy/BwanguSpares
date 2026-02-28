@@ -25,6 +25,7 @@ export default function ProductDetail() {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [qty, setQty] = useState(1);
+  const [requestOpen, setRequestOpen] = useState(false);
 
   useEffect(() => {
     if (!id) return;
