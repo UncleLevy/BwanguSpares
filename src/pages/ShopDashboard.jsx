@@ -771,6 +771,10 @@ export default function ShopDashboard() {
           <ShopMessages shop={shop} user={user} />
         )}
 
+        {view === "branches" && (
+          <BranchManager shopId={shop?.id} />
+        )}
+
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
            <DialogContent>
              <DialogHeader><DialogTitle>Add New Branch</DialogTitle></DialogHeader>
