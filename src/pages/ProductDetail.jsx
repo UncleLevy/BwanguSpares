@@ -2,10 +2,11 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Package, ShoppingCart, Store, MapPin, ArrowLeft, Check } from "lucide-react";
+import { Package, ShoppingCart, Store, ArrowLeft, Check, FileSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import PartsRequestForm from "@/components/parts/PartsRequestForm";
 
 const conditionColors = {
   new: "bg-emerald-50 text-emerald-700 border-emerald-200",

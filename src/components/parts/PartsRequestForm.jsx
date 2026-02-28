@@ -20,7 +20,7 @@ const CATEGORIES = [
   { value: "other", label: "Other" },
 ];
 
-export default function PartsRequestForm({ open, onClose, onSuccess }) {
+export default function PartsRequestForm({ open, onClose, onSuccess, prefill = {} }) {
   const [form, setForm] = useState({
     part_name: "", description: "", category: "other",
     compatible_vehicles: "", budget: "", phone: "", buyer_region: ""
@@ -33,7 +33,9 @@ export default function PartsRequestForm({ open, onClose, onSuccess }) {
         const authed = await base44.auth.isAuthenticated();
         if (authed) {
           const u = await base44.auth.me();
-          if (u.phone) setForm(f => ({ ...f, phone: u.phone }));
+          setForm(f => ({ ...f, phone: u.phone || f.phone, ...prefill }));
+        } else {
+          setForm(f => ({ ...f, ...prefill }));
         }
       })();
     }
