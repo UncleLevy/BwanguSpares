@@ -163,22 +163,33 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
   };
 
   const handlePrint = () => {
-    const content = document.getElementById("printable-document");
-    if (!content) return;
-    const win = window.open("", "_blank");
-    win.document.write(`
-      <html>
-        <head><title>Print - ${docNumber}</title>
-        <style>@media print { body { margin: 0; } }</style>
-        </head>
-        <body>${content.outerHTML}</body>
-      </html>
-    `);
-    win.document.close();
-    win.focus();
-    win.print();
-    win.close();
-  };
+     const content = document.getElementById("printable-document");
+     if (!content) return;
+     const win = window.open("", "_blank");
+     win.document.write(`
+       <html>
+         <head>
+           <meta charset="UTF-8">
+           <title>Print - ${docNumber}</title>
+           <style>
+             * { margin: 0; padding: 0; box-sizing: border-box; }
+             body { font-family: Arial, sans-serif; }
+             @media print {
+               body { margin: 0; padding: 0; }
+               @page { margin: 10mm; }
+             }
+           </style>
+         </head>
+         <body>${content.outerHTML}</body>
+       </html>
+     `);
+     win.document.close();
+     win.focus();
+     setTimeout(() => {
+       win.print();
+       win.close();
+     }, 500);
+   };
 
   return (
     <>
