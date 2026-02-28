@@ -8,9 +8,11 @@ import ReportButton from "@/components/reports/ReportButton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import ReviewList from "@/components/reviews/ReviewList";
+import HireTechnicianDialog from "@/components/technicians/HireTechnicianDialog";
 
 export default function ShopProfile() {
   const params = new URLSearchParams(window.location.search);
