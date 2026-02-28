@@ -154,7 +154,10 @@ export default function Cart() {
     setSubmitting(true);
     try {
       for (const [shopId, group] of Object.entries(groupedByShop)) {
-        const shopTotal = group.items.reduce((s, i) => s + (i.price||0)*(i.quantity||1), 0);
+        const shopSubtotal = group.items.reduce((s, i) => s + (i.price||0)*(i.quantity||1), 0);
+        const shopDiscountAmount = appliedCoupon ? Math.min((shopSubtotal / subtotal) * discountAmount, shopSubtotal) : 0;
+        const shopTotal = shopSubtotal - shopDiscountAmount;
+        
         await base44.entities.Order.create({
           buyer_email: user.email,
           buyer_name: user.full_name,
@@ -171,9 +174,13 @@ export default function Cart() {
           delivery_address: form.address,
           delivery_phone: form.phone,
           notes: form.notes,
-          coupon_code: form.coupon,
+          coupon_code: appliedCoupon?.code || "",
           status: "pending",
         });
+      }
+
+      if (appliedCoupon) {
+        await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
       }
 
       for (const item of items) {
