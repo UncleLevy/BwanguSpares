@@ -220,8 +220,8 @@ export default function BuyerDashboard() {
 
         {view === "profile" && (
           <div className="max-w-lg">
-            <h1 className="text-2xl font-bold text-slate-900 mb-6">Profile</h1>
-            <Card className="border-slate-100">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Profile</h1>
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
               <CardContent className="p-6 space-y-5">
                 <div>
                   <Label className="text-sm text-slate-500">Name</Label>
