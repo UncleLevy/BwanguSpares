@@ -2,13 +2,15 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Store, MapPin, Upload, CheckCircle2, Clock, ShieldOff } from "lucide-react";
+import { Store, MapPin, Upload, CheckCircle2, Clock, ShieldOff, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import TermsAndConditionsModal from "@/components/shop/TermsAndConditionsModal";
 
 export default function RegisterShop() {
   const [user, setUser] = useState(null);
@@ -18,10 +20,13 @@ export default function RegisterShop() {
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [banRecord, setBanRecord] = useState(null);
+  const [step, setStep] = useState(1);
+  const [termsModalOpen, setTermsModalOpen] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     name: "", description: "", phone: "", address: "",
-    region: "", slot_type: "basic", logo_url: "", cover_url: ""
+    region: "", slot_type: "basic", logo_url: "", cover_url: "",
+    business_registration_number: "", tax_identification_number: "", terms_accepted: false
   });
 
   useEffect(() => {
@@ -64,20 +69,49 @@ export default function RegisterShop() {
     setUploading(false);
   };
 
+  const validateStep = (currentStep) => {
+    if (currentStep === 1) {
+      if (!form.name.trim()) { toast.error("Shop name is required"); return false; }
+      if (!form.phone) { toast.error("Phone number is required"); return false; }
+      if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) {
+        toast.error("Enter a valid phone number"); return false;
+      }
+      return true;
+    }
+    if (currentStep === 2) {
+      if (!form.region) { toast.error("Please select a region"); return false; }
+      if (!form.address.trim()) { toast.error("Address is required"); return false; }
+      return true;
+    }
+    if (currentStep === 3) {
+      if (!form.logo_url) { toast.error("Shop logo is required"); return false; }
+      return true;
+    }
+    if (currentStep === 4) {
+      if (!form.business_registration_number.trim()) { toast.error("Business registration number is required"); return false; }
+      if (!form.tax_identification_number.trim()) { toast.error("Tax identification number is required"); return false; }
+      if (!form.terms_accepted) { toast.error("You must accept the terms and conditions"); return false; }
+      return true;
+    }
+    return true;
+  };
+
+  const handleNext = () => {
+    if (validateStep(step)) setStep(step + 1);
+  };
+
+  const handlePrevious = () => {
+    if (step > 1) setStep(step - 1);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name.trim()) { toast.error("Shop name is required"); return; }
-    if (!form.region) { toast.error("Please select a region"); return; }
-    if (!form.address.trim()) { toast.error("Address is required"); return; }
-    if (form.phone && !/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) {
-      toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return;
-    }
+    if (!validateStep(4)) return;
     setSubmitting(true);
 
     const regionObj = regions.find(r => r.id === form.region);
-
-    // geocode address
     let lat = null, lng = null;
+    
     const geoRes = await base44.integrations.Core.InvokeLLM({
       prompt: `Return approximate GPS coordinates for this address in Zambia: "${form.address}". Return only the coordinates.`,
       response_json_schema: {
@@ -88,7 +122,16 @@ export default function RegisterShop() {
     if (geoRes?.latitude) { lat = geoRes.latitude; lng = geoRes.longitude; }
 
     const shop = await base44.entities.Shop.create({
-      ...form,
+      name: form.name,
+      description: form.description,
+      phone: form.phone,
+      address: form.address,
+      region: form.region,
+      slot_type: form.slot_type,
+      logo_url: form.logo_url,
+      cover_url: form.cover_url,
+      business_registration_number: form.business_registration_number,
+      tax_identification_number: form.tax_identification_number,
       owner_email: user.email,
       owner_name: user.full_name,
       region_name: regionObj?.name || "",
@@ -100,6 +143,7 @@ export default function RegisterShop() {
     await base44.auth.updateMe({ role: "shop_owner", shop_id: shop.id });
     toast.success("Shop registration submitted! Awaiting admin approval.");
     navigate(createPageUrl("ShopDashboard"));
+    setSubmitting(false);
   };
 
   if (loading) return <div className="max-w-2xl mx-auto px-4 py-12"><div className="h-96 bg-slate-100 rounded-2xl animate-pulse" /></div>;
@@ -116,7 +160,6 @@ export default function RegisterShop() {
         {banRecord.ban_expires && (
           <p className="text-sm text-slate-400 mt-1">Expires: {new Date(banRecord.ban_expires).toLocaleDateString()}</p>
         )}
-        <p className="text-xs text-slate-300 mt-4">If you believe this is an error, please contact support.</p>
       </div>
     );
   }
@@ -152,65 +195,143 @@ export default function RegisterShop() {
           <Store className="w-7 h-7 text-blue-600" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900">Register Your Shop</h1>
-        <p className="text-slate-500 mt-1">Join Bwangu Spares and reach customers across Zambia</p>
+        <p className="text-slate-500 mt-1">Step {step} of 4: {["Basic Info", "Location", "Images", "Compliance"][step - 1]}</p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="flex gap-2 mb-8">
+        {[1, 2, 3, 4].map(s => (
+          <div key={s} className={`flex-1 h-1 rounded-full transition-colors ${s <= step ? "bg-blue-600" : "bg-slate-200"}`} />
+        ))}
       </div>
 
       <form onSubmit={handleSubmit} className="bg-white rounded-2xl border border-slate-100 p-6 space-y-5">
-        <div>
-          <Label>Shop Name *</Label>
-          <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your shop name" className="mt-1 rounded-xl" />
+        {/* Step 1: Basic Info */}
+        {step === 1 && (
+          <>
+            <div>
+              <Label>Shop Name *</Label>
+              <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your shop name" className="mt-1 rounded-xl" />
+            </div>
+            <div>
+              <Label>Description</Label>
+              <Textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Tell customers about your shop" className="mt-1 rounded-xl" rows={3} />
+            </div>
+            <div>
+              <Label>Phone *</Label>
+              <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
+            </div>
+          </>
+        )}
+
+        {/* Step 2: Location */}
+        {step === 2 && (
+          <>
+            <div>
+              <Label>Region *</Label>
+              <Select value={form.region} onValueChange={v => setForm({...form, region: v})}>
+                <SelectTrigger className="mt-1 rounded-xl"><SelectValue placeholder="Select region" /></SelectTrigger>
+                <SelectContent>
+                  {regions.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label>Address *</Label>
+              <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Full physical address" className="mt-1 rounded-xl" />
+              <p className="text-xs text-slate-400 mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> We'll use this to show your location on the map</p>
+            </div>
+            <div>
+              <Label>Slot Plan</Label>
+              <Select value={form.slot_type} onValueChange={v => setForm({...form, slot_type: v})}>
+                <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="basic">Basic – Free</SelectItem>
+                  <SelectItem value="standard">Standard</SelectItem>
+                  <SelectItem value="premium">Premium</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </>
+        )}
+
+        {/* Step 3: Images */}
+        {step === 3 && (
+          <>
+            <div>
+              <Label>Shop Logo *</Label>
+              <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "logo_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
+              {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 w-20 h-20 object-cover rounded-lg border" />}
+            </div>
+            <div>
+              <Label>Cover Image</Label>
+              <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "cover_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
+              {form.cover_url && <img src={form.cover_url} alt="Cover" className="mt-2 w-full h-20 object-cover rounded-lg border" />}
+            </div>
+          </>
+        )}
+
+        {/* Step 4: Compliance */}
+        {step === 4 && (
+          <>
+            <div>
+              <Label>Business Registration Number *</Label>
+              <Input value={form.business_registration_number} onChange={e => setForm({...form, business_registration_number: e.target.value})} placeholder="e.g., BRN123456" className="mt-1 rounded-xl" />
+            </div>
+            <div>
+              <Label>Tax Identification Number *</Label>
+              <Input value={form.tax_identification_number} onChange={e => setForm({...form, tax_identification_number: e.target.value})} placeholder="e.g., TIN123456789" className="mt-1 rounded-xl" />
+            </div>
+            <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
+              <Checkbox
+                id="terms"
+                checked={form.terms_accepted}
+                onCheckedChange={checked => setForm({...form, terms_accepted: checked})}
+                className="mt-1"
+              />
+              <div className="flex-1">
+                <label htmlFor="terms" className="text-sm font-medium text-slate-900 cursor-pointer">
+                  I accept the terms and conditions *
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setTermsModalOpen(true)}
+                  className="text-sm text-blue-600 hover:underline mt-1"
+                >
+                  Read full terms
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Navigation buttons */}
+        <div className="flex gap-3 pt-6">
+          {step > 1 && (
+            <Button type="button" onClick={handlePrevious} variant="outline" className="flex-1 h-11 rounded-xl">
+              Previous
+            </Button>
+          )}
+          {step < 4 ? (
+            <Button type="button" onClick={handleNext} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center gap-2">
+              Next <ChevronRight className="w-4 h-4" />
+            </Button>
+          ) : (
+            <Button type="submit" disabled={submitting || uploading} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl">
+              {submitting ? "Submitting..." : "Submit Registration"}
+            </Button>
+          )}
         </div>
-        <div>
-          <Label>Description</Label>
-          <Textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Tell customers about your shop" className="mt-1 rounded-xl" rows={3} />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <Label>Phone *</Label>
-            <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
-          </div>
-          <div>
-            <Label>Region *</Label>
-            <Select value={form.region} onValueChange={v => setForm({...form, region: v})}>
-              <SelectTrigger className="mt-1 rounded-xl"><SelectValue placeholder="Select region" /></SelectTrigger>
-              <SelectContent>
-                {regions.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-        <div>
-          <Label>Address *</Label>
-          <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Full physical address" className="mt-1 rounded-xl" />
-          <p className="text-xs text-slate-400 mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> We'll use this to show your location on the map</p>
-        </div>
-        <div>
-          <Label>Slot Plan</Label>
-          <Select value={form.slot_type} onValueChange={v => setForm({...form, slot_type: v})}>
-            <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
-            <SelectContent>
-              <SelectItem value="basic">Basic – Free</SelectItem>
-              <SelectItem value="standard">Standard</SelectItem>
-              <SelectItem value="premium">Premium</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <Label>Shop Logo</Label>
-            <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "logo_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
-            {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 w-20 h-20 object-cover rounded-lg border" />}
-          </div>
-          <div>
-            <Label>Cover Image</Label>
-            <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "cover_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
-            {form.cover_url && <img src={form.cover_url} alt="Cover" className="mt-2 w-full h-20 object-cover rounded-lg border" />}
-          </div>
-        </div>
-        <Button type="submit" disabled={submitting || uploading} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl">
-          {submitting ? "Submitting..." : "Submit Registration"}
-        </Button>
       </form>
+
+      <TermsAndConditionsModal
+        open={termsModalOpen}
+        onOpenChange={setTermsModalOpen}
+        onAccept={() => {
+          setForm({...form, terms_accepted: true});
+          setTermsModalOpen(false);
+        }}
+      />
     </div>
   );
 }
