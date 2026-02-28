@@ -131,8 +131,8 @@ export default function Cart() {
       ) : (
         <div className="space-y-6">
           {Object.entries(groupedByShop).map(([shopId, group]) => (
-            <div key={shopId} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-              <div className="px-5 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <div key={shopId} className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-400 dark:border-slate-700 overflow-hidden">
+              <div className="px-5 py-3 bg-slate-50 dark:bg-slate-700/50 border-b border-slate-400 dark:border-slate-700 text-sm font-medium text-slate-700 dark:text-slate-300">
                 {group.shop_name}
               </div>
               <div className="divide-y divide-slate-50">
@@ -173,7 +173,7 @@ export default function Cart() {
             </div>
           ))}
 
-          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 p-6">
+          <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-400 dark:border-slate-700 p-6">
             <div className="flex justify-between text-lg font-bold text-slate-900 dark:text-slate-100 mb-4">
               <span>Total</span>
               <span className="text-blue-600">K{total.toLocaleString()}</span>
