@@ -380,10 +380,37 @@ export default function ShopDashboard() {
 
         {view === "overview" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{shop?.name}</h1>
-            <p className="text-sm text-slate-500 mb-6">
-              Status: <Badge className={shop?.status === "approved" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}>{shop?.status}</Badge>
-            </p>
+            <div className="flex items-center justify-between mb-6">
+              <div>
+                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{shop?.name}</h1>
+                <p className="text-sm text-slate-500">
+                  Status: <Badge className={shop?.status === "approved" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}>{shop?.status}</Badge>
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <Select value={shop?.id} onValueChange={handleSwitchShop}>
+                  <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    {shops.map(s => (
+                      <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <Button onClick={() => {
+                  const tierLimits = { free: 1, standard: 3, premium: 5 };
+                  const maxShops = tierLimits[subscription?.tier || "free"];
+                  if (shops.length >= maxShops) {
+                    if (maxShops < 5) {
+                      toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Contact us for an Enterprise plan with more branch slots.`);
+                    } else {
+                      toast.error("You've reached the maximum number of shops. Contact us for an Enterprise plan.");
+                    }
+                  } else {
+                    setShowNewShopDialog(true);
+                  }
+                }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Branch</Button>
+              </div>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
                 { label: "Products", value: products.length, icon: Package, color: "bg-blue-50 text-blue-600" },
