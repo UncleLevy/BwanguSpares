@@ -6,6 +6,7 @@ import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare
 } from "lucide-react";
+import BottomNav from "@/components/shared/BottomNav";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -50,7 +51,7 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm" style={{ paddingTop: "env(safe-area-inset-top)" }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
@@ -161,7 +162,8 @@ export default function Layout({ children, currentPageName }) {
         )}
       </header>
 
-      <main>{children}</main>
+      <main className="pb-16 md:pb-0" style={{ paddingBottom: "calc(env(safe-area-inset-bottom) + 4rem)" }}>{children}</main>
+      <BottomNav />
 
       <footer className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
