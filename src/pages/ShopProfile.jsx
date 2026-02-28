@@ -251,6 +251,15 @@ export default function ShopProfile() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {selectedTech && (
+        <HireTechnicianDialog
+          technician={selectedTech}
+          shop={shop}
+          open={hireDialog}
+          onClose={() => { setHireDialog(false); setSelectedTech(null); }}
+        />
+      )}
     </div>
   );
 }
