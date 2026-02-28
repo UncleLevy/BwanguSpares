@@ -1,18 +1,28 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Search, MessageSquare, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Home", icon: Home, page: "Home" },
-  { label: "Browse", icon: Search, page: "BrowseProducts" },
+  { label: "Home",     icon: Home,          page: "Home" },
+  { label: "Browse",   icon: Search,        page: "BrowseProducts" },
   { label: "Messages", icon: MessageSquare, page: "Messages" },
-  { label: "Account", icon: User, page: "BuyerDashboard" },
+  { label: "Account",  icon: User,          page: "BuyerDashboard" },
 ];
 
 export default function BottomNav() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleTap = (href, isActive) => {
+    if (isActive) {
+      // Re-tapping the active tab resets that tab's stack to its root
+      navigate(href, { replace: true });
+    } else {
+      navigate(href);
+    }
+  };
 
   return (
     <nav
@@ -23,9 +33,9 @@ export default function BottomNav() {
         const href = createPageUrl(page);
         const active = location.pathname === href || location.pathname.startsWith(href + "?");
         return (
-          <Link
+          <button
             key={page}
-            to={href}
+            onClick={() => handleTap(href, active)}
             className={cn(
               "flex-1 flex flex-col items-center justify-center gap-0.5 py-2 min-h-[56px] transition-colors",
               active ? "text-blue-600" : "text-slate-500 dark:text-slate-400"
@@ -33,7 +43,7 @@ export default function BottomNav() {
           >
             <Icon className="w-5 h-5" />
             <span className="text-[10px] font-medium">{label}</span>
-          </Link>
+          </button>
         );
       })}
     </nav>
