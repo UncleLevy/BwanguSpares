@@ -258,18 +258,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
 
-        {mobileOpen && (
-          <div className="md:hidden border-t border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900 pb-4">
-            <nav className="px-4 pt-2 space-y-1">
-              {navLinks.map(l => (
-                <Link key={l.label} to={l.href} onClick={() => setMobileOpen(false)}
-                  className="flex items-center gap-3 px-3 py-2.5 text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-slate-800 rounded-lg">
-                  <l.icon className="w-4 h-4 text-slate-400" /> {l.label}
-                </Link>
-              ))}
-            </nav>
-          </div>
-        )}
+
       </header>
 
       <main className="pb-16 md:pb-0">
