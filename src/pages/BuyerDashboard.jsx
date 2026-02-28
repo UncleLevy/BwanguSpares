@@ -236,36 +236,77 @@ export default function BuyerDashboard() {
         )}
 
         {view === "profile" && (
-          <div className="max-w-lg">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Profile</h1>
+          <div className="max-w-lg space-y-5">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
+
+            {/* Personal Info */}
             <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
-              <CardContent className="p-6 space-y-5">
+              <CardContent className="p-6 space-y-4">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
                 <div>
-                  <Label className="text-sm text-slate-500 dark:text-slate-400">Name</Label>
-                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5">{user?.full_name}</p>
+                  <Label className="text-sm text-slate-500 dark:text-slate-400">Email (cannot be changed)</Label>
+                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5 text-sm">{user?.email}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>First Name *</Label>
+                    <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400" : ""}`} />
+                    {profileErrors.first_name && <p className="text-xs text-red-500 mt-1">{profileErrors.first_name}</p>}
+                  </div>
+                  <div>
+                    <Label>Last Name *</Label>
+                    <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400" : ""}`} />
+                    {profileErrors.last_name && <p className="text-xs text-red-500 mt-1">{profileErrors.last_name}</p>}
+                  </div>
                 </div>
                 <div>
-                  <Label className="text-sm text-slate-500 dark:text-slate-400">Email</Label>
-                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5">{user?.email}</p>
+                  <Label>Phone Number</Label>
+                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
+                  {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
                 </div>
                 <div>
-                  <Label>Phone</Label>
-                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260..." className="mt-1 rounded-xl" />
-                </div>
-                <div>
-                  <Label>Address</Label>
-                  <Input value={profileForm.address} onChange={e => setProfileForm({...profileForm, address: e.target.value})} placeholder="Your address" className="mt-1 rounded-xl" />
+                  <Label>Delivery Address</Label>
+                  <Input value={profileForm.address} onChange={e => setProfileForm({...profileForm, address: e.target.value})} placeholder="Your physical address" className="mt-1 rounded-xl" />
                 </div>
                 <Button onClick={saveProfile} className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
-                <div className="pt-4 border-t border-slate-100">
-                  <Button
-                    variant="outline"
-                    onClick={() => setDeleteAccountDialog(true)}
-                    className="text-red-600 border-red-200 hover:bg-red-50 w-full"
-                  >
-                    Delete Account
+              </CardContent>
+            </Card>
+
+            {/* Password Reset */}
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+              <CardContent className="p-6 space-y-3">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
+                {passwordResetSent ? (
+                  <p className="text-sm text-emerald-600 font-medium">✓ Reset link sent! Check your email.</p>
+                ) : (
+                  <Button variant="outline" onClick={async () => {
+                    await base44.integrations.Core.SendEmail({
+                      to: user.email,
+                      subject: "Password Reset Request – BwanguSpares",
+                      body: `Hello ${user.full_name},\n\nYou requested a password reset for your BwanguSpares account.\n\nPlease use your login page to reset your password, or contact support at admin@bwangu.com if you need help.\n\nBwanguSpares Team`
+                    });
+                    setPasswordResetSent(true);
+                    toast.success("Password reset email sent!");
+                  }}>
+                    Send Password Reset Email
                   </Button>
-                </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Danger Zone */}
+            <Card className="border-red-100 dark:border-red-900/40">
+              <CardContent className="p-6 space-y-3">
+                <h2 className="font-semibold text-red-600 text-sm uppercase tracking-wide">Danger Zone</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
+                <Button
+                  variant="outline"
+                  onClick={() => setDeleteAccountDialog(true)}
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  Delete My Account
+                </Button>
               </CardContent>
             </Card>
           </div>
