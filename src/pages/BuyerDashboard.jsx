@@ -127,7 +127,7 @@ export default function BuyerDashboard() {
             setOrders(o);
           }}>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 mb-6">My Orders</h1>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Orders</h1>
             {orders.length === 0 ? (
               <div className="text-center py-20">
                 <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
