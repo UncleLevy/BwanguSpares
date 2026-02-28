@@ -58,12 +58,16 @@ const SPECIALIZATIONS = [
 
 export default function ShopDashboard() {
   const [user, setUser] = useState(null);
+  const [shops, setShops] = useState([]);
   const [shop, setShop] = useState(null);
+  const [subscription, setSubscription] = useState(null);
   const [view, setView] = useState("overview");
   const [products, setProducts] = useState([]);
   const [technicians, setTechnicians] = useState([]);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [showNewShopDialog, setShowNewShopDialog] = useState(false);
+  const [newShopForm, setNewShopForm] = useState({ name: "", phone: "", address: "", region: "" });
 
   const [productDialog, setProductDialog] = useState(false);
   const [editProduct, setEditProduct] = useState(null);
