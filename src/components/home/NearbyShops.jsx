@@ -25,12 +25,12 @@ export default function NearbyShops({ shops, loading }) {
   }
 
   return (
-    <section className="py-16 bg-slate-50/50">
+    <section className="py-16 bg-slate-50/50 dark:bg-slate-900/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <h2 className="text-2xl font-bold text-slate-900 tracking-tight">Shops Near You</h2>
-            <p className="text-slate-500 mt-1">Verified auto spares dealers in your area</p>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Shops Near You</h2>
+            <p className="text-slate-500 dark:text-slate-400 mt-1">Verified auto spares dealers in your area</p>
           </div>
           <Link to={createPageUrl("BrowseShops")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
             View all <ArrowRight className="w-4 h-4" />
@@ -40,7 +40,7 @@ export default function NearbyShops({ shops, loading }) {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {shops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-              className="group bg-white rounded-2xl border border-slate-100 overflow-hidden hover-lift">
+              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
               <div className="relative h-32 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt={shop.name} className="w-full h-full object-cover opacity-80" />
@@ -54,8 +54,8 @@ export default function NearbyShops({ shops, loading }) {
                 )}
               </div>
               <div className="p-5">
-                <h3 className="font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
-                <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                <h3 className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
+                <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1">
                     <MapPin className="w-3.5 h-3.5" /> {shop.region_name || shop.address}
                   </span>
