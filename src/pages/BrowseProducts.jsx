@@ -64,6 +64,10 @@ export default function BrowseProducts() {
   );
 
   const handleAddToCart = async (product) => {
+    if ((product.stock_quantity || 0) === 0) {
+      toast.error("Out of stock — submit a parts request instead");
+      return;
+    }
     const isAuth = await base44.auth.isAuthenticated();
     if (!isAuth) {
       base44.auth.redirectToLogin(createPageUrl("BrowseProducts"));
@@ -72,7 +76,8 @@ export default function BrowseProducts() {
     const user = await base44.auth.me();
     const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
     if (existing.length > 0) {
-      await base44.entities.CartItem.update(existing[0].id, { quantity: (existing[0].quantity || 1) + 1 });
+      const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + 1);
+      await base44.entities.CartItem.update(existing[0].id, { quantity: newQty });
     } else {
       await base44.entities.CartItem.create({
         buyer_email: user.email, product_id: product.id, product_name: product.name,
