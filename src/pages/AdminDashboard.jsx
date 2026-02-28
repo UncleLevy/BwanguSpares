@@ -53,13 +53,14 @@ export default function AdminDashboard() {
       const u = await base44.auth.me();
       if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
       setUser(u);
-      const [s, p, o, r] = await Promise.all([
+      const [s, p, o, r, t] = await Promise.all([
         base44.entities.Shop.list("-created_date", 50),
         base44.entities.Product.list("-created_date", 50),
         base44.entities.Order.list("-created_date", 50),
         base44.entities.Region.list(),
+        base44.entities.Town.list(),
       ]);
-      setShops(s); setProducts(p); setOrders(o); setRegions(r);
+      setShops(s); setProducts(p); setOrders(o); setRegions(r); setTowns(t);
       const reports = await base44.entities.Report.filter({ status: "pending" });
       setReportCount(reports.length);
       setLoading(false);
