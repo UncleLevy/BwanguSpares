@@ -24,6 +24,9 @@ export default function ShopProfile() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
+  const [problemFilter, setProblemFilter] = useState("all");
+  const [hireDialog, setHireDialog] = useState(false);
+  const [selectedTech, setSelectedTech] = useState(null);
 
   useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
