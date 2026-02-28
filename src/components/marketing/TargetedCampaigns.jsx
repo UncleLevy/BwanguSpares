@@ -281,11 +281,12 @@ export default function TargetedCampaigns({ shopId, customers = [], segments = [
                 <p className="text-sm text-slate-700 dark:text-slate-300 mt-1 whitespace-pre-wrap">{selectedCampaign.content}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <div>
+                 <div>
                   <p className="text-xs text-slate-500 uppercase font-semibold">Recipients</p>
                   <p className="text-lg font-bold mt-1">{selectedCampaign.recipient_count}</p>
                 </div>
-                    <p className="text-xs text-slate-500 uppercase font-semibold">Status</p>
+                <div>
+                  <p className="text-xs text-slate-500 uppercase font-semibold">Status</p>
                   <Badge className={selectedCampaign.status === "sent" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>
                     {selectedCampaign.status}
                   </Badge>
