@@ -39,6 +39,7 @@ import TopItemsList from "@/components/analytics/TopItemsList";
 import ProductVariationsPanel from "@/components/products/ProductVariationsPanel";
 import BulkEditPanel from "@/components/products/BulkEditPanel";
 import LowStockAlerts from "@/components/products/LowStockAlerts";
+import AddressInput from "@/components/shared/AddressInput";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
