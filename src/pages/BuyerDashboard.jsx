@@ -117,7 +117,7 @@ export default function BuyerDashboard() {
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
   return (
-    <div className="flex min-h-screen bg-slate-50">
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       <DashboardSidebar items={sidebarItems} active={view} title="My Account" />
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0">
 
