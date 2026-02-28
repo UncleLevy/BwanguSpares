@@ -41,6 +41,17 @@ export default function BrowseProducts() {
   const [condition, setCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [requestFormOpen, setRequestFormOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     loadProducts();
@@ -195,9 +206,9 @@ export default function BrowseProducts() {
           </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {filteredProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />)}
-        </div>
+       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+         {filteredProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
+       </div>
       )}
 
       {filteredProducts.length > 0 && (

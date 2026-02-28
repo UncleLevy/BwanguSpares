@@ -22,7 +22,18 @@ export default function Home() {
   const [shops, setShops] = useState([]);
   const [loading, setLoading] = useState(true);
   const [userLocation, setUserLocation] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (isAuth) {
+        const currentUser = await base44.auth.me();
+        setUser(currentUser);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -116,7 +127,7 @@ export default function Home() {
         </div>
       </section>
 
-      <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} />
+      <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} user={user} />
       <NearbyShops shops={shops} loading={loading} />
     </div>
   );

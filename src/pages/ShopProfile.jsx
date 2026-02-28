@@ -186,7 +186,7 @@ export default function ShopProfile() {
                   </a>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {products.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />)}
+                  {products.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
                 </div>
               </div>
             )}
