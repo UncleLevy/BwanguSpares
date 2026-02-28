@@ -88,28 +88,31 @@ export default function Layout({ children, currentPageName }) {
             </nav>
 
             <div className="flex items-center gap-2">
-              <DarkModeToggle />
-              {isAuthenticated && (
-                <>
-                  <NotificationBell userEmail={user?.email} />
-                  <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
-                    <MessageSquare className="w-5 h-5" />
-                  </Link>
-                  <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
-                    <ShoppingCart className="w-5 h-5" />
-                    {cartCount > 0 && (
-                      <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
-                        {cartCount}
-                      </Badge>
-                    )}
-                  </Link>
-                </>
-              )}
+              {/* Desktop icons */}
+              <div className="hidden md:flex items-center gap-2">
+                <DarkModeToggle />
+                {isAuthenticated && (
+                  <>
+                    <NotificationBell userEmail={user?.email} />
+                    <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                      <MessageSquare className="w-5 h-5" />
+                    </Link>
+                    <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                      <ShoppingCart className="w-5 h-5" />
+                      {cartCount > 0 && (
+                        <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">
+                          {cartCount}
+                        </Badge>
+                      )}
+                    </Link>
+                  </>
+                )}
+              </div>
 
               {isAuthenticated ? (
                 <>
-                  {/* Desktop: full dropdown */}
-                  <div className="hidden sm:block">
+                  {/* Desktop: full user dropdown */}
+                  <div className="hidden md:block">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700">
@@ -147,20 +150,110 @@ export default function Layout({ children, currentPageName }) {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                  {/* Mobile: just a direct link to dashboard */}
-                  <Link to={createPageUrl("BuyerDashboard")} className="sm:hidden p-2 rounded-full bg-blue-100 flex items-center justify-center">
-                    <User className="w-4 h-4 text-blue-600" />
-                  </Link>
+
+                  {/* Mobile: hamburger menu with all features */}
+                  <div className="md:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="relative">
+                          <Menu className="w-5 h-5" />
+                          {cartCount > 0 && (
+                            <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-blue-600 rounded-full text-[9px] text-white flex items-center justify-center font-bold">
+                              {cartCount}
+                            </span>
+                          )}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-56">
+                        <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Navigation</div>
+                        {navLinks.map(l => (
+                          <DropdownMenuItem key={l.label} asChild>
+                            <Link to={l.href} className="flex items-center gap-2">
+                              <l.icon className="w-4 h-4" /> {l.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Account</div>
+                        <DropdownMenuItem asChild>
+                          <Link to={createPageUrl("Messages")} className="flex items-center gap-2">
+                            <MessageSquare className="w-4 h-4" /> Messages
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to={createPageUrl("Cart")} className="flex items-center gap-2">
+                            <ShoppingCart className="w-4 h-4" /> Cart
+                            {cartCount > 0 && <Badge className="ml-auto h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600">{cartCount}</Badge>}
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem asChild>
+                          <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
+                            <LayoutDashboard className="w-4 h-4" /> My Dashboard
+                          </Link>
+                        </DropdownMenuItem>
+                        {isShopOwner && (
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2">
+                              <Store className="w-4 h-4" /> Shop Dashboard
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        {isAdmin && (
+                          <DropdownMenuItem asChild>
+                            <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
+                              <ShieldCheck className="w-4 h-4" /> Admin Panel
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="flex items-center gap-2">
+                          <DarkModeToggle />
+                          <span className="text-sm">Dark Mode</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
+                          <LogOut className="w-4 h-4" /> Sign Out
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </>
               ) : (
-                <Button onClick={() => base44.auth.redirectToLogin()} className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white text-sm h-9 px-6 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-200">
-                  Sign In
-                </Button>
+                <>
+                  <div className="hidden md:block">
+                    <DarkModeToggle />
+                  </div>
+                  <Button onClick={() => base44.auth.redirectToLogin()} className="hidden md:flex bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 text-white text-sm h-9 px-6 rounded-xl shadow-lg shadow-cyan-500/30 transition-all duration-200">
+                    Sign In
+                  </Button>
+                  {/* Mobile unauthenticated: simple menu */}
+                  <div className="md:hidden">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon"><Menu className="w-5 h-5" /></Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        {navLinks.map(l => (
+                          <DropdownMenuItem key={l.label} asChild>
+                            <Link to={l.href} className="flex items-center gap-2">
+                              <l.icon className="w-4 h-4" /> {l.label}
+                            </Link>
+                          </DropdownMenuItem>
+                        ))}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem className="flex items-center gap-2">
+                          <DarkModeToggle />
+                          <span className="text-sm">Dark Mode</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={() => base44.auth.redirectToLogin()} className="text-blue-600 font-medium flex items-center gap-2">
+                          <User className="w-4 h-4" /> Sign In
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                </>
               )}
-
-              <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
-                {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </Button>
             </div>
           </div>
         </div>
