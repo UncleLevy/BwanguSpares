@@ -329,7 +329,7 @@ export default function AdminDashboard() {
                   {shops.map(shop => (
                     <TableRow key={shop.id}>
                       <TableCell className="font-medium">{shop.name}</TableCell>
-                      <TableCell className="text-sm text-slate-500">{shop.owner_name || shop.owner_email}</TableCell>
+                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{shop.owner_name || shop.owner_email}</TableCell>
                       <TableCell className="text-sm">{shop.region_name}</TableCell>
                       <TableCell><Badge variant="outline" className="text-[11px]">{shop.slot_type}</Badge></TableCell>
                       <TableCell><Badge className={statusColors[shop.status]}>{shop.status}</Badge></TableCell>
