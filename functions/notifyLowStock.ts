@@ -28,6 +28,7 @@ Deno.serve(async (req) => {
 
         // Email notification
         await base44.asServiceRole.integrations.Core.SendEmail({
+          from_name: 'Bwangu Spares',
           to: shop.owner_email,
           subject: data.stock_quantity === 0
             ? `⚠️ Out of Stock: ${data.name} — ${shop.name}`

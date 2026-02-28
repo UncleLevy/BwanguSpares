@@ -134,8 +134,9 @@ export default function UsersPanel({ adminUser }) {
       ? `\n\nYour suspension will expire on ${new Date(banForm.ban_expires).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.`
       : "";
     await base44.integrations.Core.SendEmail({
+      from_name: 'Bwangu Spares',
       to: banForm.email,
-      subject: `Your BwanguSpares account has been ${isPermBan ? "banned" : "suspended"}`,
+      subject: `Your Bwangu Spares account has been ${isPermBan ? "banned" : "suspended"}`,
       body: `Dear ${banForm.full_name || "User"},\n\nYour account has been ${isPermBan ? "permanently banned" : "temporarily suspended"}.\n\nReason:\n${banForm.reason}${expiryLine}\n\nIf you believe this is an error, contact admin@bwangu.com.\n\nRegards,\nThe BwanguSpares Team`,
     }).catch(() => {});
     toast.success(`User ${isPermBan ? "banned" : "suspended"} — notification email sent`);

@@ -82,6 +82,7 @@ Deno.serve(async (req) => {
           </div>`;
 
         await base44.asServiceRole.integrations.Core.SendEmail({
+          from_name: 'Bwangu Spares',
           to: data.buyer_email,
           subject: `Your Receipt ${docNumber} — ${shop.name}`,
           body: receiptHtml,
