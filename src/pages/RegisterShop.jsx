@@ -166,8 +166,8 @@ export default function RegisterShop() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <Label>Phone</Label>
-            <Input value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260..." className="mt-1 rounded-xl" />
+            <Label>Phone *</Label>
+            <Input type="tel" value={form.phone} onChange={e => setForm({...form, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className="mt-1 rounded-xl" />
           </div>
           <div>
             <Label>Region *</Label>
