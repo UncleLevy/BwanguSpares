@@ -68,6 +68,22 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
     }
   };
 
+  const handleRefund = async () => {
+    if (!refundReason.trim()) { toast.error("Please provide a reason for the refund"); return; }
+    setRefunding(true);
+    try {
+      await base44.functions.invoke('refundOrder', { order_id: refundOrder.id, reason: refundReason });
+      const updated = { ...refundOrder, status: 'cancelled', cancellation_reason: refundReason, refunded: true };
+      onOrderUpdate(updated);
+      toast.success("Refund processed and order cancelled");
+      setRefundDialog(false);
+      setRefundReason("");
+    } catch (error) {
+      toast.error(error?.response?.data?.error || "Failed to process refund");
+    }
+    setRefunding(false);
+  };
+
   const getStatusColor = (status) => {
     return statusOptions.find(s => s.value === status)?.color || "bg-slate-50 text-slate-700";
   };
