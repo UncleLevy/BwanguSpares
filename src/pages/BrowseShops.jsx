@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Search, MapPin, Star, Store, Navigation, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, MapPin, Star, Store, Navigation, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -117,6 +117,7 @@ export default function BrowseShops() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredShops.map(shop => (
+
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
               className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
               <div className="relative h-36 bg-gradient-to-br from-blue-500 to-blue-700">
@@ -152,18 +153,20 @@ export default function BrowseShops() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-10">
-          <Button variant="outline" size="icon" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={page === 1}>
-            <ChevronLeft className="w-4 h-4" />
+          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === 1} className="rounded-xl">
+            ← Prev
           </Button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-            <Button key={p} variant={p === page ? "default" : "outline"} size="icon"
-              className={p === page ? "bg-blue-600 hover:bg-blue-700 text-white" : ""}
-              onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-              {p}
-            </Button>
-          ))}
-          <Button variant="outline" size="icon" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={page === totalPages}>
-            <ChevronRight className="w-4 h-4" />
+          <div className="flex gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <Button key={p} size="sm" variant={p === page ? "default" : "outline"}
+                onClick={() => { setPage(p); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                className="rounded-xl w-9">
+                {p}
+              </Button>
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === totalPages} className="rounded-xl">
+            Next →
           </Button>
         </div>
       )}
