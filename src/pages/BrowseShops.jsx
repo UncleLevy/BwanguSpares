@@ -73,6 +73,9 @@ export default function BrowseShops() {
       return 0;
     });
 
+  const totalPages = Math.ceil(allFilteredShops.length / PAGE_SIZE);
+  const filteredShops = allFilteredShops.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <Breadcrumbs items={[{ label: "Shops" }]} />
