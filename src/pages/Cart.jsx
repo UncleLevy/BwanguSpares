@@ -155,47 +155,49 @@ export default function Cart() {
       toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); 
       return; 
     }
+
+    // Block checkout inside iframe (preview)
+    if (window.self !== window.top) {
+      alert("Payment checkout works only from the published app. Please open the app in a new tab.");
+      return;
+    }
     
     setSubmitting(true);
     try {
-      for (const [shopId, group] of Object.entries(groupedByShop)) {
-        const shopSubtotal = group.items.reduce((s, i) => s + (i.price||0)*(i.quantity||1), 0);
-        const shopDiscountAmount = appliedCoupon ? Math.min((shopSubtotal / subtotal) * discountAmount, shopSubtotal) : 0;
-        const shopTotal = shopSubtotal - shopDiscountAmount;
-        
-        await base44.entities.Order.create({
-          buyer_email: user.email,
-          buyer_name: user.full_name,
-          shop_id: shopId,
-          shop_name: group.shop_name,
-          items: group.items.map(i => ({
-            product_id: i.product_id,
-            product_name: i.product_name,
-            quantity: i.quantity || 1,
-            price: i.price,
-            image_url: i.image_url,
-          })),
-          total_amount: shopTotal,
-          delivery_address: form.address,
-          delivery_phone: form.phone,
-          notes: form.notes,
-          coupon_code: appliedCoupon?.code || "",
-          status: "pending",
-        });
-      }
+      const allItems = items.map(i => ({
+        product_id: i.product_id,
+        product_name: i.product_name,
+        shop_id: i.shop_id,
+        shop_name: i.shop_name,
+        price: i.price || 0,
+        quantity: i.quantity || 1,
+        image_url: i.image_url || '',
+      }));
 
-      if (appliedCoupon) {
-        await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-      }
+      const response = await base44.functions.invoke('stripeCheckout', {
+        items: allItems,
+        delivery_address: form.address,
+        delivery_phone: form.phone,
+        notes: form.notes,
+        coupon_code: appliedCoupon?.code || "",
+        discount_amount: discountAmount,
+        total,
+      });
 
-      for (const item of items) {
-        await base44.entities.CartItem.delete(item.id);
+      if (response.data.url) {
+        // Clear cart before redirecting
+        if (appliedCoupon) {
+          await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+        }
+        for (const item of items) {
+          await base44.entities.CartItem.delete(item.id);
+        }
+        window.location.href = response.data.url;
+      } else {
+        toast.error(response.data.error || "Failed to initiate payment");
       }
-
-      toast.success("Order placed successfully!");
-      navigate(createPageUrl("BuyerDashboard"));
     } catch (error) {
-      toast.error("Failed to place order. Please try again.");
+      toast.error("Failed to initiate payment. Please try again.");
     } finally {
       setSubmitting(false);
     }
