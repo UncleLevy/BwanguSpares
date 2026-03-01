@@ -51,6 +51,7 @@ export default function AdminDashboard() {
   const [deleteShopDialog, setDeleteShopDialog] = useState(false);
   const [shopToDelete, setShopToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [deleteConfirmName, setDeleteConfirmName] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
