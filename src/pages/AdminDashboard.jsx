@@ -626,10 +626,22 @@ export default function AdminDashboard() {
                 <li>The shop owner will lose access to their shop dashboard</li>
               </ul>
             </div>
+            <div>
+              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1.5">
+                Type <span className="font-bold text-slate-900 dark:text-slate-100">"{shopToDelete?.name}"</span> to confirm:
+              </p>
+              <input
+                type="text"
+                value={deleteConfirmName}
+                onChange={e => setDeleteConfirmName(e.target.value)}
+                placeholder="Shop name..."
+                className="w-full px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-red-400"
+              />
+            </div>
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setDeleteShopDialog(false)}>Cancel</Button>
-            <Button onClick={deleteShop} disabled={deleting} className="bg-red-600 hover:bg-red-700 text-white">
+            <Button onClick={deleteShop} disabled={deleting || deleteConfirmName !== shopToDelete?.name} className="bg-red-600 hover:bg-red-700 text-white disabled:opacity-50">
               {deleting ? "Deleting..." : "Yes, Delete Permanently"}
             </Button>
           </DialogFooter>
