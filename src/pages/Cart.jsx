@@ -307,8 +307,10 @@ export default function Cart() {
                     <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" rows={2} />
                   </div>
                 <Button onClick={handleCheckout} disabled={submitting} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm gap-2">
-                  {submitting ? "Placing Order..." : "Place Order"}
+                  <CreditCard className="w-4 h-4" />
+                  {submitting ? "Redirecting to payment..." : "Pay with Card"}
                 </Button>
+                <p className="text-center text-xs text-slate-400 mt-1">Powered by Stripe · Secure payment</p>
               </div>
             )}
           </div>
