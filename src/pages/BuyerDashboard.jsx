@@ -62,6 +62,15 @@ export default function BuyerDashboard() {
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
+      // Redirect shop owners and admins away from buyer dashboard
+      if (u.role === "shop_owner") {
+        window.location.href = createPageUrl("ShopDashboard");
+        return;
+      }
+      if (u.role === "admin") {
+        window.location.href = createPageUrl("AdminDashboard");
+        return;
+      }
       // Redirect to profile completion if not completed
       if (!u.profile_completed) {
         window.location.href = createPageUrl("ProfileCompletion");
