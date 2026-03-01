@@ -152,6 +152,39 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
         </CardContent>
       </Card>
 
+      <Dialog open={refundDialog} onOpenChange={setRefundDialog}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Refund Order #{refundOrder?.id?.slice(0, 8)}</DialogTitle>
+            <DialogDescription>
+              This will cancel the order and attempt a Stripe refund if the order was paid online. Please provide a reason.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <div>
+              <Label>Reason for Refund *</Label>
+              <Textarea
+                value={refundReason}
+                onChange={e => setRefundReason(e.target.value)}
+                placeholder="e.g. Item not available, customer dispute, wrong item shipped..."
+                className="mt-1"
+                rows={3}
+              />
+            </div>
+            <div className="text-sm text-slate-500 bg-amber-50 border border-amber-200 rounded-lg p-3">
+              <strong>Order:</strong> K{refundOrder?.total_amount?.toLocaleString()} from {refundOrder?.shop_name}<br />
+              <strong>Payment:</strong> {refundOrder?.stripe_session_id ? "Stripe (online)" : "Cash/Manual"}
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setRefundDialog(false)}>Cancel</Button>
+            <Button onClick={handleRefund} disabled={refunding} className="bg-red-600 hover:bg-red-700">
+              {refunding ? "Processing..." : "Process Refund & Cancel Order"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showDialog} onOpenChange={setShowDialog}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
