@@ -370,6 +370,7 @@ export default function ShopDashboard() {
    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
    { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => setView("hire_requests") },
    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
+   { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => setView("wallet") },
    {
       id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => setView("inventory"),
       badge: products.filter(p => p.stock_quantity <= (p.low_stock_threshold ?? 5)).length || null
