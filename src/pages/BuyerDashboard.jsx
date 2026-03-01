@@ -314,6 +314,41 @@ export default function BuyerDashboard() {
           <BuyerMessages user={user} />
         )}
 
+        {view === "wallet" && (
+          <div className="max-w-xl">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wallet</h1>
+            <Card className="border-blue-100 bg-gradient-to-br from-blue-600 to-cyan-600 text-white mb-6">
+              <CardContent className="p-6">
+                <p className="text-sm text-blue-100 mb-1">Available Balance</p>
+                <p className="text-4xl font-bold">K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-blue-200 mt-2">Site credits from refunded orders</p>
+              </CardContent>
+            </Card>
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+              <CardContent className="p-5">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
+                {walletTxns.length === 0 ? (
+                  <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
+                ) : (
+                  <div className="space-y-3">
+                    {walletTxns.map(txn => (
+                      <div key={txn.id} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
+                        <div>
+                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{txn.reason}</p>
+                          <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
+                        </div>
+                        <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
+                          {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         {view === "cart" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
