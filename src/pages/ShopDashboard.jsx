@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
   Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin, FileSearch, MessageSquare,
-  ClipboardList, AlertTriangle, Phone, Download, Eye
+  ClipboardList, AlertTriangle, Phone, Download, Eye, Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -47,6 +47,8 @@ import CustomerManager from "@/components/customers/CustomerManager";
 import MarketingTools from "@/components/marketing/MarketingTools";
 import MarketingAnalyticsDashboard from "@/components/marketing/MarketingAnalyticsDashboard";
 import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
+import ShippingStats from "@/components/shipping/ShippingStats";
+import ShippingManagement from "@/components/shipping/ShippingManagement";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -439,8 +441,9 @@ export default function ShopDashboard() {
    { id: "customers", label: "Customers", icon: User, onClick: () => setView("customers") },
    { id: "marketing", label: "Marketing", icon: TrendingUp, onClick: () => setView("marketing") },
    { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => setView("marketing_analytics") },
-   { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
-   { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
+    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
+    { id: "shipping", label: "Shipping", icon: Truck, onClick: () => setView("shipping") },
+    { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
    { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
    { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
@@ -1108,6 +1111,17 @@ export default function ShopDashboard() {
 
         {view === "marketing_analytics" && (
           <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
+        )}
+
+        {view === "shipping" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shipping Management</h1>
+            <ShippingStats shopId={shop?.id} />
+            <div className="mt-8">
+              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Configure Product Shipping</h2>
+              <ShippingManagement shopId={shop?.id} />
+            </div>
+          </div>
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
