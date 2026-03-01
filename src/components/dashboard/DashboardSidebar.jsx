@@ -109,7 +109,7 @@ export default function DashboardSidebar({ items, active, title }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 min-h-screen flex-col">
+      <aside className="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 flex-col sticky top-0 h-screen shrink-0">
         <SidebarContent items={items} active={active} title={title} />
       </aside>
     </>
