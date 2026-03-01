@@ -601,6 +601,38 @@ export default function AdminDashboard() {
           </div>
         )}
       </main>
+
+      {/* Delete Shop Confirmation Dialog */}
+      <Dialog open={deleteShopDialog} onOpenChange={setDeleteShopDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-red-600">
+              <AlertCircle className="w-5 h-5" /> Permanently Delete Shop
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <p className="text-slate-700 dark:text-slate-300 font-medium">
+              You are about to delete <span className="font-bold">"{shopToDelete?.name}"</span>.
+            </p>
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg p-4 text-sm text-red-700 dark:text-red-300 space-y-1.5">
+              <p className="font-semibold">⚠️ This action cannot be undone. It will:</p>
+              <ul className="list-disc ml-4 space-y-1">
+                <li>Permanently remove the shop and all its data</li>
+                <li>Delete all associated products and listings</li>
+                <li>Remove the shop's wallet and earnings records</li>
+                <li>Disconnect any linked Stripe account</li>
+                <li>The shop owner will lose access to their shop dashboard</li>
+              </ul>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setDeleteShopDialog(false)}>Cancel</Button>
+            <Button onClick={deleteShop} disabled={deleting} className="bg-red-600 hover:bg-red-700 text-white">
+              {deleting ? "Deleting..." : "Yes, Delete Permanently"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
