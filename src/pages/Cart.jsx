@@ -380,14 +380,22 @@ export default function Cart() {
                  </div>
 
                  {paymentMethod === "mobile_money" && (
-                   <div className="space-y-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                   <div className={`space-y-3 p-4 rounded-xl border transition-all ${
+                     mobileNetwork === "MTN" ? "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700" :
+                     mobileNetwork === "Airtel" ? "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700" :
+                     "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
+                   }`}>
                      <div>
                        <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Network</Label>
                        <div className="grid grid-cols-3 gap-2 mt-2">
-                         {["MTN", "Airtel", "Zamtel"].map(n => (
-                           <button key={n} type="button" onClick={() => setMobileNetwork(n)}
-                             className={`p-2 rounded-lg border text-sm font-medium transition-all ${mobileNetwork === n ? "border-green-600 bg-green-600 text-white" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800"}`}>
-                             {n}
+                         {[
+                           { name: "MTN", active: "bg-yellow-400 border-yellow-400 text-black", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
+                           { name: "Airtel", active: "bg-red-600 border-red-600 text-white", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
+                           { name: "Zamtel", active: "bg-green-600 border-green-600 text-white", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
+                         ].map(n => (
+                           <button key={n.name} type="button" onClick={() => setMobileNetwork(n.name)}
+                             className={`p-2 rounded-lg border text-sm font-medium transition-all ${mobileNetwork === n.name ? n.active : n.inactive}`}>
+                             {n.name}
                            </button>
                          ))}
                        </div>
