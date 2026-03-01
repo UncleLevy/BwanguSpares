@@ -276,6 +276,12 @@ export default function BuyerDashboard() {
                             </div>
                           ))}
                         </div>
+                        {order.status === "cancelled" && order.cancellation_reason && (
+                          <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+                            <span className="font-medium">Cancellation reason: </span>{order.cancellation_reason}
+                            {order.refunded && <span className="ml-2 text-xs font-semibold text-red-600">(Refunded)</span>}
+                          </div>
+                        )}
                         {(order.status === "shipped" || order.status === "delivered") && (
                          <div className="mt-4 pt-4 border-t border-slate-100">
                            <TrackingInfo order={order} />
