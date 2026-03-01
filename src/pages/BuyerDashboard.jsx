@@ -67,8 +67,14 @@ export default function BuyerDashboard() {
       }
       setUser(u);
       setProfileForm({ first_name: u.first_name || "", last_name: u.last_name || "", phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "" });
-      const o = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+      const [o, wallets, txns] = await Promise.all([
+        base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50),
+        base44.entities.BuyerWallet.filter({ buyer_email: u.email }),
+        base44.entities.WalletTransaction.filter({ buyer_email: u.email }, "-created_date", 20),
+      ]);
       setOrders(o);
+      setWallet(wallets[0] || null);
+      setWalletTxns(txns);
       setLoading(false);
 
       // Auto-confirm orders after successful Stripe payment
