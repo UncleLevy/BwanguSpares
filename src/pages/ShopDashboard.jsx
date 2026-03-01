@@ -868,9 +868,33 @@ export default function ShopDashboard() {
                   <div><Label>Compatible Vehicles</Label><Input value={productForm.compatible_vehicles} onChange={e => setProductForm({...productForm, compatible_vehicles: e.target.value})} placeholder="e.g. Toyota Corolla 2015-2020" className="mt-1" /></div>
                   <div><Label>Tags</Label><Input value={productForm.tags.join(", ")} onChange={e => setProductForm({...productForm, tags: e.target.value.split(",").map(t => t.trim())})} placeholder="e.g. new, popular, sale" className="mt-1" /></div>
                   <div>
-                    <Label>Product Image</Label>
-                    <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, true)} disabled={uploading} className="mt-1 cursor-pointer" />
-                    {productForm.image_url && <img src={productForm.image_url} alt="Product" className="mt-2 w-32 h-32 object-cover rounded-lg border" />}
+                   <Label>Product Photos (up to 5)</Label>
+                   <p className="text-xs text-slate-500 mt-0.5 mb-2">First photo is the main image. Add up to 4 more for the slideshow.</p>
+                   {/* Main image */}
+                   <div className="mb-2">
+                     <p className="text-xs font-medium text-slate-600 mb-1">Photo 1 (Main)</p>
+                     <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, true)} disabled={uploading} className="cursor-pointer" />
+                     {productForm.image_url && (
+                       <img src={productForm.image_url} alt="Main" className="mt-2 w-24 h-24 object-cover rounded-lg border" />
+                     )}
+                   </div>
+                   {/* Extra images 2–5 */}
+                   <div className="grid grid-cols-2 gap-2">
+                     {[0, 1, 2, 3].map(i => (
+                       <div key={i} className="border border-dashed border-slate-200 rounded-lg p-2">
+                         <p className="text-xs font-medium text-slate-500 mb-1">Photo {i + 2}</p>
+                         {(productForm.image_urls || [])[i] ? (
+                           <div className="relative">
+                             <img src={(productForm.image_urls || [])[i]} alt={`Photo ${i+2}`} className="w-full h-20 object-cover rounded" />
+                             <button onClick={() => removeExtraImage(i)}
+                               className="absolute top-1 right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">✕</button>
+                           </div>
+                         ) : (
+                           <Input type="file" accept="image/*" onChange={e => handleExtraImageUpload(e, i)} disabled={uploading} className="cursor-pointer text-xs h-8" />
+                         )}
+                       </div>
+                     ))}
+                   </div>
                   </div>
                 </div>
                 <DialogFooter><Button onClick={saveProduct} disabled={uploading} className="bg-blue-600 hover:bg-blue-700">{editProduct ? "Update" : "Add"} Product</Button></DialogFooter>
