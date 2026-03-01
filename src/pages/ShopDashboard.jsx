@@ -953,6 +953,25 @@ export default function ShopDashboard() {
                 <DialogFooter><Button onClick={saveTracking} className="bg-blue-600 hover:bg-blue-700">Update Tracking</Button></DialogFooter>
               </DialogContent>
             </Dialog>
+
+            <Dialog open={cancelDialog} onOpenChange={setCancelDialog}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Cancel Order #{cancelOrder?.id?.slice(0,8)}</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-3">
+                  <p className="text-sm text-slate-500">Please provide a reason for cancelling this order. The customer will be notified.</p>
+                  <div>
+                    <Label>Cancellation Reason *</Label>
+                    <Textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} placeholder="e.g. Item out of stock, unable to fulfil order..." className="mt-1" rows={3} />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setCancelDialog(false)}>Go Back</Button>
+                  <Button onClick={confirmCancelOrder} className="bg-red-600 hover:bg-red-700">Confirm Cancellation</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
           </PullToRefresh>
         )}
