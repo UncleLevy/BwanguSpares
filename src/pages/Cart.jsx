@@ -16,7 +16,7 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [checkout, setCheckout] = useState(false);
-  const [form, setForm] = useState({ address: "", phone: "", notes: "", coupon: "" });
+  const [form, setForm] = useState({ address: "", phone: "", notes: "", coupon: "", region: "", town: "" });
   const [submitting, setSubmitting] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
