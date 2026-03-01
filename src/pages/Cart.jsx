@@ -199,7 +199,7 @@ export default function Cart() {
 
       const response = await base44.functions.invoke('stripeCheckout', {
         items: allItems,
-        delivery_address: form.address,
+        delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
         delivery_phone: form.phone,
         notes: form.notes,
         coupon_code: appliedCoupon?.code || "",
