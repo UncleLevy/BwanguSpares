@@ -88,6 +88,31 @@ Deno.serve(async (req) => {
         payment_method: 'stripe',
         stripe_session_id: session.id,
       });
+
+      // Upsert customer record for this shop
+      const existingCustomers = await base44.asServiceRole.entities.Customer.filter({ shop_id: shopId, email: user.email });
+      if (existingCustomers.length > 0) {
+        const c = existingCustomers[0];
+        await base44.asServiceRole.entities.Customer.update(c.id, {
+          total_orders: (c.total_orders || 0) + 1,
+          total_spent: (c.total_spent || 0) + shopTotal,
+          full_name: user.full_name,
+          phone: delivery_phone || c.phone,
+          address: delivery_address || c.address,
+        });
+      } else {
+        await base44.asServiceRole.entities.Customer.create({
+          shop_id: shopId,
+          email: user.email,
+          full_name: user.full_name,
+          phone: delivery_phone || '',
+          address: delivery_address || '',
+          total_orders: 1,
+          total_spent: shopTotal,
+          status: 'active',
+        });
+      }
+      console.log(`Customer upserted for shop ${shopId}: ${user.email}`);
     }
 
     console.log(`Stripe checkout session created: ${session.id} for ${user.email}`);
