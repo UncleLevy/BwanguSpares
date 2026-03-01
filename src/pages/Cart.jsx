@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet } from "lucide-react";
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet, Truck } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,8 @@ export default function Cart() {
   const [walletBalance, setWalletBalance] = useState(0);
   const [useWallet, setUseWallet] = useState(false);
   const [walletAmount, setWalletAmount] = useState(0);
+  const [shippingOption, setShippingOption] = useState("collect");
+  const SHIPPING_COST = 50; // Fixed shipping cost in ZMW
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -109,7 +111,8 @@ export default function Cart() {
     }
   }
   
-  const total = Math.max(0, subtotal - discountAmount);
+  const shippingCost = shippingOption === "deliver" ? SHIPPING_COST : 0;
+  const total = Math.max(0, subtotal - discountAmount + shippingCost);
 
   const groupedByShop = items.reduce((acc, item) => {
     if (!acc[item.shop_id]) acc[item.shop_id] = { shop_name: item.shop_name, items: [] };
@@ -231,6 +234,8 @@ export default function Cart() {
         useWallet: useWallet,
         walletAmount: useWallet ? walletAmount : 0,
         cardAmount: amountToChargeCard,
+        shippingOption: shippingOption,
+        shippingCost: shippingCost,
       });
 
       if (response.data.url) {
@@ -318,6 +323,12 @@ export default function Cart() {
                    <span>-K{discountAmount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
                  </div>
                )}
+               {shippingCost > 0 && (
+                 <div className="flex justify-between text-sm text-blue-600">
+                   <span>Shipping</span>
+                   <span>+K{shippingCost.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                 </div>
+               )}
                <div className="flex justify-between text-sm text-slate-600 dark:text-slate-400">
                  <span>VAT (16%)</span>
                  <span>K{(total - total / 1.16).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
@@ -380,7 +391,29 @@ export default function Cart() {
                     <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes (optional)</Label>
                     <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" rows={2} />
                   </div>
-                {/* Payment Method Selector */}
+
+                  {/* Shipping Option */}
+                  <div>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Delivery Method</Label>
+                    <div className="grid grid-cols-2 gap-3 mt-2">
+                      <button
+                        type="button"
+                        onClick={() => setShippingOption("collect")}
+                        className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${shippingOption === "collect" ? "border-emerald-600 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
+                      >
+                        📍 Collect
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setShippingOption("deliver")}
+                        className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${shippingOption === "deliver" ? "border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
+                      >
+                        <Truck className="w-4 h-4" /> Deliver (K{SHIPPING_COST})
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Payment Method Selector */}
                  <div>
                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Payment Method</Label>
                    <div className="grid grid-cols-3 gap-3 mt-2">
