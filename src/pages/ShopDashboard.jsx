@@ -243,6 +243,9 @@ export default function ShopDashboard() {
   const [trackingForm, setTrackingForm] = useState({
     tracking_number: "", current_location: "", estimated_delivery: ""
   });
+  const [cancelDialog, setCancelDialog] = useState(false);
+  const [cancelOrder, setCancelOrder] = useState(null);
+  const [cancelReason, setCancelReason] = useState("");
   const [receiptDialog, setReceiptDialog] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
 
