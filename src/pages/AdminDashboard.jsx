@@ -127,6 +127,7 @@ export default function AdminDashboard() {
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
+    { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts") },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
@@ -432,6 +433,7 @@ export default function AdminDashboard() {
           />
         )}
 
+        {view === "payouts" && <PayoutsPanel adminUser={user} />}
         {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
 
