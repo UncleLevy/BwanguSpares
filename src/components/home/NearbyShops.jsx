@@ -4,13 +4,19 @@ import { createPageUrl } from "@/utils";
 import { MapPin, Star, ArrowRight, Store, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function NearbyShops({ shops, loading }) {
+  const scrollRef = useRef(null);
+
+  const scroll = (dir) => {
+    scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
+  };
+
   if (loading) {
     return (
       <section className="py-16 bg-slate-50/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="flex gap-5 overflow-hidden">
             {[1,2,3].map(i => (
-              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse min-w-[300px]">
                 <div className="h-32 bg-slate-100 dark:bg-slate-700" />
                 <div className="p-5 space-y-3">
                   <div className="h-5 bg-slate-100 dark:bg-slate-700 rounded w-2/3" />
@@ -32,15 +38,25 @@ export default function NearbyShops({ shops, loading }) {
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Shops Near You</h2>
             <p className="text-slate-500 dark:text-slate-400 mt-1">Verified auto spares dealers in your area</p>
           </div>
-          <Link to={createPageUrl("BrowseShops")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
-            View all <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex gap-1">
+              <button onClick={() => scroll(-1)} className="p-2 rounded-full border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button onClick={() => scroll(1)} className="p-2 rounded-full border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <Link to={createPageUrl("BrowseShops")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
+              View all <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {shops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
+              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift snap-start shrink-0 w-[300px]">
               <div className="relative h-32 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt={shop.name} className="w-full h-full object-cover opacity-80" />
