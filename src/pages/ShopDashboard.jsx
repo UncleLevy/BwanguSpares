@@ -183,7 +183,8 @@ export default function ShopDashboard() {
       shop_id: shop.id,
       shop_name: shop.name,
       status: qty === 0 ? "out_of_stock" : "active",
-      tags: productForm.tags
+      tags: productForm.tags,
+      image_urls: (productForm.image_urls || []).filter(Boolean),
     };
     if (editProduct) {
       await base44.entities.Product.update(editProduct.id, data);
