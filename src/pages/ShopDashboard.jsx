@@ -214,7 +214,9 @@ export default function ShopDashboard() {
       compatible_vehicles: p.compatible_vehicles || "", condition: p.condition,
       stock_quantity: String(p.stock_quantity || 0), sku: p.sku || "",
       low_stock_threshold: String(p.low_stock_threshold ?? 5),
-      tags: p.tags || []
+      tags: p.tags || [],
+      image_url: p.image_url || "",
+      image_urls: p.image_urls || [],
     });
     setProductDialog(true);
   };
