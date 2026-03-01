@@ -128,6 +128,28 @@ export default function AdminDashboard() {
     toast.success("Town deleted");
   };
 
+  const confirmDeleteShop = (shop) => {
+    setShopToDelete(shop);
+    setDeleteShopDialog(true);
+  };
+
+  const deleteShop = async () => {
+    if (!shopToDelete) return;
+    setDeleting(true);
+    await base44.entities.Shop.delete(shopToDelete.id);
+    setShops(shops.filter(s => s.id !== shopToDelete.id));
+    await logAudit(user, "reject_shop", {
+      entity_type: "Shop",
+      entity_id: shopToDelete.id,
+      entity_label: shopToDelete.name,
+      details: `Shop permanently deleted by admin`,
+    });
+    toast.success(`Shop "${shopToDelete.name}" has been permanently deleted.`);
+    setDeleteShopDialog(false);
+    setShopToDelete(null);
+    setDeleting(false);
+  };
+
   const runDedup = async () => {
     setDeduping(true);
     try {
