@@ -909,7 +909,14 @@ export default function ShopDashboard() {
                       <TableCell className="text-sm">{o.buyer_name || o.buyer_email}</TableCell>
                       <TableCell className="text-sm">{o.items?.length || 0} items</TableCell>
                       <TableCell className="font-medium">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
+                      <TableCell>
+                        <div>
+                          <Badge className={orderStatusColors[o.status]}>{o.status}</Badge>
+                          {o.status === 'cancelled' && o.cancellation_reason && (
+                            <p className="text-[10px] text-red-500 mt-0.5 max-w-[120px] truncate" title={o.cancellation_reason}>{o.cancellation_reason}</p>
+                          )}
+                        </div>
+                      </TableCell>
                       {o.stripe_session_id && (
                         <TableCell className="font-mono text-[11px] text-slate-400 max-w-[120px] truncate" title={o.stripe_session_id}>{o.stripe_session_id?.slice(0, 14)}…</TableCell>
                       )}
