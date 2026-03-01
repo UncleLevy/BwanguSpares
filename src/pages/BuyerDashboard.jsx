@@ -42,6 +42,8 @@ export default function BuyerDashboard() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState("orders");
   const [orders, setOrders] = useState([]);
+  const [wallet, setWallet] = useState(null);
+  const [walletTxns, setWalletTxns] = useState([]);
   const [loading, setLoading] = useState(true);
   const [profileForm, setProfileForm] = useState({ first_name: "", last_name: "", phone: "", region: "", town: "", address: "" });
   const [profileErrors, setProfileErrors] = useState({});
