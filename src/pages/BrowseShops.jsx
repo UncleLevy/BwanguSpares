@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Search, MapPin, Star, Store, Navigation, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, MapPin, Star, Store, Navigation, ShieldCheck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
@@ -117,6 +117,7 @@ export default function BrowseShops() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredShops.map(shop => (
+
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
               className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
               <div className="relative h-36 bg-gradient-to-br from-blue-500 to-blue-700">

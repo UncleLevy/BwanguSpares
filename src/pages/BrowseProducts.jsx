@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Search, SlidersHorizontal, X, FileSearch, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -131,25 +131,25 @@ export default function BrowseProducts() {
       <div className="flex flex-col md:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input value={search} onChange={e => setSearch(e.target.value)}
+          <Input value={search} onChange={e => handleSearchChange(e.target.value)}
             placeholder="Search parts, brands, vehicles..."
             className="pl-10 h-11 rounded-xl" />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button onClick={() => handleSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2">
               <X className="w-4 h-4 text-slate-400" />
             </button>
           )}
         </div>
         <MobileSelect
           value={category}
-          onValueChange={setCategory}
+          onValueChange={handleFilterChange(setCategory)}
           placeholder="Category"
           triggerClassName="w-full md:w-44"
           options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
         />
         <MobileSelect
           value={condition}
-          onValueChange={setCondition}
+          onValueChange={handleFilterChange(setCondition)}
           placeholder="Condition"
           triggerClassName="w-full md:w-36"
           options={[
@@ -161,7 +161,7 @@ export default function BrowseProducts() {
         />
         <MobileSelect
           value={sortBy}
-          onValueChange={setSortBy}
+          onValueChange={handleFilterChange(setSortBy)}
           placeholder="Sort"
           triggerClassName="w-full md:w-40"
           options={[
@@ -221,18 +221,20 @@ export default function BrowseProducts() {
 
       {totalPages > 1 && (
         <div className="flex items-center justify-center gap-2 mt-10">
-          <Button variant="outline" size="icon" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={page === 1}>
-            <ChevronLeft className="w-4 h-4" />
+          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === 1} className="rounded-xl">
+            ← Prev
           </Button>
-          {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-            <Button key={p} variant={p === page ? "default" : "outline"} size="icon"
-              className={p === page ? "bg-blue-600 hover:bg-blue-700 text-white" : ""}
-              onClick={() => { setPage(p); window.scrollTo({ top: 0, behavior: "smooth" }); }}>
-              {p}
-            </Button>
-          ))}
-          <Button variant="outline" size="icon" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({ top: 0, behavior: "smooth" }); }} disabled={page === totalPages}>
-            <ChevronRight className="w-4 h-4" />
+          <div className="flex gap-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+              <Button key={p} size="sm" variant={p === page ? "default" : "outline"}
+                onClick={() => { setPage(p); window.scrollTo({top: 0, behavior: 'smooth'}); }}
+                className="rounded-xl w-9">
+                {p}
+              </Button>
+            ))}
+          </div>
+          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === totalPages} className="rounded-xl">
+            Next →
           </Button>
         </div>
       )}
