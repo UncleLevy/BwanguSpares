@@ -27,11 +27,27 @@ export default function Cart() {
 
   useEffect(() => {
     loadCart();
+    loadRegionsAndTowns();
     const unsubscribe = base44.entities.CartItem.subscribe((event) => {
       loadCart();
     });
     return unsubscribe;
   }, []);
+
+  const loadRegionsAndTowns = async () => {
+    const [r, t] = await Promise.all([
+      base44.entities.Region.list(),
+      base44.entities.Town.list(),
+    ]);
+    setRegions(r || []);
+    setTowns(t || []);
+  };
+
+  const handleRegionChange = (regionId) => {
+    const region = regions.find(r => r.id === regionId);
+    setForm(f => ({ ...f, region: regionId, town: "" }));
+    setFilteredTowns(towns.filter(t => t.region_id === regionId || t.region === regionId || t.region === region?.name));
+  };
 
   const loadCart = async () => {
     try {
