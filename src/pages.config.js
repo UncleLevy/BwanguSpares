@@ -54,6 +54,7 @@ import BuyerDashboard from './pages/BuyerDashboard';
 import Cart from './pages/Cart';
 import Home from './pages/Home';
 import Messages from './pages/Messages';
+import OrderDetails from './pages/OrderDetails';
 import ProductDetail from './pages/ProductDetail';
 import ProfileCompletion from './pages/ProfileCompletion';
 import RegisterShop from './pages/RegisterShop';
@@ -61,7 +62,6 @@ import ShopCatalog from './pages/ShopCatalog';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
 import Wishlist from './pages/Wishlist';
-import OrderDetails from './pages/OrderDetails';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +73,7 @@ export const PAGES = {
     "Cart": Cart,
     "Home": Home,
     "Messages": Messages,
+    "OrderDetails": OrderDetails,
     "ProductDetail": ProductDetail,
     "ProfileCompletion": ProfileCompletion,
     "RegisterShop": RegisterShop,
@@ -80,7 +81,6 @@ export const PAGES = {
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
     "Wishlist": Wishlist,
-    "OrderDetails": OrderDetails,
 }
 
 export const pagesConfig = {
