@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Search, SlidersHorizontal, X, FileSearch, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -131,25 +131,25 @@ export default function BrowseProducts() {
       <div className="flex flex-col md:flex-row gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
-          <Input value={search} onChange={e => setSearch(e.target.value)}
+          <Input value={search} onChange={e => handleSearchChange(e.target.value)}
             placeholder="Search parts, brands, vehicles..."
             className="pl-10 h-11 rounded-xl" />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+            <button onClick={() => handleSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2">
               <X className="w-4 h-4 text-slate-400" />
             </button>
           )}
         </div>
         <MobileSelect
           value={category}
-          onValueChange={setCategory}
+          onValueChange={handleFilterChange(setCategory)}
           placeholder="Category"
           triggerClassName="w-full md:w-44"
           options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
         />
         <MobileSelect
           value={condition}
-          onValueChange={setCondition}
+          onValueChange={handleFilterChange(setCondition)}
           placeholder="Condition"
           triggerClassName="w-full md:w-36"
           options={[
@@ -161,7 +161,7 @@ export default function BrowseProducts() {
         />
         <MobileSelect
           value={sortBy}
-          onValueChange={setSortBy}
+          onValueChange={handleFilterChange(setSortBy)}
           placeholder="Sort"
           triggerClassName="w-full md:w-40"
           options={[
