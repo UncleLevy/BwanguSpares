@@ -13,10 +13,24 @@ const conditionColors = {
 
 export default function FeaturedProducts({ products, onAddToCart, loading }) {
   const scrollRef = useRef(null);
+  const autoScrollRef = useRef(null);
 
   const scroll = (dir) => {
     scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
   };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    autoScrollRef.current = setInterval(() => {
+      if (el.scrollLeft + el.clientWidth >= el.scrollWidth - 5) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: 1, behavior: "instant" });
+      }
+    }, 20);
+    return () => clearInterval(autoScrollRef.current);
+  }, []);
 
   if (loading) {
     return (
