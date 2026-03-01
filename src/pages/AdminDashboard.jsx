@@ -47,6 +47,7 @@ export default function AdminDashboard() {
   const [townDialog, setTownDialog] = useState(false);
   const [newTown, setNewTown] = useState({ name: "", region_id: "", region_name: "" });
   const [reportCount, setReportCount] = useState(0);
+  const [deduping, setDeduping] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -122,6 +123,22 @@ export default function AdminDashboard() {
     setTowns(towns.filter(t => t.id !== id));
     await logAudit(user, "delete_region", { entity_type: "Town", entity_id: id, entity_label: t?.name });
     toast.success("Town deleted");
+  };
+
+  const runDedup = async () => {
+    setDeduping(true);
+    try {
+      const res = await base44.functions.invoke("deduplicateData", {});
+      const { total_fixed, report } = res.data;
+      if (total_fixed === 0) {
+        toast.success("No duplicates found — data is clean!");
+      } else {
+        toast.success(`Removed ${total_fixed} duplicate(s): ${report.shops.removed} shops, ${report.towns.removed} towns, ${report.regions.removed} regions, ${report.stripe_accounts.removed} Stripe links.`);
+      }
+    } catch (e) {
+      toast.error(e.message || "Deduplication failed");
+    }
+    setDeduping(false);
   };
 
   const sidebarItems = [
@@ -255,7 +272,13 @@ export default function AdminDashboard() {
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
         {view === "overview" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Dashboard Overview</h1>
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard Overview</h1>
+              <Button onClick={runDedup} disabled={deduping} variant="outline" className="gap-2 border-slate-300 text-slate-700 hover:bg-slate-50">
+                <ShieldCheck className="w-4 h-4" />
+                {deduping ? "Scanning..." : "Remove Duplicates"}
+              </Button>
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {stats.map((s, i) => (
                 <Card key={i} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
