@@ -211,17 +211,10 @@ export default function Layout({ children, currentPageName }) {
                           </>
                         )}
                         <DropdownMenuItem asChild>
-                          <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2">
+                          <Link to={createPageUrl(isShopOwner ? "ShopDashboard" : isAdmin ? "AdminDashboard" : "BuyerDashboard")} className="flex items-center gap-2">
                             <LayoutDashboard className="w-4 h-4" /> My Dashboard
                           </Link>
                         </DropdownMenuItem>
-                        {isShopOwner && (
-                          <DropdownMenuItem asChild>
-                            <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2">
-                              <Store className="w-4 h-4" /> Shop Dashboard
-                            </Link>
-                          </DropdownMenuItem>
-                        )}
                         {isAdmin && (
                           <DropdownMenuItem asChild>
                             <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
