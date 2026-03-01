@@ -68,6 +68,21 @@ export default function BuyerDashboard() {
       const o = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
       setOrders(o);
       setLoading(false);
+
+      // Auto-confirm orders after successful Stripe payment
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("payment") === "success" && params.get("session_id")) {
+        const sessionId = params.get("session_id");
+        const pendingOrders = o.filter(ord => ord.stripe_session_id === sessionId && ord.status === "pending");
+        if (pendingOrders.length > 0) {
+          await Promise.all(pendingOrders.map(ord => base44.entities.Order.update(ord.id, { status: "confirmed" })));
+          const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+          setOrders(updated);
+          toast.success("Payment successful! Your order has been confirmed.");
+        }
+        // Clean URL
+        window.history.replaceState({}, "", window.location.pathname);
+      }
       
       // Real-time updates for orders
       const unsubscribe = base44.entities.Order.subscribe((event) => {
