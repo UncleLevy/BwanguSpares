@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import NearbyShops from "@/components/home/NearbyShops";
+import PartnersSection from "@/components/home/PartnersSection";
 
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
