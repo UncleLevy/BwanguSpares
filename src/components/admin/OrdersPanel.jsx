@@ -127,14 +127,22 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                       )}
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 gap-1.5"
-                        onClick={() => handleEditOrder(order)}
-                      >
-                        <Pencil className="w-3.5 h-3.5" /> Edit
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button size="sm" variant="ghost" className="h-8 gap-1.5" onClick={() => handleEditOrder(order)}>
+                          <Pencil className="w-3.5 h-3.5" /> Edit
+                        </Button>
+                        {order.status !== 'cancelled' && (
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="h-8 gap-1.5 text-red-600 hover:bg-red-50 hover:text-red-700"
+                            onClick={() => { setRefundOrder(order); setRefundReason(""); setRefundDialog(true); }}
+                          >
+                            <RefreshCcw className="w-3.5 h-3.5" /> Refund
+                          </Button>
+                        )}
+                        {order.refunded && <Badge className="bg-red-50 text-red-700 text-[10px]">Refunded</Badge>}
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
