@@ -880,7 +880,7 @@ export default function ShopDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Order</TableHead><TableHead>Buyer</TableHead><TableHead>Items</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead>
+                    <TableHead>Order</TableHead><TableHead>Buyer</TableHead><TableHead>Items</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Transaction ID</TableHead><TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
