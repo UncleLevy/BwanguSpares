@@ -90,7 +90,7 @@ export default function ShopDashboard() {
   const [productForm, setProductForm] = useState({
     name: "", description: "", price: "", category: "other", sub_category: "", brand: "",
     compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5",
-    tags: []
+    tags: [], image_url: "", image_urls: []
   });
 
   const [techDialog, setTechDialog] = useState(false);
