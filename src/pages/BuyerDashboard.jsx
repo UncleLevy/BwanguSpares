@@ -56,6 +56,8 @@ export default function BuyerDashboard() {
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const [receiptDialog, setReceiptDialog] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
+  const [stripeRefundDialog, setStripeRefundDialog] = useState(false);
+  const [stripeRefundSubmitting, setStripeRefundSubmitting] = useState(false);
 
   useEffect(() => {
     (async () => {
