@@ -249,11 +249,25 @@ export default function ShopDashboard() {
   const [receiptDialog, setReceiptDialog] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
 
-  const updateOrderStatus = async (order, status) => {
-    // Optimistic update
-    setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status } : o));
-    await base44.entities.Order.update(order.id, { status });
+  const updateOrderStatus = async (order, newStatus) => {
+    if (newStatus === 'cancelled') {
+      setCancelOrder(order);
+      setCancelReason("");
+      setCancelDialog(true);
+      return;
+    }
+    setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
+    await base44.entities.Order.update(order.id, { status: newStatus });
     toast.success("Order status updated");
+  };
+
+  const confirmCancelOrder = async () => {
+    if (!cancelReason.trim()) { toast.error("Please provide a cancellation reason"); return; }
+    setOrders(prev => prev.map(o => o.id === cancelOrder.id ? { ...o, status: 'cancelled', cancellation_reason: cancelReason } : o));
+    await base44.entities.Order.update(cancelOrder.id, { status: 'cancelled', cancellation_reason: cancelReason });
+    toast.success("Order cancelled");
+    setCancelDialog(false);
+    setCancelReason("");
   };
 
   const openTrackingDialog = (order) => {
