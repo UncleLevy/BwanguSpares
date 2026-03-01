@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { MapPin, Star, ArrowRight, Store, ChevronLeft, ChevronRight } from "lucide-react";
