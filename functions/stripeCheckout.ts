@@ -38,7 +38,7 @@ Deno.serve(async (req) => {
       payment_method_types: ['card'],
       line_items: lineItems,
       mode: 'payment',
-      success_url: `${appUrl}/BuyerDashboard?payment=success`,
+      success_url: `${appUrl}/BuyerDashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/Cart?payment=cancelled`,
       customer_email: user.email,
       metadata: {
