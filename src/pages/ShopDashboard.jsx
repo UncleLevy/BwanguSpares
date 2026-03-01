@@ -265,7 +265,45 @@ export default function ShopDashboard() {
     if (!cancelReason.trim()) { toast.error("Please provide a cancellation reason"); return; }
     setOrders(prev => prev.map(o => o.id === cancelOrder.id ? { ...o, status: 'cancelled', cancellation_reason: cancelReason } : o));
     await base44.entities.Order.update(cancelOrder.id, { status: 'cancelled', cancellation_reason: cancelReason });
-    toast.success("Order cancelled");
+
+    // If paid via Stripe, credit the buyer's site wallet
+    if (cancelOrder.stripe_session_id && cancelOrder.payment_method === 'stripe') {
+      const amount = cancelOrder.total_amount || 0;
+      const buyerEmail = cancelOrder.buyer_email;
+
+      // Upsert buyer wallet
+      const wallets = await base44.entities.BuyerWallet.filter({ buyer_email: buyerEmail });
+      if (wallets.length > 0) {
+        const w = wallets[0];
+        await base44.entities.BuyerWallet.update(w.id, {
+          balance: (w.balance || 0) + amount,
+          total_credited: (w.total_credited || 0) + amount,
+        });
+      } else {
+        await base44.entities.BuyerWallet.create({
+          buyer_email: buyerEmail,
+          buyer_name: cancelOrder.buyer_name || buyerEmail,
+          balance: amount,
+          total_credited: amount,
+          total_spent: 0,
+        });
+      }
+
+      // Log wallet transaction
+      await base44.entities.WalletTransaction.create({
+        buyer_email: buyerEmail,
+        type: 'credit',
+        amount,
+        reason: `Refund for cancelled order from ${cancelOrder.shop_name}`,
+        order_id: cancelOrder.id,
+        shop_name: cancelOrder.shop_name,
+      });
+
+      toast.success("Order cancelled & site credit of K" + amount.toLocaleString() + " added to buyer's wallet");
+    } else {
+      toast.success("Order cancelled");
+    }
+
     setCancelDialog(false);
     setCancelReason("");
   };
