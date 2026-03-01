@@ -358,11 +358,70 @@ export default function Cart() {
                     <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes (optional)</Label>
                     <Textarea value={form.notes} onChange={e => setForm({...form, notes: e.target.value})} placeholder="Any special instructions" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" rows={2} />
                   </div>
-                <Button onClick={handleCheckout} disabled={submitting} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm gap-2">
-                  <CreditCard className="w-4 h-4" />
-                  {submitting ? "Redirecting to payment..." : "Pay with Card"}
-                </Button>
-                <p className="text-center text-xs text-slate-400 mt-1">Powered by Stripe · Secure payment</p>
+                {/* Payment Method Selector */}
+                 <div>
+                   <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Payment Method</Label>
+                   <div className="grid grid-cols-2 gap-3 mt-2">
+                     <button
+                       type="button"
+                       onClick={() => setPaymentMethod("card")}
+                       className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${paymentMethod === "card" ? "border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
+                     >
+                       <CreditCard className="w-4 h-4" /> Card
+                     </button>
+                     <button
+                       type="button"
+                       onClick={() => setPaymentMethod("mobile_money")}
+                       className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${paymentMethod === "mobile_money" ? "border-green-600 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
+                     >
+                       📱 Mobile Money
+                     </button>
+                   </div>
+                 </div>
+
+                 {paymentMethod === "mobile_money" && (
+                   <div className="space-y-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                     <div>
+                       <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Network</Label>
+                       <div className="grid grid-cols-3 gap-2 mt-2">
+                         {["MTN", "Airtel", "Zamtel"].map(n => (
+                           <button key={n} type="button" onClick={() => setMobileNetwork(n)}
+                             className={`p-2 rounded-lg border text-sm font-medium transition-all ${mobileNetwork === n ? "border-green-600 bg-green-600 text-white" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800"}`}>
+                             {n}
+                           </button>
+                         ))}
+                       </div>
+                     </div>
+                     <div>
+                       <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Mobile Money Number</Label>
+                       <Input
+                         type="tel"
+                         value={mobileNumber}
+                         onChange={e => setMobileNumber(e.target.value)}
+                         placeholder="e.g. 0976 000 000"
+                         className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                       />
+                     </div>
+                     <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
+                       <span className="text-amber-600 text-sm">⚠️</span>
+                       <p className="text-xs text-amber-700 dark:text-amber-400">
+                         Mobile money payments via <strong>Flutterwave</strong> — coming soon. Add your Flutterwave API keys in settings to enable this.
+                       </p>
+                     </div>
+                   </div>
+                 )}
+
+                 <Button
+                   onClick={paymentMethod === "card" ? handleCheckout : () => toast.info("Mobile money coming soon! Add your Flutterwave API keys to enable.")}
+                   disabled={submitting}
+                   className={`w-full h-12 rounded-xl text-sm gap-2 ${paymentMethod === "mobile_money" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+                 >
+                   {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : <span>📱</span>}
+                   {submitting ? "Redirecting to payment..." : paymentMethod === "card" ? "Pay with Card" : `Pay with ${mobileNetwork} Mobile Money`}
+                 </Button>
+                 <p className="text-center text-xs text-slate-400 mt-1">
+                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : "Powered by Flutterwave · Supports MTN, Airtel & Zamtel"}
+                 </p>
               </div>
             )}
           </div>
