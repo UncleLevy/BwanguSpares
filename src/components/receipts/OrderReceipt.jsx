@@ -77,24 +77,43 @@ export default function OrderReceipt({ order, shop }) {
       {/* Totals */}
       <div className="flex justify-end mb-4 sm:mb-8">
         <div className="w-full sm:w-64 text-xs sm:text-sm">
-          <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
-            <span>Subtotal (incl. discount):</span>
-            <span>K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
-          {order.coupon_code && (
-            <div className="flex justify-between text-emerald-600 dark:text-emerald-400 mb-2">
-              <span>Coupon ({order.coupon_code}):</span>
-              <span>Applied</span>
-            </div>
-          )}
-          <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
-            <span>VAT (16%):</span>
-            <span>K{((order.total_amount / 1.16) * 0.16).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
-          <div className="border-t-2 border-slate-900 dark:border-slate-700 pt-2 sm:pt-3 flex justify-between font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-lg">
-            <span>Total:</span>
-            <span>K{(order.total_amount / 1.16 * 1.16).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-          </div>
+          {/* Calculate subtotal from items */}
+          {(() => {
+            const itemsSubtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
+            const shippingCost = order.shippingCost || 0;
+            const subtotal = itemsSubtotal + shippingCost;
+            const vat = (subtotal / 1.16) * 0.16;
+            const total = subtotal;
+
+            return (
+              <>
+                <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
+                  <span>Subtotal:</span>
+                  <span>K{itemsSubtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                {shippingCost > 0 && (
+                  <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
+                    <span>Shipping:</span>
+                    <span>K{shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  </div>
+                )}
+                {order.coupon_code && (
+                  <div className="flex justify-between text-emerald-600 dark:text-emerald-400 mb-2">
+                    <span>Coupon ({order.coupon_code}):</span>
+                    <span>Applied</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
+                  <span>VAT (16%):</span>
+                  <span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="border-t-2 border-slate-900 dark:border-slate-700 pt-2 sm:pt-3 flex justify-between font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-lg">
+                  <span>Total:</span>
+                  <span>K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+              </>
+            );
+          })()}
         </div>
       </div>
 
