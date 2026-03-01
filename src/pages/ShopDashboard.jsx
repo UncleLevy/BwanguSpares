@@ -975,6 +975,10 @@ export default function ShopDashboard() {
           <MarketingTools shopId={shop?.id} customers={customers} />
         )}
 
+        {view === "wallet" && (
+          <ShopWalletPanel shop={shop} orders={orders} />
+        )}
+
         {view === "marketing_analytics" && (
           <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
         )}
