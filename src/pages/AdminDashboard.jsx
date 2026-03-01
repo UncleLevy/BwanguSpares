@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
-  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck
+  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ import OrdersPanel from "@/components/admin/OrdersPanel";
 import ReportingPanel from "@/components/admin/ReportingPanel";
 import PayoutsPanel from "@/components/admin/PayoutsPanel";
 import { logAudit } from "@/components/shared/auditLog";
+import AdminShippingRates from "@/components/admin/AdminShippingRates";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -173,6 +174,7 @@ export default function AdminDashboard() {
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
     { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts") },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
+    { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
@@ -487,6 +489,7 @@ export default function AdminDashboard() {
         )}
 
         {view === "payouts" && <PayoutsPanel adminUser={user} />}
+        {view === "shipping" && <AdminShippingRates />}
         {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
 
