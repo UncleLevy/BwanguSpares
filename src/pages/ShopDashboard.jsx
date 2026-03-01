@@ -197,7 +197,7 @@ export default function ShopDashboard() {
     }
     setProductDialog(false);
     setEditProduct(null);
-    setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [] });
+    setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [], image_url: "", image_urls: [] });
   };
 
   const deleteProduct = async (id) => {
