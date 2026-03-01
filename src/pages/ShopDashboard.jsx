@@ -885,13 +885,16 @@ export default function ShopDashboard() {
                 </TableHeader>
                 <TableBody>
                   {orders.map(o => (
-                    <TableRow key={o.id}>
+                    <TableRow key={o.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => navigate(createPageUrl("OrderDetails") + `?id=${o.id}`)}>
                       <TableCell className="font-mono text-xs">{o.id?.slice(0,8)}</TableCell>
                       <TableCell className="text-sm">{o.buyer_name || o.buyer_email}</TableCell>
                       <TableCell className="text-sm">{o.items?.length || 0} items</TableCell>
                       <TableCell className="font-medium">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell><Badge className={orderStatusColors[o.status]}>{o.status}</Badge></TableCell>
-                      <TableCell>
+                      {o.stripe_session_id && (
+                        <TableCell className="font-mono text-[11px] text-slate-400 max-w-[120px] truncate" title={o.stripe_session_id}>{o.stripe_session_id?.slice(0, 14)}…</TableCell>
+                      )}
+                      <TableCell onClick={e => e.stopPropagation()}>
                         <div className="flex gap-2">
                           <Select value={o.status} onValueChange={v => updateOrderStatus(o, v)}>
                             <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
