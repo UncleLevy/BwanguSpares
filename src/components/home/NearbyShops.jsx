@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { MapPin, Star, ArrowRight, Store } from "lucide-react";
+import { MapPin, Star, ArrowRight, Store, ChevronLeft, ChevronRight } from "lucide-react";
 
 export default function NearbyShops({ shops, loading }) {
   if (loading) {
