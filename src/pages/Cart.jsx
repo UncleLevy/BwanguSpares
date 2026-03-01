@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard } from "lucide-react";
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,9 @@ export default function Cart() {
   const [regions, setRegions] = useState([]);
   const [towns, setTowns] = useState([]);
   const [filteredTowns, setFilteredTowns] = useState([]);
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [useWallet, setUseWallet] = useState(false);
+  const [walletAmount, setWalletAmount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -63,6 +66,12 @@ export default function Cart() {
       setUser(u);
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
       setItems(cart || []);
+      
+      // Load wallet balance
+      const wallets = await base44.entities.BuyerWallet.filter({ buyer_email: u.email });
+      if (wallets.length > 0) {
+        setWalletBalance(wallets[0].balance || 0);
+      }
     } catch (error) {
       toast.error("Failed to load cart");
     } finally {
@@ -181,6 +190,14 @@ export default function Cart() {
       toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); 
       return; 
     }
+    if (useWallet && walletAmount <= 0) {
+      toast.error("Please enter a valid wallet amount");
+      return;
+    }
+    if (useWallet && walletAmount > walletBalance) {
+      toast.error("Insufficient wallet balance");
+      return;
+    }
 
     // Block checkout inside iframe (preview) - open in new tab instead
     if (window.self !== window.top) {
@@ -201,6 +218,8 @@ export default function Cart() {
         image_url: i.image_url || '',
       }));
 
+      const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
+
       const response = await base44.functions.invoke('stripeCheckout', {
         items: allItems,
         delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
@@ -209,6 +228,9 @@ export default function Cart() {
         coupon_code: appliedCoupon?.code || "",
         discount_amount: discountAmount,
         total,
+        useWallet: useWallet,
+        walletAmount: useWallet ? walletAmount : 0,
+        cardAmount: amountToChargeCard,
       });
 
       if (response.data.url) {
@@ -361,7 +383,7 @@ export default function Cart() {
                 {/* Payment Method Selector */}
                  <div>
                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Payment Method</Label>
-                   <div className="grid grid-cols-2 gap-3 mt-2">
+                   <div className="grid grid-cols-3 gap-3 mt-2">
                      <button
                        type="button"
                        onClick={() => setPaymentMethod("card")}
@@ -376,6 +398,15 @@ export default function Cart() {
                      >
                        📱 Mobile Money
                      </button>
+                     {walletBalance > 0 && (
+                       <button
+                         type="button"
+                         onClick={() => setPaymentMethod("wallet")}
+                         className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${paymentMethod === "wallet" ? "border-purple-600 bg-purple-50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
+                       >
+                         <Wallet className="w-4 h-4" /> Wallet
+                       </button>
+                     )}
                    </div>
                  </div>
 
@@ -419,21 +450,62 @@ export default function Cart() {
                    </div>
                  )}
 
+                 {paymentMethod === "wallet" && (
+                   <div className="space-y-3 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-300 dark:border-purple-700">
+                     <div>
+                       <div className="flex justify-between items-baseline mb-2">
+                         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Wallet Balance</Label>
+                         <span className="text-sm font-bold text-purple-600 dark:text-purple-400">K{walletBalance.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                       </div>
+                       <div className="flex items-center gap-2 mb-3">
+                         <input
+                           type="checkbox"
+                           checked={useWallet}
+                           onChange={e => {
+                             setUseWallet(e.target.checked);
+                             if (e.target.checked) setWalletAmount(Math.min(walletBalance, total));
+                             else setWalletAmount(0);
+                           }}
+                           className="w-4 h-4 rounded"
+                         />
+                         <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Use wallet credit for this order</label>
+                       </div>
+                     </div>
+                     {useWallet && (
+                       <div>
+                         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Amount to use from wallet (K)</Label>
+                         <Input
+                           type="number"
+                           value={walletAmount}
+                           onChange={e => setWalletAmount(Math.min(walletBalance, Math.max(0, Number(e.target.value))))}
+                           min={0}
+                           max={walletBalance}
+                           className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                         />
+                         <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                           Remaining to pay with card: <strong>K{Math.max(0, total - walletAmount).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong>
+                         </p>
+                       </div>
+                     )}
+                   </div>
+                 )}
+
                  <Button
-                   onClick={paymentMethod === "card" ? handleCheckout : () => toast.info("Mobile money coming soon! Add your Flutterwave API keys to enable.")}
-                   disabled={submitting}
+                   onClick={paymentMethod === "card" || paymentMethod === "wallet" ? handleCheckout : () => toast.info("Mobile money coming soon! Add your Flutterwave API keys to enable.")}
+                   disabled={submitting || (paymentMethod === "wallet" && !useWallet)}
                    className={`w-full h-12 rounded-xl text-sm gap-2 ${
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
+                     paymentMethod === "wallet" ? "bg-purple-600 hover:bg-purple-700" :
                      mobileNetwork === "MTN" ? "bg-yellow-400 hover:bg-yellow-500 text-black" :
                      mobileNetwork === "Airtel" ? "bg-red-600 hover:bg-red-700" :
                      "bg-green-600 hover:bg-green-700"
                    }`}
                  >
-                   {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : <span>📱</span>}
-                   {submitting ? "Redirecting to payment..." : paymentMethod === "card" ? "Pay with Card" : `Pay with ${mobileNetwork} Mobile Money`}
+                   {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-4 h-4" /> : <span>📱</span>}
+                   {submitting ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "wallet" ? "Complete Payment" : `Pay with ${mobileNetwork} Mobile Money`}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
-                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : "Powered by Flutterwave · Supports MTN, Airtel & Zamtel"}
+                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "Powered by Flutterwave · Supports MTN, Airtel & Zamtel"}
                  </p>
               </div>
             )}
