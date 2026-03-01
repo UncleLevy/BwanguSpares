@@ -422,7 +422,12 @@ export default function Cart() {
                  <Button
                    onClick={paymentMethod === "card" ? handleCheckout : () => toast.info("Mobile money coming soon! Add your Flutterwave API keys to enable.")}
                    disabled={submitting}
-                   className={`w-full h-12 rounded-xl text-sm gap-2 ${paymentMethod === "mobile_money" ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"}`}
+                   className={`w-full h-12 rounded-xl text-sm gap-2 ${
+                     paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
+                     mobileNetwork === "MTN" ? "bg-yellow-400 hover:bg-yellow-500 text-black" :
+                     mobileNetwork === "Airtel" ? "bg-red-600 hover:bg-red-700" :
+                     "bg-green-600 hover:bg-green-700"
+                   }`}
                  >
                    {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : <span>📱</span>}
                    {submitting ? "Redirecting to payment..." : paymentMethod === "card" ? "Pay with Card" : `Pay with ${mobileNetwork} Mobile Money`}
