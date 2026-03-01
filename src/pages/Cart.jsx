@@ -18,6 +18,9 @@ export default function Cart() {
   const [checkout, setCheckout] = useState(false);
   const [form, setForm] = useState({ address: "", phone: "", notes: "", coupon: "", region: "", town: "" });
   const [submitting, setSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money"
+  const [mobileNetwork, setMobileNetwork] = useState("MTN");
+  const [mobileNumber, setMobileNumber] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [regions, setRegions] = useState([]);
