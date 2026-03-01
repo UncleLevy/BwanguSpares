@@ -4,8 +4,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, ArrowDownCircle, Clock, CheckCircle2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import StripeConnectPanel from "@/components/financials/StripeConnectPanel";
 
-export default function ShopWalletPanel({ shop, orders }) {
+export default function ShopWalletPanel({ shop: initialShop, orders }) {
+  const [shop, setShop] = useState(initialShop);
   const [wallet, setWallet] = useState(null);
   const [payouts, setPayouts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -51,7 +53,7 @@ export default function ShopWalletPanel({ shop, orders }) {
       setPayouts(p);
       setLoading(false);
     })();
-  }, [shop?.id, orders]);
+  }, [initialShop?.id, orders]);
 
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
@@ -116,9 +118,12 @@ export default function ShopWalletPanel({ shop, orders }) {
         </Card>
       </div>
 
+      {/* Stripe Connect */}
+      <StripeConnectPanel shop={shop} onShopUpdate={setShop} />
+
       {/* Info note */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-700 dark:text-blue-300">
-        💡 Earnings are calculated from <strong>delivered Stripe orders</strong>. A platform fee of <strong>{wallet?.platform_fee_rate ?? 5}%</strong> is deducted. Contact the admin to request a payout.
+        💡 Earnings are calculated from <strong>delivered Stripe orders</strong>. A platform fee of <strong>{wallet?.platform_fee_rate ?? 5}%</strong> is deducted. Connect your Stripe account above to receive automated payouts.
       </div>
 
       {/* Payout History */}
