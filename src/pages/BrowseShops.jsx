@@ -25,6 +25,8 @@ export default function BrowseShops() {
   const [regionFilter, setRegionFilter] = useState("all");
   const [userLoc, setUserLoc] = useState(null);
   const [locating, setLocating] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 9;
 
   useEffect(() => {
     (async () => {

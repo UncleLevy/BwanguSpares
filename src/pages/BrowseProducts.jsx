@@ -42,6 +42,8 @@ export default function BrowseProducts() {
   const [sortBy, setSortBy] = useState("newest");
   const [requestFormOpen, setRequestFormOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 12;
 
   useEffect(() => {
     (async () => {
