@@ -285,10 +285,12 @@ export default function BuyerDashboard() {
                             </div>
                           ))}
                         </div>
-                        {order.status === "cancelled" && order.cancellation_reason && (
+                        {order.status === "cancelled" && (
                           <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
-                            <span className="font-medium">Cancellation reason: </span>{order.cancellation_reason}
-                            {order.refunded && <span className="ml-2 text-xs font-semibold text-red-600">(Refunded)</span>}
+                            {order.cancellation_reason && <p><span className="font-medium">Reason: </span>{order.cancellation_reason}</p>}
+                            {order.stripe_session_id && order.payment_method === 'stripe' && (
+                              <p className="mt-1 text-emerald-700 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
+                            )}
                           </div>
                         )}
                         {(order.status === "shipped" || order.status === "delivered") && (
