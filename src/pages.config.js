@@ -61,6 +61,7 @@ import ShopCatalog from './pages/ShopCatalog';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
 import Wishlist from './pages/Wishlist';
+import OrderDetails from './pages/OrderDetails';
 import __Layout from './Layout.jsx';
 
 
@@ -79,6 +80,7 @@ export const PAGES = {
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
     "Wishlist": Wishlist,
+    "OrderDetails": OrderDetails,
 }
 
 export const pagesConfig = {
