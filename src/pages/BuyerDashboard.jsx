@@ -509,6 +509,47 @@ export default function BuyerDashboard() {
          </DialogContent>
        </Dialog>
 
+       <Dialog open={stripeRefundDialog} onOpenChange={setStripeRefundDialog}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Refund Wallet Balance to Card</DialogTitle>
+             <DialogDescription>
+               Your full wallet balance of <strong>K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> will be refunded back to your original payment card via Stripe. This may take 5–10 business days to appear.
+             </DialogDescription>
+           </DialogHeader>
+           <DialogFooter className="gap-2">
+             <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
+             <Button
+               className="bg-blue-600 hover:bg-blue-700"
+               disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
+               onClick={async () => {
+                 setStripeRefundSubmitting(true);
+                 try {
+                   const res = await base44.functions.invoke('walletStripeRefund', { amount: wallet.balance });
+                   if (res.data?.success) {
+                     toast.success("Refund initiated! It will appear on your card in 5–10 business days.");
+                     setStripeRefundDialog(false);
+                     const [wallets, txns] = await Promise.all([
+                       base44.entities.BuyerWallet.filter({ buyer_email: user.email }),
+                       base44.entities.WalletTransaction.filter({ buyer_email: user.email }, "-created_date", 20),
+                     ]);
+                     setWallet(wallets[0] || null);
+                     setWalletTxns(txns);
+                   } else {
+                     toast.error(res.data?.error || "Refund failed. Please contact support.");
+                   }
+                 } catch (e) {
+                   toast.error("Refund failed. Please contact support.");
+                 }
+                 setStripeRefundSubmitting(false);
+               }}
+             >
+               {stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
+             </Button>
+           </DialogFooter>
+         </DialogContent>
+       </Dialog>
+
        <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
          <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
            <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
