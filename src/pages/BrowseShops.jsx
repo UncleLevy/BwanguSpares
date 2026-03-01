@@ -57,7 +57,7 @@ export default function BrowseShops() {
     }
   }, []);
 
-  const filteredShops = shops
+  const allFilteredShops = shops
     .filter(s => {
       const matchSearch = !search || s.name?.toLowerCase().includes(search.toLowerCase()) || s.address?.toLowerCase().includes(search.toLowerCase());
       const matchRegion = regionFilter === "all" || s.region === regionFilter;

@@ -84,6 +84,12 @@ export default function BrowseProducts() {
     p.brand?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
+  const paginatedProducts = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const handleFilterChange = (setter) => (val) => { setter(val); setPage(1); };
+  const handleSearchChange = (val) => { setSearch(val); setPage(1); };
+
   const handleAddToCart = async (product) => {
     if ((product.stock_quantity || 0) === 0) {
       toast.error("Out of stock — submit a parts request instead");
