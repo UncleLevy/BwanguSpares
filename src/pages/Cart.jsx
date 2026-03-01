@@ -20,6 +20,9 @@ export default function Cart() {
   const [submitting, setSubmitting] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
+  const [regions, setRegions] = useState([]);
+  const [towns, setTowns] = useState([]);
+  const [filteredTowns, setFilteredTowns] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
