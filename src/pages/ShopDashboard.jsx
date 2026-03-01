@@ -141,18 +141,36 @@ export default function ShopDashboard() {
     const file = e.target.files[0];
     if (!file) return;
     setUploading(true);
-    try {
-      const { file_url } = await base44.integrations.Core.UploadFile({ file });
-      if (isProduct) {
-        setProductForm({ ...productForm, image_url: file_url });
-      } else {
-        setTechForm({ ...techForm, photo_url: file_url });
-      }
-      toast.success("Photo uploaded");
-    } catch (error) {
-      toast.error("Failed to upload photo");
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    if (isProduct) {
+      setProductForm(prev => ({ ...prev, image_url: file_url }));
+    } else {
+      setTechForm({ ...techForm, photo_url: file_url });
     }
+    toast.success("Photo uploaded");
     setUploading(false);
+  };
+
+  const handleExtraImageUpload = async (e, index) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setProductForm(prev => {
+      const imgs = [...(prev.image_urls || [])];
+      imgs[index] = file_url;
+      return { ...prev, image_urls: imgs };
+    });
+    toast.success(`Photo ${index + 2} uploaded`);
+    setUploading(false);
+  };
+
+  const removeExtraImage = (index) => {
+    setProductForm(prev => {
+      const imgs = [...(prev.image_urls || [])];
+      imgs.splice(index, 1);
+      return { ...prev, image_urls: imgs };
+    });
   };
 
   const saveProduct = async () => {
