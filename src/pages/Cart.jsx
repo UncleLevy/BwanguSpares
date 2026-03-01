@@ -221,37 +221,70 @@ export default function Cart() {
         image_url: i.image_url || '',
       }));
 
-      const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
+      // Handle wallet-only payment
+      if (paymentMethod === "wallet" && useWallet && walletAmount === total) {
+        const response = await base44.functions.invoke('walletPaymentCheckout', {
+          items: allItems,
+          deliveryAddress: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
+          deliveryPhone: form.phone,
+          notes: form.notes,
+          couponCode: appliedCoupon?.code || "",
+          discountAmount: discountAmount,
+          total: total,
+          shippingOption: shippingOption,
+          shippingCost: shippingCost,
+        });
 
-      const response = await base44.functions.invoke('stripeCheckout', {
-        items: allItems,
-        delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
-        delivery_phone: form.phone,
-        notes: form.notes,
-        coupon_code: appliedCoupon?.code || "",
-        discount_amount: discountAmount,
-        total,
-        useWallet: useWallet,
-        walletAmount: useWallet ? walletAmount : 0,
-        cardAmount: amountToChargeCard,
-        shippingOption: shippingOption,
-        shippingCost: shippingCost,
-      });
-
-      if (response.data.url) {
-        // Clear cart before redirecting
-        if (appliedCoupon) {
-          await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+        if (response.data.success) {
+          // Clear cart
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+          }
+          for (const item of items) {
+            await base44.entities.CartItem.delete(item.id);
+          }
+          toast.success("Payment successful!");
+          // Redirect to order success or home
+          setTimeout(() => {
+            window.location.href = createPageUrl("BuyerDashboard");
+          }, 1500);
+        } else {
+          toast.error(response.data.error || "Payment failed");
         }
-        for (const item of items) {
-          await base44.entities.CartItem.delete(item.id);
-        }
-        window.location.href = response.data.url;
       } else {
-        toast.error(response.data.error || "Failed to initiate payment");
+        // Card payment
+        const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
+
+        const response = await base44.functions.invoke('stripeCheckout', {
+          items: allItems,
+          delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
+          delivery_phone: form.phone,
+          notes: form.notes,
+          coupon_code: appliedCoupon?.code || "",
+          discount_amount: discountAmount,
+          total: amountToChargeCard,
+          useWallet: useWallet,
+          walletAmount: useWallet ? walletAmount : 0,
+          cardAmount: amountToChargeCard,
+          shippingOption: shippingOption,
+          shippingCost: shippingCost,
+        });
+
+        if (response.data.url) {
+          // Clear cart before redirecting
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+          }
+          for (const item of items) {
+            await base44.entities.CartItem.delete(item.id);
+          }
+          window.location.href = response.data.url;
+        } else {
+          toast.error(response.data.error || "Failed to initiate payment");
+        }
       }
     } catch (error) {
-      toast.error("Failed to initiate payment. Please try again.");
+      toast.error("Payment failed. Please try again.");
     } finally {
       setSubmitting(false);
     }
