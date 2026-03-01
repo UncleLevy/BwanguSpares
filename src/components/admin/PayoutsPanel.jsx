@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet } from "lucide-react";
+import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function PayoutsPanel({ adminUser }) {
@@ -20,6 +20,7 @@ export default function PayoutsPanel({ adminUser }) {
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [form, setForm] = useState({ amount: "", method: "bank_transfer", reference: "", notes: "" });
   const [saving, setSaving] = useState(false);
+  const [autoRunning, setAutoRunning] = useState(false);
 
   useEffect(() => {
     load();
@@ -39,6 +40,49 @@ export default function PayoutsPanel({ adminUser }) {
     setSelectedWallet(wallet);
     setForm({ amount: String(wallet.pending_balance || ""), method: "bank_transfer", reference: "", notes: "" });
     setPayoutDialog(true);
+  };
+
+  const runAutoPayout = async () => {
+    setAutoRunning(true);
+    try {
+      const res = await base44.functions.invoke("autoPayoutShops", {});
+      const { processed, results } = res.data;
+      if (processed === 0) {
+        toast.info("No shops currently meet the payout threshold or have an active Stripe account.");
+      } else {
+        const success = results.filter(r => r.status === "success").length;
+        const failed = results.filter(r => r.status === "failed").length;
+        toast.success(`Auto-payout complete: ${success} succeeded, ${failed} failed.`);
+      }
+      load();
+    } catch (e) {
+      toast.error(e.message || "Auto-payout failed");
+    }
+    setAutoRunning(false);
+  };
+
+  const submitStripePayout = async () => {
+    if (!form.amount || parseFloat(form.amount) <= 0) { toast.error("Enter a valid amount"); return; }
+    const amount = parseFloat(form.amount);
+    if (amount > selectedWallet.pending_balance) { toast.error("Amount exceeds pending balance"); return; }
+    setSaving(true);
+    try {
+      const res = await base44.functions.invoke("stripeConnect", {
+        action: "payout_shop",
+        wallet_id: selectedWallet.id,
+        amount_zmw: amount,
+      });
+      if (res.data.success) {
+        toast.success(`Stripe payout of K${amount.toLocaleString()} sent to ${selectedWallet.shop_name}`);
+        setPayoutDialog(false);
+        load();
+      } else {
+        toast.error(res.data.error || "Payout failed");
+      }
+    } catch (e) {
+      toast.error(e.message || "Stripe payout failed");
+    }
+    setSaving(false);
   };
 
   const submitPayout = async () => {
@@ -88,7 +132,13 @@ export default function PayoutsPanel({ adminUser }) {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Shop Payouts</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Shop Payouts</h1>
+        <Button onClick={runAutoPayout} disabled={autoRunning} className="bg-emerald-600 hover:bg-emerald-700 gap-2">
+          <Zap className="w-4 h-4" />
+          {autoRunning ? "Running..." : "Run Auto-Payout"}
+        </Button>
+      </div>
 
       {/* Summary cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -153,8 +203,10 @@ export default function PayoutsPanel({ adminUser }) {
               <TableBody>
                 {wallets.map(w => (
                   <TableRow key={w.id}>
-                    <TableCell className="font-medium">{w.shop_name}</TableCell>
-                    <TableCell className="text-sm text-slate-500">{w.owner_email}</TableCell>
+                    <TableCell className="font-medium">
+                      <div>{w.shop_name}</div>
+                    </TableCell>
+                     <TableCell className="text-sm text-slate-500">{w.owner_email}</TableCell>
                     <TableCell className="font-medium">K{(w.total_earned || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                     <TableCell className="text-sm text-amber-600">K{(w.total_fees_deducted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({w.platform_fee_rate ?? 5}%)</TableCell>
                     <TableCell className="text-emerald-600 font-medium">K{(w.total_paid_out || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
@@ -164,14 +216,16 @@ export default function PayoutsPanel({ adminUser }) {
                       </span>
                     </TableCell>
                     <TableCell>
-                      <Button
-                        size="sm"
-                        disabled={!(w.pending_balance > 0)}
-                        className="bg-blue-600 hover:bg-blue-700 h-8 gap-1 text-xs"
-                        onClick={() => openPayoutDialog(w)}
-                      >
-                        <Plus className="w-3 h-3" /> Pay Out
-                      </Button>
+                      <div className="flex gap-1.5 flex-wrap">
+                        <Button
+                          size="sm"
+                          disabled={!(w.pending_balance > 0)}
+                          className="bg-blue-600 hover:bg-blue-700 h-8 gap-1 text-xs"
+                          onClick={() => openPayoutDialog(w)}
+                        >
+                          <Plus className="w-3 h-3" /> Manual
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
