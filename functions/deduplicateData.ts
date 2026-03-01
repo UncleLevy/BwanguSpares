@@ -38,12 +38,14 @@ Deno.serve(async (req) => {
       const towns = await base44.asServiceRole.entities.Town.list("-created_date", 500);
       const seen = {};
       for (const town of towns) {
-        const key = `${town.name?.toLowerCase().trim()}|${town.region_id || town.region_name?.toLowerCase().trim()}`;
+        // Use region_id as primary key, fallback to region_name
+        const regionKey = (town.region_id || town.region_name || "").toLowerCase().trim();
+        const key = `${town.name?.toLowerCase().trim()}|${regionKey}`;
         if (seen[key]) {
-          report.towns.duplicates.push({ kept: seen[key].id, removed: town.id, name: town.name });
+          report.towns.duplicates.push({ kept: seen[key].id, removed: town.id, name: town.name, region: town.region_name || town.region_id });
           await base44.asServiceRole.entities.Town.delete(town.id);
           report.towns.removed++;
-          console.log(`[Dedup] Removed duplicate town: "${town.name}" (${town.id})`);
+          console.log(`[Dedup] Removed duplicate town: "${town.name}" in "${town.region_name || town.region_id}" (${town.id})`);
         } else {
           seen[key] = town;
         }
