@@ -30,6 +30,10 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
     current_location: "",
     estimated_delivery: ""
   });
+  const [refundDialog, setRefundDialog] = useState(false);
+  const [refundOrder, setRefundOrder] = useState(null);
+  const [refundReason, setRefundReason] = useState("");
+  const [refunding, setRefunding] = useState(false);
 
   const handleEditOrder = (order) => {
     setEditingOrder(order);
