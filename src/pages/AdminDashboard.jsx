@@ -131,6 +131,7 @@ export default function AdminDashboard() {
 
   const confirmDeleteShop = (shop) => {
     setShopToDelete(shop);
+    setDeleteConfirmName("");
     setDeleteShopDialog(true);
   };
 
