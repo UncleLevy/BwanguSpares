@@ -46,6 +46,7 @@ import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
 import CustomerManager from "@/components/customers/CustomerManager";
 import MarketingTools from "@/components/marketing/MarketingTools";
 import MarketingAnalyticsDashboard from "@/components/marketing/MarketingAnalyticsDashboard";
+import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },

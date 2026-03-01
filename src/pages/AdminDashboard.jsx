@@ -30,6 +30,7 @@ import UsersPanel from "@/components/admin/UsersPanel";
 import AuditLogPanel from "@/components/admin/AuditLogPanel";
 import OrdersPanel from "@/components/admin/OrdersPanel";
 import ReportingPanel from "@/components/admin/ReportingPanel";
+import PayoutsPanel from "@/components/admin/PayoutsPanel";
 import { logAudit } from "@/components/shared/auditLog";
 
 export default function AdminDashboard() {
