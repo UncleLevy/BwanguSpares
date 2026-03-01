@@ -48,6 +48,9 @@ export default function AdminDashboard() {
   const [newTown, setNewTown] = useState({ name: "", region_id: "", region_name: "" });
   const [reportCount, setReportCount] = useState(0);
   const [deduping, setDeduping] = useState(false);
+  const [deleteShopDialog, setDeleteShopDialog] = useState(false);
+  const [shopToDelete, setShopToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
