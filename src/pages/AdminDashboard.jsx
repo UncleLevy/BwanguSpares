@@ -432,6 +432,9 @@ export default function AdminDashboard() {
                               Reactivate
                             </Button>
                           )}
+                          <Button size="sm" variant="ghost" className="h-8 text-red-600 hover:bg-red-50" onClick={() => confirmDeleteShop(shop)}>
+                            <XCircle className="w-4 h-4 mr-1" /> Delete
+                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>
