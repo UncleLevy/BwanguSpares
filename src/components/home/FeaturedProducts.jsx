@@ -12,13 +12,19 @@ const conditionColors = {
 };
 
 export default function FeaturedProducts({ products, onAddToCart, loading }) {
+  const scrollRef = useRef(null);
+
+  const scroll = (dir) => {
+    scrollRef.current?.scrollBy({ left: dir * 300, behavior: "smooth" });
+  };
+
   if (loading) {
     return (
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="flex gap-5 overflow-hidden">
             {[1,2,3,4].map(i => (
-              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
+              <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse min-w-[260px]">
                 <div className="h-48 bg-slate-100 dark:bg-slate-700" />
                 <div className="p-4 space-y-3">
                   <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4" />
@@ -41,14 +47,24 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Featured Parts</h2>
             <p className="text-slate-500 dark:text-slate-400 mt-1">Top-selling parts from verified shops</p>
           </div>
-          <Link to={createPageUrl("BrowseProducts")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
-            View all <ArrowRight className="w-4 h-4" />
-          </Link>
+          <div className="flex items-center gap-3">
+            <div className="hidden sm:flex gap-1">
+              <button onClick={() => scroll(-1)} className="p-2 rounded-full border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <button onClick={() => scroll(1)} className="p-2 rounded-full border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+            <Link to={createPageUrl("BrowseProducts")} className="text-sm font-medium text-blue-600 hover:text-blue-700 flex items-center gap-1">
+              View all <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div ref={scrollRef} className="flex gap-5 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {products.map(product => (
-            <div key={product.id} className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
+            <div key={product.id} className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift snap-start shrink-0 w-[260px]">
               <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
                 <div className="relative h-48 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
                   {product.image_url ? (
