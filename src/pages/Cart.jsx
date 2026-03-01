@@ -179,9 +179,10 @@ export default function Cart() {
       return; 
     }
 
-    // Block checkout inside iframe (preview)
+    // Block checkout inside iframe (preview) - open in new tab instead
     if (window.self !== window.top) {
-      alert("Payment checkout works only from the published app. Please open the app in a new tab.");
+      window.open(window.location.href, "_blank");
+      toast.info("Opening the app in a new tab — please complete your checkout there.");
       return;
     }
     
