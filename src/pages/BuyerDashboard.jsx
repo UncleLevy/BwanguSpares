@@ -199,6 +199,7 @@ export default function BuyerDashboard() {
     { id: "cart", label: "Cart", icon: ShoppingCart, onClick: () => setView("cart") },
     { id: "wallet", label: "My Wallet", icon: Wallet, onClick: () => setView("wallet"), badge: wallet?.balance > 0 ? `K${Math.round(wallet.balance)}` : null },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
+    { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => setView("technician_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
   ];
