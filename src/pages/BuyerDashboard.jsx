@@ -325,6 +325,10 @@ export default function BuyerDashboard() {
           <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
         )}
 
+        {view === "technician_requests" && (
+          <BuyerTechnicianRequests user={user} />
+        )}
+
         {view === "messages" && (
           <BuyerMessages user={user} />
         )}
