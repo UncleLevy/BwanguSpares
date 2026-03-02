@@ -24,6 +24,7 @@ import PullToRefresh from "@/components/shared/PullToRefresh";
 import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
+import BuyerTechnicianRequests from "@/components/technicians/BuyerTechnicianRequests";
 import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
 import AddressInput from "@/components/shared/AddressInput";
 import OrderReceipt from "@/components/receipts/OrderReceipt";
