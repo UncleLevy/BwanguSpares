@@ -136,6 +136,42 @@ export default function AdminDashboard() {
     toast.success("Town deleted");
   };
 
+  const exportCitiesCsv = () => {
+    const rows = [["City/Town Name", "Region"]];
+    towns.forEach(t => rows.push([t.name, t.region_name || ""]));
+    const csv = rows.map(r => r.map(v => `"${v}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "cities.csv"; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const importCitiesCsv = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImportingCsv(true);
+    const text = await file.text();
+    const lines = text.trim().split("\n").slice(1); // skip header
+    let added = 0;
+    for (const line of lines) {
+      const cols = line.split(",").map(c => c.replace(/^"|"$/g, "").trim());
+      const [name, regionName] = cols;
+      if (!name) continue;
+      const region = regions.find(r => r.name.toLowerCase() === (regionName || "").toLowerCase());
+      const t = await base44.entities.Town.create({
+        name,
+        region_id: region?.id || "",
+        region_name: region?.name || regionName || "",
+      });
+      setTowns(prev => [...prev, t]);
+      added++;
+    }
+    toast.success(`Imported ${added} cities`);
+    setImportingCsv(false);
+    e.target.value = "";
+  };
+
   const confirmDeleteShop = (shop) => {
     setShopToDelete(shop);
     setDeleteConfirmName("");
