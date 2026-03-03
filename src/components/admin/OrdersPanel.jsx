@@ -35,6 +35,7 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
   const [refundOrder, setRefundOrder] = useState(null);
   const [refundReason, setRefundReason] = useState("");
   const [refunding, setRefunding] = useState(false);
+  const [sort, setSort] = useState(null);
 
   const handleEditOrder = (order) => {
     setEditingOrder(order);
