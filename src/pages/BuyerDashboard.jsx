@@ -87,7 +87,7 @@ export default function BuyerDashboard() {
         return;
       }
       setUser(u);
-      setProfileForm({ first_name: u.first_name || "", last_name: u.last_name || "", phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "" });
+      setProfileForm({ first_name: u.first_name || "", last_name: u.last_name || "", phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "", profile_picture_url: u.profile_picture_url || "", use_default_address: u.use_default_address !== false });
       const [o, wallets, txns] = await Promise.all([
         base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50),
         base44.entities.BuyerWallet.filter({ buyer_email: u.email }),
