@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import ReviewList from "@/components/reviews/ReviewList";
 import HireTechnicianDialog from "@/components/technicians/HireTechnicianDialog";
-import Breadcrumbs from "@/components/shared/Breadcrumbs";
+
 
 export default function ShopProfile() {
   const params = new URLSearchParams(window.location.search);
