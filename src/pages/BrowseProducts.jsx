@@ -202,8 +202,8 @@ export default function BrowseProducts() {
         </div>
       </div>
 
-      {(category !== "all" || condition !== "all") && (
-        <div className="flex gap-2 mb-4">
+      {(category !== "all" || condition !== "all" || priceRange !== "all") && (
+        <div className="flex flex-wrap gap-2 mb-4">
           {category !== "all" && (
             <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCategory("all")}>
               {CATEGORIES.find(c=>c.value===category)?.label} <X className="w-3 h-3" />
@@ -212,6 +212,11 @@ export default function BrowseProducts() {
           {condition !== "all" && (
             <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCondition("all")}>
               {condition} <X className="w-3 h-3" />
+            </Badge>
+          )}
+          {priceRange !== "all" && (
+            <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setPriceRange("all")}>
+              {priceRange === "20000+" ? "Above K20,000" : `K${priceRange.replace("-", " – K")}`} <X className="w-3 h-3" />
             </Badge>
           )}
         </div>
