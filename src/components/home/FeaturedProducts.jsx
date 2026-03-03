@@ -101,7 +101,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
                 <div className="flex items-center justify-between mt-3">
                   <span className="text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
                   <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
-                    onClick={() => onAddToCart(product)}>
+                    onClick={(e) => { e.preventDefault(); e.stopPropagation(); onAddToCart(product); }}>
                     <ShoppingCart className="w-3.5 h-3.5 mr-1" /> Add
                   </Button>
                 </div>
