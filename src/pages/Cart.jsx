@@ -45,12 +45,14 @@ export default function Cart() {
   }, []);
 
   const loadRegionsAndTowns = async () => {
-    const [r, t] = await Promise.all([
+    const [r, t, sr] = await Promise.all([
       base44.entities.Region.list(),
       base44.entities.Town.list(),
+      base44.entities.ShippingRate.list(),
     ]);
     setRegions(r || []);
     setTowns(t || []);
+    setShippingRates(sr || []);
   };
 
   const handleRegionChange = (regionId) => {
