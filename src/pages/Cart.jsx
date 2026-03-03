@@ -67,8 +67,18 @@ export default function Cart() {
       }
       
       setUser(u);
+      // Pre-fill address from user profile if use_default_address is enabled
+      if (u.use_default_address !== false && (u.address || u.region || u.town)) {
+        setForm(f => ({
+          ...f,
+          address: u.address || "",
+          region: u.region || "",
+          town: u.town || "",
+          phone: u.phone || "",
+        }));
+        setUsingDefaultAddress(true);
+      }
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
-      setItems(cart || []);
       
       // Load wallet balance
       const wallets = await base44.entities.BuyerWallet.filter({ buyer_email: u.email });
