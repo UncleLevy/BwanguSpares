@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -10,10 +11,19 @@ import { toast } from "sonner";
 import { Wrench } from "lucide-react";
 
 const statusColors = {
-  pending: "bg-amber-50 text-amber-700",
-  accepted: "bg-emerald-50 text-emerald-700",
-  rejected: "bg-red-50 text-red-700",
-  completed: "bg-blue-50 text-blue-700",
+  pending:        "bg-amber-50 text-amber-700",
+  counter_offered:"bg-purple-50 text-purple-700",
+  accepted:       "bg-emerald-50 text-emerald-700",
+  rejected:       "bg-red-50 text-red-700",
+  completed:      "bg-blue-50 text-blue-700",
+};
+
+const statusLabels = {
+  pending:         "Pending",
+  counter_offered: "Counter Offered",
+  accepted:        "Accepted",
+  rejected:        "Rejected",
+  completed:       "Completed",
 };
 
 const problemLabels = {
@@ -28,31 +38,48 @@ export default function TechnicianHireRequests({ shop }) {
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [responseText, setResponseText] = useState("");
   const [responseStatus, setResponseStatus] = useState("accepted");
+  const [counterBudget, setCounterBudget] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!shop?.id) return;
-    base44.entities.TechnicianHireRequest.filter({ shop_id: shop.id }, "-created_date", 50)
-      .then(r => { setRequests(r); setLoading(false); });
+    loadRequests();
+    const unsub = base44.entities.TechnicianHireRequest.subscribe(() => loadRequests());
+    return unsub;
   }, [shop?.id]);
+
+  const loadRequests = async () => {
+    const r = await base44.entities.TechnicianHireRequest.filter({ shop_id: shop.id }, "-created_date", 50);
+    setRequests(r);
+    setLoading(false);
+  };
 
   const openRespond = (req) => {
     setSelectedRequest(req);
     setResponseText("");
     setResponseStatus("accepted");
+    setCounterBudget("");
     setRespondDialog(true);
   };
 
   const submitResponse = async () => {
-    await base44.entities.TechnicianHireRequest.update(selectedRequest.id, {
+    if (responseStatus === "counter_offered" && (!counterBudget || isNaN(parseFloat(counterBudget)))) {
+      toast.error("Please enter a valid counter budget");
+      return;
+    }
+    setSubmitting(true);
+    const updateData = {
       status: responseStatus,
       shop_response: responseText,
-    });
-    setRequests(requests.map(r => r.id === selectedRequest.id
-      ? { ...r, status: responseStatus, shop_response: responseText }
-      : r
-    ));
-    toast.success("Response sent");
+    };
+    if (responseStatus === "counter_offered") {
+      updateData.shop_counter_budget = parseFloat(counterBudget);
+    }
+    await base44.entities.TechnicianHireRequest.update(selectedRequest.id, updateData);
+    setRequests(requests.map(r => r.id === selectedRequest.id ? { ...r, ...updateData } : r));
+    toast.success("Response sent to customer");
     setRespondDialog(false);
+    setSubmitting(false);
   };
 
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
@@ -74,7 +101,8 @@ export default function TechnicianHireRequests({ shop }) {
                 <TableHead>Customer</TableHead>
                 <TableHead>Technician</TableHead>
                 <TableHead>Problem</TableHead>
-                <TableHead>Preferred Date</TableHead>
+                <TableHead>Budget</TableHead>
+                <TableHead>Date</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -92,14 +120,32 @@ export default function TechnicianHireRequests({ shop }) {
                   <TableCell>
                     <Badge variant="outline" className="text-[11px]">{problemLabels[req.problem_type] || req.problem_type}</Badge>
                   </TableCell>
+                  <TableCell className="text-sm">
+                    {req.buyer_budget ? (
+                      <div>
+                        <p className="text-slate-700 dark:text-slate-300">K{req.buyer_budget.toLocaleString()}</p>
+                        {req.shop_counter_budget && (
+                          <p className="text-xs text-purple-600 font-medium">Counter: K{req.shop_counter_budget.toLocaleString()}</p>
+                        )}
+                      </div>
+                    ) : "—"}
+                  </TableCell>
                   <TableCell className="text-sm text-slate-500">{req.preferred_date || "—"}</TableCell>
-                  <TableCell><Badge className={statusColors[req.status]}>{req.status}</Badge></TableCell>
+                  <TableCell>
+                    <Badge className={statusColors[req.status]}>{statusLabels[req.status] || req.status}</Badge>
+                    {req.status === "counter_offered" && req.buyer_response && (
+                      <p className="text-xs text-slate-500 mt-1">Buyer: {req.buyer_response === "declined" ? "❌ Declined" : "✓ Agreed"}</p>
+                    )}
+                  </TableCell>
                   <TableCell>
                     {req.status === "pending" && (
                       <Button size="sm" variant="outline" onClick={() => openRespond(req)}>Respond</Button>
                     )}
-                    {req.status !== "pending" && req.shop_response && (
-                      <span className="text-xs text-slate-400 italic">"{req.shop_response.slice(0, 30)}..."</span>
+                    {req.status === "counter_offered" && (
+                      <span className="text-xs text-purple-600 italic">Awaiting buyer...</span>
+                    )}
+                    {req.status !== "pending" && req.status !== "counter_offered" && req.shop_response && (
+                      <span className="text-xs text-slate-400 italic line-clamp-1 max-w-[120px]">"{req.shop_response.slice(0, 30)}"</span>
                     )}
                   </TableCell>
                 </TableRow>
@@ -113,29 +159,56 @@ export default function TechnicianHireRequests({ shop }) {
         <DialogContent>
           <DialogHeader><DialogTitle>Respond to Hire Request</DialogTitle></DialogHeader>
           <div className="space-y-4">
-            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm">
+            <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm space-y-1">
               <p className="font-medium">{selectedRequest?.buyer_name}</p>
-              <p className="text-slate-500 mt-1">{selectedRequest?.description}</p>
+              <p className="text-slate-500">{selectedRequest?.description}</p>
+              {selectedRequest?.buyer_budget && (
+                <p className="text-blue-600 font-medium text-xs">Customer Budget: K{selectedRequest.buyer_budget.toLocaleString()}</p>
+              )}
             </div>
             <div>
               <Label>Decision</Label>
-              <div className="flex gap-2 mt-2">
+              <div className="flex gap-2 mt-2 flex-wrap">
                 <Button size="sm" onClick={() => setResponseStatus("accepted")}
                   className={responseStatus === "accepted" ? "bg-emerald-600 hover:bg-emerald-700 text-white" : ""}
                   variant={responseStatus === "accepted" ? "default" : "outline"}>Accept</Button>
+                <Button size="sm" onClick={() => setResponseStatus("counter_offered")}
+                  className={responseStatus === "counter_offered" ? "bg-purple-600 hover:bg-purple-700 text-white" : ""}
+                  variant={responseStatus === "counter_offered" ? "default" : "outline"}>Counter Offer</Button>
                 <Button size="sm" onClick={() => setResponseStatus("rejected")}
                   className={responseStatus === "rejected" ? "bg-red-600 hover:bg-red-700 text-white" : ""}
                   variant={responseStatus === "rejected" ? "default" : "outline"}>Decline</Button>
               </div>
             </div>
+
+            {responseStatus === "counter_offered" && (
+              <div>
+                <Label>Your Counter Budget (ZMW) *</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={counterBudget}
+                  onChange={e => setCounterBudget(e.target.value)}
+                  className="mt-1"
+                  placeholder="e.g. 500"
+                />
+              </div>
+            )}
+
             <div>
-              <Label>Message to Customer (optional)</Label>
-              <Textarea value={responseText} onChange={e => setResponseText(e.target.value)} className="mt-1" rows={3} placeholder="e.g. We'll be available on that date, please come at 9am..." />
+              <Label>Message to Customer {responseStatus === "counter_offered" ? "(explain your pricing)" : "(optional)"}</Label>
+              <Textarea value={responseText} onChange={e => setResponseText(e.target.value)} className="mt-1" rows={3}
+                placeholder={responseStatus === "counter_offered"
+                  ? "e.g. Based on the work required, our rate is K500 which covers parts and labour..."
+                  : "e.g. We'll be available on that date, please come at 9am..."
+                } />
             </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setRespondDialog(false)}>Cancel</Button>
-            <Button onClick={submitResponse} className="bg-blue-600 hover:bg-blue-700">Send Response</Button>
+            <Button onClick={submitResponse} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">
+              {submitting ? "Sending..." : "Send Response"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
