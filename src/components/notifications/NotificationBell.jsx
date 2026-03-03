@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
+import { createPageUrl } from "@/utils";
 
 const typeIcons = {
   order_update: "📦",
@@ -64,7 +65,13 @@ export default function NotificationBell({ userEmail }) {
       setUnreadCount((prev) => Math.max(0, prev - 1));
     }
     if (notification.action_url) {
-      navigate(notification.action_url);
+      // action_url format: "PageName?param=value" or "/PageName?param=value"
+      const url = notification.action_url.startsWith("/")
+        ? notification.action_url.slice(1)
+        : notification.action_url;
+      const [pagePart, queryPart] = url.split("?");
+      const base = createPageUrl(pagePart);
+      navigate(queryPart ? `${base}?${queryPart}` : base);
     }
   };
 
