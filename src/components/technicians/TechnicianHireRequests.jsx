@@ -92,7 +92,7 @@ export default function TechnicianHireRequests({ shop }) {
       title: notif.title,
       message: notif.message,
       related_id: selectedRequest.id,
-      action_url: "/BuyerDashboard?view=technician_requests",
+      action_url: "BuyerDashboard?view=technician_requests",
     });
     }
 

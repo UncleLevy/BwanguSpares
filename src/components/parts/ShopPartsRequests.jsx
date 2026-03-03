@@ -62,7 +62,7 @@ export default function ShopPartsRequests({ shop }) {
       title: "Parts Request Accepted!",
       message: `${shop.name} has accepted your request for "${request.part_name}". Contact them at ${shop.phone || "the shop"} to proceed.`,
       related_id: request.id,
-      action_url: "/BuyerDashboard?view=parts_requests",
+      action_url: "BuyerDashboard?view=parts_requests",
     });
 
     toast.success("Request accepted! The buyer has been notified.");
@@ -109,7 +109,7 @@ export default function ShopPartsRequests({ shop }) {
       title: "Counter Offer on Your Parts Request",
       message: `${shop.name} has sent a counter offer of K${parseFloat(counterBudget).toLocaleString()} for "${counterTarget.part_name}".`,
       related_id: counterTarget.id,
-      action_url: "/BuyerDashboard?view=parts_requests",
+      action_url: "BuyerDashboard?view=parts_requests",
     });
 
     toast.success("Counter offer sent to the buyer.");
