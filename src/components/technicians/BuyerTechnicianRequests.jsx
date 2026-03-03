@@ -3,18 +3,19 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Wrench, Clock, CheckCircle2, XCircle, Plus, Calendar, MapPin, Phone, MessageSquare } from "lucide-react";
+import { Wrench, Clock, CheckCircle2, XCircle, Calendar, MapPin, Phone, MessageSquare, Trash2 } from "lucide-react";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import {
-  Dialog, DialogContent, DialogHeader, DialogTitle
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription
 } from "@/components/ui/dialog";
 
 const statusConfig = {
-  pending:   { label: "Pending",   color: "bg-amber-100 text-amber-800",   icon: Clock },
-  accepted:  { label: "Accepted",  color: "bg-emerald-100 text-emerald-800", icon: CheckCircle2 },
-  rejected:  { label: "Rejected",  color: "bg-red-100 text-red-800",       icon: XCircle },
-  completed: { label: "Completed", color: "bg-blue-100 text-blue-800",     icon: CheckCircle2 },
+  pending:         { label: "Pending",        color: "bg-amber-100 text-amber-800",   icon: Clock },
+  counter_offered: { label: "Counter Offered", color: "bg-purple-100 text-purple-800", icon: MessageSquare },
+  accepted:        { label: "Accepted",        color: "bg-emerald-100 text-emerald-800", icon: CheckCircle2 },
+  rejected:        { label: "Rejected",        color: "bg-red-100 text-red-800",       icon: XCircle },
+  completed:       { label: "Completed",       color: "bg-blue-100 text-blue-800",     icon: CheckCircle2 },
 };
 
 const specLabels = {
@@ -27,6 +28,8 @@ export default function BuyerTechnicianRequests({ user }) {
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!user?.email) return;
@@ -43,6 +46,39 @@ export default function BuyerTechnicianRequests({ user }) {
     );
     setRequests(data);
     setLoading(false);
+  };
+
+  const handleCounterResponse = async (req, accepted) => {
+    setSubmitting(true);
+    if (accepted) {
+      // Buyer agrees to counter — mark accepted
+      await base44.entities.TechnicianHireRequest.update(req.id, {
+        status: "accepted",
+        buyer_response: "agreed",
+      });
+      toast.success("You accepted the counter offer! The shop will be in touch.");
+    } else {
+      // Buyer declines — send back to market as pending
+      await base44.entities.TechnicianHireRequest.update(req.id, {
+        status: "pending",
+        buyer_response: "declined",
+        shop_response: "",
+        shop_counter_budget: null,
+      });
+      toast.info("Counter offer declined. The request is back to pending.");
+    }
+    await loadRequests();
+    setSelectedRequest(null);
+    setSubmitting(false);
+  };
+
+  const handleDelete = async () => {
+    setSubmitting(true);
+    await base44.entities.TechnicianHireRequest.delete(deleteTarget.id);
+    setRequests(prev => prev.filter(r => r.id !== deleteTarget.id));
+    toast.success("Request deleted");
+    setDeleteTarget(null);
+    setSubmitting(false);
   };
 
   if (loading) return (
@@ -70,12 +106,13 @@ export default function BuyerTechnicianRequests({ user }) {
           {requests.map(req => {
             const sc = statusConfig[req.status] || statusConfig.pending;
             const Icon = sc.icon;
+            const isCounterOffer = req.status === "counter_offered";
             return (
-              <Card key={req.id} className="border-slate-200 dark:border-slate-700">
+              <Card key={req.id} className={`border-slate-200 dark:border-slate-700 ${isCounterOffer ? "border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800" : ""}`}>
                 <CardContent className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 mb-1">
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <p className="font-semibold text-slate-900 dark:text-slate-100">{req.technician_name}</p>
                         <Badge className={sc.color}>
                           <Icon className="w-3 h-3 mr-1" /> {sc.label}
@@ -95,26 +132,60 @@ export default function BuyerTechnicianRequests({ user }) {
                             <MapPin className="w-3.5 h-3.5" /> {req.location}
                           </span>
                         )}
-                        {req.buyer_phone && (
-                          <span className="flex items-center gap-1">
-                            <Phone className="w-3.5 h-3.5" /> {req.buyer_phone}
+                        {req.buyer_budget && (
+                          <span className="flex items-center gap-1 font-medium text-blue-600">
+                            Your budget: K{req.buyer_budget.toLocaleString()}
+                          </span>
+                        )}
+                        {req.shop_counter_budget && (
+                          <span className="flex items-center gap-1 font-medium text-purple-600">
+                            Shop's offer: K{req.shop_counter_budget.toLocaleString()}
                           </span>
                         )}
                       </div>
                       <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">{req.description}</p>
                     </div>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => setSelectedRequest(req)}
-                      className="shrink-0"
-                    >
-                      View Details
-                    </Button>
+                    <div className="flex gap-2 shrink-0">
+                      <Button size="sm" variant="outline" onClick={() => setSelectedRequest(req)}>
+                        View Details
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setDeleteTarget(req)}
+                        className="text-red-600 border-red-200 hover:bg-red-50"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </Button>
+                    </div>
                   </div>
 
-                  {/* Shop Response */}
-                  {req.shop_response && (
+                  {/* Counter Offer Banner */}
+                  {isCounterOffer && req.shop_counter_budget && (
+                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                      <p className="font-semibold text-purple-800 dark:text-purple-300 flex items-center gap-2 mb-1">
+                        <MessageSquare className="w-4 h-4" /> Counter Offer from {req.shop_name}
+                      </p>
+                      <p className="text-purple-700 dark:text-purple-400 text-sm">
+                        The shop is proposing <strong>K{req.shop_counter_budget.toLocaleString()}</strong>
+                        {req.buyer_budget ? ` (your budget was K${req.buyer_budget.toLocaleString()})` : ""}.
+                      </p>
+                      {req.shop_response && <p className="text-sm text-purple-600 dark:text-purple-400 mt-1 italic">"{req.shop_response}"</p>}
+                      <div className="flex gap-2 mt-3">
+                        <Button size="sm" onClick={() => handleCounterResponse(req, true)} disabled={submitting}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                          Accept Offer
+                        </Button>
+                        <Button size="sm" variant="outline" onClick={() => handleCounterResponse(req, false)} disabled={submitting}
+                          className="text-red-600 border-red-200 hover:bg-red-50">
+                          Decline &amp; Reopen
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Shop Response (accepted/rejected) */}
+                  {!isCounterOffer && req.shop_response && (
                     <div className={`mt-4 p-3 rounded-xl border text-sm ${
                       req.status === "accepted"
                         ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
@@ -159,7 +230,8 @@ export default function BuyerTechnicianRequests({ user }) {
                   <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Specialization</p><p>{specLabels[selectedRequest.problem_type] || selectedRequest.problem_type}</p></div>
                   {selectedRequest.preferred_date && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Preferred Date</p><p>{format(new Date(selectedRequest.preferred_date), "MMM dd, yyyy")}</p></div>}
                   {selectedRequest.location && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Location</p><p>{selectedRequest.location}</p></div>}
-                  {selectedRequest.buyer_phone && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Your Phone</p><p>{selectedRequest.buyer_phone}</p></div>}
+                  {selectedRequest.buyer_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Your Budget</p><p className="text-blue-600 font-medium">K{selectedRequest.buyer_budget.toLocaleString()}</p></div>}
+                  {selectedRequest.shop_counter_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Shop Counter</p><p className="text-purple-600 font-medium">K{selectedRequest.shop_counter_budget.toLocaleString()}</p></div>}
                   <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Submitted</p><p>{format(new Date(selectedRequest.created_date), "MMM dd, yyyy")}</p></div>
                 </div>
                 <div>
@@ -172,6 +244,8 @@ export default function BuyerTechnicianRequests({ user }) {
                     <div className={`p-3 rounded-lg border ${
                       selectedRequest.status === "accepted"
                         ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+                        : selectedRequest.status === "counter_offered"
+                        ? "bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800 text-purple-800 dark:text-purple-300"
                         : "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800 text-red-800 dark:text-red-300"
                     }`}>
                       {selectedRequest.shop_response}
@@ -182,9 +256,39 @@ export default function BuyerTechnicianRequests({ user }) {
                     ⏳ Awaiting response from the shop
                   </div>
                 )}
+                {selectedRequest.status === "counter_offered" && (
+                  <div className="flex gap-2 pt-2">
+                    <Button size="sm" onClick={() => handleCounterResponse(selectedRequest, true)} disabled={submitting}
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white flex-1">
+                      Accept Offer
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => handleCounterResponse(selectedRequest, false)} disabled={submitting}
+                      className="text-red-600 border-red-200 hover:bg-red-50 flex-1">
+                      Decline &amp; Reopen
+                    </Button>
+                  </div>
+                )}
               </div>
             );
           })()}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Delete Request?</DialogTitle>
+            <DialogDescription>
+              This will permanently remove your hire request for <strong>{deleteTarget?.technician_name}</strong>. This cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDelete} disabled={submitting}>
+              {submitting ? "Deleting..." : "Delete"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
