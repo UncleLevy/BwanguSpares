@@ -501,7 +501,7 @@ export default function Cart() {
                         onClick={() => setShippingOption("deliver")}
                         className={`flex items-center justify-center gap-2 p-3 rounded-xl border-2 text-sm font-medium transition-all ${shippingOption === "deliver" ? "border-blue-600 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400" : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-slate-300"}`}
                       >
-                        <Truck className="w-4 h-4" /> Deliver (K{SHIPPING_COST})
+                        <Truck className="w-4 h-4" /> Deliver ({form.town ? `K${(dynamicShippingCost > 0 ? dynamicShippingCost : 50).toLocaleString()}` : "select town"})
                       </button>
                     </div>
                   </div>
