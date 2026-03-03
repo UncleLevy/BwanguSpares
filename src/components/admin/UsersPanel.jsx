@@ -280,17 +280,17 @@ export default function UsersPanel({ adminUser }) {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50">
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Type</TableHead>
+                    <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
+                    <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
+                    <SortableTableHead field="ban_type" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Type</SortableTableHead>
                     <TableHead>Reason</TableHead>
-                    <TableHead>Expires</TableHead>
+                    <SortableTableHead field="ban_expires" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Expires</SortableTableHead>
                     <TableHead>Banned By</TableHead>
                     <TableHead>Action</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {bannedUsers.map(b => (
+                  {sortData(bannedUsers, sort).map(b => (
                     <TableRow key={b.id}>
                       <TableCell className="font-medium text-sm">{b.full_name || "—"}</TableCell>
                       <TableCell className="text-sm">{b.email}</TableCell>
