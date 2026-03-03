@@ -463,16 +463,16 @@ export default function AdminDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Shop</TableHead>
-                    <TableHead>Owner</TableHead>
-                    <TableHead>Region</TableHead>
-                    <TableHead>Plan</TableHead>
-                    <TableHead>Status</TableHead>
+                    <SortableTableHead field="name" sort={shopSort} onSort={f => setShopSort(prev => toggleSort(prev, f))}>Shop</SortableTableHead>
+                    <SortableTableHead field="owner_name" sort={shopSort} onSort={f => setShopSort(prev => toggleSort(prev, f))}>Owner</SortableTableHead>
+                    <SortableTableHead field="region_name" sort={shopSort} onSort={f => setShopSort(prev => toggleSort(prev, f))}>Region</SortableTableHead>
+                    <SortableTableHead field="slot_type" sort={shopSort} onSort={f => setShopSort(prev => toggleSort(prev, f))}>Plan</SortableTableHead>
+                    <SortableTableHead field="status" sort={shopSort} onSort={f => setShopSort(prev => toggleSort(prev, f))}>Status</SortableTableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {shops.map(shop => (
+                  {sortData(shops, shopSort).map(shop => (
                     <TableRow key={shop.id}>
                       <TableCell className="font-medium">{shop.name}</TableCell>
                       <TableCell className="text-sm text-slate-500 dark:text-slate-400">{shop.owner_name || shop.owner_email}</TableCell>
