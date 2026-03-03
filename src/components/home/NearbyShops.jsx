@@ -83,7 +83,7 @@ export default function NearbyShops({ shops, loading }) {
                   <img src={shop.logo_url} alt="" className="absolute bottom-3 left-4 w-12 h-12 rounded-xl border-2 border-white object-cover" />
                 )}
               </div>
-              <div className="p-5">
+              <div className="p-3 sm:p-5">
                 <h3 className="font-semibold text-slate-900 dark:text-slate-100 group-hover:text-blue-600 transition-colors">{shop.name}</h3>
                 <div className="flex items-center gap-3 mt-2 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1">
