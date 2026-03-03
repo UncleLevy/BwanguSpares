@@ -129,6 +129,7 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                         <span className="text-xs text-slate-400">—</span>
                       )}
                     </TableCell>
+                    <TableCell className="text-xs text-slate-400">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" variant="ghost" className="h-8 gap-1.5" onClick={() => handleEditOrder(order)}>
