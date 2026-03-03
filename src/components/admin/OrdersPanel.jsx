@@ -101,16 +101,17 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-800">
                   <TableHead>Order</TableHead>
-                  <TableHead>Buyer</TableHead>
-                  <TableHead>Shop</TableHead>
-                  <TableHead>Amount</TableHead>
-                  <TableHead>Status</TableHead>
+                  <SortableTableHead field="buyer_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Buyer</SortableTableHead>
+                  <SortableTableHead field="shop_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Shop</SortableTableHead>
+                  <SortableTableHead field="total_amount" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Amount</SortableTableHead>
+                  <SortableTableHead field="status" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Status</SortableTableHead>
                   <TableHead>Tracking</TableHead>
+                  <SortableTableHead field="created_date" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Date</SortableTableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {orders.map(order => (
+                {sortData(orders, sort).map(order => (
                   <TableRow key={order.id}>
                     <TableCell className="font-mono text-xs text-slate-500">{order.id?.slice(0, 8)}</TableCell>
                     <TableCell className="text-sm">{order.buyer_name || order.buyer_email}</TableCell>
