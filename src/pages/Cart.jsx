@@ -464,7 +464,7 @@ export default function Cart() {
                    </div>
                  </div>
                  <div>
-                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Delivery Address *</Label>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">{shippingOption === "deliver" ? "Delivery" : "Billing"} Address *</Label>
                     <Input value={form.address} onChange={e => setForm({...form, address: e.target.value})} placeholder="Street / house number" className="mt-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border-slate-200 dark:border-slate-600" />
                   </div>
                  <div>
