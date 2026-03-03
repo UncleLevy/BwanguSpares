@@ -45,11 +45,11 @@ export default function ProductCard({ product, onAddToCart, user }) {
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {product.compatible_vehicles}</p>
         )}
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-50 dark:border-slate-700">
-          <span className="text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+          <span className="text-base sm:text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
           {canAddToCart && (
-            <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
+            <Button size="sm" variant="outline" className="h-8 px-2 sm:px-3 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
               onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}>
-              <ShoppingCart className="w-3.5 h-3.5 mr-1" /> Add
+              <ShoppingCart className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Add</span>
             </Button>
           )}
         </div>
