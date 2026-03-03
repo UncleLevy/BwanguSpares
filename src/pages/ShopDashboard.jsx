@@ -112,6 +112,13 @@ export default function ShopDashboard() {
 
   const navigate = useNavigate();
 
+  // Read initial view from URL query param
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    if (viewParam) setView(viewParam);
+  }, []);
+
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
