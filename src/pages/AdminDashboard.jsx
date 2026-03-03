@@ -696,6 +696,59 @@ export default function AdminDashboard() {
                 </DialogFooter>
               </DialogContent>
             </Dialog>
+
+            {/* View / Edit City Dialog */}
+            <Dialog open={!!selectedCity} onOpenChange={open => !open && setSelectedCity(null)}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-blue-600" /> Edit City/Town
+                  </DialogTitle>
+                </DialogHeader>
+                {editingCity && (
+                  <div className="space-y-4 py-1">
+                    <div className="grid grid-cols-2 gap-3 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
+                      <div>
+                        <p className="text-slate-400 text-xs mb-0.5">Created</p>
+                        <p className="font-medium text-slate-700 dark:text-slate-200">{new Date(selectedCity.created_date).toLocaleDateString()}</p>
+                      </div>
+                      <div>
+                        <p className="text-slate-400 text-xs mb-0.5">ID</p>
+                        <p className="font-mono text-xs text-slate-500 truncate">{selectedCity.id}</p>
+                      </div>
+                    </div>
+                    <div>
+                      <Label>City/Town Name *</Label>
+                      <Input
+                        value={editingCity.name}
+                        onChange={e => setEditingCity({ ...editingCity, name: e.target.value })}
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label>Region *</Label>
+                      <select
+                        value={editingCity.region_id}
+                        onChange={e => {
+                          const region = regions.find(r => r.id === e.target.value);
+                          setEditingCity({ ...editingCity, region_id: e.target.value, region_name: region?.name || "" });
+                        }}
+                        className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-900 dark:border-slate-700 text-slate-900 dark:text-slate-100"
+                      >
+                        <option value="">Select a region</option>
+                        {regions.map(r => (
+                          <option key={r.id} value={r.id}>{r.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                )}
+                <DialogFooter className="gap-2">
+                  <Button variant="outline" onClick={() => setSelectedCity(null)}>Cancel</Button>
+                  <Button onClick={saveCityEdit} className="bg-blue-600 hover:bg-blue-700">Save Changes</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </div>
         )}
       </main>
