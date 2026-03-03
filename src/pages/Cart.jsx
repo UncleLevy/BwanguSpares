@@ -211,16 +211,13 @@ export default function Cart() {
   };
 
   const handleCheckout = async () => {
-    // Only require address fields if delivery is selected
-    if (shippingOption === "deliver") {
-      if (!form.region) { 
-        toast.error("Please select your region"); 
-        return; 
-      }
-      if (!form.address.trim()) { 
-        toast.error("Please enter your delivery address"); 
-        return; 
-      }
+    if (!form.region) { 
+      toast.error("Please select your region"); 
+      return; 
+    }
+    if (!form.address.trim()) { 
+      toast.error("Please enter your billing address"); 
+      return; 
     }
     if (!form.phone.trim()) { 
       toast.error("Please enter your phone number"); 
