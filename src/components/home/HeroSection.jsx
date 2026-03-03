@@ -20,43 +20,43 @@ export default function HeroSection() {
       <div className="absolute inset-0 gradient-blue opacity-85" />
       <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent" />
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-36">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-36">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-6">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-4 md:mb-6">
             <MapPin className="w-3.5 h-3.5" />
             Zambia's Auto Spares Marketplace
           </div>
           
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight" style={{textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.15)'}}>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight" style={{textShadow: '0 1px 3px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,0,0,0.15)'}}>
             Find the right parts,<br />
             <span className="text-blue-200">close to you.</span>
           </h1>
           
-          <p className="mt-5 text-lg text-blue-100/80 leading-relaxed max-w-lg" style={{textShadow: '0 1px 3px rgba(0,0,0,0.5)'}}>
-            Browse thousands of auto spare parts from verified shops across Zambia. Get expert mechanics and fast delivery.
+          <p className="mt-3 md:mt-5 text-base md:text-lg text-blue-100/80 leading-relaxed max-w-lg" style={{textShadow: '0 1px 3px rgba(0,0,0,0.5)'}}>
+            Browse thousands of auto spare parts from verified shops across Zambia.
           </p>
 
-          <form onSubmit={handleSearch} className="mt-8 flex gap-2 max-w-lg">
+          <form onSubmit={handleSearch} className="mt-6 md:mt-8 flex gap-2 max-w-lg">
             <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Search brake pads, filters, batteries..."
-                className="pl-11 h-12 bg-white border-0 text-slate-900 placeholder:text-slate-400 rounded-xl shadow-lg"
+                placeholder="Search parts, brands..."
+                className="pl-11 h-12 bg-white border-0 text-slate-900 placeholder:text-slate-400 rounded-xl shadow-lg text-base"
               />
             </div>
-            <Button type="submit" className="h-12 px-6 bg-slate-900 hover:bg-slate-800 rounded-xl shadow-lg">
-              Search
-              <ArrowRight className="w-4 h-4 ml-1.5" />
+            <Button type="submit" className="h-12 px-5 bg-slate-900 hover:bg-slate-800 rounded-xl shadow-lg shrink-0">
+              <span className="hidden sm:inline">Search</span>
+              <ArrowRight className="w-4 h-4 sm:ml-1.5" />
             </Button>
           </form>
 
-          <div className="mt-6 flex items-center gap-4 text-sm text-blue-200/70">
-            <span>Popular:</span>
+          <div className="mt-4 flex flex-wrap items-center gap-2 text-sm text-blue-200/70">
+            <span className="text-xs">Popular:</span>
             {["Brake Pads", "Oil Filters", "Batteries", "Tyres"].map(t => (
               <button key={t} onClick={() => { setQuery(t); navigate(createPageUrl("BrowseProducts") + `?q=${encodeURIComponent(t)}`); }}
-                className="hover:text-white transition-colors underline underline-offset-2">
+                className="text-xs px-2.5 py-1 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
                 {t}
               </button>
             ))}
