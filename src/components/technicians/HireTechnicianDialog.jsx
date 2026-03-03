@@ -44,6 +44,15 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
       buyer_budget: form.buyer_budget ? parseFloat(form.buyer_budget) : undefined,
       status: "pending",
     });
+
+    // Notify shop owner
+    await base44.entities.Notification.create({
+      user_email: shop.owner_email,
+      type: "system_alert",
+      title: "New Technician Hire Request",
+      message: `${form.buyer_name || user.full_name} has requested ${technician.name} for ${technician.specialization} work.`,
+    });
+
     toast.success("Hire request sent to the shop!");
     setLoading(false);
     onClose();
