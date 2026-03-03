@@ -565,12 +565,45 @@ export default function AdminDashboard() {
 
         {view === "cities" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cities/Towns</h1>
-              <Button onClick={() => setTownDialog(true)} className="bg-blue-600 hover:bg-blue-700">
-                <MapPin className="w-4 h-4 mr-1.5" /> Add City/Town
-              </Button>
+              <div className="flex gap-2 flex-wrap justify-end">
+                <Button variant="outline" onClick={exportCitiesCsv} className="gap-1.5 text-sm">
+                  <Download className="w-4 h-4" /> Export CSV
+                </Button>
+                <label className="cursor-pointer">
+                  <Button variant="outline" className="gap-1.5 text-sm" asChild disabled={importingCsv}>
+                    <span><Upload className="w-4 h-4" /> {importingCsv ? "Importing..." : "Import CSV"}</span>
+                  </Button>
+                  <input type="file" accept=".csv" className="hidden" onChange={importCitiesCsv} />
+                </label>
+                <Button onClick={() => setTownDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-1.5 text-sm">
+                  <MapPin className="w-4 h-4" /> Add City/Town
+                </Button>
+              </div>
             </div>
+
+            {/* Search & Filter */}
+            <div className="flex gap-3 mb-4">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input
+                  placeholder="Search cities..."
+                  value={citySearch}
+                  onChange={e => setCitySearch(e.target.value)}
+                  className="pl-9"
+                />
+              </div>
+              <select
+                value={cityRegionFilter}
+                onChange={e => setCityRegionFilter(e.target.value)}
+                className="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm min-w-[160px]"
+              >
+                <option value="">All Regions</option>
+                {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
+              </select>
+            </div>
+
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
               <Table>
                 <TableHeader>
@@ -581,7 +614,12 @@ export default function AdminDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {towns.map(t => (
+                  {towns
+                    .filter(t =>
+                      (!citySearch || t.name?.toLowerCase().includes(citySearch.toLowerCase())) &&
+                      (!cityRegionFilter || t.region_id === cityRegionFilter)
+                    )
+                    .map(t => (
                     <TableRow key={t.id}>
                       <TableCell className="font-medium">{t.name}</TableCell>
                       <TableCell>{t.region_name}</TableCell>
@@ -592,6 +630,14 @@ export default function AdminDashboard() {
                       </TableCell>
                     </TableRow>
                   ))}
+                  {towns.filter(t =>
+                    (!citySearch || t.name?.toLowerCase().includes(citySearch.toLowerCase())) &&
+                    (!cityRegionFilter || t.region_id === cityRegionFilter)
+                  ).length === 0 && (
+                    <TableRow>
+                      <TableCell colSpan={3} className="text-center py-10 text-slate-400">No cities found.</TableCell>
+                    </TableRow>
+                  )}
                 </TableBody>
               </Table>
             </div>
