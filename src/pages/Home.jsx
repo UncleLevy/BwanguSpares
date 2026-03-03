@@ -112,16 +112,18 @@ export default function Home() {
     <div>
       <HeroSection />
 
-      <section className="py-12 border-b border-slate-100 dark:border-slate-800">
+      <section className="py-8 md:py-12 border-b border-slate-100 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {features.map((f, i) => (
-              <div key={i} className="text-center">
-                <div className="w-12 h-12 mx-auto rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center mb-3">
+              <div key={i} className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-3 md:p-0 rounded-xl md:rounded-none bg-slate-50/80 md:bg-transparent dark:bg-slate-800/50 md:dark:bg-transparent">
+                <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center md:mb-3">
                   <f.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
-                <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100">{f.title}</h3>
-                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{f.desc}</p>
+                <div>
+                  <h3 className="font-semibold text-xs md:text-sm text-slate-900 dark:text-slate-100">{f.title}</h3>
+                  <p className="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">{f.desc}</p>
+                </div>
               </div>
             ))}
           </div>
