@@ -100,6 +100,11 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
               <Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} className="mt-1" placeholder="e.g. Lusaka" />
             </div>
           </div>
+          <div>
+            <Label>Your Budget (ZMW) — optional</Label>
+            <Input type="number" min="0" value={form.buyer_budget} onChange={e => setForm({ ...form, buyer_budget: e.target.value })} className="mt-1" placeholder="e.g. 300" />
+            <p className="text-xs text-slate-400 mt-1">The shop may counter-offer if the budget is too low.</p>
+          </div>
         </div>
 
         <DialogFooter>
