@@ -56,6 +56,9 @@ export default function AdminDashboard() {
   const [shopToDelete, setShopToDelete] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const [deleteConfirmName, setDeleteConfirmName] = useState("");
+  const [citySearch, setCitySearch] = useState("");
+  const [cityRegionFilter, setCityRegionFilter] = useState("");
+  const [importingCsv, setImportingCsv] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
