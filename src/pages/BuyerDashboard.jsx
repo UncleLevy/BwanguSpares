@@ -61,6 +61,8 @@ export default function BuyerDashboard() {
   const [receiptOrder, setReceiptOrder] = useState(null);
   const [stripeRefundDialog, setStripeRefundDialog] = useState(false);
   const [stripeRefundSubmitting, setStripeRefundSubmitting] = useState(false);
+  const [retryPaymentOrder, setRetryPaymentOrder] = useState(null);
+  const [retryPaymentSubmitting, setRetryPaymentSubmitting] = useState(false);
 
   // Read initial view from URL query param
   useEffect(() => {
