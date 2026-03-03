@@ -650,6 +650,52 @@ export default function BuyerDashboard() {
            )}
          </DialogContent>
        </Dialog>
-      </div>
-      );
-      }
+
+       <Dialog open={!!retryPaymentOrder} onOpenChange={(open) => { if (!open) setRetryPaymentOrder(null); }}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Complete Payment</DialogTitle>
+             <DialogDescription>
+               Your order for <strong>K{retryPaymentOrder?.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> is pending payment. Click below to complete payment and confirm your order.
+             </DialogDescription>
+           </DialogHeader>
+           <DialogFooter className="gap-2">
+             <Button variant="outline" onClick={() => setRetryPaymentOrder(null)}>Cancel</Button>
+             <Button
+               className="bg-blue-600 hover:bg-blue-700"
+               disabled={retryPaymentSubmitting}
+               onClick={async () => {
+                 setRetryPaymentSubmitting(true);
+                 try {
+                   // Add items back to cart for retry checkout
+                   for (const item of retryPaymentOrder.items) {
+                     await base44.entities.CartItem.create({
+                       buyer_email: user.email,
+                       product_id: item.product_id,
+                       product_name: item.product_name,
+                       shop_id: retryPaymentOrder.shop_id,
+                       shop_name: retryPaymentOrder.shop_name,
+                       price: item.price,
+                       quantity: item.quantity,
+                       image_url: item.image_url,
+                     });
+                   }
+                   toast.success("Items added to cart. Redirecting to checkout...");
+                   // Redirect to cart with checkout open
+                   setTimeout(() => {
+                     window.location.href = createPageUrl("Cart");
+                   }, 1000);
+                 } catch (error) {
+                   toast.error("Failed to restore items. Please try again.");
+                 }
+                 setRetryPaymentSubmitting(false);
+               }}
+             >
+               {retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
+             </Button>
+           </DialogFooter>
+         </DialogContent>
+       </Dialog>
+       </div>
+       );
+       }
