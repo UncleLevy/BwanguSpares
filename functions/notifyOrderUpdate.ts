@@ -112,7 +112,7 @@ Deno.serve(async (req) => {
         title: 'Order Status Updated',
         message: `Your order from ${data.shop_name} is now ${data.status}`,
         related_id: data.id,
-        action_url: '/BuyerDashboard',
+        action_url: 'BuyerDashboard?view=orders',
       });
 
       // Send review reminder when delivered
