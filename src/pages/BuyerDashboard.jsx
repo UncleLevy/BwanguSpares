@@ -479,6 +479,19 @@ export default function BuyerDashboard() {
                   onChange={(newAddr) => setProfileForm({...profileForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
                   errors={profileErrors}
                 />
+                <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                  <input
+                    type="checkbox"
+                    id="use_default_address"
+                    checked={profileForm.use_default_address}
+                    onChange={e => setProfileForm({...profileForm, use_default_address: e.target.checked})}
+                    className="w-4 h-4 rounded accent-blue-600"
+                  />
+                  <label htmlFor="use_default_address" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <span className="font-medium">Use this address as default at checkout</span>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
+                  </label>
+                </div>
                 <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
               </CardContent>
             </Card>
