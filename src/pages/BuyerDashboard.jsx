@@ -209,6 +209,7 @@ export default function BuyerDashboard() {
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => setView("technician_requests") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
+    { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => setView("loyalty") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
   ];
 
