@@ -20,6 +20,7 @@ import {
   ShieldOff, RotateCcw, Ban, Users, Search, UserPlus,
   ShieldCheck, User, Store, Shield, Mail
 } from "lucide-react";
+import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
 import { logAudit } from "@/components/shared/auditLog";
 
 const ROLE_COLORS = {
