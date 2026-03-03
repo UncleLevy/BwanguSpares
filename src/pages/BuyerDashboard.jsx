@@ -47,7 +47,8 @@ export default function BuyerDashboard() {
   const [wallet, setWallet] = useState(null);
   const [walletTxns, setWalletTxns] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [profileForm, setProfileForm] = useState({ first_name: "", last_name: "", phone: "", region: "", town: "", address: "" });
+  const [profileForm, setProfileForm] = useState({ first_name: "", last_name: "", phone: "", region: "", town: "", address: "", profile_picture_url: "", use_default_address: true });
+  const [uploadingPicture, setUploadingPicture] = useState(false);
   const [profileErrors, setProfileErrors] = useState({});
   const [reviewDialog, setReviewDialog] = useState(false);
   const [reviewOrder, setReviewOrder] = useState(null);
