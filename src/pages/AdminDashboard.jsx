@@ -174,6 +174,23 @@ export default function AdminDashboard() {
     e.target.value = "";
   };
 
+  const openCityDetail = (town) => {
+    setSelectedCity(town);
+    setEditingCity({ ...town });
+  };
+
+  const saveCityEdit = async () => {
+    const region = regions.find(r => r.id === editingCity.region_id);
+    const updated = await base44.entities.Town.update(editingCity.id, {
+      name: editingCity.name,
+      region_id: editingCity.region_id,
+      region_name: region?.name || editingCity.region_name,
+    });
+    setTowns(prev => prev.map(t => t.id === updated.id ? updated : t));
+    setSelectedCity(null);
+    toast.success("City updated");
+  };
+
   const confirmDeleteShop = (shop) => {
     setShopToDelete(shop);
     setDeleteConfirmName("");
