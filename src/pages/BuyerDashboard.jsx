@@ -422,6 +422,37 @@ export default function BuyerDashboard() {
             <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
               <CardContent className="p-6 space-y-4">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
+
+                {/* Profile Picture */}
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border-2 border-blue-200 dark:border-blue-700">
+                      {profileForm.profile_picture_url ? (
+                        <img src={profileForm.profile_picture_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-8 h-8 text-blue-400" />
+                      )}
+                    </div>
+                    <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer shadow-md">
+                      <Camera className="w-3.5 h-3.5 text-white" />
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploadingPicture(true);
+                        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                        setProfileForm(f => ({ ...f, profile_picture_url: file_url }));
+                        setUploadingPicture(false);
+                        toast.success("Photo uploaded!");
+                      }} />
+                    </label>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.full_name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
+                    {uploadingPicture && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+                  </div>
+                </div>
+
                 <div>
                   <Label className="text-sm text-slate-500 dark:text-slate-400">Email (cannot be changed)</Label>
                   <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5 text-sm">{user?.email}</p>
