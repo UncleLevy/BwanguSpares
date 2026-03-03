@@ -33,6 +33,7 @@ import ReportingPanel from "@/components/admin/ReportingPanel";
 import PayoutsPanel from "@/components/admin/PayoutsPanel";
 import { logAudit } from "@/components/shared/auditLog";
 import AdminShippingRates from "@/components/admin/AdminShippingRates";
+import AdminProductsPanel from "@/components/admin/AdminProductsPanel";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
