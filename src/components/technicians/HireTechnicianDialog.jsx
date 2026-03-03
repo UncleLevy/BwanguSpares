@@ -41,6 +41,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
       description: form.description,
       preferred_date: form.preferred_date,
       location: form.location,
+      buyer_budget: form.buyer_budget ? parseFloat(form.buyer_budget) : undefined,
       status: "pending",
     });
     toast.success("Hire request sent to the shop!");
