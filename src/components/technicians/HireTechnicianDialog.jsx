@@ -47,7 +47,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
     toast.success("Hire request sent to the shop!");
     setLoading(false);
     onClose();
-    setForm({ buyer_name: "", buyer_phone: "", description: "", preferred_date: "", location: "" });
+    setForm({ buyer_name: "", buyer_phone: "", description: "", preferred_date: "", location: "", buyer_budget: "" });
   };
 
   const specLabels = {
