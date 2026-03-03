@@ -199,6 +199,10 @@ export default function AdminDashboard() {
       name: editingCity.name,
       region_id: editingCity.region_id,
       region_name: region?.name || editingCity.region_name,
+      postal_code: editingCity.postal_code || "",
+      latitude: editingCity.latitude,
+      longitude: editingCity.longitude,
+      description: editingCity.description || "",
     });
     setTowns(prev => prev.map(t => t.id === updated.id ? updated : t));
     setSelectedCity(null);
