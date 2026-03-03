@@ -140,13 +140,15 @@ export default function BuyerDashboard() {
      setSubmitting(true);
      try {
        await base44.auth.updateMe({ 
-         first_name: profileForm.first_name,
-         last_name: profileForm.last_name,
-         phone: profileForm.phone, 
-         region: profileForm.region,
-         town: profileForm.town,
-         address: profileForm.address 
-       });
+           first_name: profileForm.first_name,
+           last_name: profileForm.last_name,
+           phone: profileForm.phone, 
+           region: profileForm.region,
+           town: profileForm.town,
+           address: profileForm.address,
+           profile_picture_url: profileForm.profile_picture_url,
+           use_default_address: profileForm.use_default_address,
+         });
        const updatedUser = await base44.auth.me();
        setUser(updatedUser);
        toast.success("✓ Profile updated successfully!");
