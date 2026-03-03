@@ -29,6 +29,7 @@ import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
 import AddressInput from "@/components/shared/AddressInput";
 import OrderReceipt from "@/components/receipts/OrderReceipt";
 import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
+import LoyaltyPanel from "@/components/loyalty/LoyaltyPanel";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
