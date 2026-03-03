@@ -451,33 +451,12 @@ export default function AdminDashboard() {
         )}
 
         {view === "products" && (
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">All Products</h1>
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Product</TableHead>
-                    <TableHead>Shop</TableHead>
-                    <TableHead>Price</TableHead>
-                    <TableHead>Stock</TableHead>
-                    <TableHead>Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.map(p => (
-                    <TableRow key={p.id}>
-                      <TableCell className="font-medium">{p.name}</TableCell>
-                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{p.shop_name}</TableCell>
-                      <TableCell>K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>{p.stock_quantity}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </div>
+          <AdminProductsPanel
+            products={products}
+            shops={shops}
+            regions={regions}
+            onProductsChange={setProducts}
+          />
         )}
 
         {view === "orders" && (
