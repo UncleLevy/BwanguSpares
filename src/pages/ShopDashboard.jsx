@@ -102,6 +102,13 @@ export default function ShopDashboard() {
     hourly_rate: "", available: true,
   });
 
+  const [productSearch, setProductSearch] = useState("");
+  const [productFilterCategory, setProductFilterCategory] = useState("all");
+  const [productFilterStatus, setProductFilterStatus] = useState("all");
+  const [productPriceMin, setProductPriceMin] = useState("");
+  const [productPriceMax, setProductPriceMax] = useState("");
+  const [viewShopProduct, setViewShopProduct] = useState(null);
+
   const [uploading, setUploading] = useState(false);
   const [reportDialog, setReportDialog] = useState(false);
   const [reportForm, setReportForm] = useState({
