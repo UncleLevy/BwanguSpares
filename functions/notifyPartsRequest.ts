@@ -31,7 +31,7 @@ Deno.serve(async (req) => {
       title: 'New Parts Request',
       message: `${partsRequest.buyer_name} is looking for ${partsRequest.part_name} - Budget: K${partsRequest.budget || 'Not specified'}`,
       related_id: partsRequest.id,
-      action_url: '/ShopDashboard?view=parts_requests'
+      action_url: 'ShopDashboard?view=parts_requests'
     }));
 
     // Batch create notifications
