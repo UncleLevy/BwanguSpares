@@ -657,8 +657,7 @@ export default function AdminDashboard() {
                   ))}
                   {towns.filter(t =>
                     (!citySearch || t.name?.toLowerCase().includes(citySearch.toLowerCase())) &&
-                    (!cityRegionFilter || t.region_id === cityRegionFilter)
-                  ).length === 0 && (
+                    (!cityRegionFilter || t.region_id === cityRegionFilter)).length === 0 && (
                     <TableRow>
                       <TableCell colSpan={3} className="text-center py-10 text-slate-400">No cities found.</TableCell>
                     </TableRow>
