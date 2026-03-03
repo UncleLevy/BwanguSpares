@@ -214,7 +214,7 @@ export default function BrowseProducts() {
           </div>
         </div>
       ) : (
-       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
          {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
        </div>
       )}
