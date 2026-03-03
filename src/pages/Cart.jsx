@@ -59,6 +59,25 @@ export default function Cart() {
     const region = regions.find(r => r.id === regionId);
     setForm(f => ({ ...f, region: regionId, town: "" }));
     setFilteredTowns(towns.filter(t => t.region_id === regionId || t.region === regionId || t.region === region?.name));
+    setDynamicShippingCost(0);
+  };
+
+  const handleTownChange = (townName) => {
+    setForm(f => ({ ...f, town: townName }));
+    // Look up shipping rate for this town
+    const town = towns.find(t => t.name === townName);
+    if (town) {
+      // Check if any cart item's shop has a product-specific or town-specific shipping cost
+      // First look for a ShippingRate entry for this town
+      const rate = shippingRates.find(sr => sr.town_id === town.id || sr.town_name?.toLowerCase() === townName.toLowerCase());
+      if (rate) {
+        setDynamicShippingCost(rate.default_rate || 0);
+      } else {
+        setDynamicShippingCost(0);
+      }
+    } else {
+      setDynamicShippingCost(0);
+    }
   };
 
   const loadCart = async () => {
