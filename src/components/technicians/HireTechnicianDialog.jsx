@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { User, Wrench } from "lucide-react";
+import { User, Wrench, DollarSign } from "lucide-react";
 import { toast } from "sonner";
 
 export default function HireTechnicianDialog({ technician, shop, open, onClose }) {
