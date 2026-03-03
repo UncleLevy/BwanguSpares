@@ -396,6 +396,10 @@ export default function BuyerDashboard() {
           </div>
         )}
 
+        {view === "loyalty" && (
+          <LoyaltyPanel user={user} />
+        )}
+
         {view === "cart" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
