@@ -820,11 +820,60 @@ export default function ShopDashboard() {
 
         {view === "products" && (
           <div>
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Products</h1>
-              <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", tags: [] }); setProductDialog(true); }}
+              <Button onClick={() => { setEditProduct(null); setProductForm({ name: "", description: "", price: "", category: "other", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [], image_url: "", image_urls: [] }); setProductDialog(true); }}
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Product</Button>
             </div>
+
+            {/* Search & Filters */}
+            <Card className="border-slate-100 dark:border-slate-700 mb-4">
+              <CardContent className="p-4">
+                <div className="flex flex-wrap gap-3">
+                  <div className="relative flex-1 min-w-[180px]">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                    <Input value={productSearch} onChange={e => setProductSearch(e.target.value)} placeholder="Search name, brand, SKU..." className="pl-9" />
+                  </div>
+                  <Select value={productFilterCategory} onValueChange={setProductFilterCategory}>
+                    <SelectTrigger className="w-40"><SelectValue placeholder="Category" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
+                    </SelectContent>
+                  </Select>
+                  <Select value={productFilterStatus} onValueChange={setProductFilterStatus}>
+                    <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Statuses</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="inactive">Inactive</SelectItem>
+                      <SelectItem value="out_of_stock">Out of Stock</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <div className="flex items-center gap-1.5">
+                    <Input value={productPriceMin} onChange={e => setProductPriceMin(e.target.value)} placeholder="Min K" className="w-20" type="number" min="0" />
+                    <span className="text-slate-400 text-sm">–</span>
+                    <Input value={productPriceMax} onChange={e => setProductPriceMax(e.target.value)} placeholder="Max K" className="w-20" type="number" min="0" />
+                  </div>
+                  {(productSearch || productFilterCategory !== "all" || productFilterStatus !== "all" || productPriceMin || productPriceMax) && (
+                    <Button variant="ghost" size="sm" onClick={() => { setProductSearch(""); setProductFilterCategory("all"); setProductFilterStatus("all"); setProductPriceMin(""); setProductPriceMax(""); }} className="text-slate-500 gap-1">
+                      <X className="w-3.5 h-3.5" /> Clear
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-slate-400 mt-2">
+                  {products.filter(p => {
+                    if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
+                    if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
+                    if (productFilterStatus !== "all" && p.status !== productFilterStatus) return false;
+                    if (productPriceMin && p.price < parseFloat(productPriceMin)) return false;
+                    if (productPriceMax && p.price > parseFloat(productPriceMax)) return false;
+                    return true;
+                  }).length} of {products.length} products
+                </p>
+              </CardContent>
+            </Card>
+
             <BulkEditPanel products={products} onUpdate={setProducts} />
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-x-auto">
               <Table>
@@ -834,17 +883,33 @@ export default function ShopDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {products.map(p => (
-                    <TableRow key={p.id}>
-                      <TableCell className="font-medium">{p.name}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px]">{p.category}</Badge></TableCell>
-                      <TableCell>K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell>{p.stock_quantity}</TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px]">{p.status}</Badge></TableCell>
-                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div></TableCell>
+                  {products.filter(p => {
+                    if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
+                    if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
+                    if (productFilterStatus !== "all" && p.status !== productFilterStatus) return false;
+                    if (productPriceMin && p.price < parseFloat(productPriceMin)) return false;
+                    if (productPriceMax && p.price > parseFloat(productPriceMax)) return false;
+                    return true;
+                  }).map(p => (
+                    <TableRow key={p.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setViewShopProduct(p)}>
                       <TableCell>
+                        <div className="flex items-center gap-2">
+                          {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100" /> : <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400" /></div>}
+                          <div>
+                            <p className="font-medium text-sm">{p.name}</p>
+                            {p.brand && <p className="text-xs text-slate-400">{p.brand}</p>}
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell><Badge variant="outline" className="text-[11px]">{p.category?.replace("_"," ")}</Badge></TableCell>
+                      <TableCell className="font-medium">K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell><span className={p.stock_quantity === 0 ? "text-red-500 font-medium" : ""}>{p.stock_quantity}</span></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[11px]">{p.status?.replace("_"," ")}</Badge></TableCell>
+                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div></TableCell>
+                      <TableCell onClick={e => e.stopPropagation()}>
                         <div className="flex gap-1">
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setSelectedProductForVariations(p); }}><Wrench className="w-3.5 h-3.5" title="Variations" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewShopProduct(p)}><Eye className="w-3.5 h-3.5" /></Button>
+                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setSelectedProductForVariations(p); }}><Wrench className="w-3.5 h-3.5" /></Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEditProduct(p)}><Pencil className="w-3.5 h-3.5" /></Button>
                           <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => deleteProduct(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
                         </div>
@@ -854,6 +919,34 @@ export default function ShopDashboard() {
                 </TableBody>
               </Table>
             </div>
+
+            {/* View Product Details Dialog */}
+            <Dialog open={!!viewShopProduct} onOpenChange={() => setViewShopProduct(null)}>
+              <DialogContent className="max-w-lg">
+                <DialogHeader><DialogTitle className="flex items-center gap-2"><Package className="w-5 h-5 text-blue-600" /> Product Details</DialogTitle></DialogHeader>
+                {viewShopProduct && (
+                  <div className="space-y-4">
+                    {viewShopProduct.image_url && <img src={viewShopProduct.image_url} alt="" className="w-full h-44 object-cover rounded-xl border border-slate-100" />}
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div><p className="text-xs text-slate-400 mb-0.5">Name</p><p className="font-semibold">{viewShopProduct.name}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Brand</p><p>{viewShopProduct.brand || "—"}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Price</p><p className="font-semibold text-emerald-600">K{viewShopProduct.price?.toLocaleString()}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Stock</p><p>{viewShopProduct.stock_quantity}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Category</p><p>{viewShopProduct.category?.replace("_"," ")}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Condition</p><p>{viewShopProduct.condition}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">SKU</p><p className="font-mono text-xs">{viewShopProduct.sku || "—"}</p></div>
+                      <div><p className="text-xs text-slate-400 mb-0.5">Status</p><Badge variant="outline" className="text-[11px]">{viewShopProduct.status?.replace("_"," ")}</Badge></div>
+                      {viewShopProduct.compatible_vehicles && <div className="col-span-2"><p className="text-xs text-slate-400 mb-0.5">Compatible Vehicles</p><p>{viewShopProduct.compatible_vehicles}</p></div>}
+                      {viewShopProduct.description && <div className="col-span-2"><p className="text-xs text-slate-400 mb-0.5">Description</p><p className="text-slate-600 dark:text-slate-400">{viewShopProduct.description}</p></div>}
+                    </div>
+                  </div>
+                )}
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setViewShopProduct(null)}>Close</Button>
+                  <Button onClick={() => { openEditProduct(viewShopProduct); setViewShopProduct(null); }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Pencil className="w-3.5 h-3.5" /> Edit</Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
 
             <Dialog open={productDialog} onOpenChange={setProductDialog}>
               <DialogContent className="max-w-lg">
