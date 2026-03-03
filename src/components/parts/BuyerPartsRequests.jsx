@@ -37,6 +37,12 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
 
   const handleCounterResponse = async (req, accepted) => {
     setSubmitting(req.id);
+
+    // Find the shop owner email to notify — stored in counter fields
+    const shopNotifEmail = req.counter_by_shop_id
+      ? (await base44.entities.Shop.filter({ id: req.counter_by_shop_id }))[0]?.owner_email
+      : null;
+
     if (accepted) {
       await base44.entities.PartsRequest.update(req.id, {
         status: "accepted",
@@ -46,6 +52,15 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
         accepted_by_shop_phone: req.counter_by_shop_phone,
         accepted_date: new Date().toISOString(),
       });
+      if (shopNotifEmail) {
+        await base44.entities.Notification.create({
+          user_email: shopNotifEmail,
+          type: "system_alert",
+          title: "Counter Offer Accepted!",
+          message: `${req.buyer_name} has accepted your counter offer of K${req.shop_counter_budget?.toLocaleString()} for "${req.part_name}".`,
+          related_id: req.id,
+        });
+      }
       toast.success("You accepted the counter offer! The shop will be in touch.");
     } else {
       await base44.entities.PartsRequest.update(req.id, {
@@ -57,6 +72,15 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
         counter_by_shop_name: null,
         counter_by_shop_phone: null,
       });
+      if (shopNotifEmail) {
+        await base44.entities.Notification.create({
+          user_email: shopNotifEmail,
+          type: "system_alert",
+          title: "Counter Offer Declined",
+          message: `${req.buyer_name} has declined your counter offer for "${req.part_name}". The request is back on the market.`,
+          related_id: req.id,
+        });
+      }
       toast.info("Counter offer declined. Your request is back on the market.");
     }
     await loadRequests();
