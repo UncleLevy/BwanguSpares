@@ -142,8 +142,15 @@ export default function AdminDashboard() {
   };
 
   const exportCitiesCsv = () => {
-    const rows = [["City/Town Name", "Region"]];
-    towns.forEach(t => rows.push([t.name, t.region_name || ""]));
+    const rows = [["City/Town Name", "Region", "Postal Code", "Latitude", "Longitude", "Description"]];
+    towns.forEach(t => rows.push([
+      t.name,
+      t.region_name || "",
+      t.postal_code || "",
+      t.latitude ?? "",
+      t.longitude ?? "",
+      t.description || "",
+    ]));
     const csv = rows.map(r => r.map(v => `"${v}"`).join(",")).join("\n");
     const blob = new Blob([csv], { type: "text/csv" });
     const url = URL.createObjectURL(blob);
@@ -161,13 +168,17 @@ export default function AdminDashboard() {
     let added = 0;
     for (const line of lines) {
       const cols = line.split(",").map(c => c.replace(/^"|"$/g, "").trim());
-      const [name, regionName] = cols;
+      const [name, regionName, postalCode, lat, lng, description] = cols;
       if (!name) continue;
       const region = regions.find(r => r.name.toLowerCase() === (regionName || "").toLowerCase());
       const t = await base44.entities.Town.create({
         name,
         region_id: region?.id || "",
         region_name: region?.name || regionName || "",
+        postal_code: postalCode || "",
+        latitude: lat ? parseFloat(lat) : undefined,
+        longitude: lng ? parseFloat(lng) : undefined,
+        description: description || "",
       });
       setTowns(prev => [...prev, t]);
       added++;
