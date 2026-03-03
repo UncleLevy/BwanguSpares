@@ -475,6 +475,7 @@ export default function AdminDashboard() {
         {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
 
+        {view === "loyalty" && <AdminLoyaltyPanel />}
         {view === "users" && <UsersPanel adminUser={user} />}
 
         {view === "regions" && (
