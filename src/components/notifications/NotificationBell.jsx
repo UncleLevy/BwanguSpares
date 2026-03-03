@@ -1,16 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Bell } from "lucide-react";
+import { Bell, ExternalLink } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
+
+const typeIcons = {
+  order_update: "📦",
+  new_order: "🛍️",
+  low_stock: "⚠️",
+  new_review: "⭐",
+  shop_registration: "🏪",
+  review_reminder: "📝",
+  system_alert: "🔔",
+};
 
 export default function NotificationBell({ userEmail }) {
   const [notifications, setNotifications] = useState([]);
@@ -22,16 +31,14 @@ export default function NotificationBell({ userEmail }) {
     loadNotifications();
 
     const unsubscribe = base44.entities.Notification.subscribe((event) => {
-      if (event.type === "create" && event.data.user_email === userEmail) {
-        setNotifications((prev) => [event.data, ...prev]);
-        if (!event.data.read) {
-          setUnreadCount((prev) => prev + 1);
-        }
-      } else if (event.type === "update" && event.data.user_email === userEmail) {
+      if (event.type === "create" && event.data?.user_email === userEmail) {
+        setNotifications((prev) => [event.data, ...prev.slice(0, 49)]);
+        if (!event.data.read) setUnreadCount((prev) => prev + 1);
+      } else if (event.type === "update" && event.data?.user_email === userEmail) {
         setNotifications((prev) =>
-          prev.map((n) => (n.id === event.id ? event.data : n))
+          prev.map((n) => (n.id === event.data.id ? event.data : n))
         );
-        loadNotifications();
+        setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     });
 
@@ -42,7 +49,7 @@ export default function NotificationBell({ userEmail }) {
     const notifs = await base44.entities.Notification.filter(
       { user_email: userEmail },
       "-created_date",
-      20
+      30
     );
     setNotifications(notifs);
     setUnreadCount(notifs.filter((n) => !n.read).length);
@@ -51,6 +58,10 @@ export default function NotificationBell({ userEmail }) {
   const markAsRead = async (notification) => {
     if (!notification.read) {
       await base44.entities.Notification.update(notification.id, { read: true });
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === notification.id ? { ...n, read: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
     }
     if (notification.action_url) {
       navigate(notification.action_url);
@@ -59,68 +70,71 @@ export default function NotificationBell({ userEmail }) {
 
   const markAllAsRead = async () => {
     const unread = notifications.filter((n) => !n.read);
-    await Promise.all(
-      unread.map((n) => base44.entities.Notification.update(n.id, { read: true }))
-    );
-    loadNotifications();
+    await Promise.all(unread.map((n) => base44.entities.Notification.update(n.id, { read: true })));
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    setUnreadCount(0);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative p-2 hover:bg-slate-100 rounded-lg transition-colors">
-          <Bell className="w-5 h-5 text-slate-600" />
+        <button className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+          <Bell className="w-5 h-5 text-slate-600 dark:text-slate-400" />
           {unreadCount > 0 && (
-            <Badge className="absolute -top-1 -right-1 h-5 min-w-[20px] flex items-center justify-center bg-red-500 text-white text-[10px] px-1">
+            <Badge className="absolute -top-1 -right-1 h-5 min-w-[20px] flex items-center justify-center bg-red-500 text-white text-[10px] px-1 pointer-events-none">
               {unreadCount > 9 ? "9+" : unreadCount}
             </Badge>
           )}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-80">
-        <div className="flex items-center justify-between px-3 py-2 border-b">
+      <DropdownMenuContent align="end" className="w-[340px] p-0">
+        <div className="flex items-center justify-between px-4 py-3 border-b">
           <h3 className="font-semibold text-sm">Notifications</h3>
           {unreadCount > 0 && (
-            <button
-              onClick={markAllAsRead}
-              className="text-xs text-blue-600 hover:underline"
-            >
+            <button onClick={markAllAsRead} className="text-xs text-blue-600 hover:underline">
               Mark all as read
             </button>
           )}
         </div>
-        <ScrollArea className="h-[400px]">
+        <ScrollArea className="h-[420px]">
           {notifications.length === 0 ? (
-            <div className="py-8 text-center text-sm text-slate-500">
+            <div className="py-12 text-center text-sm text-slate-400">
+              <Bell className="w-8 h-8 mx-auto mb-2 text-slate-200" />
               No notifications yet
             </div>
           ) : (
-            notifications.map((notif) => (
-              <DropdownMenuItem
-                key={notif.id}
-                className={`px-3 py-3 cursor-pointer ${
-                  !notif.read ? "bg-blue-50" : ""
-                }`}
-                onClick={() => markAsRead(notif)}
-              >
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between gap-2">
-                    <p className="font-medium text-sm text-slate-900 line-clamp-1">
-                      {notif.title}
+            <div className="divide-y divide-slate-100 dark:divide-slate-800">
+              {notifications.map((notif) => (
+                <button
+                  key={notif.id}
+                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
+                    !notif.read ? "bg-blue-50/60 dark:bg-blue-900/10" : ""
+                  }`}
+                  onClick={() => markAsRead(notif)}
+                >
+                  <span className="text-lg mt-0.5 shrink-0">
+                    {typeIcons[notif.type] || "🔔"}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-start justify-between gap-2">
+                      <p className={`text-sm line-clamp-1 ${!notif.read ? "font-semibold text-slate-900 dark:text-slate-100" : "font-medium text-slate-700 dark:text-slate-300"}`}>
+                        {notif.title}
+                      </p>
+                      <div className="flex items-center gap-1 shrink-0">
+                        {!notif.read && <div className="w-2 h-2 rounded-full bg-blue-500 mt-1" />}
+                        {notif.action_url && <ExternalLink className="w-3 h-3 text-slate-300" />}
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-2">
+                      {notif.message}
                     </p>
-                    {!notif.read && (
-                      <div className="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0 mt-1" />
-                    )}
+                    <p className="text-[10px] text-slate-400 mt-1">
+                      {format(new Date(notif.created_date), "MMM d, h:mm a")}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-600 mt-0.5 line-clamp-2">
-                    {notif.message}
-                  </p>
-                  <p className="text-[10px] text-slate-400 mt-1">
-                    {format(new Date(notif.created_date), "MMM d, h:mm a")}
-                  </p>
-                </div>
-              </DropdownMenuItem>
-            ))
+                </button>
+              ))}
+            </div>
           )}
         </ScrollArea>
       </DropdownMenuContent>
