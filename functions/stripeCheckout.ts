@@ -98,9 +98,37 @@ Deno.serve(async (req) => {
         }
       }
 
-      // NOTE: Orders are created by webhook after payment confirmation
-      // DO NOT create orders here - only after successful payment
-      
+      // Group items by shop and create one order per shop
+      const shopGroups = {};
+      for (const item of items) {
+        if (!shopGroups[item.shop_id]) {
+          shopGroups[item.shop_id] = { shop_name: item.shop_name, items: [] };
+        }
+        shopGroups[item.shop_id].items.push(item);
+      }
+
+      for (const [shopId, group] of Object.entries(shopGroups)) {
+        const shopTotal = group.items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
+        await base44.asServiceRole.entities.Order.create({
+          buyer_email: user.email,
+          buyer_name: user.full_name,
+          shop_id: shopId,
+          shop_name: group.shop_name,
+          items: group.items,
+          total_amount: shopTotal + (shippingCost || 0),
+          status: 'pending',
+          delivery_address,
+          delivery_phone,
+          notes: notes || '',
+          payment_method: 'stripe',
+          stripe_session_id: session.id,
+          coupon_code: coupon_code || '',
+          shipping_option: shippingOption,
+          shipping_cost: shippingCost || 0,
+          payout_status: 'pending',
+        });
+      }
+
       console.log(`Stripe checkout session created: ${session.id} for ${user.email}`);
       return Response.json({ url: session.url });
     }
