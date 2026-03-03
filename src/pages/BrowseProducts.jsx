@@ -101,8 +101,8 @@ export default function BrowseProducts() {
       return;
     }
     const user = await base44.auth.me();
-    if (user.role !== 'buyer') {
-      toast.error("Only buyers can place orders");
+    if (user.role === 'shop_owner' || user.role === 'admin') {
+      toast.error("Shop owners and admins cannot place orders");
       return;
     }
     const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
