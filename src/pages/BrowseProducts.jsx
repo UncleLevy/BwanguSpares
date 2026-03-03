@@ -78,12 +78,25 @@ export default function BrowseProducts() {
     setLoading(false);
   };
 
-  const filteredProducts = products.filter(p =>
-    !search || p.name?.toLowerCase().includes(search.toLowerCase()) ||
-    p.description?.toLowerCase().includes(search.toLowerCase()) ||
-    p.compatible_vehicles?.toLowerCase().includes(search.toLowerCase()) ||
-    p.brand?.toLowerCase().includes(search.toLowerCase())
-  );
+  const PRICE_RANGES = {
+    "0-500": [0, 500],
+    "500-2000": [500, 2000],
+    "2000-5000": [2000, 5000],
+    "5000-20000": [5000, 20000],
+    "20000+": [20000, Infinity],
+  };
+
+  const filteredProducts = products.filter(p => {
+    const matchesSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase()) ||
+      p.description?.toLowerCase().includes(search.toLowerCase()) ||
+      p.compatible_vehicles?.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(search.toLowerCase());
+    const matchesPrice = priceRange === "all" || (() => {
+      const [min, max] = PRICE_RANGES[priceRange];
+      return (p.price || 0) >= min && (p.price || 0) <= max;
+    })();
+    return matchesSearch && matchesPrice;
+  });
 
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
   const paginatedProducts = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
