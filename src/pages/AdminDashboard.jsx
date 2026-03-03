@@ -710,11 +710,11 @@ export default function AdminDashboard() {
                     <div className="grid grid-cols-2 gap-3 text-sm bg-slate-50 dark:bg-slate-800 rounded-xl p-3">
                       <div>
                         <p className="text-slate-400 text-xs mb-0.5">Created</p>
-                        <p className="font-medium text-slate-700 dark:text-slate-200">{new Date(selectedCity.created_date).toLocaleDateString()}</p>
+                        <p className="font-medium text-slate-700 dark:text-slate-200">{selectedCity?.created_date ? new Date(selectedCity.created_date).toLocaleDateString() : "—"}</p>
                       </div>
                       <div>
                         <p className="text-slate-400 text-xs mb-0.5">ID</p>
-                        <p className="font-mono text-xs text-slate-500 truncate">{selectedCity.id}</p>
+                        <p className="font-mono text-xs text-slate-500 truncate">{selectedCity?.id || "—"}</p>
                       </div>
                     </div>
                     <div>
