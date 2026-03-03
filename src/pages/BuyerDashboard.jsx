@@ -274,6 +274,16 @@ export default function BuyerDashboard() {
                                 <Eye className="w-3.5 h-3.5" /> Receipt
                               </Button>
                             )}
+                            {order.status === "pending" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setRetryPaymentOrder(order)}
+                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                              >
+                                💳 Complete Payment
+                              </Button>
+                            )}
                             {order.status === "delivered" && (
                               <Button
                                 size="sm"
