@@ -8,6 +8,7 @@ import {
   AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck, Gift,
   Search, Download, Upload, Pencil
 } from "lucide-react";
+import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
