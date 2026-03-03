@@ -389,6 +389,32 @@ export default function Cart() {
               </Button>
             ) : (
               <div className="space-y-4">
+                 {/* Default address toggle */}
+                 {user?.address && (
+                   <div className={`flex items-center justify-between p-3 rounded-xl border-2 transition-all ${usingDefaultAddress ? "border-blue-400 bg-blue-50 dark:bg-blue-900/20" : "border-slate-200 dark:border-slate-600"}`}>
+                     <div className="flex items-center gap-2">
+                       <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                       <div>
+                         <p className="text-xs font-semibold text-slate-700 dark:text-slate-200">Saved Address</p>
+                         <p className="text-xs text-slate-500 dark:text-slate-400 truncate max-w-[200px]">{user.town ? `${user.town}, ` : ""}{user.address}</p>
+                       </div>
+                     </div>
+                     <button
+                       type="button"
+                       onClick={() => {
+                         if (!usingDefaultAddress) {
+                           setForm(f => ({ ...f, address: user.address || "", region: user.region || "", town: user.town || "", phone: user.phone || "" }));
+                         } else {
+                           setForm(f => ({ ...f, address: "", region: "", town: "", phone: "" }));
+                         }
+                         setUsingDefaultAddress(!usingDefaultAddress);
+                       }}
+                       className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${usingDefaultAddress ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200"}`}
+                     >
+                       {usingDefaultAddress ? "Using saved" : "Use saved"}
+                     </button>
+                   </div>
+                 )}
                  <div className="grid grid-cols-2 gap-3">
                    <div>
                      <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Region *</Label>
