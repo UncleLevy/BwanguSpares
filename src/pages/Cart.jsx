@@ -79,6 +79,7 @@ export default function Cart() {
         setUsingDefaultAddress(true);
       }
       const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
+      setItems(cart || []);
       
       // Load wallet balance
       const wallets = await base44.entities.BuyerWallet.filter({ buyer_email: u.email });
