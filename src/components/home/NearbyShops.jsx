@@ -71,7 +71,7 @@ export default function NearbyShops({ shops, loading }) {
           {shops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
               className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift snap-start shrink-0 w-[240px] sm:w-[300px]">
-              <div className="relative h-32 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
+              <div className="relative h-24 sm:h-32 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt={shop.name} className="w-full h-full object-cover opacity-80" />
                 ) : (
