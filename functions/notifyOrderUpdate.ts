@@ -125,6 +125,56 @@ Deno.serve(async (req) => {
           related_id: data.id,
           action_url: 'BuyerDashboard?view=orders',
         });
+
+        // Award loyalty points: 1 point per K1 spent (with tier multiplier)
+        const amountSpent = Math.floor(data.total_amount || 0);
+        if (amountSpent > 0) {
+          const accounts = await base44.asServiceRole.entities.LoyaltyPoints.filter({ buyer_email: data.buyer_email });
+          const currentTier = accounts[0]?.tier || 'bronze';
+          const multiplier = { bronze: 1, silver: 1.2, gold: 1.5, platinum: 2 }[currentTier] || 1;
+          const pointsEarned = Math.round(amountSpent * multiplier);
+          const newBalance = (accounts[0]?.points_balance || 0) + pointsEarned;
+          const newTotal = (accounts[0]?.total_earned || 0) + pointsEarned;
+
+          // Calculate tier
+          let newTier = 'bronze';
+          if (newTotal >= 3500) newTier = 'platinum';
+          else if (newTotal >= 1500) newTier = 'gold';
+          else if (newTotal >= 500) newTier = 'silver';
+
+          if (accounts.length > 0) {
+            await base44.asServiceRole.entities.LoyaltyPoints.update(accounts[0].id, {
+              points_balance: newBalance,
+              total_earned: newTotal,
+              tier: newTier,
+            });
+          } else {
+            await base44.asServiceRole.entities.LoyaltyPoints.create({
+              buyer_email: data.buyer_email,
+              buyer_name: data.buyer_name || data.buyer_email,
+              points_balance: pointsEarned,
+              total_earned: pointsEarned,
+              total_redeemed: 0,
+              tier: newTier,
+            });
+          }
+          await base44.asServiceRole.entities.LoyaltyTransaction.create({
+            buyer_email: data.buyer_email,
+            type: 'earn',
+            points: pointsEarned,
+            reason: `Purchase from ${data.shop_name}`,
+            order_id: data.id,
+          });
+
+          // Notify buyer of points earned
+          await base44.asServiceRole.entities.Notification.create({
+            user_email: data.buyer_email,
+            type: 'system_alert',
+            title: `+${pointsEarned} Loyalty Points Earned! 🎉`,
+            message: `You earned ${pointsEarned} points for your order from ${data.shop_name}. Total: ${newBalance} pts`,
+            action_url: 'BuyerDashboard?view=loyalty',
+          });
+        }
       }
     }
 
