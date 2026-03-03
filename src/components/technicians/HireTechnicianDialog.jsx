@@ -51,6 +51,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
       type: "system_alert",
       title: "New Technician Hire Request",
       message: `${form.buyer_name || user.full_name} has requested ${technician.name} for ${technician.specialization} work.`,
+      action_url: "ShopDashboard?view=hire_requests",
     });
 
     toast.success("Hire request sent to the shop!");
