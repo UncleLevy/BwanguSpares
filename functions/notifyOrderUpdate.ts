@@ -32,7 +32,7 @@ Deno.serve(async (req) => {
           title: 'New Order Received',
           message: `You have a new order from ${data.buyer_name} worth K${data.total_amount}`,
           related_id: data.id,
-          action_url: '/ShopDashboard',
+          action_url: '/ShopDashboard?view=orders',
         });
 
         // Auto-send receipt email to buyer

@@ -80,19 +80,20 @@ export default function TechnicianHireRequests({ shop }) {
 
     // Notify buyer
     const notifMessages = {
-      accepted:        { title: "Hire Request Accepted!", message: `${shop.name} has accepted your hire request for ${selectedRequest.technician_name}.${responseText ? ` Message: "${responseText}"` : ""}` },
-      counter_offered: { title: "Counter Offer on Hire Request", message: `${shop.name} has sent a counter offer of K${parseFloat(counterBudget).toLocaleString()} for ${selectedRequest.technician_name}.${responseText ? ` "${responseText}"` : ""}` },
-      rejected:        { title: "Hire Request Declined", message: `${shop.name} has declined your hire request for ${selectedRequest.technician_name}.${responseText ? ` Reason: "${responseText}"` : ""}` },
+    accepted:        { title: "Hire Request Accepted!", message: `${shop.name} has accepted your hire request for ${selectedRequest.technician_name}.${responseText ? ` Message: "${responseText}"` : ""}` },
+    counter_offered: { title: "Counter Offer on Hire Request", message: `${shop.name} has sent a counter offer of K${parseFloat(counterBudget).toLocaleString()} for ${selectedRequest.technician_name}.${responseText ? ` "${responseText}"` : ""}` },
+    rejected:        { title: "Hire Request Declined", message: `${shop.name} has declined your hire request for ${selectedRequest.technician_name}.${responseText ? ` Reason: "${responseText}"` : ""}` },
     };
     const notif = notifMessages[responseStatus];
     if (notif) {
-      await base44.entities.Notification.create({
-        user_email: selectedRequest.buyer_email,
-        type: "system_alert",
-        title: notif.title,
-        message: notif.message,
-        related_id: selectedRequest.id,
-      });
+    await base44.entities.Notification.create({
+      user_email: selectedRequest.buyer_email,
+      type: "system_alert",
+      title: notif.title,
+      message: notif.message,
+      related_id: selectedRequest.id,
+      action_url: "/BuyerDashboard?view=technician_requests",
+    });
     }
 
     toast.success("Response sent to customer");
