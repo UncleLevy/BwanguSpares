@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
-  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck
+  AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck, Gift
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
