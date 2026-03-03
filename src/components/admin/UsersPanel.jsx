@@ -203,16 +203,16 @@ export default function UsersPanel({ adminUser }) {
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50">
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Joined</TableHead>
+                  <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
+                  <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
+                  <SortableTableHead field="role" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Role</SortableTableHead>
+                  <SortableTableHead field="created_date" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Joined</SortableTableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filtered.map(u => {
+                {sortData(filtered, sort).map(u => {
                   const RoleIcon = ROLE_ICONS[u.role] || User;
                   const isBanned = bannedEmails.has(u.email);
                   const isSelf = u.email === adminUser?.email;
