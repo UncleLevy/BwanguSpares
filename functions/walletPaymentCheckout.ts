@@ -73,15 +73,16 @@ Deno.serve(async (req) => {
         shop_id: shopId,
         shop_name: shopData.shop_name,
         items: shopData.items,
-        total_amount: shopTotal + shippingCost,
+        total_amount: shopTotal + (shippingCost || 0) - (discountAmount || 0),
         status: 'confirmed',
         delivery_address: deliveryAddress,
         delivery_phone: deliveryPhone,
         notes: notes || '',
         coupon_code: couponCode || '',
+        discount_amount: discountAmount || 0,
         payment_method: 'wallet',
-        shippingOption: shippingOption,
-        shippingCost: shippingCost,
+        shipping_option: shippingOption,
+        shipping_cost: shippingCost || 0,
         payout_status: 'awaiting_delivery'
       });
       orderIds.push(order.id);
