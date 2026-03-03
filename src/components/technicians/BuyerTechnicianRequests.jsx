@@ -51,19 +51,33 @@ export default function BuyerTechnicianRequests({ user }) {
   const handleCounterResponse = async (req, accepted) => {
     setSubmitting(true);
     if (accepted) {
-      // Buyer agrees to counter — mark accepted
       await base44.entities.TechnicianHireRequest.update(req.id, {
         status: "accepted",
         buyer_response: "agreed",
       });
+      // Notify shop
+      await base44.entities.Notification.create({
+        user_email: req.shop_owner_email,
+        type: "system_alert",
+        title: "Counter Offer Accepted!",
+        message: `${req.buyer_name} has accepted your counter offer of K${req.shop_counter_budget?.toLocaleString()} for ${req.technician_name}.`,
+        related_id: req.id,
+      });
       toast.success("You accepted the counter offer! The shop will be in touch.");
     } else {
-      // Buyer declines — send back to market as pending
       await base44.entities.TechnicianHireRequest.update(req.id, {
         status: "pending",
         buyer_response: "declined",
         shop_response: "",
         shop_counter_budget: null,
+      });
+      // Notify shop
+      await base44.entities.Notification.create({
+        user_email: req.shop_owner_email,
+        type: "system_alert",
+        title: "Counter Offer Declined",
+        message: `${req.buyer_name} has declined your counter offer for ${req.technician_name}. The request is back to pending.`,
+        related_id: req.id,
       });
       toast.info("Counter offer declined. The request is back to pending.");
     }
