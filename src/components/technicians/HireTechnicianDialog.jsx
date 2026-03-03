@@ -16,6 +16,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
     description: "",
     preferred_date: "",
     location: "",
+    buyer_budget: "",
   });
   const [loading, setLoading] = useState(false);
 
