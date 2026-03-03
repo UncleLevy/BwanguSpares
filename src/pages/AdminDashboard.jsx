@@ -59,6 +59,8 @@ export default function AdminDashboard() {
   const [citySearch, setCitySearch] = useState("");
   const [cityRegionFilter, setCityRegionFilter] = useState("");
   const [importingCsv, setImportingCsv] = useState(false);
+  const [selectedCity, setSelectedCity] = useState(null);  // for view/edit dialog
+  const [editingCity, setEditingCity] = useState(null);    // local edit state
   const navigate = useNavigate();
 
   useEffect(() => {
