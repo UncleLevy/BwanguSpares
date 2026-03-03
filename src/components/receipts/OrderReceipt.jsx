@@ -80,7 +80,7 @@ export default function OrderReceipt({ order, shop }) {
           {/* Calculate subtotal from items */}
           {(() => {
             const itemsSubtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
-            const shippingCost = order.shippingCost || 0;
+            const shippingCost = order.shipping_cost || 0;
             const subtotal = itemsSubtotal + shippingCost;
             const vat = (subtotal / 1.16) * 0.16;
             const total = subtotal;
