@@ -59,7 +59,7 @@ export default function Cart() {
     const region = regions.find(r => r.id === regionId);
     setForm(f => ({ ...f, region: regionId, town: "" }));
     setFilteredTowns(towns.filter(t => t.region_id === regionId || t.region === regionId || t.region === region?.name));
-    setDynamicShippingCost(0);
+    setDynamicShippingCost(0); // Reset shipping cost when region changes
   };
 
   const handleTownChange = (townName) => {
