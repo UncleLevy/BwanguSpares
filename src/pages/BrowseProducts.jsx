@@ -175,6 +175,20 @@ export default function BrowseProducts() {
             ]}
           />
           <MobileSelect
+            value={priceRange}
+            onValueChange={handleFilterChange(setPriceRange)}
+            placeholder="Price"
+            triggerClassName="shrink-0 w-36 md:w-40"
+            options={[
+              { value: "all", label: "All Prices" },
+              { value: "0-500", label: "Under K500" },
+              { value: "500-2000", label: "K500 – K2,000" },
+              { value: "2000-5000", label: "K2,000 – K5,000" },
+              { value: "5000-20000", label: "K5,000 – K20,000" },
+              { value: "20000+", label: "Above K20,000" },
+            ]}
+          />
+          <MobileSelect
             value={sortBy}
             onValueChange={handleFilterChange(setSortBy)}
             placeholder="Sort"
