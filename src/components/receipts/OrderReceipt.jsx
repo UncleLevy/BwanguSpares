@@ -81,9 +81,9 @@ export default function OrderReceipt({ order, shop }) {
           {(() => {
             const itemsSubtotal = order.items?.reduce((sum, item) => sum + (item.price * item.quantity), 0) || 0;
             const shippingCost = order.shipping_cost || 0;
-            const subtotal = itemsSubtotal + shippingCost;
-            const vat = (subtotal / 1.16) * 0.16;
-            const total = subtotal;
+            const discountAmount = order.discount_amount || 0;
+            const total = order.total_amount || (itemsSubtotal + shippingCost - discountAmount);
+            const vat = (total / 1.16) * 0.16;
 
             return (
               <>
@@ -97,10 +97,10 @@ export default function OrderReceipt({ order, shop }) {
                     <span>K{shippingCost.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 )}
-                {order.coupon_code && (
+                {discountAmount > 0 && (
                   <div className="flex justify-between text-emerald-600 dark:text-emerald-400 mb-2">
-                    <span>Coupon ({order.coupon_code}):</span>
-                    <span>Applied</span>
+                    <span>Discount{order.coupon_code ? ` (${order.coupon_code})` : ""}:</span>
+                    <span>-K{discountAmount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
