@@ -630,18 +630,16 @@ export default function AdminDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>City/Town Name</TableHead>
-                    <TableHead>Region</TableHead>
+                    <SortableTableHead field="name" sort={citySort} onSort={f => setCitySort(prev => toggleSort(prev, f))}>City/Town Name</SortableTableHead>
+                    <SortableTableHead field="region_name" sort={citySort} onSort={f => setCitySort(prev => toggleSort(prev, f))}>Region</SortableTableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {towns
-                    .filter(t =>
-                      (!citySearch || t.name?.toLowerCase().includes(citySearch.toLowerCase())) &&
-                      (!cityRegionFilter || t.region_id === cityRegionFilter)
-                    )
-                    .map(t => (
+                  {sortData(towns.filter(t =>
+                    (!citySearch || t.name?.toLowerCase().includes(citySearch.toLowerCase())) &&
+                    (!cityRegionFilter || t.region_id === cityRegionFilter)
+                  ), citySort).map(t => (
                     <TableRow key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                       <TableCell className="font-medium">{t.name}</TableCell>
                       <TableCell>{t.region_name}</TableCell>
