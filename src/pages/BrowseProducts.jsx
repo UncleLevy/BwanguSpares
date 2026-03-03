@@ -40,6 +40,7 @@ export default function BrowseProducts() {
   const [category, setCategory] = useState("all");
   const [condition, setCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
+  const [priceRange, setPriceRange] = useState("all");
   const [requestFormOpen, setRequestFormOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
