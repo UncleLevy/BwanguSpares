@@ -31,7 +31,8 @@ export default function Cart() {
   const [useWallet, setUseWallet] = useState(false);
   const [walletAmount, setWalletAmount] = useState(0);
   const [shippingOption, setShippingOption] = useState("collect");
-  const SHIPPING_COST = 50; // Fixed shipping cost in ZMW
+  const [shippingRates, setShippingRates] = useState([]);
+  const [dynamicShippingCost, setDynamicShippingCost] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
