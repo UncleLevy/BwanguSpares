@@ -639,13 +639,18 @@ export default function AdminDashboard() {
                       (!cityRegionFilter || t.region_id === cityRegionFilter)
                     )
                     .map(t => (
-                    <TableRow key={t.id}>
+                    <TableRow key={t.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                       <TableCell className="font-medium">{t.name}</TableCell>
                       <TableCell>{t.region_name}</TableCell>
                       <TableCell>
-                        <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => deleteTown(t.id)}>
-                          <XCircle className="w-4 h-4" />
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button size="sm" variant="ghost" className="text-blue-600 hover:bg-blue-50" onClick={() => openCityDetail(t)}>
+                            <Pencil className="w-4 h-4" />
+                          </Button>
+                          <Button size="sm" variant="ghost" className="text-red-500 hover:bg-red-50" onClick={() => deleteTown(t.id)}>
+                            <XCircle className="w-4 h-4" />
+                          </Button>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
