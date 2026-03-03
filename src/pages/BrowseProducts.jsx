@@ -128,48 +128,50 @@ export default function BrowseProducts() {
         <p className="text-slate-500 dark:text-slate-400 mt-1">Find the spares you need from verified shops across Zambia</p>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-3 mb-6">
+      <div className="flex flex-col gap-3 mb-6">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input value={search} onChange={e => handleSearchChange(e.target.value)}
             placeholder="Search parts, brands, vehicles..."
-            className="pl-10 h-11 rounded-xl" />
+            className="pl-10 h-11 rounded-xl text-base" />
           {search && (
             <button onClick={() => handleSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2">
               <X className="w-4 h-4 text-slate-400" />
             </button>
           )}
         </div>
-        <MobileSelect
-          value={category}
-          onValueChange={handleFilterChange(setCategory)}
-          placeholder="Category"
-          triggerClassName="w-full md:w-44"
-          options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
-        />
-        <MobileSelect
-          value={condition}
-          onValueChange={handleFilterChange(setCondition)}
-          placeholder="Condition"
-          triggerClassName="w-full md:w-36"
-          options={[
-            { value: "all", label: "All Conditions" },
-            { value: "new", label: "New" },
-            { value: "used", label: "Used" },
-            { value: "refurbished", label: "Refurbished" },
-          ]}
-        />
-        <MobileSelect
-          value={sortBy}
-          onValueChange={handleFilterChange(setSortBy)}
-          placeholder="Sort"
-          triggerClassName="w-full md:w-40"
-          options={[
-            { value: "newest", label: "Newest First" },
-            { value: "price_low", label: "Price: Low to High" },
-            { value: "price_high", label: "Price: High to Low" },
-          ]}
-        />
+        <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+          <MobileSelect
+            value={category}
+            onValueChange={handleFilterChange(setCategory)}
+            placeholder="Category"
+            triggerClassName="shrink-0 w-36 md:w-44"
+            options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
+          />
+          <MobileSelect
+            value={condition}
+            onValueChange={handleFilterChange(setCondition)}
+            placeholder="Condition"
+            triggerClassName="shrink-0 w-32 md:w-36"
+            options={[
+              { value: "all", label: "All Conditions" },
+              { value: "new", label: "New" },
+              { value: "used", label: "Used" },
+              { value: "refurbished", label: "Refurbished" },
+            ]}
+          />
+          <MobileSelect
+            value={sortBy}
+            onValueChange={handleFilterChange(setSortBy)}
+            placeholder="Sort"
+            triggerClassName="shrink-0 w-36 md:w-40"
+            options={[
+              { value: "newest", label: "Newest First" },
+              { value: "price_low", label: "Price: Low to High" },
+              { value: "price_high", label: "Price: High to Low" },
+            ]}
+          />
+        </div>
       </div>
 
       {(category !== "all" || condition !== "all") && (
