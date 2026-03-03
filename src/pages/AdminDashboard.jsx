@@ -752,6 +752,49 @@ export default function AdminDashboard() {
                         ))}
                       </select>
                     </div>
+                    <div>
+                      <Label>Postal Code</Label>
+                      <Input
+                        value={editingCity.postal_code || ""}
+                        onChange={e => setEditingCity({ ...editingCity, postal_code: e.target.value })}
+                        placeholder="e.g. 10101"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Label>Latitude</Label>
+                        <Input
+                          type="number"
+                          step="any"
+                          value={editingCity.latitude ?? ""}
+                          onChange={e => setEditingCity({ ...editingCity, latitude: e.target.value ? parseFloat(e.target.value) : undefined })}
+                          placeholder="e.g. -15.4166"
+                          className="mt-1"
+                        />
+                      </div>
+                      <div>
+                        <Label>Longitude</Label>
+                        <Input
+                          type="number"
+                          step="any"
+                          value={editingCity.longitude ?? ""}
+                          onChange={e => setEditingCity({ ...editingCity, longitude: e.target.value ? parseFloat(e.target.value) : undefined })}
+                          placeholder="e.g. 28.2833"
+                          className="mt-1"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label>Description</Label>
+                      <Textarea
+                        value={editingCity.description || ""}
+                        onChange={e => setEditingCity({ ...editingCity, description: e.target.value })}
+                        placeholder="Brief description of the town/city..."
+                        className="mt-1 resize-none"
+                        rows={3}
+                      />
+                    </div>
                   </div>
                 )}
                 <DialogFooter className="gap-2">
