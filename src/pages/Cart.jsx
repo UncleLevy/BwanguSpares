@@ -145,7 +145,7 @@ export default function Cart() {
     }
   }
   
-  const shippingCost = shippingOption === "deliver" ? SHIPPING_COST : 0;
+  const shippingCost = shippingOption === "deliver" ? (dynamicShippingCost > 0 ? dynamicShippingCost : 50) : 0;
   const total = Math.max(0, subtotal - discountAmount + shippingCost);
 
   const groupedByShop = items.reduce((acc, item) => {
