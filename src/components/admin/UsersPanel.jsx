@@ -54,6 +54,8 @@ export default function UsersPanel({ adminUser }) {
   const [inviteRole, setInviteRole] = useState("user");
   const [inviting, setInviting] = useState(false);
 
+  const [sort, setSort] = useState(null);
+
   // Role change dialog
   const [roleDialog, setRoleDialog] = useState(null);
   const [newRole, setNewRole] = useState("");
