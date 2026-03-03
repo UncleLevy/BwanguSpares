@@ -62,6 +62,7 @@ export default function BuyerTechnicianRequests({ user }) {
         title: "Counter Offer Accepted!",
         message: `${req.buyer_name} has accepted your counter offer of K${req.shop_counter_budget?.toLocaleString()} for ${req.technician_name}.`,
         related_id: req.id,
+        action_url: "/ShopDashboard?view=hire_requests",
       });
       toast.success("You accepted the counter offer! The shop will be in touch.");
     } else {
@@ -78,6 +79,7 @@ export default function BuyerTechnicianRequests({ user }) {
         title: "Counter Offer Declined",
         message: `${req.buyer_name} has declined your counter offer for ${req.technician_name}. The request is back to pending.`,
         related_id: req.id,
+        action_url: "/ShopDashboard?view=hire_requests",
       });
       toast.info("Counter offer declined. The request is back to pending.");
     }
