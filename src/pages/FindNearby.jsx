@@ -241,7 +241,7 @@ export default function FindNearby() {
         </div>
 
         {/* Map panel */}
-        <div className="flex-1 order-1 md:order-2" style={{ minHeight: "45vh" }}>
+        <div className="flex-1 order-1 md:order-2 overflow-hidden" style={{ minHeight: "45vh" }}>
           <MapContainer
             center={mapCenter}
             zoom={userLoc ? 13 : 7}

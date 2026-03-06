@@ -52,6 +52,7 @@ import BrowseProducts from './pages/BrowseProducts';
 import BrowseShops from './pages/BrowseShops';
 import BuyerDashboard from './pages/BuyerDashboard';
 import Cart from './pages/Cart';
+import FindNearby from './pages/FindNearby';
 import Home from './pages/Home';
 import Messages from './pages/Messages';
 import OrderDetails from './pages/OrderDetails';
@@ -62,7 +63,6 @@ import ShopCatalog from './pages/ShopCatalog';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
 import Wishlist from './pages/Wishlist';
-import FindNearby from './pages/FindNearby';
 import __Layout from './Layout.jsx';
 
 
@@ -72,6 +72,7 @@ export const PAGES = {
     "BrowseShops": BrowseShops,
     "BuyerDashboard": BuyerDashboard,
     "Cart": Cart,
+    "FindNearby": FindNearby,
     "Home": Home,
     "Messages": Messages,
     "OrderDetails": OrderDetails,
@@ -82,7 +83,6 @@ export const PAGES = {
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
     "Wishlist": Wishlist,
-    "FindNearby": FindNearby,
 }
 
 export const pagesConfig = {
