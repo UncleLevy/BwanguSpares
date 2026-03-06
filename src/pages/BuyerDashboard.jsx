@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, ShoppingCart, User, Settings, Package,
-  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch, MessageSquare, Eye, Wallet, Wrench, Gift, Camera, MapPin
+  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch, MessageSquare, Eye, Wallet, Wrench, Gift, Camera, MapPin, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -25,6 +25,7 @@ import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
 import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
 import BuyerTechnicianRequests from "@/components/technicians/BuyerTechnicianRequests";
+import BuyerAppointments from "@/components/technicians/BuyerAppointments";
 import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
 import AddressInput from "@/components/shared/AddressInput";
 import OrderReceipt from "@/components/receipts/OrderReceipt";
@@ -213,6 +214,7 @@ export default function BuyerDashboard() {
     { id: "wallet", label: "My Wallet", icon: Wallet, onClick: () => setView("wallet"), badge: wallet?.balance > 0 ? `K${Math.round(wallet.balance)}` : null },
     { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
     { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => setView("technician_requests") },
+    { id: "appointments", label: "My Appointments", icon: Calendar, onClick: () => setView("appointments") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => setView("loyalty") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
@@ -351,6 +353,10 @@ export default function BuyerDashboard() {
 
         {view === "technician_requests" && (
           <BuyerTechnicianRequests user={user} />
+        )}
+
+        {view === "appointments" && (
+          <BuyerAppointments user={user} />
         )}
 
         {view === "messages" && (
