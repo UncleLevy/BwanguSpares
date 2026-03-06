@@ -6,8 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { User, Wrench, DollarSign } from "lucide-react";
+import { User, Wrench, Clock } from "lucide-react";
 import { toast } from "sonner";
+
+const TIME_SLOTS = [
+  "08:00 - 09:00", "09:00 - 10:00", "10:00 - 11:00", "11:00 - 12:00",
+  "13:00 - 14:00", "14:00 - 15:00", "15:00 - 16:00", "16:00 - 17:00",
+];
 
 export default function HireTechnicianDialog({ technician, shop, open, onClose }) {
   const [form, setForm] = useState({
@@ -15,6 +20,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
     buyer_phone: "",
     description: "",
     preferred_date: "",
+    time_slot: "",
     location: "",
     buyer_budget: "",
   });
@@ -26,9 +32,10 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
     if (!/^\+?\d{7,15}$/.test(form.buyer_phone.replace(/\s/g, ""))) { toast.error("Enter a valid phone number (e.g. +260...)"); return; }
     if (!form.description.trim()) { toast.error("Please describe the problem"); return; }
     if (!form.preferred_date) { toast.error("Please select a preferred date"); return; }
+    if (!form.time_slot) { toast.error("Please select a time slot"); return; }
     setLoading(true);
     const user = await base44.auth.me();
-    await base44.entities.TechnicianHireRequest.create({
+    const hireRequest = await base44.entities.TechnicianHireRequest.create({
       technician_id: technician.id,
       technician_name: technician.name,
       shop_id: shop.id,
@@ -45,6 +52,25 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
       status: "pending",
     });
 
+    // Create appointment record
+    await base44.entities.Appointment.create({
+      technician_id: technician.id,
+      technician_name: technician.name,
+      shop_id: shop.id,
+      shop_name: shop.name,
+      shop_owner_email: shop.owner_email,
+      buyer_email: user.email,
+      buyer_name: form.buyer_name || user.full_name,
+      buyer_phone: form.buyer_phone,
+      problem_type: technician.specialization,
+      description: form.description,
+      appointment_date: form.preferred_date,
+      time_slot: form.time_slot,
+      location: form.location,
+      hire_request_id: hireRequest.id,
+      status: "pending",
+    });
+
     // Notify shop owner
     await base44.entities.Notification.create({
       user_email: shop.owner_email,
@@ -54,10 +80,10 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
       action_url: "ShopDashboard?view=hire_requests",
     });
 
-    toast.success("Hire request sent to the shop!");
+    toast.success("Appointment request sent to the shop!");
     setLoading(false);
     onClose();
-    setForm({ buyer_name: "", buyer_phone: "", description: "", preferred_date: "", location: "", buyer_budget: "" });
+    setForm({ buyer_name: "", buyer_phone: "", description: "", preferred_date: "", time_slot: "", location: "", buyer_budget: "" });
   };
 
   const specLabels = {
@@ -108,6 +134,25 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
             <div>
               <Label>Your Location</Label>
               <Input value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} className="mt-1" placeholder="e.g. Lusaka" />
+            </div>
+          </div>
+          <div>
+            <Label className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Select Time Slot *</Label>
+            <div className="grid grid-cols-2 gap-2 mt-2">
+              {TIME_SLOTS.map(slot => (
+                <button
+                  key={slot}
+                  type="button"
+                  onClick={() => setForm({ ...form, time_slot: slot })}
+                  className={`py-2 px-3 rounded-xl border text-xs font-medium transition-all ${
+                    form.time_slot === slot
+                      ? "border-blue-600 bg-blue-600 text-white"
+                      : "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 hover:border-blue-300"
+                  }`}
+                >
+                  {slot}
+                </button>
+              ))}
             </div>
           </div>
           <div>
