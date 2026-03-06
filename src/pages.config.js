@@ -62,6 +62,7 @@ import ShopCatalog from './pages/ShopCatalog';
 import ShopDashboard from './pages/ShopDashboard';
 import ShopProfile from './pages/ShopProfile';
 import Wishlist from './pages/Wishlist';
+import FindNearby from './pages/FindNearby';
 import __Layout from './Layout.jsx';
 
 
@@ -81,6 +82,7 @@ export const PAGES = {
     "ShopDashboard": ShopDashboard,
     "ShopProfile": ShopProfile,
     "Wishlist": Wishlist,
+    "FindNearby": FindNearby,
 }
 
 export const pagesConfig = {
