@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
-  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation
 } from "lucide-react";
 import BottomNav from "@/components/shared/BottomNav";
 import { Button } from "@/components/ui/button";
@@ -77,6 +77,7 @@ export default function Layout({ children, currentPageName }) {
     { label: "Home", href: createPageUrl("Home"), icon: Home },
     { label: "Browse Parts", href: createPageUrl("BrowseProducts"), icon: Search },
     { label: "Shops", href: createPageUrl("BrowseShops"), icon: Store },
+    { label: "Find Nearby", href: createPageUrl("FindNearby"), icon: Navigation },
   ];
 
   return (
