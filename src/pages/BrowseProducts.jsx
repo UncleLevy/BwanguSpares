@@ -11,6 +11,7 @@ import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
+import VehicleCompatibilityFilter from "@/components/parts/VehicleCompatibilityFilter";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
@@ -41,6 +42,7 @@ export default function BrowseProducts() {
   const [condition, setCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState("all");
+  const [vehicleFilter, setVehicleFilter] = useState({ make: "", model: "", year: "" });
   const [requestFormOpen, setRequestFormOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
@@ -95,7 +97,13 @@ export default function BrowseProducts() {
       const [min, max] = PRICE_RANGES[priceRange];
       return (p.price || 0) >= min && (p.price || 0) <= max;
     })();
-    return matchesSearch && matchesPrice;
+    const cv = (p.compatible_vehicles || "").toLowerCase();
+    const matchesVehicle = !vehicleFilter.make || (
+      cv.includes(vehicleFilter.make.toLowerCase()) &&
+      (!vehicleFilter.model || cv.includes(vehicleFilter.model.toLowerCase())) &&
+      (!vehicleFilter.year || cv.includes(vehicleFilter.year))
+    );
+    return matchesSearch && matchesPrice && matchesVehicle;
   });
 
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
@@ -154,6 +162,10 @@ export default function BrowseProducts() {
             </button>
           )}
         </div>
+        <VehicleCompatibilityFilter
+          value={vehicleFilter}
+          onChange={(v) => { setVehicleFilter(v); setPage(1); }}
+        />
         <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide" style={{ scrollbarWidth: "none" }}>
           <MobileSelect
             value={category}
@@ -202,7 +214,7 @@ export default function BrowseProducts() {
         </div>
       </div>
 
-      {(category !== "all" || condition !== "all" || priceRange !== "all") && (
+      {(category !== "all" || condition !== "all" || priceRange !== "all" || vehicleFilter.make) && (
         <div className="flex flex-wrap gap-2 mb-4">
           {category !== "all" && (
             <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCategory("all")}>
@@ -217,6 +229,11 @@ export default function BrowseProducts() {
           {priceRange !== "all" && (
             <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setPriceRange("all")}>
               {priceRange === "20000+" ? "Above K20,000" : `K${priceRange.replace("-", " – K")}`} <X className="w-3 h-3" />
+            </Badge>
+          )}
+          {vehicleFilter.make && (
+            <Badge className="gap-1 cursor-pointer bg-blue-100 text-blue-800 hover:bg-blue-200" onClick={() => { setVehicleFilter({ make: "", model: "", year: "" }); setPage(1); }}>
+              🚗 {[vehicleFilter.make, vehicleFilter.model, vehicleFilter.year].filter(Boolean).join(" ")} <X className="w-3 h-3" />
             </Badge>
           )}
         </div>
