@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Search, MessageSquare, User, Bell, ShoppingCart } from "lucide-react";
+import { Home, Search, MessageSquare, User, Bell, ShoppingCart, Navigation } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { base44 } from "@/api/base44Client";
 
@@ -39,8 +39,8 @@ export default function BottomNav() {
   const navItems = [
     { label: "Home",     icon: Home,          page: "Home" },
     { label: "Browse",   icon: Search,        page: "BrowseProducts" },
+    { label: "Nearby",   icon: Navigation,    page: "FindNearby" },
     { label: "Cart",     icon: ShoppingCart,  page: "Cart", badge: cartCount, hidden: user?.role === 'shop_owner' || user?.role === 'admin' },
-    { label: "Messages", icon: MessageSquare, page: "Messages" },
     { label: "Account",  icon: User,          page: "BuyerDashboard" },
   ];
 
