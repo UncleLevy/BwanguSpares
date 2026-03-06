@@ -5,7 +5,7 @@ import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
   Pencil, Trash2, Store, User, DollarSign, TrendingUp, BarChart3, MapPin, FileSearch, MessageSquare,
-  ClipboardList, AlertTriangle, Phone, Download, Eye, Truck, Search, X
+  ClipboardList, AlertTriangle, Phone, Download, Eye, Truck, Search, X, Calendar
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -49,6 +49,7 @@ import MarketingAnalyticsDashboard from "@/components/marketing/MarketingAnalyti
 import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
 import ShippingStats from "@/components/shipping/ShippingStats";
 import ShippingManagement from "@/components/shipping/ShippingManagement";
+import AppointmentManager from "@/components/technicians/AppointmentManager";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -462,6 +463,7 @@ export default function ShopDashboard() {
    { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
    { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => setView("hire_requests") },
+   { id: "appointments", label: "Appointments", icon: Calendar, onClick: () => setView("appointments") },
    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
    { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => setView("wallet") },
    {
@@ -1194,6 +1196,10 @@ export default function ShopDashboard() {
 
         {view === "hire_requests" && (
           <TechnicianHireRequests shop={shop} />
+        )}
+
+        {view === "appointments" && (
+          <AppointmentManager shop={shop} />
         )}
 
         {view === "messages" && (
