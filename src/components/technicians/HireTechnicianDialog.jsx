@@ -113,7 +113,7 @@ export default function HireTechnicianDialog({ technician, shop, open, onClose }
           </div>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
           <div>
             <Label>Your Name *</Label>
             <Input value={form.buyer_name} onChange={e => setForm({ ...form, buyer_name: e.target.value })} className="mt-1" placeholder="Full name" />
