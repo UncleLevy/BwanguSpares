@@ -70,9 +70,41 @@ export default function Layout({ children, currentPageName }) {
         setUser(u);
         const cart = await base44.entities.CartItem.filter({ buyer_email: u.email });
         setCartCount(cart.length);
+
+        // Load unread message count
+        const isShopOwner = u.role === "shop_owner";
+        const convFilter = isShopOwner ? { shop_owner_email: u.email } : { buyer_email: u.email };
+        const convs = await base44.entities.Conversation.filter(convFilter, "-last_message_date", 50);
+        const unread = convs.reduce((sum, c) => sum + (isShopOwner ? (c.shop_unread || 0) : (c.buyer_unread || 0)), 0);
+        setUnreadMessages(unread);
       }
     })();
   }, [currentPageName]);
+
+  // Real-time unread message subscription
+  useEffect(() => {
+    if (!user) return;
+    const isShopOwner = user.role === "shop_owner";
+    const unsubscribe = base44.entities.Conversation.subscribe((event) => {
+      if (event.type === "update") {
+        const c = event.data;
+        const mine = isShopOwner ? c.shop_owner_email === user.email : c.buyer_email === user.email;
+        if (!mine) return;
+        // Re-fetch total unread count
+        base44.entities.Conversation.filter(
+          isShopOwner ? { shop_owner_email: user.email } : { buyer_email: user.email },
+          "-last_message_date", 50
+        ).then((convs) => {
+          const unread = convs.reduce((sum, c) => sum + (isShopOwner ? (c.shop_unread || 0) : (c.buyer_unread || 0)), 0);
+          setUnreadMessages((prev) => {
+            if (unread > prev) playTone();
+            return unread;
+          });
+        });
+      }
+    });
+    return unsubscribe;
+  }, [user]);
 
   const isAdmin = user?.role === "admin";
   const isShopOwner = user?.role === "shop_owner";
