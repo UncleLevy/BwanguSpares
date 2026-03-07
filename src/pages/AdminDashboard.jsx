@@ -38,6 +38,7 @@ import AdminShippingRates from "@/components/admin/AdminShippingRates";
 import AdminProductsPanel from "@/components/admin/AdminProductsPanel";
 import AdminLoyaltyPanel from "@/components/admin/AdminLoyaltyPanel";
 import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
+import { emailShopStatusUpdate } from "@/components/lib/emailNotifications";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);

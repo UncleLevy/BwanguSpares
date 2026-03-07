@@ -52,6 +52,7 @@ import ShippingManagement from "@/components/shipping/ShippingManagement";
 import AppointmentManager from "@/components/technicians/AppointmentManager";
 import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
+import { emailOrderStatusUpdate, emailNewOrderToShop } from "@/components/lib/emailNotifications";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },

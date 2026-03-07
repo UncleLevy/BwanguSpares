@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import TermsAndConditionsModal from "@/components/shop/TermsAndConditionsModal";
 import AddressInput from "@/components/shared/AddressInput";
+import { emailShopRegistrationReceived } from "@/components/lib/emailNotifications";
 
 export default function RegisterShop() {
   const [user, setUser] = useState(null);

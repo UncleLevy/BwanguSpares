@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Inbox, Car, DollarSign, Phone, CheckCircle2, Clock, Crown } from "lucide-react";
+import { emailPartsRequestCounterOffer } from "@/components/lib/emailNotifications";
 import { toast } from "sonner";
 import DocumentPrinter from "@/components/documents/DocumentPrinter";
 

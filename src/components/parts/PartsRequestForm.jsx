@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { FileSearch } from "lucide-react";
+import { emailPartsRequestReceived } from "@/components/lib/emailNotifications";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },

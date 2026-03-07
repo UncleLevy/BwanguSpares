@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { TicketCheck, Clock, CheckCircle2, AlertCircle } from "lucide-react";
+import { emailSupportTicketReply } from "@/components/lib/emailNotifications";
 import { toast } from "sonner";
 
 const CATEGORIES = {

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Wrench } from "lucide-react";
+import { emailHireRequestResponseToBuyer } from "@/components/lib/emailNotifications";
 
 const statusColors = {
   pending:        "bg-amber-50 text-amber-700",
