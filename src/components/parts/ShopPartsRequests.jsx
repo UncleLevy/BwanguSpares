@@ -113,6 +113,7 @@ export default function ShopPartsRequests({ shop }) {
       action_url: "BuyerDashboard?view=parts_requests",
     });
 
+    emailPartsRequestCounterOffer(counterTarget.buyer_email, counterTarget.buyer_name, counterTarget.part_name, shop.name, parseFloat(counterBudget), counterMessage);
     toast.success("Counter offer sent to the buyer.");
     setRequests(prev => prev.filter(r => r.id !== counterTarget.id));
     setCounterDialog(false);

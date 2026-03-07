@@ -101,6 +101,7 @@ export default function AdminDashboard() {
         details: `Shop status changed to ${status}`,
       });
     }
+    emailShopStatusUpdate(shop.owner_email, shop.owner_name, shop.name, status);
     toast.success(`Shop ${status}`);
   };
 

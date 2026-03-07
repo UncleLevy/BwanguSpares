@@ -97,6 +97,7 @@ export default function TechnicianHireRequests({ shop }) {
     });
     }
 
+    emailHireRequestResponseToBuyer(selectedRequest.buyer_email, selectedRequest.buyer_name, shop.name, responseStatus, responseStatus === "counter_offered" ? parseFloat(counterBudget) : null, responseText);
     toast.success("Response sent to customer");
     setRespondDialog(false);
     setSubmitting(false);

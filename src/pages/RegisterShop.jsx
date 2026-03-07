@@ -146,6 +146,7 @@ export default function RegisterShop() {
       });
 
       await base44.auth.updateMe({ role: "shop_owner", shop_id: shop.id });
+      emailShopRegistrationReceived(user.email, user.full_name, form.name);
       toast.success("✓ Shop registered successfully! Awaiting admin approval.");
       navigate(createPageUrl("ShopDashboard"));
     } catch (error) {

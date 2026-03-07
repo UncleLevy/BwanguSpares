@@ -71,6 +71,7 @@ export default function SupportTicketsPanel({ adminUser }) {
     await base44.entities.SupportTicket.update(selected.id, updates);
     setTickets(prev => prev.map(t => t.id === selected.id ? { ...t, ...updates } : t));
     setSelected(prev => ({ ...prev, ...updates }));
+    emailSupportTicketReply(selected.user_email, selected.user_name, selected, replyText);
     toast.success("Reply sent!");
     setReplying(false);
   };

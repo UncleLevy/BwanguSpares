@@ -299,6 +299,7 @@ export default function ShopDashboard() {
     }
     setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
     await base44.entities.Order.update(order.id, { status: newStatus });
+    emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, newStatus);
     toast.success("Order status updated");
   };
 
@@ -345,6 +346,7 @@ export default function ShopDashboard() {
       toast.success("Order cancelled");
     }
 
+    emailOrderStatusUpdate(cancelOrder.buyer_email, cancelOrder.buyer_name, { ...cancelOrder, cancellation_reason: cancelReason }, 'cancelled');
     setCancelDialog(false);
     setCancelReason("");
   };

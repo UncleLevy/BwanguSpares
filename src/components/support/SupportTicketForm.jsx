@@ -75,7 +75,7 @@ export default function SupportTicketForm({ user }) {
       return;
     }
     setSubmitting(true);
-    await base44.entities.SupportTicket.create({
+    const ticket = await base44.entities.SupportTicket.create({
       user_email: user.email,
       user_name: user.full_name,
       user_role: user.role || "buyer",
@@ -86,6 +86,8 @@ export default function SupportTicketForm({ user }) {
       status: "open",
       priority: "medium",
     });
+    emailSupportTicketReceived(user.email, user.full_name, ticket);
+    emailNewTicketToAdmin(ticket);
     toast.success("Ticket submitted! Admin will respond shortly.");
     setForm({ subject: "", category: "other", message: "" });
     setPhotos([]);
