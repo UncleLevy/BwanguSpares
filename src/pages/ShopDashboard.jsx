@@ -50,6 +50,7 @@ import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
 import ShippingStats from "@/components/shipping/ShippingStats";
 import ShippingManagement from "@/components/shipping/ShippingManagement";
 import AppointmentManager from "@/components/technicians/AppointmentManager";
+import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
