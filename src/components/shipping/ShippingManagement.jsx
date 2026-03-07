@@ -37,7 +37,7 @@ export default function ShippingManagement({ shopId }) {
     loadData();
   };
 
-  if (loading) return <div className="text-slate-500">Loading...</div>;
+  if (loading) return <div className="text-slate-500 dark:text-slate-400">Loading...</div>;
 
   const defaultRates = shippingRates.reduce((acc, rate) => {
     acc[rate.town_id] = rate.default_rate;
@@ -46,32 +46,32 @@ export default function ShippingManagement({ shopId }) {
 
   return (
     <div className="space-y-6">
-      <Card className="p-4 bg-blue-50 border-blue-200">
-        <p className="text-sm text-slate-700">
+      <Card className="p-4 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800/50">
+        <p className="text-sm text-slate-700 dark:text-slate-300">
           <strong>How it works:</strong> Leave shipping cost blank to use default town rate, or set a custom cost for this product.
         </p>
       </Card>
 
-      <Card className="overflow-hidden">
-        <div className="p-4 border-b border-slate-200 bg-slate-50">
-          <h3 className="font-semibold text-slate-900">Product Shipping Costs</h3>
+      <Card className="overflow-hidden dark:bg-slate-900 dark:border-slate-700">
+        <div className="p-4 border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">
+          <h3 className="font-semibold text-slate-900 dark:text-slate-100">Product Shipping Costs</h3>
         </div>
         
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="bg-slate-50 border-b border-slate-200">
+            <thead className="bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
               <tr>
-                <th className="px-4 py-3 text-left text-slate-700 font-medium">Product</th>
-                <th className="px-4 py-3 text-left text-slate-700 font-medium">Price</th>
-                <th className="px-4 py-3 text-left text-slate-700 font-medium">Shipping Cost (ZMW)</th>
-                <th className="px-4 py-3 text-right text-slate-700 font-medium">Actions</th>
+                <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-medium">Product</th>
+                <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-medium">Price</th>
+                <th className="px-4 py-3 text-left text-slate-700 dark:text-slate-300 font-medium">Shipping Cost (ZMW)</th>
+                <th className="px-4 py-3 text-right text-slate-700 dark:text-slate-300 font-medium">Actions</th>
               </tr>
             </thead>
             <tbody>
               {products.map(product => (
-                <tr key={product.id} className="border-b border-slate-200 hover:bg-slate-50">
-                  <td className="px-4 py-3 font-medium text-slate-900">{product.name}</td>
-                  <td className="px-4 py-3 text-slate-600">K{product.price}</td>
+                <tr key={product.id} className="border-b border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                  <td className="px-4 py-3 font-medium text-slate-900 dark:text-slate-100">{product.name}</td>
+                  <td className="px-4 py-3 text-slate-600 dark:text-slate-400">K{product.price}</td>
                   <td className="px-4 py-3">
                     {editingId === product.id ? (
                       <div className="flex gap-2">
@@ -84,7 +84,7 @@ export default function ShippingManagement({ shopId }) {
                         />
                       </div>
                     ) : (
-                      <span className={product.shipping_cost ? "font-semibold text-slate-900" : "text-slate-500 italic"}>
+                      <span className={product.shipping_cost ? "font-semibold text-slate-900 dark:text-slate-100" : "text-slate-500 dark:text-slate-400 italic"}>
                         {product.shipping_cost ? `K${product.shipping_cost}` : "Using default rate"}
                       </span>
                     )}
@@ -129,20 +129,20 @@ export default function ShippingManagement({ shopId }) {
           </table>
         </div>
         {products.length === 0 && (
-          <div className="p-8 text-center text-slate-500">No products found</div>
+          <div className="p-8 text-center text-slate-500 dark:text-slate-400">No products found</div>
         )}
       </Card>
 
-      <Card className="p-4 bg-amber-50 border-amber-200">
-        <h4 className="font-semibold text-amber-900 mb-2">Default Town Shipping Rates (Set by Admin)</h4>
+      <Card className="p-4 bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/50">
+        <h4 className="font-semibold text-amber-900 dark:text-amber-300 mb-2">Default Town Shipping Rates (Set by Admin)</h4>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {shippingRates.length === 0 ? (
-            <p className="text-sm text-amber-800">No default rates configured yet</p>
+            <p className="text-sm text-amber-800 dark:text-amber-400">No default rates configured yet</p>
           ) : (
             shippingRates.map(rate => (
-              <div key={rate.id} className="flex justify-between p-2 bg-white rounded border border-amber-100">
-                <span className="text-sm font-medium text-slate-700">{rate.town_name}</span>
-                <span className="font-semibold text-amber-900">K{rate.default_rate}</span>
+              <div key={rate.id} className="flex justify-between p-2 bg-white dark:bg-slate-800 rounded border border-amber-100 dark:border-slate-700">
+                <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{rate.town_name}</span>
+                <span className="font-semibold text-amber-900 dark:text-amber-400">K{rate.default_rate}</span>
               </div>
             ))
           )}
