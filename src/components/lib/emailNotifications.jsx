@@ -115,12 +115,28 @@ export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) 
   });
 };
 
-export const emailNewOrderToShop = (shopOwnerEmail, shopName, order) =>
-  send({
+export const emailNewOrderToShop = (shopOwnerEmail, shopName, order) => {
+  const itemsList = order.items?.map(i => `<li style="margin: 6px 0;">${i.product_name} <strong>×${i.quantity}</strong> – K${i.price?.toLocaleString()}</li>`).join("") || "";
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${shopName} team,</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #059669;">🎉 You have received a new order!</p>
+    
+    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #059669; margin: 16px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📦 Order Details</p>
+      <p style="margin: 0 0 8px;"><strong>Customer:</strong> ${order.buyer_name}</p>
+      <ul style="margin: 8px 0 0; padding-left: 20px; color: #666;">${itemsList}</ul>
+      <p style="margin: 12px 0 0; border-top: 1px solid #ddd; padding-top: 8px; font-size: 16px; font-weight: 600; color: #059669;">Total: K${(order.total_amount || 0).toLocaleString()}</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #666;">📍 <strong>Delivery:</strong> ${order.delivery_address || "Collect in-store"}</p>
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Please confirm this order in your Shop Dashboard as soon as possible.</p>
+  `;
+  return send({
     to: shopOwnerEmail,
-    subject: `New Order Received – ${shopName}`,
-    body: `Hi ${shopName} team,\n\nYou have received a new order! 🛍️\n\nCustomer: ${order.buyer_name}\nItems: ${order.items?.map(i => `${i.product_name} x${i.quantity} (K${i.price})`).join(", ")}\nTotal: K${(order.total_amount || 0).toLocaleString()}\nDelivery: ${order.delivery_address || "Collect in-store"}\n\nPlease log in to your Shop Dashboard to confirm the order promptly.\n\nBwanguSpares Team`,
+    subject: `🎉 New Order Received – ${shopName}`,
+    htmlBody: createEmailTemplate("New Order", "🛍️", "#059669", content, { text: "View Order", url: "https://bwangu.com" }),
   });
+};
 
 // ─── Support Tickets ────────────────────────────────────────────────────────
 
