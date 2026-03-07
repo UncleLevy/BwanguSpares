@@ -123,6 +123,7 @@ export default function SupportTicketsPanel({ adminUser }) {
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1 flex-wrap">
+                      {ticket.ticket_number && <span className="font-mono text-[11px] text-blue-500 font-bold">#{ticket.ticket_number}</span>}
                       <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">{ticket.subject}</span>
                       <Badge className={`text-[10px] ${statusColors[ticket.status]}`}>{ticket.status.replace("_", " ")}</Badge>
                       <Badge className={`text-[10px] ${priorityColors[ticket.priority]}`}>{ticket.priority}</Badge>
