@@ -666,6 +666,13 @@ export default function BuyerDashboard() {
          </DialogContent>
        </Dialog>
 
+       <WalletTransactionDetail
+         txn={selectedTxn}
+         open={!!selectedTxn}
+         onClose={() => setSelectedTxn(null)}
+         userEmail={user?.email}
+       />
+
        <Dialog open={!!retryPaymentOrder} onOpenChange={(open) => { if (!open) setRetryPaymentOrder(null); }}>
          <DialogContent>
            <DialogHeader>
