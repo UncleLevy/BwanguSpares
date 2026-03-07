@@ -62,6 +62,7 @@ export default function BuyerDashboard() {
   const [receiptDialog, setReceiptDialog] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
   const [stripeRefundDialog, setStripeRefundDialog] = useState(false);
+  const [selectedTxn, setSelectedTxn] = useState(null);
   const [stripeRefundSubmitting, setStripeRefundSubmitting] = useState(false);
   const [retryPaymentOrder, setRetryPaymentOrder] = useState(null);
   const [retryPaymentSubmitting, setRetryPaymentSubmitting] = useState(false);
