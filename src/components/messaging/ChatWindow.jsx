@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Send, Store, User } from "lucide-react";
+import { Send, Store, User, Star, ShoppingBag, ExternalLink } from "lucide-react";
+import { createPageUrl } from "@/utils";
+import { Link } from "react-router-dom";
+import BuyerProfileModal from "@/components/messaging/BuyerProfileModal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
