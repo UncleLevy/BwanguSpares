@@ -8,25 +8,25 @@ import {
 import { ScrollText, Search } from "lucide-react";
 
 const ACTION_COLORS = {
-  ban_user: "bg-red-100 text-red-700",
-  suspend_user: "bg-orange-100 text-orange-700",
-  unban_user: "bg-emerald-100 text-emerald-700",
-  approve_shop: "bg-emerald-100 text-emerald-700",
-  reject_shop: "bg-red-100 text-red-700",
-  suspend_shop: "bg-orange-100 text-orange-700",
-  resolve_report: "bg-blue-100 text-blue-700",
-  dismiss_report: "bg-slate-100 text-slate-500",
-  update_order_status: "bg-blue-100 text-blue-700",
-  delete_product: "bg-red-100 text-red-700",
-  create_product: "bg-green-100 text-green-700",
-  update_product: "bg-yellow-100 text-yellow-700",
-  place_order: "bg-cyan-100 text-cyan-700",
-  cancel_order: "bg-red-100 text-red-700",
-  register_shop: "bg-purple-100 text-purple-700",
-  add_region: "bg-green-100 text-green-700",
-  delete_region: "bg-red-100 text-red-700",
-  submit_report: "bg-amber-100 text-amber-700",
-  leave_review: "bg-indigo-100 text-indigo-700",
+  ban_user: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
+  suspend_user: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400",
+  unban_user: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+  approve_shop: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+  reject_shop: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
+  suspend_shop: "bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400",
+  resolve_report: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+  dismiss_report: "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400",
+  update_order_status: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+  delete_product: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
+  create_product: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
+  update_product: "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400",
+  place_order: "bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400",
+  cancel_order: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
+  register_shop: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
+  add_region: "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400",
+  delete_region: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
+  submit_report: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+  leave_review: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400",
 };
 
 const ACTION_LABELS = {
@@ -84,8 +84,8 @@ export default function AuditLogPanel() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">Audit Log</h1>
-          <Badge className="bg-slate-100 text-slate-700">{logs.length} entries</Badge>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Audit Log</h1>
+          <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">{logs.length} entries</Badge>
         </div>
         <div className="relative w-64">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -104,10 +104,10 @@ export default function AuditLogPanel() {
           <p>No audit log entries found</p>
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
           <Table>
             <TableHeader>
-              <TableRow className="bg-slate-50">
+              <TableRow className="bg-slate-50 dark:bg-slate-800">
                 <TableHead>When</TableHead>
                 <TableHead>Actor</TableHead>
                 <TableHead>Role</TableHead>
@@ -118,30 +118,30 @@ export default function AuditLogPanel() {
             </TableHeader>
             <TableBody>
               {filtered.map(log => (
-                <TableRow key={log.id}>
-                  <TableCell className="text-xs text-slate-400 whitespace-nowrap">
-                    {new Date(log.created_date).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    <div className="font-medium">{log.actor_name || log.actor_email}</div>
-                    {log.actor_name && <div className="text-xs text-slate-400">{log.actor_email}</div>}
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-500 capitalize">{log.actor_role || "—"}</TableCell>
-                  <TableCell>
-                    <Badge className={ACTION_COLORS[log.action] || "bg-slate-100 text-slate-600"}>
-                      {ACTION_LABELS[log.action] || log.action}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {log.entity_label ? (
-                      <span className="font-medium">{log.entity_label}</span>
-                    ) : log.entity_type ? (
-                      <span className="text-slate-400 text-xs">{log.entity_type}</span>
-                    ) : "—"}
-                  </TableCell>
-                  <TableCell className="text-xs text-slate-500 max-w-[220px] truncate">{log.details || "—"}</TableCell>
-                </TableRow>
-              ))}
+                 <TableRow key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                   <TableCell className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                     {new Date(log.created_date).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                   </TableCell>
+                   <TableCell className="text-sm">
+                     <div className="font-medium text-slate-900 dark:text-slate-100">{log.actor_name || log.actor_email}</div>
+                     {log.actor_name && <div className="text-xs text-slate-400 dark:text-slate-500">{log.actor_email}</div>}
+                   </TableCell>
+                   <TableCell className="text-xs text-slate-500 dark:text-slate-400 capitalize">{log.actor_role || "—"}</TableCell>
+                   <TableCell>
+                     <Badge className={ACTION_COLORS[log.action] || "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}>
+                       {ACTION_LABELS[log.action] || log.action}
+                     </Badge>
+                   </TableCell>
+                   <TableCell className="text-sm">
+                     {log.entity_label ? (
+                       <span className="font-medium text-slate-900 dark:text-slate-100">{log.entity_label}</span>
+                     ) : log.entity_type ? (
+                       <span className="text-slate-400 dark:text-slate-500 text-xs">{log.entity_type}</span>
+                     ) : "—"}
+                   </TableCell>
+                   <TableCell className="text-xs text-slate-500 dark:text-slate-400 max-w-[220px] truncate">{log.details || "—"}</TableCell>
+                 </TableRow>
+               ))}
             </TableBody>
           </Table>
         </div>
