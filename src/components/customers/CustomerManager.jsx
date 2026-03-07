@@ -112,35 +112,35 @@ export default function CustomerManager({ shopId }) {
           </Button>
         </div>
 
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Name</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Phone</TableHead>
-                    <TableHead>Total Orders</TableHead>
-                    <TableHead>Total Spent</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Actions</TableHead>
+                    <TableHead className="dark:text-slate-300">Name</TableHead>
+                    <TableHead className="dark:text-slate-300">Email</TableHead>
+                    <TableHead className="dark:text-slate-300">Phone</TableHead>
+                    <TableHead className="dark:text-slate-300">Total Orders</TableHead>
+                    <TableHead className="dark:text-slate-300">Total Spent</TableHead>
+                    <TableHead className="dark:text-slate-300">Status</TableHead>
+                    <TableHead className="dark:text-slate-300">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {customers.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan="7" className="text-center py-8 text-slate-500">No customers yet</TableCell>
+                      <TableCell colSpan="7" className="text-center py-8 text-slate-500 dark:text-slate-400">No customers yet</TableCell>
                     </TableRow>
                   ) : (
                     customers.map(c => (
                       <TableRow key={c.id}>
-                        <TableCell className="font-medium">{c.full_name}</TableCell>
-                        <TableCell className="text-sm">{c.email}</TableCell>
-                        <TableCell className="text-sm">{c.phone || "-"}</TableCell>
-                        <TableCell>{c.total_orders || 0}</TableCell>
-                        <TableCell>K{(c.total_spent || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                        <TableCell><Badge className={c.status === "active" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}>{c.status}</Badge></TableCell>
+                        <TableCell className="font-medium dark:text-slate-100">{c.full_name}</TableCell>
+                        <TableCell className="text-sm dark:text-slate-400">{c.email}</TableCell>
+                        <TableCell className="text-sm dark:text-slate-400">{c.phone || "-"}</TableCell>
+                        <TableCell className="dark:text-slate-300">{c.total_orders || 0}</TableCell>
+                        <TableCell className="dark:text-slate-300">K{(c.total_spent || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                        <TableCell><Badge className={c.status === "active" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"}>{c.status}</Badge></TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button size="sm" variant="outline" onClick={() => openDetails(c)} className="h-8 gap-1"><Eye className="w-3 h-3" /> View</Button>
@@ -185,35 +185,35 @@ export default function CustomerManager({ shopId }) {
           {selectedCustomer && (
             <div className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-slate-400" /><div><p className="text-xs text-slate-500">Email</p><p className="text-sm font-medium">{selectedCustomer.email}</p></div></div>
-                <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-slate-400" /><div><p className="text-xs text-slate-500">Phone</p><p className="text-sm font-medium">{selectedCustomer.phone || "-"}</p></div></div>
+                <div className="flex items-center gap-2"><Mail className="w-4 h-4 text-slate-400 dark:text-slate-500" /><div><p className="text-xs text-slate-500 dark:text-slate-400">Email</p><p className="text-sm font-medium dark:text-slate-200">{selectedCustomer.email}</p></div></div>
+                <div className="flex items-center gap-2"><Phone className="w-4 h-4 text-slate-400 dark:text-slate-500" /><div><p className="text-xs text-slate-500 dark:text-slate-400">Phone</p><p className="text-sm font-medium dark:text-slate-200">{selectedCustomer.phone || "-"}</p></div></div>
                 {selectedCustomer.address && (
-                  <div className="flex items-start gap-2 col-span-2"><MapPin className="w-4 h-4 text-slate-400 mt-0.5" /><div><p className="text-xs text-slate-500">Address</p><p className="text-sm font-medium">{selectedCustomer.address}{selectedCustomer.town ? `, ${selectedCustomer.town}` : ""}</p></div></div>
+                  <div className="flex items-start gap-2 col-span-2"><MapPin className="w-4 h-4 text-slate-400 dark:text-slate-500 mt-0.5" /><div><p className="text-xs text-slate-500 dark:text-slate-400">Address</p><p className="text-sm font-medium dark:text-slate-200">{selectedCustomer.address}{selectedCustomer.town ? `, ${selectedCustomer.town}` : ""}</p></div></div>
                 )}
               </div>
 
               {selectedCustomer.notes && (
-                <div className="border-t border-slate-200 pt-4">
-                  <p className="text-xs text-slate-500 mb-2">NOTES</p>
-                  <p className="text-sm text-slate-700">{selectedCustomer.notes}</p>
+                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">NOTES</p>
+                  <p className="text-sm text-slate-700 dark:text-slate-300">{selectedCustomer.notes}</p>
                 </div>
               )}
 
-              <div className="border-t border-slate-200 pt-4">
-                <p className="text-xs text-slate-500 mb-3 font-semibold">ORDER HISTORY</p>
+              <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-3 font-semibold">ORDER HISTORY</p>
                 {customerOrders.length === 0 ? (
-                  <p className="text-sm text-slate-500">No orders yet</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">No orders yet</p>
                 ) : (
                   <div className="space-y-2">
                     {customerOrders.map(o => (
-                      <div key={o.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg text-sm">
+                      <div key={o.id} className="flex items-center justify-between p-2 bg-slate-50 dark:bg-slate-800 rounded-lg text-sm">
                         <div>
-                          <p className="font-medium">{o.items?.length || 0} items</p>
-                          <p className="text-xs text-slate-500">{new Date(o.created_date).toLocaleDateString()}</p>
+                          <p className="font-medium dark:text-slate-200">{o.items?.length || 0} items</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400">{new Date(o.created_date).toLocaleDateString()}</p>
                         </div>
                         <div className="text-right">
-                          <p className="font-medium">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                          <Badge className={o.status === "delivered" ? "bg-emerald-50 text-emerald-700 text-[10px]" : "bg-slate-100 text-slate-700 text-[10px]"}>{o.status}</Badge>
+                          <p className="font-medium dark:text-slate-200">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                          <Badge className={o.status === "delivered" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 text-[10px]" : "bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-400 text-[10px]"}>{o.status}</Badge>
                         </div>
                       </div>
                     ))}
