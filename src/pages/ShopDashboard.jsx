@@ -466,6 +466,7 @@ export default function ShopDashboard() {
    { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => setView("hire_requests") },
    { id: "appointments", label: "Appointments", icon: Calendar, onClick: () => setView("appointments") },
    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
+   { id: "returns", label: "Returns", icon: RotateCcw, onClick: () => setView("returns") },
    { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => setView("wallet") },
    {
       id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => setView("inventory"),
