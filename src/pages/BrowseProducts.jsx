@@ -42,7 +42,8 @@ export default function BrowseProducts() {
   const [condition, setCondition] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState("all");
-  const [vehicleFilter, setVehicleFilter] = useState({ make: "", model: "", year: "" });
+  const [vehicleFilter, setVehicleFilter] = useState({ vehicle_brand: null, vehicle_model: null, vehicle_year: null });
+  const [vehicleFilterOpen, setVehicleFilterOpen] = useState(false);
   const [requestFormOpen, setRequestFormOpen] = useState(false);
   const [user, setUser] = useState(null);
   const [page, setPage] = useState(1);
