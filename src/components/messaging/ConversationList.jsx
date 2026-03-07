@@ -1,5 +1,5 @@
 import React from "react";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Store, User } from "lucide-react";
 import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 
@@ -24,7 +24,13 @@ export default function ConversationList({ conversations, selectedId, onSelect, 
              onClick={() => onSelect(conv)}
              className={`w-full text-left px-4 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors ${isSelected ? "bg-blue-50 dark:bg-blue-900/30 border-l-2 border-blue-500" : ""}`}
            >
-             <div className="flex items-start justify-between gap-2">
+             <div className="flex items-start gap-3">
+               <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0 mt-0.5">
+                 {role === "buyer"
+                   ? <Store className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+                   : <User className="w-4 h-4 text-blue-500 dark:text-blue-400" />}
+               </div>
+             <div className="flex items-start justify-between gap-2 flex-1 min-w-0">
                <div className="flex-1 min-w-0">
                  <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">
                    {role === "buyer" ? conv.shop_name : conv.buyer_name}
@@ -49,9 +55,10 @@ export default function ConversationList({ conversations, selectedId, onSelect, 
                 )}
               </div>
             </div>
-          </button>
-        );
-      })}
-    </div>
-  );
+            </div>
+            </button>
+            );
+            })}
+            </div>
+            );
 }
