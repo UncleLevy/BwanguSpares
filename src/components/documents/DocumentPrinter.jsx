@@ -101,14 +101,11 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
                   ) : (
                     <div>
                       {productUrl ? (
-                        <a href={productUrl} style={{ color: color, textDecoration: "underline", fontWeight: "500" }}>
+                        <a href={productUrl} style={{ color: color, textDecoration: "underline", fontWeight: "500", cursor: "pointer" }}>
                           {item.product_name || item.name || "Item"}
                         </a>
                       ) : (
                         <span>{item.product_name || item.name || "Item"}</span>
-                      )}
-                      {productUrl && (
-                        <div style={{ fontSize: "11px", color: "#888", marginTop: "2px", wordBreak: "break-all" }}>{productUrl}</div>
                       )}
                     </div>
                   )}
