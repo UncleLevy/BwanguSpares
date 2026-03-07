@@ -215,14 +215,26 @@ export const emailPartsRequestCounterOffer = (buyerEmail, buyerName, partName, s
 
 export const emailShopStatusUpdate = (ownerEmail, ownerName, shopName, status) => {
   const messages = {
-    approved: `Great news! Your shop "${shopName}" has been approved. You can now start listing products and receiving orders.`,
-    rejected: `Unfortunately, your shop registration for "${shopName}" has been rejected. Please contact support for more information.`,
-    suspended: `Your shop "${shopName}" has been temporarily suspended. Please contact support to resolve any outstanding issues.`,
+    approved: "Congratulations! Your shop has been approved and is now live on BwanguSpares. Start listing products and reach customers today!",
+    rejected: "Thank you for your interest in BwanguSpares. Your shop registration was not approved at this time. Please contact support for feedback.",
+    suspended: "Your shop has been temporarily suspended due to policy violations. Please contact support to discuss next steps.",
   };
+  const colors = { approved: "#059669", rejected: "#dc2626", suspended: "#f59e0b" };
+  const emojis = { approved: "🎉", rejected: "❌", suspended: "⚠️" };
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${ownerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #1a1a1a;">${messages[status]}</p>
+    
+    <div style="background: ${colors[status]}10; padding: 16px; border-radius: 8px; border-left: 4px solid ${colors[status]}; margin: 16px 0; font-size: 13px; color: #666;">
+      <p style="margin: 0; font-weight: 600;">📌 Shop: ${shopName}</p>
+    </div>
+    
+    ${status === "approved" ? `<p style="margin: 12px 0 0; font-size: 13px; color: #888;">Next steps: Set up your products, configure shipping, and start receiving orders!</p>` : `<p style="margin: 12px 0 0; font-size: 13px; color: #888;">Please contact our support team if you have any questions.</p>`}
+  `;
   return send({
     to: ownerEmail,
-    subject: `Shop ${status.charAt(0).toUpperCase() + status.slice(1)}: ${shopName} – BwanguSpares`,
-    body: `Hi ${ownerName || "there"},\n\n${messages[status] || `Your shop status has been updated to: ${status}.`}\n\nIf you have questions, please contact us via the support section.\n\nBwanguSpares Admin Team`,
+    subject: `${emojis[status]} Shop ${status.charAt(0).toUpperCase() + status.slice(1)} – ${shopName}`,
+    htmlBody: createEmailTemplate(`Shop ${status.charAt(0).toUpperCase() + status.slice(1)}`, emojis[status], colors[status], content, status === "approved" ? { text: "Go to Dashboard", url: "https://bwangu.com" } : null),
   });
 };
 
