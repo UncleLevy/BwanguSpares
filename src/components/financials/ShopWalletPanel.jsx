@@ -58,9 +58,9 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
   if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
   const payoutStatusColors = {
-    pending: "bg-amber-50 text-amber-700",
-    completed: "bg-emerald-50 text-emerald-700",
-    failed: "bg-red-50 text-red-700",
+    pending: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400",
+    completed: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400",
+    failed: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400",
   };
 
   return (
@@ -69,50 +69,50 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100 dark:border-slate-800">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-emerald-600" />
+            <div className="w-11 h-11 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">K{(wallet?.total_earned || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              <p className="text-xs text-slate-500">Total Earned (Net)</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Earned (Net)</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-100 dark:border-slate-800">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-blue-50 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-blue-600" />
+            <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+              <Clock className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-blue-600">K{(wallet?.pending_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              <p className="text-xs text-slate-500">Pending Payout</p>
+              <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">K{(wallet?.pending_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Pending Payout</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-100 dark:border-slate-800">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-purple-50 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5 text-purple-600" />
+            <div className="w-11 h-11 rounded-xl bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">K{(wallet?.total_paid_out || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              <p className="text-xs text-slate-500">Total Paid Out</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Total Paid Out</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-100 dark:border-slate-800">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-5 flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-amber-50 flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-amber-600" />
+            <div className="w-11 h-11 rounded-xl bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900 dark:text-slate-100">K{(wallet?.total_fees_deducted || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-              <p className="text-xs text-slate-500">Platform Fee ({wallet?.platform_fee_rate ?? 5}%)</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Platform Fee ({wallet?.platform_fee_rate ?? 5}%)</p>
             </div>
           </CardContent>
         </Card>
@@ -127,15 +127,15 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
       </div>
 
       {/* Payout History */}
-      <Card className="border-slate-100 dark:border-slate-800">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardHeader className="pb-3">
-          <CardTitle className="text-base flex items-center gap-2">
-            <ArrowDownCircle className="w-4 h-4 text-blue-600" /> Payout History
+          <CardTitle className="text-base flex items-center gap-2 text-slate-900 dark:text-slate-100">
+            <ArrowDownCircle className="w-4 h-4 text-blue-600 dark:text-blue-400" /> Payout History
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
           {payouts.length === 0 ? (
-            <div className="py-10 text-center text-slate-400 text-sm">No payouts yet.</div>
+            <div className="py-10 text-center text-slate-400 dark:text-slate-500 text-sm">No payouts yet.</div>
           ) : (
             <Table>
               <TableHeader>
@@ -150,13 +150,13 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
               </TableHeader>
               <TableBody>
                 {payouts.map(p => (
-                  <TableRow key={p.id}>
-                    <TableCell className="text-sm">{new Date(p.created_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</TableCell>
-                    <TableCell className="font-semibold text-emerald-600">K{p.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                    <TableCell className="capitalize text-sm">{p.method?.replace('_', ' ')}</TableCell>
-                    <TableCell className="font-mono text-xs">{p.reference || '—'}</TableCell>
+                  <TableRow key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <TableCell className="text-sm text-slate-700 dark:text-slate-300">{new Date(p.created_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</TableCell>
+                    <TableCell className="font-semibold text-emerald-600 dark:text-emerald-400">K{p.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                    <TableCell className="capitalize text-sm text-slate-700 dark:text-slate-300">{p.method?.replace('_', ' ')}</TableCell>
+                    <TableCell className="font-mono text-xs text-slate-500 dark:text-slate-400">{p.reference || '—'}</TableCell>
                     <TableCell><Badge className={payoutStatusColors[p.status]}>{p.status}</Badge></TableCell>
-                    <TableCell className="text-xs text-slate-500">{p.notes || '—'}</TableCell>
+                    <TableCell className="text-xs text-slate-500 dark:text-slate-400">{p.notes || '—'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

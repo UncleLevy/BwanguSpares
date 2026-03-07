@@ -65,10 +65,10 @@ export default function StripeConnectPanel({ shop, onShopUpdate }) {
   };
 
   const statusConfig = {
-    not_connected: { label: "Not Connected", color: "bg-slate-100 text-slate-600", icon: AlertCircle },
-    onboarding: { label: "Onboarding Pending", color: "bg-amber-50 text-amber-700", icon: AlertCircle },
-    active: { label: "Active", color: "bg-emerald-50 text-emerald-700", icon: CheckCircle2 },
-    restricted: { label: "Restricted", color: "bg-red-50 text-red-700", icon: AlertCircle },
+    not_connected: { label: "Not Connected", color: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400", icon: AlertCircle },
+    onboarding: { label: "Onboarding Pending", color: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400", icon: AlertCircle },
+    active: { label: "Active", color: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400", icon: CheckCircle2 },
+    restricted: { label: "Restricted", color: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400", icon: AlertCircle },
   };
 
   const cfg = statusConfig[status] || statusConfig.not_connected;
@@ -80,7 +80,7 @@ export default function StripeConnectPanel({ shop, onShopUpdate }) {
         <Link2 className="w-5 h-5 text-blue-600" /> Stripe Connect — Automated Payouts
       </h2>
 
-      <Card className="border-slate-100 dark:border-slate-800">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-5 space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -137,16 +137,16 @@ export default function StripeConnectPanel({ shop, onShopUpdate }) {
       </Card>
 
       {/* Threshold Setting */}
-      <Card className="border-slate-100 dark:border-slate-800">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-5 space-y-3">
           <div className="flex items-center gap-2 mb-1">
-            <Settings className="w-4 h-4 text-slate-500" />
+            <Settings className="w-4 h-4 text-slate-500 dark:text-slate-400" />
             <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Auto-Payout Threshold</p>
           </div>
-          <p className="text-xs text-slate-500">When your pending balance reaches this amount, a payout is automatically initiated.</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">When your pending balance reaches this amount, a payout is automatically initiated.</p>
           <div className="flex items-center gap-3">
             <div className="flex-1">
-              <Label className="text-xs text-slate-500">Threshold (ZMW)</Label>
+              <Label className="text-xs text-slate-500 dark:text-slate-400">Threshold (ZMW)</Label>
               <Input
                 type="number"
                 min="100"
