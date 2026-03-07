@@ -22,6 +22,23 @@ const typeIcons = {
   system_alert: "🔔",
 };
 
+function playTone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {}
+}
+
 export default function NotificationBell({ userEmail }) {
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -34,7 +51,10 @@ export default function NotificationBell({ userEmail }) {
     const unsubscribe = base44.entities.Notification.subscribe((event) => {
       if (event.type === "create" && event.data?.user_email === userEmail) {
         setNotifications((prev) => [event.data, ...prev.slice(0, 49)]);
-        if (!event.data.read) setUnreadCount((prev) => prev + 1);
+        if (!event.data.read) {
+          setUnreadCount((prev) => prev + 1);
+          playTone();
+        }
       } else if (event.type === "update" && event.data?.user_email === userEmail) {
         setNotifications((prev) =>
           prev.map((n) => (n.id === event.data.id ? event.data : n))
