@@ -693,11 +693,15 @@ export default function ShopDashboard() {
                      <Card key={s.id} className={`border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-950' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
                        <CardContent className="p-6">
                          <div className="flex items-start justify-between mb-4">
-                           <div className="flex-1">
-                             <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{s.name}</h3>
-                             <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-2" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-2"}>{s.status}</Badge>
-                           </div>
-                           <Store className="w-6 h-6 text-blue-600 flex-shrink-0" />
+                             <div className="flex items-center gap-3 flex-1">
+                               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 flex items-center justify-center overflow-hidden flex-shrink-0">
+                                 {s.logo_url ? <img src={s.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-6 h-6 text-blue-500 dark:text-blue-400" />}
+                               </div>
+                               <div>
+                                 <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{s.name}</h3>
+                                 <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-1"}>{s.status}</Badge>
+                               </div>
+                             </div>
                          </div>
                          <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
                            {s.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 flex-shrink-0" /> {s.phone}</p>}
