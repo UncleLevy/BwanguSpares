@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { MessageSquare } from "lucide-react";
+import { MessageSquare, Archive } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import ConversationList from "@/components/messaging/ConversationList";
 import ChatWindow from "@/components/messaging/ChatWindow";
@@ -8,10 +8,11 @@ import Breadcrumbs from "@/components/shared/Breadcrumbs";
 
 export default function Messages() {
   const [user, setUser] = useState(null);
-  const [role, setRole] = useState("buyer"); // "buyer" or "shop"
+  const [role, setRole] = useState("buyer");
   const [conversations, setConversations] = useState([]);
   const [selected, setSelected] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [tab, setTab] = useState("active"); // "active" | "archived"
 
   useEffect(() => {
     (async () => {
