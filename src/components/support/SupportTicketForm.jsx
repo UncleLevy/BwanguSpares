@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { TicketCheck, Plus, ChevronDown, ChevronUp } from "lucide-react";
+import { TicketCheck, Plus, ChevronDown, ChevronUp, Paperclip, X, ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
 const CATEGORIES = [
