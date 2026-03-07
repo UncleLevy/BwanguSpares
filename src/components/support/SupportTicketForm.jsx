@@ -204,6 +204,15 @@ export default function SupportTicketForm({ user }) {
                   </div>
                   <p className="text-xs text-slate-500">{new Date(ticket.created_date).toLocaleDateString()} · {CATEGORIES.find(c => c.value === ticket.category)?.label}</p>
                   <p className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{ticket.message}</p>
+                  {ticket.photo_urls?.length > 0 && (
+                    <div className="flex gap-2 flex-wrap mt-1">
+                      {ticket.photo_urls.map((url, i) => (
+                        <a key={i} href={url} target="_blank" rel="noopener noreferrer">
+                          <img src={url} alt="" className="w-16 h-16 rounded-lg object-cover border border-slate-200 dark:border-slate-600 hover:opacity-80 transition-opacity" />
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   {ticket.admin_reply && (
                     <div className="mt-2 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800">
                       <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">Admin Reply:</p>
