@@ -1035,8 +1035,10 @@ export default function ShopDashboard() {
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><User className="w-5 h-5 text-slate-400" /></div>
-                        <div>
+                      <div className="w-11 h-11 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        {t.photo_url ? <img src={t.photo_url} alt="" className="w-full h-full object-cover" /> : <span className="text-sm font-bold text-blue-600 dark:text-blue-400">{t.name?.charAt(0)?.toUpperCase() || "T"}</span>}
+                      </div>
+                      <div>
                           <h3 className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{t.name}</h3>
                           <Badge variant="outline" className="text-[11px] mt-0.5">{SPECIALIZATIONS.find(s=>s.value===t.specialization)?.label || t.specialization}</Badge>
                         </div>
