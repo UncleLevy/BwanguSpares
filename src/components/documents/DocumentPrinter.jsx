@@ -173,7 +173,7 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
     const prefix = { invoice: "INV", receipt: "REC", quotation: "QUO" }[docType];
     const id = (order?.id || partsRequest?.id || "").slice(0, 6).toUpperCase();
     return `${prefix}-${id}-${Date.now().toString().slice(-4)}`;
-  }, [docType, order, partsRequest]);
+  }, [docType, order?.id, partsRequest?.id]);
 
   const handleEmailOpen = () => {
     const defaultEmail = order?.buyer_email || partsRequest?.buyer_email || "";
