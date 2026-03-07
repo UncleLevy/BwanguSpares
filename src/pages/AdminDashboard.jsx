@@ -582,6 +582,7 @@ export default function AdminDashboard() {
         )}
 
         {view === "payouts" && <PayoutsPanel adminUser={user} />}
+        {view === "returns" && <AdminReturnsPanel adminUser={user} />}
         {view === "shipping" && <AdminShippingRates />}
         {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
