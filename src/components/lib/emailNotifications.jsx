@@ -185,12 +185,24 @@ export const emailNewTicketToAdmin = async (ticket) => {
 
 // ─── Parts Requests ─────────────────────────────────────────────────────────
 
-export const emailPartsRequestReceived = (buyerEmail, buyerName, partName) =>
-  send({
+export const emailPartsRequestReceived = (buyerEmail, buyerName, partName) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Your parts request has been posted and verified shops will start reviewing it right away!</p>
+    
+    <div style="background: #fef3c7; padding: 16px; border-radius: 8px; border-left: 4px solid #d97706; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">🔧 Part Requested</p>
+      <p style="margin: 0; color: #666; font-size: 15px;">${partName}</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #666;">💡 <strong>Tip:</strong> Make sure your phone number is up to date so shops can reach you with offers.</p>
+  `;
+  return send({
     to: buyerEmail,
-    subject: `Parts Request Received – ${partName}`,
-    body: `Hi ${buyerName || "there"},\n\nYour request for "${partName}" has been submitted. Verified shops will review your request and reach out to you directly.\n\nMake sure your phone number is up to date so shops can contact you.\n\nBwanguSpares Team`,
+    subject: `🔧 Parts Request Posted – ${partName}`,
+    htmlBody: createEmailTemplate("Request Received", "🔧", "#d97706", content, { text: "Track Request", url: "https://bwangu.com" }),
   });
+};
 
 export const emailPartsRequestCounterOffer = (buyerEmail, buyerName, partName, shopName, counterBudget, message) =>
   send({
