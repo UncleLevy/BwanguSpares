@@ -46,7 +46,17 @@ export default function ProductCard({ product, onAddToCart, user }) {
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {product.compatible_vehicles}</p>
         )}
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
-           <span className="text-base sm:text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+           <div className="flex items-baseline gap-2">
+             {product.original_price && product.original_price > product.price && (
+               <span className="text-xs sm:text-sm text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
+             )}
+             <span className="text-base sm:text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+             {product.original_price && product.original_price > product.price && (
+               <span className="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 rounded">
+                 -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
+               </span>
+             )}
+           </div>
            <div className="flex gap-1.5">
              <WatchlistPartButton product={product} userEmail={user?.email} disabled={!canAddToCart} />
              {canAddToCart && (
