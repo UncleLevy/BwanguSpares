@@ -292,17 +292,27 @@ export default function BuyerDashboard() {
                               </Button>
                             )}
                             {order.status === "delivered" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => {
-                                  setReviewOrder(order);
-                                  setReviewDialog(true);
-                                }}
-                                className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
-                              >
-                                <Star className="w-3.5 h-3.5" /> Leave Review
-                              </Button>
+                             <div className="flex flex-col gap-1.5">
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 onClick={() => {
+                                   setReviewOrder(order);
+                                   setReviewDialog(true);
+                                 }}
+                                 className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
+                               >
+                                 <Star className="w-3.5 h-3.5" /> Leave Review
+                               </Button>
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 onClick={() => { setReturnOrder(order); setReturnDialog(true); }}
+                                 className="gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                               >
+                                 <RotateCcw className="w-3.5 h-3.5" /> Request Return
+                               </Button>
+                             </div>
                             )}
                             <ReportButton
                               reportedEmail={order.shop_name}
