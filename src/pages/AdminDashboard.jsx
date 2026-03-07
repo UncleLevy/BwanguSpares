@@ -450,6 +450,20 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               )}
+              {pendingRefundCount > 0 && (
+                <Card className="border-purple-200 bg-purple-50/30 dark:bg-purple-950/20 dark:border-purple-800">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2 text-purple-700 dark:text-purple-400">
+                      <RotateCcw className="w-5 h-5" /> {pendingRefundCount} return refund{pendingRefundCount !== 1 ? "s" : ""} awaiting release
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Button size="sm" variant="outline" onClick={() => setView("returns")} className="border-purple-300 text-purple-700 hover:bg-purple-100">
+                      Release Refunds
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
             </div>
           </div>
         )}
