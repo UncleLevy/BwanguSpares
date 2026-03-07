@@ -7,8 +7,8 @@ export default function ConversationList({ conversations, selectedId, onSelect, 
   if (conversations.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full py-16 text-center px-4">
-        <MessageSquare className="w-10 h-10 text-slate-300 mb-3" />
-        <p className="text-sm text-slate-500">No conversations yet</p>
+        <MessageSquare className="w-10 h-10 text-slate-300 dark:text-slate-600 mb-3" />
+        <p className="text-sm text-slate-500 dark:text-slate-400">No conversations yet</p>
       </div>
     );
   }

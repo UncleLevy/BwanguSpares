@@ -44,15 +44,15 @@ export default function ShopMessages({ shop, user }) {
   return (
     <div>
       <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-2xl font-bold text-slate-900">Messages</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Messages</h1>
         {totalUnread > 0 && (
           <span className="bg-blue-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
             {totalUnread} new
           </span>
         )}
       </div>
-      <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "65vh" }}>
-        <div className={`${showChat ? "hidden" : "flex"} md:flex w-full md:w-64 border-r border-slate-100 overflow-y-auto flex-shrink-0 flex-col`}>
+      <div className="flex bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl overflow-hidden shadow-sm" style={{ height: "65vh" }}>
+        <div className={`${showChat ? "hidden" : "flex"} md:flex w-full md:w-64 border-r border-slate-100 dark:border-slate-700 overflow-y-auto flex-shrink-0 flex-col`}>
           <PullToRefresh onRefresh={loadConversations}>
             <ConversationList
               conversations={conversations}
@@ -67,7 +67,7 @@ export default function ShopMessages({ shop, user }) {
           {showChat && isMobile && (
             <button
               onClick={() => setSelected(null)}
-              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 text-sm text-blue-600 font-medium"
+              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-blue-600 dark:text-blue-400 font-medium w-full"
             >
               ← Back to conversations
             </button>

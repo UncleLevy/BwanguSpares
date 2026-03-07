@@ -97,7 +97,7 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
 
   if (!conversation) {
     return (
-      <div className="flex-1 flex items-center justify-center text-slate-400 text-sm">
+      <div className="flex-1 flex items-center justify-center text-slate-400 dark:text-slate-500 text-sm">
         Select a conversation to start chatting
       </div>
     );
