@@ -114,24 +114,24 @@ export default function DiscountCodeManager({ shopId, codes, onCodesChange }) {
         </Button>
       </div>
 
-      <Card className="border-slate-100">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-800">
-                  <TableHead>Code</TableHead>
-                  <TableHead>Discount</TableHead>
-                  <TableHead>Valid Period</TableHead>
-                  <TableHead>Usage</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="dark:text-slate-300">Code</TableHead>
+                  <TableHead className="dark:text-slate-300">Discount</TableHead>
+                  <TableHead className="dark:text-slate-300">Valid Period</TableHead>
+                  <TableHead className="dark:text-slate-300">Usage</TableHead>
+                  <TableHead className="dark:text-slate-300">Status</TableHead>
+                  <TableHead className="dark:text-slate-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {codes.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan="6" className="text-center py-8 text-slate-500">No discount codes yet</TableCell>
+                    <TableCell colSpan="6" className="text-center py-8 text-slate-500 dark:text-slate-400">No discount codes yet</TableCell>
                   </TableRow>
                 ) : (
                   codes.map(c => {
@@ -141,11 +141,11 @@ export default function DiscountCodeManager({ shopId, codes, onCodesChange }) {
                     
                     return (
                       <TableRow key={c.id}>
-                        <TableCell className="font-mono font-bold text-blue-600">{c.code}</TableCell>
-                        <TableCell className="font-medium">{c.discount_type === "percentage" ? `${c.discount_value}%` : `K${c.discount_value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</TableCell>
-                        <TableCell className="text-sm">{new Date(c.valid_from).toLocaleDateString()} {c.valid_until ? `- ${new Date(c.valid_until).toLocaleDateString()}` : "- No expiry"}</TableCell>
-                        <TableCell className="text-sm">{c.usage_count || 0}{c.usage_limit ? ` / ${c.usage_limit}` : ""}</TableCell>
-                        <TableCell><Badge className={status === "active" ? "bg-emerald-50 text-emerald-700" : status === "expired" ? "bg-red-50 text-red-700" : status === "inactive" ? "bg-slate-100 text-slate-600" : "bg-amber-50 text-amber-700"}>{status}</Badge></TableCell>
+                        <TableCell className="font-mono font-bold text-blue-600 dark:text-blue-400">{c.code}</TableCell>
+                        <TableCell className="font-medium dark:text-slate-300">{c.discount_type === "percentage" ? `${c.discount_value}%` : `K${c.discount_value.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`}</TableCell>
+                        <TableCell className="text-sm dark:text-slate-400">{new Date(c.valid_from).toLocaleDateString()} {c.valid_until ? `- ${new Date(c.valid_until).toLocaleDateString()}` : "- No expiry"}</TableCell>
+                        <TableCell className="text-sm dark:text-slate-400">{c.usage_count || 0}{c.usage_limit ? ` / ${c.usage_limit}` : ""}</TableCell>
+                        <TableCell><Badge className={status === "active" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : status === "expired" ? "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" : status === "inactive" ? "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400" : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"}>{status}</Badge></TableCell>
                         <TableCell>
                           <div className="flex gap-2">
                             <Button size="sm" variant="ghost" onClick={() => { navigator.clipboard.writeText(c.code); toast.success("Code copied!"); }} className="h-8 gap-1"><Copy className="w-3 h-3" /> Copy</Button>

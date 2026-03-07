@@ -46,15 +46,15 @@ export default function DiscountMetricsSection({ metrics }) {
       {metrics.chartData && metrics.chartData.length > 0 && (
         <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Top Discount Codes</CardTitle>
+            <CardTitle className="text-lg dark:text-slate-100">Top Discount Codes</CardTitle>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Most used discount codes</p>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={350}>
               <BarChart data={metrics.chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                <XAxis dataKey="code" tick={{ fill: '#64748b', fontSize: 12 }} />
-                <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.2)" vertical={false} />
+                <XAxis dataKey="code" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <Tooltip 
                   contentStyle={{ 
                     backgroundColor: '#1e293b', 

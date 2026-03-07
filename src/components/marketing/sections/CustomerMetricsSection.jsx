@@ -51,15 +51,15 @@ export default function CustomerMetricsSection({ metrics }) {
           <div className="lg:col-span-2">
             <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Monthly Revenue Trend</CardTitle>
+                <CardTitle className="text-lg dark:text-slate-100">Monthly Revenue Trend</CardTitle>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Total revenue over time</p>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
                   <LineChart data={metrics.chartData} margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
-                    <XAxis dataKey="month" tick={{ fill: '#64748b', fontSize: 12 }} />
-                    <YAxis tick={{ fill: '#64748b', fontSize: 12 }} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(100,116,139,0.2)" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: '#94a3b8', fontSize: 12 }} />
+                    <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
                     <Tooltip 
                       contentStyle={{ 
                         backgroundColor: '#1e293b', 
@@ -78,9 +78,9 @@ export default function CustomerMetricsSection({ metrics }) {
           </div>
         )}
 
-        <Card className="border-0 shadow-sm bg-white dark:bg-slate-900">
+        <Card className="border-0 shadow-sm bg-white dark:bg-slate-900 dark:border dark:border-slate-700">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg">Key Metrics</CardTitle>
+            <CardTitle className="text-lg dark:text-slate-100">Key Metrics</CardTitle>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Summary statistics</p>
           </CardHeader>
           <CardContent className="space-y-3">

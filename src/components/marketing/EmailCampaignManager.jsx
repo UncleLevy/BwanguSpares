@@ -200,40 +200,40 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
          </Button>
        </div>
 
-      <Card className="border-slate-100">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-800">
-                  <TableHead>Campaign Name</TableHead>
-                  <TableHead>Target Segment</TableHead>
-                  <TableHead>Recipients</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead>Actions</TableHead>
+                  <TableHead className="dark:text-slate-300">Campaign Name</TableHead>
+                  <TableHead className="dark:text-slate-300">Target Segment</TableHead>
+                  <TableHead className="dark:text-slate-300">Recipients</TableHead>
+                  <TableHead className="dark:text-slate-300">Status</TableHead>
+                  <TableHead className="dark:text-slate-300">Created</TableHead>
+                  <TableHead className="dark:text-slate-300">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {campaigns.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan="6" className="text-center py-8 text-slate-500">No campaigns yet</TableCell>
+                    <TableCell colSpan="6" className="text-center py-8 text-slate-500 dark:text-slate-400">No campaigns yet</TableCell>
                   </TableRow>
                 ) : (
                   campaigns.map(c => (
                     <TableRow key={c.id}>
-                      <TableCell className="font-medium">{c.name}</TableCell>
-                      <TableCell className="text-sm capitalize">{c.target_segment.replace(/_/g, " ")}</TableCell>
+                      <TableCell className="font-medium dark:text-slate-100">{c.name}</TableCell>
+                      <TableCell className="text-sm capitalize dark:text-slate-400">{c.target_segment.replace(/_/g, " ")}</TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-0.5">
-                          <span>{c.recipient_count}</span>
+                          <span className="dark:text-slate-300">{c.recipient_count}</span>
                           {c.status === "sent" && (
-                            <span className="text-xs text-slate-500">Open: {c.estimated_open_rate}% | Click: {c.estimated_click_rate}%</span>
+                            <span className="text-xs text-slate-500 dark:text-slate-400">Open: {c.estimated_open_rate}% | Click: {c.estimated_click_rate}%</span>
                           )}
                         </div>
                       </TableCell>
-                      <TableCell><Badge className={c.status === "sent" ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-600"}>{c.status}</Badge></TableCell>
-                      <TableCell className="text-sm text-slate-500">{new Date(c.created_date).toLocaleDateString()}</TableCell>
+                      <TableCell><Badge className={c.status === "sent" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400"}>{c.status}</Badge></TableCell>
+                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{new Date(c.created_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex gap-2">
                           <Button size="sm" variant="outline" onClick={() => { setSelectedCampaign(c); setDetailsDialog(true); }} className="h-8 gap-1"><Eye className="w-3 h-3" /> View</Button>
@@ -298,14 +298,14 @@ export default function EmailCampaignManager({ shopId, campaigns, customers = []
           <DialogHeader><DialogTitle>{selectedCampaign?.name}</DialogTitle></DialogHeader>
           {selectedCampaign && (
             <div className="space-y-4">
-              <div><p className="text-xs text-slate-500 uppercase font-semibold">Subject</p><p className="text-sm font-medium mt-1">{selectedCampaign.subject}</p></div>
+              <div><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Subject</p><p className="text-sm font-medium mt-1 dark:text-slate-200">{selectedCampaign.subject}</p></div>
               <div><p className="text-xs text-slate-500 uppercase font-semibold">Content</p><p className="text-sm text-slate-700 dark:text-slate-300 mt-1 whitespace-pre-wrap">{selectedCampaign.content}</p></div>
               <div className="grid grid-cols-2 gap-4">
-                <div><p className="text-xs text-slate-500 uppercase font-semibold">Recipients</p><p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1">{selectedCampaign.recipient_count}</p></div>
-                <div><p className="text-xs text-slate-500 uppercase font-semibold">Status</p><Badge className={selectedCampaign.status === "sent" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-slate-100 text-slate-600 mt-1"}>{selectedCampaign.status}</Badge></div>
+                <div><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Recipients</p><p className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1">{selectedCampaign.recipient_count}</p></div>
+                <div><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Status</p><Badge className={selectedCampaign.status === "sent" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 mt-1"}>{selectedCampaign.status}</Badge></div>
               </div>
               {selectedCampaign.promo_code && (
-                <div><p className="text-xs text-slate-500 uppercase font-semibold">Promo Code</p><p className="text-sm font-mono font-bold text-blue-600 mt-1">{selectedCampaign.promo_code}</p></div>
+                <div><p className="text-xs text-slate-500 dark:text-slate-400 uppercase font-semibold">Promo Code</p><p className="text-sm font-mono font-bold text-blue-600 dark:text-blue-400 mt-1">{selectedCampaign.promo_code}</p></div>
               )}
             </div>
           )}
