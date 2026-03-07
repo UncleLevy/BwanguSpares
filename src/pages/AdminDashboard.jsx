@@ -37,6 +37,7 @@ import { logAudit } from "@/components/shared/auditLog";
 import AdminShippingRates from "@/components/admin/AdminShippingRates";
 import AdminProductsPanel from "@/components/admin/AdminProductsPanel";
 import AdminLoyaltyPanel from "@/components/admin/AdminLoyaltyPanel";
+import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);

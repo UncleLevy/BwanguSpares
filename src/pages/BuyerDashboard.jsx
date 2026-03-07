@@ -33,6 +33,7 @@ import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
 import LoyaltyPanel from "@/components/loyalty/LoyaltyPanel";
 import WalletTransactionDetail from "@/components/wallet/WalletTransactionDetail";
 import ReturnRequestDialog from "@/components/returns/ReturnRequestDialog.jsx";
+import SupportTicketForm from "@/components/support/SupportTicketForm";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800" },
