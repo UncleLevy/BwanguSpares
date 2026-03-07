@@ -163,13 +163,13 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
 }
 
 export default function DocumentPrinter({ shop, order, partsRequest, triggerLabel = "Print Document" }) {
-  const [open, setOpen] = React.useState(false);
-  const [docType, setDocType] = React.useState("invoice");
-  const [emailDialog, setEmailDialog] = React.useState(false);
-  const [emailTo, setEmailTo] = React.useState("");
-  const [sending, setSending] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [docType, setDocType] = useState("invoice");
+  const [emailDialog, setEmailDialog] = useState(false);
+  const [emailTo, setEmailTo] = useState("");
+  const [sending, setSending] = useState(false);
 
-  const docNumber = React.useMemo(() => {
+  const docNumber = useMemo(() => {
     const prefix = { invoice: "INV", receipt: "REC", quotation: "QUO" }[docType];
     const id = (order?.id || partsRequest?.id || "").slice(0, 6).toUpperCase();
     return `${prefix}-${id}-${Date.now().toString().slice(-4)}`;
