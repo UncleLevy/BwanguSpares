@@ -673,11 +673,11 @@ export default function ShopDashboard() {
              </div>
 
              {shops.length === 0 ? (
-               <Card className="border-amber-200 bg-amber-50/30">
+               <Card className="border-amber-200 dark:border-amber-800/50 bg-amber-50/30 dark:bg-amber-950/10">
                  <CardContent className="p-8 text-center">
-                   <Store className="w-12 h-12 mx-auto mb-3 text-amber-600" />
-                   <h3 className="text-lg font-semibold text-amber-900 mb-2">No Shops Yet</h3>
-                   <p className="text-sm text-amber-800 mb-4">Create your first shop to get started.</p>
+                   <Store className="w-12 h-12 mx-auto mb-3 text-amber-600 dark:text-amber-400" />
+                   <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-300 mb-2">No Shops Yet</h3>
+                   <p className="text-sm text-amber-800 dark:text-amber-400 mb-4">Create your first shop to get started.</p>
                    <Button onClick={() => setShowNewShopDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-1.5">
                      <Plus className="w-4 h-4" /> Create Shop
                    </Button>
@@ -690,7 +690,7 @@ export default function ShopDashboard() {
                    const shopOrders = orders.filter(o => o.shop_id === s.id);
                    const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
                    return (
-                     <Card key={s.id} className={`border-slate-100 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
+                     <Card key={s.id} className={`border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-950' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
                        <CardContent className="p-6">
                          <div className="flex items-start justify-between mb-4">
                            <div className="flex-1">
@@ -732,8 +732,8 @@ export default function ShopDashboard() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-1">{shop?.name}</h1>
-                <p className="text-sm text-slate-500">
-                  Status: <Badge className={shop?.status === "approved" ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700"}>{shop?.status}</Badge>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  Status: <Badge className={shop?.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"}>{shop?.status}</Badge>
                 </p>
               </div>
               <div className="flex items-center gap-3">
@@ -891,7 +891,7 @@ export default function ShopDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Name</TableHead><TableHead>Category</TableHead><TableHead>Price</TableHead><TableHead>Stock</TableHead><TableHead>Status</TableHead><TableHead>Tags</TableHead><TableHead>Actions</TableHead>
+                    <TableHead className="dark:text-slate-300">Name</TableHead><TableHead className="dark:text-slate-300">Category</TableHead><TableHead className="dark:text-slate-300">Price</TableHead><TableHead className="dark:text-slate-300">Stock</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Tags</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1097,7 +1097,7 @@ export default function ShopDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead>Order</TableHead><TableHead>Buyer</TableHead><TableHead>Items</TableHead><TableHead>Amount</TableHead><TableHead>Status</TableHead><TableHead>Transaction ID</TableHead><TableHead>Actions</TableHead>
+                    <TableHead className="dark:text-slate-300">Order</TableHead><TableHead className="dark:text-slate-300">Buyer</TableHead><TableHead className="dark:text-slate-300">Items</TableHead><TableHead className="dark:text-slate-300">Amount</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Transaction ID</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
