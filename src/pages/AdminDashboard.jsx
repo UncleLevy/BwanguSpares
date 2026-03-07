@@ -253,8 +253,10 @@ export default function AdminDashboard() {
   };
 
   const [ticketCount, setTicketCount] = useState(0);
+  const [pendingRefundCount, setPendingRefundCount] = useState(0);
   useEffect(() => {
     base44.entities.SupportTicket.filter({ status: "open" }).then(t => setTicketCount(t.length));
+    base44.entities.Return.filter({ status: "return_received" }).then(r => setPendingRefundCount(r.length));
   }, []);
 
   const sidebarItems = [
