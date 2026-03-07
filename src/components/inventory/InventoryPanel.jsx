@@ -137,7 +137,7 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-900">Inventory Management</h1>
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Inventory Management</h1>
         {pendingBulkCount > 0 && (
           <Button onClick={saveBulkUpdates} disabled={savingBulk} className="bg-emerald-600 hover:bg-emerald-700 gap-2">
             <Save className="w-4 h-4" /> Save {pendingBulkCount} Stock Update{pendingBulkCount > 1 ? "s" : ""}
@@ -147,46 +147,46 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
 
       {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center"><Package className="w-5 h-5 text-blue-600" /></div>
-            <div><p className="text-xl font-bold">{products.length}</p><p className="text-xs text-slate-500">Total SKUs</p></div>
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center"><Package className="w-5 h-5 text-blue-600 dark:text-blue-400" /></div>
+            <div><p className="text-xl font-bold text-slate-900 dark:text-slate-100">{products.length}</p><p className="text-xs text-slate-500 dark:text-slate-400">Total SKUs</p></div>
           </CardContent>
         </Card>
-        <Card className={`border-${lowStockItems.length > 0 ? "amber" : "slate"}-100`}>
+        <Card className={`dark:bg-slate-900 ${lowStockItems.length > 0 ? "border-amber-200 dark:border-amber-800/50" : "border-slate-100 dark:border-slate-700"}`}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${lowStockItems.length > 0 ? "bg-amber-50" : "bg-slate-50"}`}>
-              <AlertTriangle className={`w-5 h-5 ${lowStockItems.length > 0 ? "text-amber-500" : "text-slate-400"}`} />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${lowStockItems.length > 0 ? "bg-amber-100 dark:bg-amber-900/30" : "bg-slate-100 dark:bg-slate-800"}`}>
+              <AlertTriangle className={`w-5 h-5 ${lowStockItems.length > 0 ? "text-amber-500 dark:text-amber-400" : "text-slate-400"}`} />
             </div>
-            <div><p className="text-xl font-bold">{lowStockItems.length}</p><p className="text-xs text-slate-500">Low Stock</p></div>
+            <div><p className="text-xl font-bold text-slate-900 dark:text-slate-100">{lowStockItems.length}</p><p className="text-xs text-slate-500 dark:text-slate-400">Low Stock</p></div>
           </CardContent>
         </Card>
-        <Card className={`border-${outOfStock.length > 0 ? "red" : "slate"}-100`}>
+        <Card className={`dark:bg-slate-900 ${outOfStock.length > 0 ? "border-red-200 dark:border-red-800/50" : "border-slate-100 dark:border-slate-700"}`}>
           <CardContent className="p-4 flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${outOfStock.length > 0 ? "bg-red-50" : "bg-slate-50"}`}>
-              <Package className={`w-5 h-5 ${outOfStock.length > 0 ? "text-red-500" : "text-slate-400"}`} />
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${outOfStock.length > 0 ? "bg-red-100 dark:bg-red-900/30" : "bg-slate-100 dark:bg-slate-800"}`}>
+              <Package className={`w-5 h-5 ${outOfStock.length > 0 ? "text-red-500 dark:text-red-400" : "text-slate-400"}`} />
             </div>
-            <div><p className="text-xl font-bold">{outOfStock.length}</p><p className="text-xs text-slate-500">Out of Stock</p></div>
+            <div><p className="text-xl font-bold text-slate-900 dark:text-slate-100">{outOfStock.length}</p><p className="text-xs text-slate-500 dark:text-slate-400">Out of Stock</p></div>
           </CardContent>
         </Card>
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardContent className="p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center"><TrendingUp className="w-5 h-5 text-emerald-600" /></div>
-            <div><p className="text-xl font-bold">K{totalValue.toLocaleString()}</p><p className="text-xs text-slate-500">Stock Value</p></div>
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center"><TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" /></div>
+            <div><p className="text-xl font-bold text-slate-900 dark:text-slate-100">K{totalValue.toLocaleString()}</p><p className="text-xs text-slate-500 dark:text-slate-400">Stock Value</p></div>
           </CardContent>
         </Card>
       </div>
 
       {/* Category Chart */}
       {catData.length > 0 && (
-        <Card className="border-slate-100">
-          <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2"><BarChart3 className="w-4 h-4 text-blue-500" /> Products by Category</CardTitle></CardHeader>
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+          <CardHeader className="pb-2"><CardTitle className="text-base flex items-center gap-2 text-slate-900 dark:text-slate-100"><BarChart3 className="w-4 h-4 text-blue-500" /> Products by Category</CardTitle></CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={180}>
               <BarChart data={catData} margin={{ top: 0, right: 10, left: -20, bottom: 0 }}>
-                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip formatter={(val) => [`${val} products`, "Count"]} />
+                <XAxis dataKey="name" tick={{ fontSize: 11, fill: "currentColor" }} className="text-slate-500 dark:text-slate-400" />
+                <YAxis tick={{ fontSize: 11, fill: "currentColor" }} className="text-slate-500 dark:text-slate-400" />
+                <Tooltip contentStyle={{ backgroundColor: "var(--popover)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--popover-foreground)" }} formatter={(val) => [`${val} products`, "Count"]} />
                 <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                   {catData.map((_, i) => (
                     <Cell key={i} fill={["#3b82f6","#06b6d4","#10b981","#f59e0b","#8b5cf6","#ef4444","#f97316","#6366f1"][i % 8]} />
@@ -223,14 +223,14 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
       </div>
 
       {/* Bulk Stock Table */}
-      <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
-        <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-center gap-2">
-          <Edit3 className="w-4 h-4 text-slate-400" />
-          <span className="text-sm font-medium text-slate-700">Edit stock quantities inline, then click "Save Stock Updates"</span>
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+        <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 flex items-center gap-2">
+          <Edit3 className="w-4 h-4 text-slate-400 dark:text-slate-500" />
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Edit stock quantities inline, then click "Save Stock Updates"</span>
         </div>
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50">
+            <TableRow className="bg-slate-50 dark:bg-slate-800">
               <TableHead>Product</TableHead>
               <TableHead>Category / Sub</TableHead>
               <TableHead>SKU</TableHead>
@@ -250,26 +250,26 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
               const perf = salesMap[p.id] || { sold: 0, revenue: 0 };
               const editVal = bulkEdits[p.id];
               return (
-                <TableRow key={p.id} className={isOut ? "bg-red-50/40" : isLow ? "bg-amber-50/40" : ""}>
+                <TableRow key={p.id} className={isOut ? "bg-red-50/40 dark:bg-red-950/20" : isLow ? "bg-amber-50/40 dark:bg-amber-950/20" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"}>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       {p.image_url && <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border flex-shrink-0" />}
-                      <span className="font-medium text-sm">{p.name}</span>
+                      <span className="font-medium text-sm text-slate-900 dark:text-slate-100">{p.name}</span>
                     </div>
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">
+                  <TableCell className="text-xs text-slate-500 dark:text-slate-400">
                     <span className="capitalize">{p.category?.replace(/_/g, " ")}</span>
-                    {p.sub_category && <><br /><span className="text-slate-400">{p.sub_category}</span></>}
+                    {p.sub_category && <><br /><span className="text-slate-400 dark:text-slate-500">{p.sub_category}</span></>}
                   </TableCell>
-                  <TableCell className="text-xs font-mono text-slate-400">{p.sku || "—"}</TableCell>
-                  <TableCell className="text-sm">K{p.price?.toLocaleString()}</TableCell>
+                  <TableCell className="text-xs font-mono text-slate-400 dark:text-slate-500">{p.sku || "—"}</TableCell>
+                  <TableCell className="text-sm text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString()}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-1.5">
-                      <span className={`font-semibold text-sm ${isOut ? "text-red-600" : isLow ? "text-amber-600" : "text-slate-800"}`}>
+                      <span className={`font-semibold text-sm ${isOut ? "text-red-600 dark:text-red-400" : isLow ? "text-amber-600 dark:text-amber-400" : "text-slate-800 dark:text-slate-200"}`}>
                         {p.stock_quantity}
                       </span>
-                      {isOut && <Badge className="bg-red-100 text-red-700 text-[10px] px-1.5">Out</Badge>}
-                      {isLow && <Badge className="bg-amber-100 text-amber-700 text-[10px] px-1.5">Low</Badge>}
+                      {isOut && <Badge className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px] px-1.5">Out</Badge>}
+                      {isLow && <Badge className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[10px] px-1.5">Low</Badge>}
                     </div>
                   </TableCell>
                   <TableCell>
@@ -279,21 +279,21 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
                       placeholder={String(p.stock_quantity)}
                       value={editVal ?? ""}
                       onChange={e => handleBulkChange(p.id, e.target.value)}
-                      className={`h-8 w-24 text-sm ${editVal !== undefined && editVal !== "" ? "border-blue-400 bg-blue-50" : ""}`}
+                      className={`h-8 w-24 text-sm ${editVal !== undefined && editVal !== "" ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-500" : ""}`}
                     />
                   </TableCell>
                   <TableCell>
                     <button
                       onClick={() => openThreshold(p)}
-                      className="flex items-center gap-1 text-xs text-slate-500 hover:text-amber-600 transition-colors"
+                      className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
                     >
                       <AlertTriangle className="w-3 h-3" /> ≤{threshold}
                     </button>
                   </TableCell>
-                  <TableCell className="text-xs text-slate-500">
+                  <TableCell className="text-xs text-slate-500 dark:text-slate-400">
                     {perf.sold > 0 ? (
-                      <div><span className="font-medium text-slate-700">{perf.sold} sold</span><br />K{perf.revenue.toLocaleString()}</div>
-                    ) : <span className="text-slate-300">—</span>}
+                      <div><span className="font-medium text-slate-700 dark:text-slate-300">{perf.sold} sold</span><br />K{perf.revenue.toLocaleString()}</div>
+                    ) : <span className="text-slate-300 dark:text-slate-600">—</span>}
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className="text-[10px] capitalize">{p.status}</Badge>
@@ -302,7 +302,7 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
               );
             })}
             {filtered.length === 0 && (
-              <TableRow><TableCell colSpan={9} className="text-center py-12 text-slate-400">No products match filters</TableCell></TableRow>
+              <TableRow><TableCell colSpan={9} className="text-center py-12 text-slate-400 dark:text-slate-500">No products match filters</TableCell></TableRow>
             )}
           </TableBody>
         </Table>
@@ -313,7 +313,7 @@ export default function InventoryPanel({ products, orders, onProductsChange }) {
         <DialogContent className="max-w-sm">
           <DialogHeader><DialogTitle>Set Low-Stock Alert Threshold</DialogTitle></DialogHeader>
           <div className="py-2 space-y-3">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
               Send an alert when <strong>{thresholdDialog?.name}</strong> stock falls to or below:
             </p>
             <div>
