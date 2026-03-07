@@ -140,6 +140,7 @@ export default function Home() {
       </section>
 
       <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} user={user} />
+      <MegaDiscounts onAddToCart={handleAddToCart} user={user} />
       <NearbyShops shops={shops} loading={loading} />
       <PartnersSection />
     </div>
