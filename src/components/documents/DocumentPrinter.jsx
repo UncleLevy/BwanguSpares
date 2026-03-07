@@ -84,14 +84,41 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
           </tr>
         </thead>
         <tbody>
-          {items.map((item, i) => (
-            <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9fafb" }}>
-              <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>{item.product_name || item.name || "Item"}</td>
-              <td style={{ padding: "10px 12px", textAlign: "center", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>{item.quantity || 1}</td>
-              <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-               <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{((item.price || 0) * (item.quantity || 1)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-            </tr>
-          ))}
+          {items.map((item, i) => {
+            const productUrl = getProductUrl(item);
+            return (
+              <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#f9fafb" }}>
+                <td style={{ padding: "10px 12px", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>
+                  {isPrint ? (
+                    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                      <span>{item.product_name || item.name || "Item"}</span>
+                      {productUrl && (
+                        <div style={{ flexShrink: 0 }}>
+                          <QRCodeSVG value={productUrl} size={48} />
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div>
+                      {productUrl ? (
+                        <a href={productUrl} style={{ color: color, textDecoration: "underline", fontWeight: "500" }}>
+                          {item.product_name || item.name || "Item"}
+                        </a>
+                      ) : (
+                        <span>{item.product_name || item.name || "Item"}</span>
+                      )}
+                      {productUrl && (
+                        <div style={{ fontSize: "11px", color: "#888", marginTop: "2px", wordBreak: "break-all" }}>{productUrl}</div>
+                      )}
+                    </div>
+                  )}
+                </td>
+                <td style={{ padding: "10px 12px", textAlign: "center", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>{item.quantity || 1}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{(item.price || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td style={{ padding: "10px 12px", textAlign: "right", fontSize: "13px", borderBottom: "1px solid #e5e7eb" }}>K{((item.price || 0) * (item.quantity || 1)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
