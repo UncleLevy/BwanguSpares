@@ -247,12 +247,33 @@ export const emailShopRegistrationReceived = (ownerEmail, ownerName, shopName) =
 
 // ─── Reviews ─────────────────────────────────────────────────────────────────
 
-export const emailNewReviewToShop = (shopOwnerEmail, shopName, reviewerName, rating, comment) =>
-  send({
+export const emailNewReviewToShop = (shopOwnerEmail, shopName, reviewerName, rating, comment) => {
+  const stars = "⭐".repeat(rating) + "☆".repeat(5 - rating);
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${shopName} team,</p>
+    <p style="margin: 0 0 16px;">Congratulations! You've received a new review from a customer.</p>
+    
+    <div style="background: #fef3c7; padding: 20px; border-radius: 8px; margin: 20px 0;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+        <div style="width: 40px; height: 40px; background: #d97706; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; flex-shrink: 0;">
+          ${reviewerName?.charAt(0)?.toUpperCase() || "?"}
+        </div>
+        <div>
+          <p style="margin: 0; font-weight: 600; color: #1a1a1a;">${reviewerName}</p>
+          <p style="margin: 2px 0 0; color: #d97706; font-size: 16px;">${stars}</p>
+        </div>
+      </div>
+      ${comment ? `<p style="margin: 12px 0 0; color: #666; font-size: 13px; line-height: 1.5;">"${comment}"</p>` : ""}
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Great reviews help attract more customers. Thanks for providing excellent service!</p>
+  `;
+  return send({
     to: shopOwnerEmail,
-    subject: `New Review for ${shopName} – ${rating}⭐`,
-    body: `Hi ${shopName} team,\n\nYou've received a new review!\n\nReviewer: ${reviewerName}\nRating: ${"⭐".repeat(rating)} (${rating}/5)\nComment: ${comment || "No comment provided."}\n\nLog in to your Shop Dashboard to view all reviews.\n\nBwanguSpares Team`,
+    subject: `⭐ New Review for ${shopName} – ${rating}/5 Stars`,
+    htmlBody: createEmailTemplate("New Review", "⭐", "#d97706", content, { text: "View Review", url: "https://bwangu.com" }),
   });
+};
 
 // ─── Technician Hire Requests ────────────────────────────────────────────────
 
