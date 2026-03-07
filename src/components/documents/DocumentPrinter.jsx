@@ -36,6 +36,12 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
      ? (order.items || [])
      : [{ product_name: partsRequest?.part_name, quantity: 1, price: partsRequest?.budget || 0 }];
 
+  const getProductUrl = (item) => {
+    if (!item.product_id) return null;
+    const base = window.location.origin;
+    return `${base}${createPageUrl("ProductDetail")}?id=${item.product_id}`;
+  };
+
    const total = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
    const subtotal = type !== "quotation" ? Math.round((total / 1.16) * 100) / 100 : total;
    const vat = type !== "quotation" ? Math.round((total - subtotal) * 100) / 100 : 0;
