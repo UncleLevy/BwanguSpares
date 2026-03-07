@@ -160,13 +160,13 @@ export default function BranchManager({ shopId }) {
   };
 
   if (loading) {
-    return <div className="flex items-center justify-center h-64">Loading branches...</div>;
+    return <div className="flex items-center justify-center h-64 text-slate-500 dark:text-slate-400">Loading branches...</div>;
   }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Branch Management</h2>
+        <h2 className="text-2xl font-bold dark:text-slate-100">Branch Management</h2>
         <Button onClick={() => { resetForm(); setShowDialog(true); }} className="bg-blue-600 hover:bg-blue-700 gap-1.5">
           <Plus className="w-4 h-4" /> Add Branch
         </Button>
@@ -175,12 +175,12 @@ export default function BranchManager({ shopId }) {
       {/* Branches Grid */}
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
          {branches.map(branch => (
-           <Card key={branch.id} className={`border-slate-100 ${branch.status === "pending" ? "border-amber-200 bg-amber-50/30" : ""}`}>
+           <Card key={branch.id} className={`border-slate-100 dark:border-slate-700 dark:bg-slate-900 ${branch.status === "pending" ? "border-amber-200 dark:border-amber-800/50 bg-amber-50/30 dark:bg-amber-950/10" : ""}`}>
              <CardHeader className="pb-3">
                <div className="flex items-start justify-between">
                  <div>
-                   <CardTitle className="text-lg">{branch.name}</CardTitle>
-                   <Badge className={branch.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-2" : "bg-amber-50 text-amber-700 mt-2"}>
+                   <CardTitle className="text-lg dark:text-slate-100">{branch.name}</CardTitle>
+                   <Badge className={branch.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 mt-2" : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 mt-2"}>
                      {branch.status}
                    </Badge>
                  </div>
@@ -210,36 +210,36 @@ export default function BranchManager({ shopId }) {
              </CardHeader>
             <CardContent className="space-y-3">
               <div>
-                <p className="text-xs text-slate-500 mb-1">Location</p>
-                <p className="text-sm font-medium">{branch.address}</p>
-                <p className="text-xs text-slate-500">{branch.town}, {branch.region}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Location</p>
+                <p className="text-sm font-medium dark:text-slate-200">{branch.address}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{branch.town}, {branch.region}</p>
               </div>
 
               {branch.operational_hours && (
                 <div className="flex items-start gap-2 text-sm">
-                  <Clock className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+                  <Clock className="w-4 h-4 text-slate-400 dark:text-slate-500 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-500">Operating Hours</p>
-                    <p className="font-medium">{branch.operational_hours}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Operating Hours</p>
+                    <p className="font-medium dark:text-slate-200">{branch.operational_hours}</p>
                   </div>
                 </div>
               )}
 
               {branch.primary_contact_name && (
-                <div className="flex items-start gap-2 text-sm border-t pt-3">
-                  <User className="w-4 h-4 text-slate-400 mt-0.5 shrink-0" />
+                <div className="flex items-start gap-2 text-sm border-t border-slate-100 dark:border-slate-700 pt-3">
+                  <User className="w-4 h-4 text-slate-400 dark:text-slate-500 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs text-slate-500 mb-1">Primary Contact</p>
-                    <p className="font-medium">{branch.primary_contact_name}</p>
-                    {branch.primary_contact_phone && <p className="text-xs text-slate-500">{branch.primary_contact_phone}</p>}
-                    {branch.primary_contact_email && <p className="text-xs text-slate-500">{branch.primary_contact_email}</p>}
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mb-1">Primary Contact</p>
+                    <p className="font-medium dark:text-slate-200">{branch.primary_contact_name}</p>
+                    {branch.primary_contact_phone && <p className="text-xs text-slate-500 dark:text-slate-400">{branch.primary_contact_phone}</p>}
+                    {branch.primary_contact_email && <p className="text-xs text-slate-500 dark:text-slate-400">{branch.primary_contact_email}</p>}
                   </div>
                 </div>
               )}
 
               {branchProducts[branch.id]?.length > 0 && (
-                <div className="border-t pt-3">
-                  <p className="text-xs text-slate-500 mb-2">Products ({branchProducts[branch.id].length})</p>
+                <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mb-2">Products ({branchProducts[branch.id].length})</p>
                   <div className="flex flex-wrap gap-1">
                     {branchProducts[branch.id].slice(0, 3).map(p => (
                       <Badge key={p.id} variant="secondary" className="text-[11px]">{p.name}</Badge>
@@ -285,8 +285,8 @@ export default function BranchManager({ shopId }) {
               <Input value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="mt-1" />
             </div>
 
-            <div className="border-t pt-4">
-              <h4 className="text-sm font-semibold mb-3">Primary Contact</h4>
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+              <h4 className="text-sm font-semibold dark:text-slate-200 mb-3">Primary Contact</h4>
               <div>
                 <Label>Contact Name</Label>
                 <Input value={formData.primary_contact_name} onChange={e => setFormData({...formData, primary_contact_name: e.target.value})} className="mt-1" />
@@ -303,16 +303,16 @@ export default function BranchManager({ shopId }) {
               </div>
             </div>
 
-            <div className="border-t pt-4">
-              <h4 className="text-sm font-semibold mb-3">Operations</h4>
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+              <h4 className="text-sm font-semibold dark:text-slate-200 mb-3">Operations</h4>
               <div>
                 <Label>Operational Hours</Label>
                 <Input value={formData.operational_hours} onChange={e => setFormData({...formData, operational_hours: e.target.value})} placeholder="e.g. 9AM-5PM Monday-Friday" className="mt-1" />
               </div>
             </div>
 
-            <div className="border-t pt-4">
-              <h4 className="text-sm font-semibold mb-3">Map Coordinates (Optional)</h4>
+            <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+              <h4 className="text-sm font-semibold dark:text-slate-200 mb-3">Map Coordinates (Optional)</h4>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Latitude</Label>
