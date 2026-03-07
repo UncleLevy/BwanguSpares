@@ -3,7 +3,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 
 function useDark() {
-  return typeof document !== "undefined" && document.documentElement.classList.contains("dark");
+  const [dark, setDark] = React.useState(
+    typeof document !== "undefined" && document.documentElement.classList.contains("dark")
+  );
+  React.useEffect(() => {
+    const obs = new MutationObserver(() => {
+      setDark(document.documentElement.classList.contains("dark"));
+    });
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    return () => obs.disconnect();
+  }, []);
+  return dark;
 }
 
 export default function CategoryChart({ data, title = "Top Categories" }) {
