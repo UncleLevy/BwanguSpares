@@ -34,7 +34,20 @@ export default function ReturnRequestDialog({ open, onClose, order, user }) {
     setSubmitting(true);
     const selectedItem = items[parseInt(form.item_index)];
 
-    await base44.entities.Return.create({
+    // Check if return already exists for this item
+    const existingReturn = await base44.entities.Return.filter({
+      order_id: order.id,
+      product_id: selectedItem?.product_id,
+      status: { $in: ["pending", "approved", "return_received"] }
+    });
+
+    if (existingReturn.length > 0) {
+      toast.error("A return request for this item is already in progress");
+      setSubmitting(false);
+      return;
+    }
+
+    const returnData = {
       order_id: order.id,
       buyer_email: user.email,
       buyer_name: user.full_name,
@@ -47,7 +60,19 @@ export default function ReturnRequestDialog({ open, onClose, order, user }) {
       quantity: selectedItem?.quantity || 1,
       refund_amount: selectedItem?.price * (selectedItem?.quantity || 1),
       status: "pending",
-    });
+    };
+
+    await base44.entities.Return.create(returnData);
+
+    // Send emails
+    const emailNotifications = await import("@/components/lib/emailNotifications");
+    emailNotifications.emailReturnInitiated(user.email, user.full_name, returnData);
+    
+    // Get shop owner email for return notification to shop
+    const shop = await base44.entities.Shop.filter({ id: order.shop_id });
+    if (shop.length > 0) {
+      emailNotifications.emailReturnToShop(shop[0].owner_email, shop[0].name, returnData);
+    }
 
     // Notify the shop via notification
     await base44.entities.Notification.create({
