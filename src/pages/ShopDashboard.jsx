@@ -1042,7 +1042,7 @@ export default function ShopDashboard() {
                         <Button size="icon" variant="ghost" className="h-7 w-7 text-red-500" onClick={() => deleteTech(t.id)}><Trash2 className="w-3 h-3" /></Button>
                       </div>
                     </div>
-                    <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
+                    <div className="mt-3 flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400">
                       {t.experience_years && <span>{t.experience_years} yrs</span>}
                       {t.hourly_rate && <span className="font-medium text-blue-600">K{t.hourly_rate}/hr</span>}
                       <Badge className={t.available !== false ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"}>
@@ -1103,10 +1103,10 @@ export default function ShopDashboard() {
                 <TableBody>
                   {orders.map(o => (
                     <TableRow key={o.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => navigate(createPageUrl("OrderDetails") + `?id=${o.id}`)}>
-                      <TableCell className="font-mono text-xs">{o.id?.slice(0,8)}</TableCell>
-                      <TableCell className="text-sm">{o.buyer_name || o.buyer_email}</TableCell>
-                      <TableCell className="text-sm">{o.items?.length || 0} items</TableCell>
-                      <TableCell className="font-medium">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                     <TableCell className="font-mono text-xs text-slate-500 dark:text-slate-400">{o.id?.slice(0,8)}</TableCell>
+                     <TableCell className="text-sm text-slate-900 dark:text-slate-100">{o.buyer_name || o.buyer_email}</TableCell>
+                     <TableCell className="text-sm text-slate-600 dark:text-slate-400">{o.items?.length || 0} items</TableCell>
+                     <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{o.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                       <TableCell>
                         <div>
                           <Badge className={orderStatusColors[o.status]}>{o.status}</Badge>
