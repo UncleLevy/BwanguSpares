@@ -263,6 +263,7 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
             </DialogTitle>
           </DialogHeader>
 
+          {/* Email/link preview (shown in dialog) */}
           <div className="border rounded-xl overflow-hidden shadow-inner bg-white mt-2">
             <DocumentView
               type={docType}
@@ -270,7 +271,21 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
               order={order}
               partsRequest={partsRequest}
               docNumber={docNumber}
+              isPrint={false}
             />
+          </div>
+          {/* Print version with QR codes — hidden, used only when printing */}
+          <div style={{ display: "none" }}>
+            <div id="printable-document-print-view">
+              <DocumentView
+                type={docType}
+                shop={shop}
+                order={order}
+                partsRequest={partsRequest}
+                docNumber={docNumber}
+                isPrint={true}
+              />
+            </div>
           </div>
 
           <DialogFooter className="mt-4 gap-2 flex-wrap">
