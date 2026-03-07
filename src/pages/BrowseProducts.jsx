@@ -314,6 +314,13 @@ export default function BrowseProducts() {
       )}
 
       <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
+      
+      {vehicleFilterOpen && (
+        <VehicleFilterPanel 
+          onFilterChange={setVehicleFilter}
+          onClose={() => setVehicleFilterOpen(false)}
+        />
+      )}
     </div>
     </PullToRefresh>
   );
