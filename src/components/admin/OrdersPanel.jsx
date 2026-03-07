@@ -14,12 +14,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 
 const statusOptions = [
-  { value: "pending", label: "Pending", color: "bg-amber-50 text-amber-700" },
-  { value: "confirmed", label: "Confirmed", color: "bg-blue-50 text-blue-700" },
-  { value: "processing", label: "Processing", color: "bg-indigo-50 text-indigo-700" },
-  { value: "shipped", label: "Shipped", color: "bg-purple-50 text-purple-700" },
-  { value: "delivered", label: "Delivered", color: "bg-emerald-50 text-emerald-700" },
-  { value: "cancelled", label: "Cancelled", color: "bg-red-50 text-red-700" },
+  { value: "pending", label: "Pending", color: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" },
+  { value: "confirmed", label: "Confirmed", color: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400" },
+  { value: "processing", label: "Processing", color: "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400" },
+  { value: "shipped", label: "Shipped", color: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400" },
+  { value: "delivered", label: "Delivered", color: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" },
+  { value: "cancelled", label: "Cancelled", color: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" },
 ];
 
 export default function OrdersPanel({ orders, onOrderUpdate }) {
@@ -87,14 +87,14 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
   };
 
   const getStatusColor = (status) => {
-    return statusOptions.find(s => s.value === status)?.color || "bg-slate-50 text-slate-700";
+    return statusOptions.find(s => s.value === status)?.color || "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300";
   };
 
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Order Management</h1>
 
-      <Card className="border-slate-100 dark:border-slate-700">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
@@ -112,11 +112,11 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
               </TableHeader>
               <TableBody>
                 {sortData(orders, sort).map(order => (
-                  <TableRow key={order.id}>
-                    <TableCell className="font-mono text-xs text-slate-500">{order.id?.slice(0, 8)}</TableCell>
-                    <TableCell className="text-sm">{order.buyer_name || order.buyer_email}</TableCell>
+                  <TableRow key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <TableCell className="font-mono text-xs text-slate-500 dark:text-slate-400">{order.id?.slice(0, 8)}</TableCell>
+                    <TableCell className="text-sm text-slate-900 dark:text-slate-100">{order.buyer_name || order.buyer_email}</TableCell>
                     <TableCell className="text-sm text-slate-500 dark:text-slate-400">{order.shop_name}</TableCell>
-                    <TableCell className="font-medium">K{order.total_amount?.toLocaleString()}</TableCell>
+                    <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{order.total_amount?.toLocaleString()}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(order.status)}>
                         {order.status}
@@ -124,12 +124,12 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                     </TableCell>
                     <TableCell>
                       {order.tracking_number ? (
-                        <span className="text-xs font-mono text-blue-600">{order.tracking_number}</span>
+                        <span className="text-xs font-mono text-blue-600 dark:text-blue-400">{order.tracking_number}</span>
                       ) : (
-                        <span className="text-xs text-slate-400">—</span>
+                        <span className="text-xs text-slate-400 dark:text-slate-500">—</span>
                       )}
                     </TableCell>
-                    <TableCell className="text-xs text-slate-400">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</TableCell>
+                    <TableCell className="text-xs text-slate-400 dark:text-slate-500">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</TableCell>
                     <TableCell>
                       <div className="flex gap-1">
                         <Button size="sm" variant="ghost" className="h-8 gap-1.5" onClick={() => handleEditOrder(order)}>
@@ -139,13 +139,13 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                           <Button
                             size="sm"
                             variant="ghost"
-                            className="h-8 gap-1.5 text-red-600 hover:bg-red-50 hover:text-red-700"
+                            className="h-8 gap-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700"
                             onClick={() => { setRefundOrder(order); setRefundReason(""); setRefundDialog(true); }}
                           >
                             <RefreshCcw className="w-3.5 h-3.5" /> Refund
                           </Button>
                         )}
-                        {order.refunded && <Badge className="bg-red-50 text-red-700 text-[10px]">Refunded</Badge>}
+                        {order.refunded && <Badge className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px]">Refunded</Badge>}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -175,7 +175,7 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                 rows={3}
               />
             </div>
-            <div className="text-sm text-slate-500 bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <div className="text-sm text-slate-500 dark:text-slate-400 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
               <strong>Order:</strong> K{refundOrder?.total_amount?.toLocaleString()} from {refundOrder?.shop_name}<br />
               <strong>Payment:</strong> {refundOrder?.stripe_session_id ? "Stripe (online)" : "Cash/Manual"}
             </div>
