@@ -28,8 +28,9 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
   const clientPhone = isOrder ? order.delivery_phone : partsRequest?.buyer_phone;
   const clientRegion = isOrder ? order.delivery_address : partsRequest?.buyer_region;
 
-  const typeLabels = { invoice: "INVOICE", receipt: "RECEIPT", quotation: "QUOTATION" };
-  const typeColors = { invoice: "#1e40af", receipt: "#065f46", quotation: "#92400e" };
+  const typeLabels = { invoice: "Invoice", receipt: "Receipt", quotation: "Quotation" };
+  const typeColors = { invoice: "#0891b2", receipt: "#059669", quotation: "#d97706" };
+  const typeEmojis = { invoice: "📋", receipt: "🧾", quotation: "💬" };
   const color = typeColors[type];
 
   const items = isOrder
