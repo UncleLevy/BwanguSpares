@@ -24,9 +24,9 @@ import SortableTableHead, { toggleSort, sortData } from "@/components/shared/Sor
 import { logAudit } from "@/components/shared/auditLog";
 
 const ROLE_COLORS = {
-  admin: "bg-purple-100 text-purple-700",
-  shop_owner: "bg-blue-100 text-blue-700",
-  user: "bg-slate-100 text-slate-600",
+  admin: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
+  shop_owner: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+  user: "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300",
 };
 
 const ROLE_ICONS = {
@@ -162,8 +162,8 @@ export default function UsersPanel({ adminUser }) {
     <div>
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-bold text-slate-900">User Management</h1>
-          <Badge className="bg-slate-100 text-slate-700">{users.length} accounts</Badge>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">User Management</h1>
+          <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">{users.length} accounts</Badge>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={openBanBlank} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
@@ -199,10 +199,10 @@ export default function UsersPanel({ adminUser }) {
             </Select>
           </div>
 
-          <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
             <Table>
               <TableHeader>
-                <TableRow className="bg-slate-50">
+                <TableRow className="bg-slate-50 dark:bg-slate-800">
                   <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
                   <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
                   <SortableTableHead field="role" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Role</SortableTableHead>
@@ -217,19 +217,19 @@ export default function UsersPanel({ adminUser }) {
                   const isBanned = bannedEmails.has(u.email);
                   const isSelf = u.email === adminUser?.email;
                   return (
-                    <TableRow key={u.id} className={isBanned ? "bg-red-50/40" : ""}>
-                      <TableCell className="font-medium text-sm">{u.full_name || "—"}</TableCell>
-                      <TableCell className="text-sm text-slate-500">{u.email}</TableCell>
+                    <TableRow key={u.id} className={isBanned ? "bg-red-50/40 dark:bg-red-900/10" : "hover:bg-slate-50 dark:hover:bg-slate-800/50"}>
+                      <TableCell className="font-medium text-sm text-slate-900 dark:text-slate-100">{u.full_name || "—"}</TableCell>
+                      <TableCell className="text-sm text-slate-500 dark:text-slate-400">{u.email}</TableCell>
                       <TableCell>
                         <Badge className={`${ROLE_COLORS[u.role] || "bg-slate-100 text-slate-600"} flex items-center gap-1 w-fit text-[11px]`}>
                           <RoleIcon className="w-3 h-3" /> {u.role || "user"}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs text-slate-400">{new Date(u.created_date).toLocaleDateString()}</TableCell>
+                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{new Date(u.created_date).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {isBanned
-                          ? <Badge className="bg-red-100 text-red-700 text-[11px]">Banned/Suspended</Badge>
-                          : <Badge className="bg-emerald-100 text-emerald-700 text-[11px]">Active</Badge>
+                          ? <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[11px]">Banned/Suspended</Badge>
+                          : <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[11px]">Active</Badge>
                         }
                       </TableCell>
                       <TableCell>
@@ -261,7 +261,7 @@ export default function UsersPanel({ adminUser }) {
                   );
                 })}
                 {filtered.length === 0 && (
-                  <TableRow><TableCell colSpan={6} className="text-center py-12 text-slate-400">No users found</TableCell></TableRow>
+                <TableRow><TableCell colSpan={6} className="text-center py-12 text-slate-400 dark:text-slate-500">No users found</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
@@ -276,10 +276,10 @@ export default function UsersPanel({ adminUser }) {
               <p>No banned or suspended users</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl border border-slate-100 overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
               <Table>
                 <TableHeader>
-                  <TableRow className="bg-slate-50">
+                  <TableRow className="bg-slate-50 dark:bg-slate-800">
                     <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
                     <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
                     <SortableTableHead field="ban_type" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Type</SortableTableHead>
@@ -291,17 +291,17 @@ export default function UsersPanel({ adminUser }) {
                 </TableHeader>
                 <TableBody>
                   {sortData(bannedUsers, sort).map(b => (
-                    <TableRow key={b.id}>
-                      <TableCell className="font-medium text-sm">{b.full_name || "—"}</TableCell>
-                      <TableCell className="text-sm">{b.email}</TableCell>
+                    <TableRow key={b.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                      <TableCell className="font-medium text-sm text-slate-900 dark:text-slate-100">{b.full_name || "—"}</TableCell>
+                      <TableCell className="text-sm text-slate-700 dark:text-slate-300">{b.email}</TableCell>
                       <TableCell>
-                        <Badge className={b.ban_type === "banned" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}>
+                        <Badge className={b.ban_type === "banned" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"}>
                           {b.ban_type}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-sm max-w-[180px] truncate">{b.reason}</TableCell>
-                      <TableCell className="text-xs text-slate-400">{b.ban_expires ? new Date(b.ban_expires).toLocaleDateString() : "Permanent"}</TableCell>
-                      <TableCell className="text-xs text-slate-400">{b.banned_by}</TableCell>
+                      <TableCell className="text-sm text-slate-600 dark:text-slate-400 max-w-[180px] truncate">{b.reason}</TableCell>
+                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.ban_expires ? new Date(b.ban_expires).toLocaleDateString() : "Permanent"}</TableCell>
+                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.banned_by}</TableCell>
                       <TableCell>
                         <Button size="sm" variant="ghost" className="h-8 text-emerald-600 hover:bg-emerald-50" onClick={() => removeBan(b.id, b.email)}>
                           <RotateCcw className="w-3.5 h-3.5 mr-1" /> Unblock
