@@ -32,6 +32,14 @@ export default function Home() {
       if (isAuth) {
         const currentUser = await base44.auth.me();
         setUser(currentUser);
+        if (currentUser.role === "admin") {
+          navigate(createPageUrl("AdminDashboard"));
+          return;
+        }
+        if (currentUser.role === "shop_owner") {
+          navigate(createPageUrl("ShopDashboard"));
+          return;
+        }
       }
     })();
   }, []);
