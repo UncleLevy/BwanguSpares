@@ -383,6 +383,51 @@ export const emailReturnToShop = (shopOwnerEmail, shopName, returnRequest) => {
   });
 };
 
+// Watchlist Notifications
+export const emailPriceDropNotification = (buyerEmail, buyerName, watchlist) => {
+  const priceSavings = watchlist.last_notified_price - watchlist.current_price;
+  const percentDrop = ((priceSavings / watchlist.last_notified_price) * 100).toFixed(1);
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Great news! A part you're following has dropped in price.</p>
+    
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #059669; margin: 20px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">💰 Price Drop Alert</p>
+      <p style="margin: 8px 0; font-size: 14px;"><strong>${watchlist.product_name}</strong></p>
+      <p style="margin: 8px 0; color: #666; font-size: 13px;">From <span style="text-decoration: line-through;">K${watchlist.last_notified_price?.toLocaleString()}</span> → <span style="color: #059669; font-weight: 600; font-size: 16px;">K${watchlist.current_price?.toLocaleString()}</span></p>
+      <p style="margin: 12px 0 0; font-size: 13px; color: #059669; font-weight: 600;">You save K${priceSavings.toFixed(2)} (${percentDrop}% off)</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Shop: ${watchlist.shop_name}</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `💰 Price Drop! ${watchlist.product_name} – K${watchlist.current_price?.toLocaleString()}`,
+    htmlBody: createEmailTemplate("Price Drop Alert", "💰", "#059669", content, { text: "View Product", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailBackInStockNotification = (buyerEmail, buyerName, watchlist) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #059669;">✓ Back in stock!</p>
+    
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #059669; margin: 20px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📦 Stock Alert</p>
+      <p style="margin: 8px 0; font-size: 14px;"><strong>${watchlist.product_name}</strong> is now available again.</p>
+      <p style="margin: 12px 0 0; font-size: 15px; color: #059669; font-weight: 600;">K${watchlist.current_price?.toLocaleString()}</p>
+      <p style="margin: 6px 0; color: #666; font-size: 13px;">Shop: ${watchlist.shop_name}</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Don't miss out—add it to your cart before it sells out again!</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `✓ ${watchlist.product_name} Back in Stock – K${watchlist.current_price?.toLocaleString()}`,
+    htmlBody: createEmailTemplate("Back in Stock", "✓", "#059669", content, { text: "Buy Now", url: "https://bwangu.com" }),
+  });
+};
+
 // ─── Technician Hire Requests ────────────────────────────────────────────────
 
 export const emailHireRequestToShop = (shopOwnerEmail, shopName, buyerName, problemType, description) =>
