@@ -92,18 +92,23 @@ export default function BrowseProducts() {
   const filteredProducts = products.filter(p => {
     const matchesSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase()) ||
       p.description?.toLowerCase().includes(search.toLowerCase()) ||
-      p.compatible_vehicles?.toLowerCase().includes(search.toLowerCase()) ||
       p.brand?.toLowerCase().includes(search.toLowerCase());
     const matchesPrice = priceRange === "all" || (() => {
       const [min, max] = PRICE_RANGES[priceRange];
       return (p.price || 0) >= min && (p.price || 0) <= max;
     })();
-    const cv = (p.compatible_vehicles || "").toLowerCase();
-    const matchesVehicle = !vehicleFilter.make || (
-      cv.includes(vehicleFilter.make.toLowerCase()) &&
-      (!vehicleFilter.model || cv.includes(vehicleFilter.model.toLowerCase())) &&
-      (!vehicleFilter.year || cv.includes(vehicleFilter.year))
-    );
+    
+    // Check vehicle compatibility using structured compatible_vehicles array
+    let matchesVehicle = true;
+    if (vehicleFilter.vehicle_brand) {
+      const compatible = p.compatible_vehicles || [];
+      matchesVehicle = compatible.some(v => 
+        v.brand?.toLowerCase() === vehicleFilter.vehicle_brand?.toLowerCase() &&
+        (!vehicleFilter.vehicle_model || v.model?.toLowerCase() === vehicleFilter.vehicle_model?.toLowerCase()) &&
+        (!vehicleFilter.vehicle_year || v.years?.includes(vehicleFilter.vehicle_year))
+      );
+    }
+    
     return matchesSearch && matchesPrice && matchesVehicle;
   });
 
