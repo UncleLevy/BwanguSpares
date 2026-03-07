@@ -5,6 +5,7 @@ import { Package, ShoppingCart, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import WishlistButton from "@/components/products/WishlistButton";
+import WatchlistPartButton from "@/components/products/WatchlistPartButton";
 
 const conditionColors = {
   new: "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700",
