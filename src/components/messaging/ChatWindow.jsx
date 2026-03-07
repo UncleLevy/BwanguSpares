@@ -145,6 +145,7 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
            onClose={() => setBuyerProfileOpen(false)}
            buyerEmail={conversation?.buyer_email}
            buyerName={conversation?.buyer_name}
+           shopId={conversation?.shop_id}
          />
        )}
 
