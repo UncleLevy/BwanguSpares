@@ -275,6 +275,114 @@ export const emailNewReviewToShop = (shopOwnerEmail, shopName, reviewerName, rat
   });
 };
 
+// Return/Refund Notifications
+export const emailReturnInitiated = (buyerEmail, buyerName, returnRequest) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Your return request has been submitted and is now pending shop review.</p>
+    
+    <div style="background: #fef3c7; padding: 16px; border-radius: 8px; border-left: 4px solid #d97706; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">📦 Return Details</p>
+      <p style="margin: 6px 0;"><strong>Product:</strong> ${returnRequest.product_name}</p>
+      <p style="margin: 6px 0;"><strong>Qty:</strong> ${returnRequest.quantity}</p>
+      <p style="margin: 6px 0;"><strong>Refund Amount:</strong> K${(returnRequest.refund_amount || 0).toLocaleString()}</p>
+      <p style="margin: 6px 0;"><strong>Reason:</strong> ${returnRequest.reason?.replace("_", " ")}</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">The shop will review your request within 24-48 hours. We'll notify you once they respond.</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `📦 Return Request Submitted – K${(returnRequest.refund_amount || 0).toLocaleString()}`,
+    htmlBody: createEmailTemplate("Return Submitted", "📦", "#d97706", content, { text: "Track Return", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailReturnApproved = (buyerEmail, buyerName, returnRequest) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #059669;">✓ Your return has been approved!</p>
+    
+    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #059669; margin: 16px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📦 Next Steps</p>
+      <p style="margin: 6px 0; color: #666; font-size: 13px;">1. Pack the item securely with original packaging if possible</p>
+      <p style="margin: 6px 0; color: #666; font-size: 13px;">2. Ship to the shop's address</p>
+      <p style="margin: 6px 0; color: #666; font-size: 13px;">3. Your refund will be processed once the shop receives it</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;"><strong>Note:</strong> Shop approval: ${returnRequest.approval_notes || "No specific notes"}</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `✓ Return Approved – K${(returnRequest.refund_amount || 0).toLocaleString()}`,
+    htmlBody: createEmailTemplate("Return Approved", "✓", "#059669", content, { text: "View Details", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailRefundReleased = (buyerEmail, buyerName, returnRequest) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #059669;">💰 Your refund has been processed!</p>
+    
+    <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; border-left: 4px solid #059669; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">Refund Details</p>
+      <p style="margin: 6px 0;"><strong>Amount:</strong> K${(returnRequest.refund_amount || 0).toLocaleString()}</p>
+      <p style="margin: 6px 0;"><strong>Product:</strong> ${returnRequest.product_name}</p>
+      <p style="margin: 6px 0; font-size: 13px; color: #666;">Credited to your BwanguSpares wallet</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">You can use your wallet balance for future purchases or request a withdrawal.</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `💰 Refund Processed – K${(returnRequest.refund_amount || 0).toLocaleString()}`,
+    htmlBody: createEmailTemplate("Refund Released", "💰", "#059669", content, { text: "View Wallet", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailReturnRejected = (buyerEmail, buyerName, returnRequest) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Unfortunately, your return request has been declined.</p>
+    
+    <div style="background: #fee2e2; padding: 16px; border-radius: 8px; border-left: 4px solid #dc2626; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">❌ Return Decision</p>
+      <p style="margin: 6px 0;"><strong>Product:</strong> ${returnRequest.product_name}</p>
+      <p style="margin: 6px 0;"><strong>Reason for Rejection:</strong> ${returnRequest.approval_notes || "See shop feedback"}</p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">If you believe this is incorrect, please contact the shop directly or submit a support ticket for further assistance.</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `❌ Return Request Declined`,
+    htmlBody: createEmailTemplate("Return Rejected", "❌", "#dc2626", content, { text: "Contact Support", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailReturnToShop = (shopOwnerEmail, shopName, returnRequest) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${shopName} team,</p>
+    <p style="margin: 0 0 16px;">A customer has submitted a return request for one of your products. Please review and respond promptly.</p>
+    
+    <div style="background: #fef3c7; padding: 16px; border-radius: 8px; border-left: 4px solid #d97706; margin: 16px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📦 Return Request</p>
+      <p style="margin: 6px 0;"><strong>Customer:</strong> ${returnRequest.buyer_name}</p>
+      <p style="margin: 6px 0;"><strong>Product:</strong> ${returnRequest.product_name}</p>
+      <p style="margin: 6px 0;"><strong>Reason:</strong> ${returnRequest.reason?.replace("_", " ")}</p>
+      <p style="margin: 6px 0;"><strong>Refund:</strong> K${(returnRequest.refund_amount || 0).toLocaleString()}</p>
+      ${returnRequest.description ? `<p style="margin: 12px 0 0; padding-top: 12px; border-top: 1px solid #e5e7eb; color: #666; font-size: 13px;"><strong>Customer Note:</strong> ${returnRequest.description}</p>` : ""}
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Log in to your Shop Dashboard to approve or decline this return request.</p>
+  `;
+  return send({
+    to: shopOwnerEmail,
+    subject: `📦 New Return Request – ${returnRequest.product_name}`,
+    htmlBody: createEmailTemplate("Return Request", "📦", "#d97706", content, { text: "Review Return", url: "https://bwangu.com" }),
+  });
+};
+
 // ─── Technician Hire Requests ────────────────────────────────────────────────
 
 export const emailHireRequestToShop = (shopOwnerEmail, shopName, buyerName, problemType, description) =>
