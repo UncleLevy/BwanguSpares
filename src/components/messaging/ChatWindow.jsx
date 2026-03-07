@@ -13,6 +13,7 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [sending, setSending] = useState(false);
+  const [buyerProfileOpen, setBuyerProfileOpen] = useState(false);
   const bottomRef = useRef(null);
 
   useEffect(() => {
