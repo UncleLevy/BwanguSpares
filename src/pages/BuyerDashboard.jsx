@@ -118,6 +118,13 @@ export default function BuyerDashboard() {
           const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
           setOrders(updated);
           toast.success("Payment successful! Your order has been confirmed.");
+          // Notify each shop owner
+          for (const ord of pendingOrders) {
+            const shops = await base44.entities.Shop.filter({ id: ord.shop_id });
+            if (shops[0]?.owner_email) {
+              emailNewOrderToShop(shops[0].owner_email, ord.shop_name, ord);
+            }
+          }
         }
         // Clean URL
         window.history.replaceState({}, "", window.location.pathname);
