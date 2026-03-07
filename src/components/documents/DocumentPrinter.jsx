@@ -154,22 +154,23 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
 
       {/* Notes */}
       {isOrder && order.notes && (
-        <div style={{ marginTop: "24px", padding: "14px", background: "#f8f9fa", borderRadius: "8px", borderLeft: `4px solid ${color}` }}>
-          <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#999", fontWeight: "bold", margin: "0 0 6px" }}>Notes</p>
-          <p style={{ fontSize: "13px", margin: 0, color: "#555" }}>{order.notes}</p>
+        <div style={{ marginBottom: "28px", padding: "14px", background: `${color}10`, borderRadius: "10px", borderLeft: `3px solid ${color}` }}>
+          <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#666", fontWeight: "600", margin: "0 0 6px", letterSpacing: "0.5px" }}>📝 Notes</p>
+          <p style={{ fontSize: "13px", margin: 0, color: "#555", lineHeight: "1.5" }}>{order.notes}</p>
         </div>
       )}
       {!isOrder && partsRequest?.description && (
-        <div style={{ marginTop: "24px", padding: "14px", background: "#f8f9fa", borderRadius: "8px", borderLeft: `4px solid ${color}` }}>
-          <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#999", fontWeight: "bold", margin: "0 0 6px" }}>Client Notes</p>
-          <p style={{ fontSize: "13px", margin: 0, color: "#555" }}>{partsRequest.description}</p>
+        <div style={{ marginBottom: "28px", padding: "14px", background: `${color}10`, borderRadius: "10px", borderLeft: `3px solid ${color}` }}>
+          <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#666", fontWeight: "600", margin: "0 0 6px", letterSpacing: "0.5px" }}>💬 Request Details</p>
+          <p style={{ fontSize: "13px", margin: 0, color: "#555", lineHeight: "1.5" }}>{partsRequest.description}</p>
         </div>
       )}
 
       {/* Footer */}
-      <div style={{ marginTop: "40px", paddingTop: "16px", borderTop: "1px solid #e5e7eb", textAlign: "center", fontSize: "11px", color: "#aaa" }}>
-        <p style={{ margin: 0 }}>Thank you for your business — {shop?.name}</p>
-        {type === "quotation" && <p style={{ margin: "4px 0 0" }}>This quotation is valid for 30 days from the date of issue.</p>}
+      <div style={{ marginTop: "40px", paddingTop: "20px", borderTop: `1px solid #ddd`, textAlign: "center" }}>
+        <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#888" }}>Thank you for your business!</p>
+        <p style={{ margin: "0", fontSize: "11px", color: "#aaa", fontWeight: "500" }}>BwanguSpares — {shop?.name}</p>
+        {type === "quotation" && <p style={{ margin: "4px 0 0", fontSize: "11px", color: "#aaa" }}>📅 Valid for 30 days</p>}
       </div>
     </div>
   );
