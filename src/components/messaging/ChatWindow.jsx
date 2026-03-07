@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { Send } from "lucide-react";
+import { Send, Store, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
@@ -106,13 +106,20 @@ export default function ChatWindow({ conversation, currentUser, role, onMessageS
   return (
     <div className="flex flex-col h-full">
       {/* Header */}
-       <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800">
-         <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
-           {role === "buyer" ? conversation.shop_name : conversation.buyer_name}
-         </p>
-         {conversation.subject && (
-           <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{conversation.subject}</p>
-         )}
+       <div className="px-5 py-3.5 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 flex items-center gap-3">
+         <div className="w-9 h-9 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center flex-shrink-0">
+           {role === "buyer"
+             ? <Store className="w-4 h-4 text-blue-500 dark:text-blue-400" />
+             : <User className="w-4 h-4 text-blue-500 dark:text-blue-400" />}
+         </div>
+         <div>
+           <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">
+             {role === "buyer" ? conversation.shop_name : conversation.buyer_name}
+           </p>
+           {conversation.subject && (
+             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{conversation.subject}</p>
+           )}
+         </div>
        </div>
 
        {/* Messages */}
