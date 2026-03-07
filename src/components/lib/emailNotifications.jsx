@@ -5,13 +5,61 @@ import { base44 } from "@/api/base44Client";
  * Failures are silently swallowed so they never block the main flow.
  */
 
-const send = async ({ to, subject, body }) => {
+const send = async ({ to, subject, body, htmlBody }) => {
   try {
-    await base44.integrations.Core.SendEmail({ from_name: "BwanguSpares", to, subject, body });
+    // If HTML body provided, use it; otherwise fall back to text
+    if (htmlBody) {
+      await base44.integrations.Core.SendEmail({ from_name: "BwanguSpares", to, subject, body: htmlBody });
+    } else {
+      await base44.integrations.Core.SendEmail({ from_name: "BwanguSpares", to, subject, body });
+    }
   } catch (e) {
     console.warn("Email notification failed:", e?.message);
   }
 };
+
+// Email template builder with modern, minimalistic design
+const createEmailTemplate = (title, emoji, color, content, cta) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>${title}</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; margin: 0; padding: 0;">
+  <div style="max-width: 600px; margin: 0 auto; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+    <!-- Header -->
+    <div style="background: linear-gradient(135deg, ${color}20, ${color}05); padding: 30px 20px; text-align: center; border-bottom: 1px solid ${color}30;">
+      <div style="display: inline-block; width: 60px; height: 60px; background: ${color}; border-radius: 12px; font-size: 32px; line-height: 60px; text-align: center; margin-bottom: 12px;">
+        ${emoji}
+      </div>
+      <h1 style="margin: 0; font-size: 24px; font-weight: 600; color: #1a1a1a;">${title}</h1>
+    </div>
+    
+    <!-- Content -->
+    <div style="padding: 30px 20px; color: #555; line-height: 1.6;">
+      ${content}
+    </div>
+    
+    <!-- CTA Button -->
+    ${cta ? `
+    <div style="padding: 0 20px; text-align: center;">
+      <a href="${cta.url}" style="display: inline-block; padding: 12px 28px; background: ${color}; color: #fff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">
+        ${cta.text}
+      </a>
+    </div>
+    ` : ''}
+    
+    <!-- Footer -->
+    <div style="background: #f9f9f9; padding: 20px; text-align: center; border-top: 1px solid #e5e5e5; font-size: 12px; color: #888;">
+      <p style="margin: 0;">BwanguSpares — Zambia's Auto Spares Marketplace</p>
+      <p style="margin: 4px 0 0;">© 2026 All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
 
 // ─── Orders ────────────────────────────────────────────────────────────────
 
