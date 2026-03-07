@@ -84,17 +84,6 @@ export default function BuyerProfileModal({ open, onClose, buyerEmail, buyerName
               </div>
             </div>
 
-            {/* Total spent */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <Package className="w-4 h-4" />
-                Total Spent
-              </div>
-              <span className="font-bold text-blue-700 dark:text-blue-400">
-                K{totalSpent.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-              </span>
-            </div>
-
             {/* Recent reviews given */}
             {reviews.length > 0 && (
               <div>
