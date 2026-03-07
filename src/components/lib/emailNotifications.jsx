@@ -87,17 +87,31 @@ export const emailOrderConfirmation = (buyerEmail, buyerName, order) => {
 };
 
 export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) => {
+  const statusEmojis = { confirmed: "📋", processing: "⚙️", shipped: "🚚", delivered: "✓", cancelled: "❌" };
   const statusMessages = {
-    confirmed: "Your order has been confirmed by the shop and is being prepared.",
-    processing: "Your order is currently being processed.",
-    shipped: `Your order is on its way!${order.tracking_number ? ` Tracking: ${order.tracking_number}` : ""}`,
-    delivered: "Your order has been delivered. We hope you love your parts!",
+    confirmed: "Your order has been confirmed by the shop and is being prepared for shipment.",
+    processing: "Your order is being packed and will ship soon.",
+    shipped: `Your order is on its way to you!${order.tracking_number ? ` 📍 Tracking: ${order.tracking_number}` : ""}`,
+    delivered: "Your order has been delivered! We hope you enjoy your parts. Please leave a review! ⭐",
     cancelled: `Your order has been cancelled.${order.cancellation_reason ? ` Reason: ${order.cancellation_reason}` : ""}`,
   };
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; color: #1a1a1a;"><strong>Your order status has been updated:</strong></p>
+    
+    <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; border-left: 4px solid #0891b2; margin: 16px 0;">
+      <p style="margin: 0; font-size: 14px; color: #666;">${statusMessages[newStatus] || `Status: ${newStatus}`}</p>
+    </div>
+    
+    <div style="background: #fafafa; padding: 12px; border-radius: 8px; margin: 16px 0; font-size: 13px;">
+      <p style="margin: 0 0 6px;"><strong>Shop:</strong> ${order.shop_name}</p>
+      <p style="margin: 0;"><strong>Total:</strong> K${(order.total_amount || 0).toLocaleString()}</p>
+    </div>
+  `;
   return send({
     to: buyerEmail,
-    subject: `Order Update: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} – BwanguSpares`,
-    body: `Hi ${buyerName || "there"},\n\n${statusMessages[newStatus] || `Your order status has been updated to: ${newStatus}.`}\n\nShop: ${order.shop_name}\nOrder Total: K${(order.total_amount || 0).toLocaleString()}\n\nView details in your Buyer Dashboard.\n\nBwanguSpares Team`,
+    subject: `${statusEmojis[newStatus] || "📦"} Order ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} – BwanguSpares`,
+    htmlBody: createEmailTemplate(`Order ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`, statusEmojis[newStatus], "#0891b2", content, { text: "View Tracking", url: "https://bwangu.com" }),
   });
 };
 
