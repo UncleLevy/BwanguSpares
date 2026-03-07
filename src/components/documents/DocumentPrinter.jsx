@@ -198,33 +198,45 @@ export default function DocumentPrinter({ shop, order, partsRequest, triggerLabe
   };
 
   const handlePrint = () => {
-     const content = document.getElementById("printable-document");
-     if (!content) return;
-     const win = window.open("", "_blank");
-     win.document.write(`
-       <html>
-         <head>
-           <meta charset="UTF-8">
-           <title>Print - ${docNumber}</title>
-           <style>
-             * { margin: 0; padding: 0; box-sizing: border-box; }
-             body { font-family: Arial, sans-serif; }
-             @media print {
-               body { margin: 0; padding: 0; }
-               @page { margin: 10mm; }
-             }
-           </style>
-         </head>
-         <body>${content.outerHTML}</body>
-       </html>
-     `);
-     win.document.close();
-     win.focus();
-     setTimeout(() => {
-       win.print();
-       win.close();
-     }, 500);
-   };
+    // Render a print-specific version with QR codes into a hidden div, then print it
+    const printId = "printable-document-print";
+    let printDiv = document.getElementById(printId);
+    if (!printDiv) {
+      printDiv = document.createElement("div");
+      printDiv.id = printId;
+      printDiv.style.display = "none";
+      document.body.appendChild(printDiv);
+    }
+
+    // We'll grab the QR version from a temp render — use the already-rendered content
+    // but swap to the print view by reading the print-version element
+    const content = document.getElementById("printable-document-print-view");
+    if (!content) return;
+    const win = window.open("", "_blank");
+    win.document.write(`
+      <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>Print - ${docNumber}</title>
+          <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            body { font-family: Arial, sans-serif; }
+            @media print {
+              body { margin: 0; padding: 0; }
+              @page { margin: 10mm; }
+            }
+          </style>
+        </head>
+        <body>${content.outerHTML}</body>
+      </html>
+    `);
+    win.document.close();
+    win.focus();
+    setTimeout(() => {
+      win.print();
+      win.close();
+    }, 500);
+  };
 
   return (
     <>
