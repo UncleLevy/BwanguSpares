@@ -415,20 +415,36 @@ export default function AdminDashboard() {
                 </Card>
               ))}
             </div>
-            {pendingShops.length > 0 && (
-              <Card className="border-amber-200 bg-amber-50/30">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-base flex items-center gap-2 text-amber-700">
-                    <AlertCircle className="w-5 h-5" /> {pendingShops.length} shop(s) awaiting approval
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Button size="sm" variant="outline" onClick={() => setView("shops")} className="border-amber-300 text-amber-700 hover:bg-amber-100">
-                    Review Now
-                  </Button>
-                </CardContent>
-              </Card>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {pendingShops.length > 0 && (
+                <Card className="border-amber-200 bg-amber-50/30 dark:bg-amber-950/20 dark:border-amber-800">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                      <AlertCircle className="w-5 h-5" /> {pendingShops.length} shop(s) awaiting approval
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Button size="sm" variant="outline" onClick={() => setView("shops")} className="border-amber-300 text-amber-700 hover:bg-amber-100">
+                      Review Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+              {ticketCount > 0 && (
+                <Card className="border-blue-200 bg-blue-50/30 dark:bg-blue-950/20 dark:border-blue-800">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="text-base flex items-center gap-2 text-blue-700 dark:text-blue-400">
+                      <TicketCheck className="w-5 h-5" /> {ticketCount} open support ticket{ticketCount !== 1 ? "s" : ""}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <Button size="sm" variant="outline" onClick={() => setView("support")} className="border-blue-300 text-blue-700 hover:bg-blue-100">
+                      View Tickets
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
         )}
 
