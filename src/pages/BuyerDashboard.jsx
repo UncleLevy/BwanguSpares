@@ -33,12 +33,12 @@ import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
 import LoyaltyPanel from "@/components/loyalty/LoyaltyPanel";
 
 const orderStatusConfig = {
-  pending: { icon: Clock, color: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200" },
-  confirmed: { icon: CheckCircle2, color: "text-blue-600", bg: "bg-blue-50", border: "border-blue-200" },
-  processing: { icon: Package, color: "text-indigo-600", bg: "bg-indigo-50", border: "border-indigo-200" },
-  shipped: { icon: Truck, color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-200" },
-  delivered: { icon: CheckCircle2, color: "text-emerald-600", bg: "bg-emerald-50", border: "border-emerald-200" },
-  cancelled: { icon: XCircle, color: "text-red-600", bg: "bg-red-50", border: "border-red-200" },
+  pending: { icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800" },
+  confirmed: { icon: CheckCircle2, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20", border: "border-blue-200 dark:border-blue-800" },
+  processing: { icon: Package, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20", border: "border-indigo-200 dark:border-indigo-800" },
+  shipped: { icon: Truck, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20", border: "border-purple-200 dark:border-purple-800" },
+  delivered: { icon: CheckCircle2, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20", border: "border-emerald-200 dark:border-emerald-800" },
+  cancelled: { icon: XCircle, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/20", border: "border-red-200 dark:border-red-800" },
 };
 
 export default function BuyerDashboard() {
