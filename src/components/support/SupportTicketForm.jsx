@@ -75,7 +75,11 @@ export default function SupportTicketForm({ user }) {
       return;
     }
     setSubmitting(true);
+    // Auto-assign ticket number
+    const allTickets = await base44.entities.SupportTicket.list("-ticket_number", 1);
+    const nextNumber = (allTickets[0]?.ticket_number || 0) + 1;
     const ticket = await base44.entities.SupportTicket.create({
+      ticket_number: nextNumber,
       user_email: user.email,
       user_name: user.full_name,
       user_role: user.role || "buyer",
