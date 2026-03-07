@@ -206,6 +206,11 @@ export default function BuyerDashboard() {
         rating: avgRating,
       });
 
+      // Email the shop owner
+      const shops = await base44.entities.Shop.filter({ id: reviewOrder.shop_id });
+      if (shops[0]?.owner_email) {
+        emailNewReviewToShop(shops[0].owner_email, reviewOrder.shop_name, user.full_name, reviewData.rating, reviewData.comment);
+      }
       toast.success("Review submitted successfully!");
       setReviewDialog(false);
       setReviewOrder(null);
