@@ -32,6 +32,27 @@ export default function SupportTicketForm({ user }) {
   const [showTickets, setShowTickets] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [form, setForm] = useState({ subject: "", category: "other", message: "" });
+  const [photos, setPhotos] = useState([]);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
+
+  const handlePhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (photos.length + files.length > 3) {
+      toast.error("Maximum 3 photos allowed");
+      return;
+    }
+    setUploadingPhoto(true);
+    for (const file of files) {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      setPhotos(prev => [...prev, file_url]);
+    }
+    setUploadingPhoto(false);
+    e.target.value = "";
+  };
+
+  const removePhoto = (index) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index));
+  };
 
   const loadTickets = async () => {
     setLoadingTickets(true);
