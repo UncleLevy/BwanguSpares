@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import HeroSection from "@/components/home/HeroSection";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
+import MegaDiscounts from "@/components/home/MegaDiscounts";
 import NearbyShops from "@/components/home/NearbyShops";
 import PartnersSection from "@/components/home/PartnersSection";
 
