@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Badge } from "@/components/ui/badge";
 import { User, ShoppingBag, Star, Package, Clock, CheckCircle2 } from "lucide-react";
 
-export default function BuyerProfileModal({ open, onClose, buyerEmail, buyerName }) {
+export default function BuyerProfileModal({ open, onClose, buyerEmail, buyerName, shopId }) {
   const [orders, setOrders] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -12,15 +12,18 @@ export default function BuyerProfileModal({ open, onClose, buyerEmail, buyerName
   useEffect(() => {
     if (!open || !buyerEmail) return;
     setLoading(true);
+    const orderFilter = shopId
+      ? { buyer_email: buyerEmail, shop_id: shopId }
+      : { buyer_email: buyerEmail };
     Promise.all([
-      base44.entities.Order.filter({ buyer_email: buyerEmail }, "-created_date", 100),
+      base44.entities.Order.filter(orderFilter, "-created_date", 100),
       base44.entities.Review.filter({ reviewer_email: buyerEmail }),
     ]).then(([o, r]) => {
       setOrders(o);
       setReviews(r);
       setLoading(false);
     });
-  }, [open, buyerEmail]);
+  }, [open, buyerEmail, shopId]);
 
   const totalSpent = orders.reduce((s, o) => s + (o.total_amount || 0), 0);
   const deliveredOrders = orders.filter(o => o.status === "delivered").length;
