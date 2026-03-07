@@ -263,6 +263,7 @@ export default function AdminDashboard() {
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
     { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts") },
+    { id: "returns", label: "Returns & Refunds", icon: RotateCcw, onClick: () => setView("returns"), badge: pendingRefundCount || null },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
     { id: "support", label: "Support Tickets", icon: TicketCheck, onClick: () => setView("support"), badge: ticketCount || null },
     { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping") },
