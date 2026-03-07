@@ -135,20 +135,20 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
         </table>
       </div>
 
-      {/* Totals */}
-      <div style={{ display: "flex", justifyContent: "flex-end" }}>
-        <div style={{ width: "260px" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px", color: "#555" }}>
-             <span>Subtotal</span><span>K{subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-           </div>
-           {type !== "quotation" && (
-             <div style={{ display: "flex", justifyContent: "space-between", padding: "6px 0", fontSize: "13px", color: "#555" }}>
-               <span>VAT (16%)</span><span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-             </div>
-           )}
-           <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 12px", background: color, color: "#fff", borderRadius: "6px", fontWeight: "bold", fontSize: "15px", marginTop: "8px" }}>
-             <span>TOTAL</span><span>K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-           </div>
+      {/* Totals - Clean Summary */}
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "32px" }}>
+        <div style={{ width: "280px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#666" }}>
+            <span>Subtotal</span><span>K{subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
+          {type !== "quotation" && (
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#666" }}>
+              <span>VAT (16%)</span><span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            </div>
+          )}
+          <div style={{ display: "flex", justifyContent: "space-between", padding: "14px 16px", background: color, color: "#fff", borderRadius: "10px", fontWeight: "600", fontSize: "16px", marginTop: "12px" }}>
+            <span>Total</span><span>K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </div>
         </div>
       </div>
 
