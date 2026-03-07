@@ -101,14 +101,32 @@ export default function Messages() {
         <Breadcrumbs items={[{ label: "Messages" }]} />
         <div className="flex bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm" style={{ height: "70vh" }}>
         {/* Conversation list — hidden on mobile when chat open */}
-        <div className={`${showChat ? "hidden" : "flex"} md:flex flex-col w-full md:w-72 border-r border-slate-100 overflow-y-auto flex-shrink-0`}>
+        <div className={`${showChat ? "hidden" : "flex"} md:flex flex-col w-full md:w-72 border-r border-slate-100 flex-shrink-0`}>
+          {/* Tabs */}
+          <div className="flex border-b border-slate-100 shrink-0">
+            <button
+              onClick={() => { setTab("active"); setSelected(null); }}
+              className={`flex-1 py-2.5 text-xs font-semibold transition-colors ${tab === "active" ? "text-blue-600 border-b-2 border-blue-600" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              Active
+            </button>
+            <button
+              onClick={() => { setTab("archived"); setSelected(null); }}
+              className={`flex-1 py-2.5 text-xs font-semibold flex items-center justify-center gap-1 transition-colors ${tab === "archived" ? "text-blue-600 border-b-2 border-blue-600" : "text-slate-500 hover:text-slate-700"}`}
+            >
+              <Archive className="w-3.5 h-3.5" /> Archived
+            </button>
+          </div>
+          <div className="overflow-y-auto flex-1">
           <ConversationList
-            conversations={conversations}
+            conversations={visibleConversations}
             selectedId={selected?.id}
             onSelect={handleSelect}
             currentEmail={user?.email}
             role={role}
+            onArchiveToggle={handleArchiveToggle}
           />
+          </div>
         </div>
         {/* Chat — full-screen on mobile when open */}
         <div className={`${!showChat && isMobile ? "hidden" : "flex"} md:flex flex-1 flex-col overflow-hidden`}>
