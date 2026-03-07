@@ -91,7 +91,7 @@ export default function BulkEditPanel({ products, onUpdate }) {
           <div key={p.id} className="flex items-center gap-2 p-2 bg-white dark:bg-slate-800 rounded border border-slate-100 dark:border-slate-700">
             <Checkbox checked={selected.has(p.id)} onCheckedChange={() => handleToggleProduct(p.id)} />
             <span className="text-sm font-medium flex-1 text-slate-900 dark:text-slate-100">{p.name}</span>
-            <span className="text-xs text-slate-500">K{p.price} • Stock: {p.stock_quantity}</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400">K{p.price} • Stock: {p.stock_quantity}</span>
           </div>
         ))}
       </div>

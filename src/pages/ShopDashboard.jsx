@@ -839,7 +839,7 @@ export default function ShopDashboard() {
             </div>
 
             {/* Search & Filters */}
-            <Card className="border-slate-100 dark:border-slate-700 mb-4">
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 mb-4">
               <CardContent className="p-4">
                 <div className="flex flex-wrap gap-3">
                   <div className="relative flex-1 min-w-[180px]">
@@ -873,7 +873,7 @@ export default function ShopDashboard() {
                     </Button>
                   )}
                 </div>
-                <p className="text-xs text-slate-400 mt-2">
+                <p className="text-xs text-slate-400 dark:text-slate-500 mt-2">
                   {products.filter(p => {
                     if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
                     if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
@@ -906,10 +906,10 @@ export default function ShopDashboard() {
                     <TableRow key={p.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setViewShopProduct(p)}>
                       <TableCell>
                         <div className="flex items-center gap-2">
-                          {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100" /> : <div className="w-8 h-8 rounded bg-slate-100 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400" /></div>}
+                          {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100 dark:border-slate-700" /> : <div className="w-8 h-8 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400 dark:text-slate-500" /></div>}
                           <div>
                             <p className="font-medium text-sm">{p.name}</p>
-                            {p.brand && <p className="text-xs text-slate-400">{p.brand}</p>}
+                            {p.brand && <p className="text-xs text-slate-400 dark:text-slate-500">{p.brand}</p>}
                           </div>
                         </div>
                       </TableCell>
@@ -940,15 +940,15 @@ export default function ShopDashboard() {
                   <div className="space-y-4">
                     {viewShopProduct.image_url && <img src={viewShopProduct.image_url} alt="" className="w-full h-44 object-cover rounded-xl border border-slate-100" />}
                     <div className="grid grid-cols-2 gap-3 text-sm">
-                      <div><p className="text-xs text-slate-400 mb-0.5">Name</p><p className="font-semibold">{viewShopProduct.name}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Brand</p><p>{viewShopProduct.brand || "—"}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Price</p><p className="font-semibold text-emerald-600">K{viewShopProduct.price?.toLocaleString()}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Stock</p><p>{viewShopProduct.stock_quantity}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Category</p><p>{viewShopProduct.category?.replace("_"," ")}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Condition</p><p>{viewShopProduct.condition}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">SKU</p><p className="font-mono text-xs">{viewShopProduct.sku || "—"}</p></div>
-                      <div><p className="text-xs text-slate-400 mb-0.5">Status</p><Badge variant="outline" className="text-[11px]">{viewShopProduct.status?.replace("_"," ")}</Badge></div>
-                      {viewShopProduct.compatible_vehicles && <div className="col-span-2"><p className="text-xs text-slate-400 mb-0.5">Compatible Vehicles</p><p>{viewShopProduct.compatible_vehicles}</p></div>}
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Name</p><p className="font-semibold text-slate-900 dark:text-slate-100">{viewShopProduct.name}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Brand</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.brand || "—"}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Price</p><p className="font-semibold text-emerald-600 dark:text-emerald-400">K{viewShopProduct.price?.toLocaleString()}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Stock</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.stock_quantity}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Category</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.category?.replace("_"," ")}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Condition</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.condition}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">SKU</p><p className="font-mono text-xs text-slate-700 dark:text-slate-300">{viewShopProduct.sku || "—"}</p></div>
+                      <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Status</p><Badge variant="outline" className="text-[11px] dark:border-slate-600 dark:text-slate-300">{viewShopProduct.status?.replace("_"," ")}</Badge></div>
+                      {viewShopProduct.compatible_vehicles && <div className="col-span-2"><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Compatible Vehicles</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.compatible_vehicles}</p></div>}
                       {viewShopProduct.description && <div className="col-span-2"><p className="text-xs text-slate-400 mb-0.5">Description</p><p className="text-slate-600 dark:text-slate-400">{viewShopProduct.description}</p></div>}
                     </div>
                   </div>
@@ -984,10 +984,10 @@ export default function ShopDashboard() {
                   <div><Label>Tags</Label><Input value={productForm.tags.join(", ")} onChange={e => setProductForm({...productForm, tags: e.target.value.split(",").map(t => t.trim())})} placeholder="e.g. new, popular, sale" className="mt-1" /></div>
                   <div>
                    <Label>Product Photos (up to 5)</Label>
-                   <p className="text-xs text-slate-500 mt-0.5 mb-2">First photo is the main image. Add up to 4 more for the slideshow.</p>
+                   <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 mb-2">First photo is the main image. Add up to 4 more for the slideshow.</p>
                    {/* Main image */}
                    <div className="mb-2">
-                     <p className="text-xs font-medium text-slate-600 mb-1">Photo 1 (Main)</p>
+                     <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Photo 1 (Main)</p>
                      <Input type="file" accept="image/*" onChange={e => handleImageUpload(e, true)} disabled={uploading} className="cursor-pointer" />
                      {productForm.image_url && (
                        <img src={productForm.image_url} alt="Main" className="mt-2 w-24 h-24 object-cover rounded-lg border" />
@@ -996,8 +996,8 @@ export default function ShopDashboard() {
                    {/* Extra images 2–5 */}
                    <div className="grid grid-cols-2 gap-2">
                      {[0, 1, 2, 3].map(i => (
-                       <div key={i} className="border border-dashed border-slate-200 rounded-lg p-2">
-                         <p className="text-xs font-medium text-slate-500 mb-1">Photo {i + 2}</p>
+                       <div key={i} className="border border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-2">
+                         <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-1">Photo {i + 2}</p>
                          {(productForm.image_urls || [])[i] ? (
                            <div className="relative">
                              <img src={(productForm.image_urls || [])[i]} alt={`Photo ${i+2}`} className="w-full h-20 object-cover rounded" />
@@ -1270,7 +1270,7 @@ export default function ShopDashboard() {
              <div className="space-y-4">
                <div><Label>Start Date</Label><Input type="date" value={reportForm.start_date} onChange={e => setReportForm({...reportForm, start_date: e.target.value})} className="mt-1" /></div>
                <div><Label>End Date</Label><Input type="date" value={reportForm.end_date} onChange={e => setReportForm({...reportForm, end_date: e.target.value})} className="mt-1" /></div>
-               <p className="text-xs text-slate-500">The report will include: sales summary, products inventory, orders, and technicians for the selected period.</p>
+               <p className="text-xs text-slate-500 dark:text-slate-400">The report will include: sales summary, products inventory, orders, and technicians for the selected period.</p>
              </div>
              <DialogFooter>
                <Button variant="outline" onClick={() => setReportDialog(false)}>Cancel</Button>
