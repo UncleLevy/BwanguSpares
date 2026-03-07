@@ -400,17 +400,24 @@ export default function BuyerDashboard() {
                 {walletTxns.length === 0 ? (
                   <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="space-y-1">
                     {walletTxns.map(txn => (
-                      <div key={txn.id} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
-                        <div>
-                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{txn.reason}</p>
+                      <button
+                        key={txn.id}
+                        onClick={() => setSelectedTxn(txn)}
+                        className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-700/50 last:border-0 text-left group"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{txn.reason}</p>
                           <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
                         </div>
-                        <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
-                          {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                        </span>
-                      </div>
+                        <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                          <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
+                            {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                          </span>
+                          <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 transition-colors">›</span>
+                        </div>
+                      </button>
                     ))}
                   </div>
                 )}
