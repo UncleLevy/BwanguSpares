@@ -908,16 +908,16 @@ export default function ShopDashboard() {
                         <div className="flex items-center gap-2">
                           {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100 dark:border-slate-700" /> : <div className="w-8 h-8 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400 dark:text-slate-500" /></div>}
                           <div>
-                            <p className="font-medium text-sm">{p.name}</p>
+                            <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{p.name}</p>
                             {p.brand && <p className="text-xs text-slate-400 dark:text-slate-500">{p.brand}</p>}
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px]">{p.category?.replace("_"," ")}</Badge></TableCell>
-                      <TableCell className="font-medium">K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell><span className={p.stock_quantity === 0 ? "text-red-500 font-medium" : ""}>{p.stock_quantity}</span></TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px]">{p.status?.replace("_"," ")}</Badge></TableCell>
-                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px]">{tag}</Badge>)}</div></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[11px] capitalize dark:border-slate-600 dark:text-slate-300">{p.category?.replace("_"," ")}</Badge></TableCell>
+                      <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                      <TableCell><span className={p.stock_quantity === 0 ? "text-red-500 dark:text-red-400 font-medium" : "text-slate-700 dark:text-slate-300"}>{p.stock_quantity}</span></TableCell>
+                      <TableCell><Badge variant="outline" className="text-[11px] dark:border-slate-600 dark:text-slate-300">{p.status?.replace("_"," ")}</Badge></TableCell>
+                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px] dark:bg-slate-700 dark:text-slate-300">{tag}</Badge>)}</div></TableCell>
                       <TableCell onClick={e => e.stopPropagation()}>
                         <div className="flex gap-1">
                           <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewShopProduct(p)}><Eye className="w-3.5 h-3.5" /></Button>
@@ -938,7 +938,7 @@ export default function ShopDashboard() {
                 <DialogHeader><DialogTitle className="flex items-center gap-2"><Package className="w-5 h-5 text-blue-600" /> Product Details</DialogTitle></DialogHeader>
                 {viewShopProduct && (
                   <div className="space-y-4">
-                    {viewShopProduct.image_url && <img src={viewShopProduct.image_url} alt="" className="w-full h-44 object-cover rounded-xl border border-slate-100" />}
+                    {viewShopProduct.image_url && <img src={viewShopProduct.image_url} alt="" className="w-full h-44 object-cover rounded-xl border border-slate-100 dark:border-slate-700" />}
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Name</p><p className="font-semibold text-slate-900 dark:text-slate-100">{viewShopProduct.name}</p></div>
                       <div><p className="text-xs text-slate-400 dark:text-slate-500 mb-0.5">Brand</p><p className="text-slate-800 dark:text-slate-200">{viewShopProduct.brand || "—"}</p></div>
@@ -1165,7 +1165,7 @@ export default function ShopDashboard() {
                   <DialogTitle>Cancel Order #{cancelOrder?.id?.slice(0,8)}</DialogTitle>
                 </DialogHeader>
                 <div className="space-y-3">
-                  <p className="text-sm text-slate-500">Please provide a reason for cancelling this order. The customer will be notified.</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Please provide a reason for cancelling this order. The customer will be notified.</p>
                   <div>
                     <Label>Cancellation Reason *</Label>
                     <Textarea value={cancelReason} onChange={e => setCancelReason(e.target.value)} placeholder="e.g. Item out of stock, unable to fulfil order..." className="mt-1" rows={3} />
