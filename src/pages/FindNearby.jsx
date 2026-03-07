@@ -185,7 +185,7 @@ export default function FindNearby() {
             size="sm"
             onClick={locateMe}
             disabled={locating}
-            className={`gap-2 shrink-0 ${userLoc ? "bg-blue-600 hover:bg-blue-700" : "border-blue-200 text-blue-600 hover:bg-blue-50"}`}
+            className={`gap-2 shrink-0 ${userLoc ? "bg-blue-600 hover:bg-blue-700" : "border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"}`}
           >
             <LocateFixed className="w-4 h-4" />
             <span className="hidden sm:inline">{locating ? "Locating..." : userLoc ? "Located" : "My Location"}</span>
@@ -377,7 +377,7 @@ function TechCard({ tech, selected, onClick }) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">{tech.name}</p>
-          <Badge variant="outline" className="text-[10px] border-emerald-200 text-emerald-700 shrink-0">
+          <Badge variant="outline" className="text-[10px] border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 shrink-0">
             {SPECIALIZATION_LABELS[tech.specialization] || tech.specialization}
           </Badge>
         </div>
