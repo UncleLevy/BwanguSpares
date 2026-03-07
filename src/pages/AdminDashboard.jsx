@@ -608,6 +608,7 @@ export default function AdminDashboard() {
         {view === "support" && <SupportTicketsPanel adminUser={user} />}
         {view === "loyalty" && <AdminLoyaltyPanel />}
         {view === "users" && <UsersPanel adminUser={user} />}
+        {view === "vehicles" && <AdminVehiclesPanel />}
 
         {view === "regions" && (
           <div>
