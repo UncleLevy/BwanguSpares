@@ -249,11 +249,17 @@ export default function AdminDashboard() {
     setDeduping(false);
   };
 
+  const [ticketCount, setTicketCount] = useState(0);
+  useEffect(() => {
+    base44.entities.SupportTicket.filter({ status: "open" }).then(t => setTicketCount(t.length));
+  }, []);
+
   const sidebarItems = [
     { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
     { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
     { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts") },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
+    { id: "support", label: "Support Tickets", icon: TicketCheck, onClick: () => setView("support"), badge: ticketCount || null },
     { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },

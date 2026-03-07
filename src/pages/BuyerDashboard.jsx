@@ -223,6 +223,7 @@ export default function BuyerDashboard() {
     { id: "appointments", label: "My Appointments", icon: Calendar, onClick: () => setView("appointments") },
     { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
     { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => setView("loyalty") },
+    { id: "support", label: "Support", icon: Settings, onClick: () => setView("support") },
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
   ];
 
@@ -442,6 +443,10 @@ export default function BuyerDashboard() {
 
         {view === "loyalty" && (
           <LoyaltyPanel user={user} />
+        )}
+
+        {view === "support" && (
+          <SupportTicketForm user={user} />
         )}
 
         {view === "cart" && (
