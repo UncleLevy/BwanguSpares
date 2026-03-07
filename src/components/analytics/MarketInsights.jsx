@@ -129,9 +129,9 @@ export default function MarketInsights({ shop }) {
   if (shop?.slot_type === "basic") {
     return (
       <div className="text-center py-20">
-        <Crown className="w-16 h-16 text-amber-300 mx-auto mb-4" />
-        <h3 className="font-semibold text-slate-700 text-lg">Upgrade to Access Market Insights</h3>
-        <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto">
+        <Crown className="w-16 h-16 text-amber-300 dark:text-amber-500 mx-auto mb-4" />
+        <h3 className="font-semibold text-slate-700 dark:text-slate-300 text-lg">Upgrade to Access Market Insights</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto">
           Market insights are available to <strong>Standard</strong> and <strong>Premium</strong> shops. Upgrade to see demand trends, top requested parts, and more.
         </p>
       </div>
@@ -146,8 +146,8 @@ export default function MarketInsights({ shop }) {
     <div>
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Market Insights</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Demand trends, top parts, and vehicle data across the marketplace</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Market Insights</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Demand trends, top parts, and vehicle data across the marketplace</p>
         </div>
         <Select value={period} onValueChange={setPeriod}>
           <SelectTrigger className="w-44">
@@ -164,19 +164,19 @@ export default function MarketInsights({ shop }) {
       {/* Summary stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {[
-          { label: "Parts Requested", value: filteredRequests.length, icon: FileSearch, color: "bg-blue-50 text-blue-600" },
-          { label: "Orders Placed", value: filteredOrders.length, icon: ShoppingCart, color: "bg-emerald-50 text-emerald-600" },
-          { label: "Unique Parts Sought", value: Object.keys(partDemand).length, icon: Package, color: "bg-purple-50 text-purple-600" },
-          { label: "Vehicle Types", value: Object.keys(vehicleTotals).length, icon: Car, color: "bg-amber-50 text-amber-600" },
+          { label: "Parts Requested", value: filteredRequests.length, icon: FileSearch, color: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" },
+          { label: "Orders Placed", value: filteredOrders.length, icon: ShoppingCart, color: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" },
+          { label: "Unique Parts Sought", value: Object.keys(partDemand).length, icon: Package, color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400" },
+          { label: "Vehicle Types", value: Object.keys(vehicleTotals).length, icon: Car, color: "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400" },
         ].map((s, i) => (
-          <Card key={i} className="border-slate-100">
+          <Card key={i} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
             <CardContent className="p-4 flex items-center gap-3">
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${s.color}`}>
                 <s.icon className="w-4 h-4" />
               </div>
               <div>
-                <p className="text-xl font-bold text-slate-900">{s.value}</p>
-                <p className="text-xs text-slate-500 leading-tight">{s.label}</p>
+                <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{s.value}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-tight">{s.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -185,29 +185,29 @@ export default function MarketInsights({ shop }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
         {/* Top Requested Parts */}
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <TrendingUp className="w-4 h-4 text-blue-500" /> Top Requested Parts
             </CardTitle>
           </CardHeader>
           <CardContent>
             {topRequestedParts.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No data for this period</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No data for this period</p>
             ) : (
               <div className="space-y-2">
                 {topRequestedParts.map((part, i) => (
                   <div key={i} className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-2 min-w-0">
-                      <span className="text-xs font-bold text-slate-400 w-5">{i + 1}</span>
-                      <span className="text-slate-700 truncate">{part.name}</span>
+                      <span className="text-xs font-bold text-slate-400 dark:text-slate-500 w-5">{i + 1}</span>
+                      <span className="text-slate-700 dark:text-slate-300 truncate">{part.name}</span>
                       {part.category && (
-                        <Badge variant="outline" className="text-[10px] capitalize flex-shrink-0">
+                        <Badge variant="outline" className="text-[10px] capitalize flex-shrink-0 dark:border-slate-600 dark:text-slate-400">
                           {part.category.replace(/_/g, " ")}
                         </Badge>
                       )}
                     </div>
-                    <span className="font-semibold text-blue-600 flex-shrink-0 ml-2">{part.count}×</span>
+                    <span className="font-semibold text-blue-600 dark:text-blue-400 flex-shrink-0 ml-2">{part.count}×</span>
                   </div>
                 ))}
               </div>
@@ -216,15 +216,15 @@ export default function MarketInsights({ shop }) {
         </Card>
 
         {/* Category Demand Pie */}
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <Package className="w-4 h-4 text-purple-500" /> Demand by Category
             </CardTitle>
           </CardHeader>
           <CardContent>
             {categoryDemandData.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No data for this period</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No data for this period</p>
             ) : (
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
@@ -243,15 +243,15 @@ export default function MarketInsights({ shop }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-5">
         {/* Most Bought Products */}
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <ShoppingCart className="w-4 h-4 text-emerald-500" /> Most Purchased Parts
             </CardTitle>
           </CardHeader>
           <CardContent>
             {topBoughtProducts.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No sales data for this period</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No sales data for this period</p>
             ) : (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={topBoughtProducts} layout="vertical" margin={{ left: 10, right: 20 }}>
@@ -266,15 +266,15 @@ export default function MarketInsights({ shop }) {
         </Card>
 
         {/* Top Vehicles */}
-        <Card className="border-slate-100">
+        <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
               <Car className="w-4 h-4 text-amber-500" /> Most Requested Vehicles
             </CardTitle>
           </CardHeader>
           <CardContent>
             {topVehicles.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No vehicle data for this period</p>
+              <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-6">No vehicle data for this period</p>
             ) : (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={topVehicles} layout="vertical" margin={{ left: 10, right: 20 }}>
@@ -290,33 +290,33 @@ export default function MarketInsights({ shop }) {
       </div>
 
       {/* Vehicles by Region table */}
-      <Card className="border-slate-100">
+      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardHeader className="pb-2">
-          <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+          <CardTitle className="text-sm font-semibold text-slate-700 dark:text-slate-300 flex items-center gap-2">
             <MapPin className="w-4 h-4 text-red-500" /> Vehicle Demand by Region / Town
           </CardTitle>
         </CardHeader>
         <CardContent>
           {vehicleRegionFlat.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-6">
+            <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-6">
               No regional data yet — this will populate as buyers include their location when submitting requests.
             </p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 text-left">
-                    <th className="pb-2 text-xs font-semibold text-slate-500">Region / Town</th>
-                    <th className="pb-2 text-xs font-semibold text-slate-500">Vehicle</th>
-                    <th className="pb-2 text-xs font-semibold text-slate-500 text-right">Requests</th>
+                  <tr className="border-b border-slate-100 dark:border-slate-700 text-left">
+                    <th className="pb-2 text-xs font-semibold text-slate-500 dark:text-slate-400">Region / Town</th>
+                    <th className="pb-2 text-xs font-semibold text-slate-500 dark:text-slate-400">Vehicle</th>
+                    <th className="pb-2 text-xs font-semibold text-slate-500 dark:text-slate-400 text-right">Requests</th>
                   </tr>
                 </thead>
                 <tbody>
                   {vehicleRegionFlat.slice(0, 20).map((row, i) => (
-                    <tr key={i} className="border-b border-slate-50 hover:bg-slate-50">
-                      <td className="py-2 text-slate-600">{row.region}</td>
-                      <td className="py-2 text-slate-700 font-medium">{row.vehicle}</td>
-                      <td className="py-2 text-right font-semibold text-blue-600">{row.count}</td>
+                    <tr key={i} className="border-b border-slate-50 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                      <td className="py-2 text-slate-600 dark:text-slate-400">{row.region}</td>
+                      <td className="py-2 text-slate-700 dark:text-slate-300 font-medium">{row.vehicle}</td>
+                      <td className="py-2 text-right font-semibold text-blue-600 dark:text-blue-400">{row.count}</td>
                     </tr>
                   ))}
                 </tbody>
