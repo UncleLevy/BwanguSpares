@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
-import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
+import { Search, SlidersHorizontal, X, FileSearch, Truck } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
-import VehicleCompatibilityFilter from "@/components/parts/VehicleCompatibilityFilter";
+import VehicleFilterPanel from "@/components/parts/VehicleFilterPanel";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
