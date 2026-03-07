@@ -8,9 +8,10 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { Printer, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { QRCodeSVG } from "qrcode.react";
+import { createPageUrl } from "@/utils";
 
 const DOC_TYPES = [
   { value: "invoice", label: "Invoice" },
