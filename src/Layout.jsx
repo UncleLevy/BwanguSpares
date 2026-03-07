@@ -162,6 +162,9 @@ export default function Layout({ children, currentPageName }) {
                      {user?.role !== 'admin' && <NotificationBell userEmail={user?.email} />}
                      <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                        <MessageSquare className="w-5 h-5" />
+                       {unreadMessages > 0 && (
+                         <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900 pointer-events-none" />
+                       )}
                      </Link>
                      {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
                        <>
