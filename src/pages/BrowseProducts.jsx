@@ -169,7 +169,15 @@ export default function BrowseProducts() {
            )}
          </div>
          <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide" style={{ scrollbarWidth: "none" }}>
-          <MobileSelect
+           <Button
+             variant="outline"
+             onClick={() => setVehicleFilterOpen(true)}
+             className="shrink-0 gap-2 rounded-xl"
+           >
+             <Truck className="w-4 h-4" />
+             <span className="hidden sm:inline">Vehicle</span>
+           </Button>
+           <MobileSelect
             value={category}
             onValueChange={handleFilterChange(setCategory)}
             placeholder="Category"
