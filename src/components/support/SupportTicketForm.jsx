@@ -81,11 +81,13 @@ export default function SupportTicketForm({ user }) {
       subject: form.subject,
       category: form.category,
       message: form.message,
+      photo_urls: photos,
       status: "open",
       priority: "medium",
     });
     toast.success("Ticket submitted! Admin will respond shortly.");
     setForm({ subject: "", category: "other", message: "" });
+    setPhotos([]);
     setShowForm(false);
     // Reload tickets
     const t = await base44.entities.SupportTicket.filter({ user_email: user.email }, "-created_date", 20);
