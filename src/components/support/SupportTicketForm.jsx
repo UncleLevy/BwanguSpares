@@ -141,6 +141,34 @@ export default function SupportTicketForm({ user }) {
                   rows={5}
                 />
               </div>
+              <div>
+                <Label>Attach Photos (optional, max 3)</Label>
+                <div className="mt-1 space-y-2">
+                  {photos.length > 0 && (
+                    <div className="flex gap-2 flex-wrap">
+                      {photos.map((url, i) => (
+                        <div key={i} className="relative w-20 h-20 rounded-lg overflow-hidden border border-slate-200 dark:border-slate-600">
+                          <img src={url} alt="" className="w-full h-full object-cover" />
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(i)}
+                            className="absolute top-0.5 right-0.5 bg-black/60 rounded-full p-0.5 hover:bg-black/80 transition-colors"
+                          >
+                            <X className="w-3 h-3 text-white" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {photos.length < 3 && (
+                    <label className={`flex items-center gap-2 cursor-pointer w-fit px-3 py-2 rounded-xl border border-dashed border-slate-300 dark:border-slate-600 text-sm text-slate-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 transition-colors ${uploadingPhoto ? "opacity-50 pointer-events-none" : ""}`}>
+                      <Paperclip className="w-4 h-4" />
+                      {uploadingPhoto ? "Uploading..." : "Add photo"}
+                      <input type="file" accept="image/*" multiple className="hidden" onChange={handlePhotoUpload} />
+                    </label>
+                  )}
+                </div>
+              </div>
               <div className="flex gap-2 justify-end">
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)}>Cancel</Button>
                 <Button type="submit" disabled={submitting} className="bg-blue-600 hover:bg-blue-700">
