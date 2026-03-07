@@ -85,7 +85,7 @@ export default function BrowseShops() {
           <p className="text-slate-500 dark:text-slate-400 mt-1">Verified dealers across Zambia</p>
         </div>
         <Button variant="outline" onClick={getLocation} disabled={locating}
-          className="gap-2 text-sm border-blue-200 text-blue-600 hover:bg-blue-50">
+          className="gap-2 text-sm border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30">
           <Navigation className="w-4 h-4" />
           {locating ? "Locating..." : userLoc ? "Location found" : "Use my location"}
         </Button>
@@ -140,7 +140,7 @@ export default function BrowseShops() {
                   )}
                 </div>
                 {shop.distance !== null && (
-                  <Badge variant="outline" className="mt-2 text-[11px] border-blue-200 text-blue-600">
+                  <Badge variant="outline" className="mt-2 text-[11px] border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400">
                     <Navigation className="w-3 h-3 mr-1" /> {shop.distance.toFixed(1)} km away
                   </Badge>
                 )}
