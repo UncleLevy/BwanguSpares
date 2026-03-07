@@ -12,6 +12,7 @@ import { Printer, Mail, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { QRCodeSVG } from "qrcode.react";
 import { createPageUrl } from "@/utils";
+import { useState, useMemo } from "react";
 
 const DOC_TYPES = [
   { value: "invoice", label: "Invoice" },
