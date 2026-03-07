@@ -147,6 +147,7 @@ export default function SupportTicketsPanel({ adminUser }) {
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-base">
               <TicketCheck className="w-5 h-5 text-blue-600" />
+              {selected?.ticket_number && <span className="font-mono text-blue-500">#{selected.ticket_number}</span>}
               {selected?.subject}
             </DialogTitle>
           </DialogHeader>
