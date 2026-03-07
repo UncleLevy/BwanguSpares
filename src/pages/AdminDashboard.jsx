@@ -39,6 +39,7 @@ import AdminProductsPanel from "@/components/admin/AdminProductsPanel";
 import AdminLoyaltyPanel from "@/components/admin/AdminLoyaltyPanel";
 import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
 import AdminReturnsPanel from "@/components/admin/AdminReturnsPanel";
+import AdminVehiclesPanel from "@/components/admin/AdminVehiclesPanel";
 import { emailShopStatusUpdate } from "@/components/lib/emailNotifications";
 
 export default function AdminDashboard() {
