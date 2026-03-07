@@ -20,7 +20,7 @@ const DOC_TYPES = [
   { value: "quotation", label: "Quotation" },
 ];
 
-function DocumentView({ type, shop, order, partsRequest, docNumber }) {
+function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = false }) {
   const date = new Date().toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
   const isOrder = !!order;
 
