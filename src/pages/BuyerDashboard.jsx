@@ -679,6 +679,13 @@ export default function BuyerDashboard() {
          </DialogContent>
        </Dialog>
 
+       <ReturnRequestDialog
+         open={returnDialog}
+         onClose={() => { setReturnDialog(false); setReturnOrder(null); }}
+         order={returnOrder}
+         user={user}
+       />
+
        <WalletTransactionDetail
          txn={selectedTxn}
          open={!!selectedTxn}
