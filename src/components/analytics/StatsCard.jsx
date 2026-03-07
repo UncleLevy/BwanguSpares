@@ -4,14 +4,14 @@ import { TrendingUp, TrendingDown } from "lucide-react";
 
 export default function StatsCard({ title, value, subtitle, icon: Icon, trend, color = "bg-blue-50 text-blue-600" }) {
   return (
-    <Card className="border-slate-100">
+    <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
       <CardContent className="p-5">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <p className="text-xs text-slate-500 font-medium">{title}</p>
-            <p className="text-2xl font-bold text-slate-900 mt-1">{value}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{title}</p>
+            <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">{value}</p>
             {subtitle && (
-              <p className="text-xs text-slate-500 mt-1">{subtitle}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{subtitle}</p>
             )}
             {trend && (
               <div className={`flex items-center gap-1 mt-2 text-xs font-medium ${trend > 0 ? "text-emerald-600" : "text-red-600"}`}>
