@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
   AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck, Gift,
-  Search, Download, Upload, Pencil, TicketCheck, RotateCcw
+  Search, Download, Upload, Pencil, TicketCheck, RotateCcw, Car
 } from "lucide-react";
 import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
 import { Button } from "@/components/ui/button";
