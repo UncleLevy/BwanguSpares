@@ -48,22 +48,30 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
    const vat = type !== "quotation" ? Math.round((total - subtotal) * 100) / 100 : 0;
 
   return (
-    <div id="printable-document" style={{ fontFamily: "Arial, sans-serif", padding: "32px", maxWidth: "700px", margin: "0 auto", background: "#fff", color: "#1a1a1a" }}>
-      {/* Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px", borderBottom: `3px solid ${color}`, paddingBottom: "20px" }}>
-        <div>
-          <h1 style={{ fontSize: "26px", fontWeight: "bold", color: color, margin: 0 }}>{shop?.name}</h1>
-          {shop?.address && <p style={{ margin: "4px 0 0", fontSize: "13px", color: "#555" }}>{shop.address}</p>}
-          {shop?.region_name && <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#555" }}>{shop.region_name}, Zambia</p>}
-          {shop?.phone && <p style={{ margin: "2px 0 0", fontSize: "13px", color: "#555" }}>Tel: {shop.phone}</p>}
+    <div id="printable-document" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", padding: "40px", maxWidth: "700px", margin: "0 auto", background: "#fafafa", color: "#333" }}>
+      {/* Header - Minimalistic */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "40px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <div style={{ width: "48px", height: "48px", background: color, borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "28px" }}>
+            {typeEmojis[type]}
+          </div>
+          <div>
+            <h1 style={{ fontSize: "24px", fontWeight: "600", color: "#1a1a1a", margin: 0 }}>{typeLabels[type]}</h1>
+            <p style={{ margin: "2px 0 0", fontSize: "12px", color: "#888" }}>{docNumber}</p>
+          </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ background: color, color: "#fff", padding: "8px 18px", borderRadius: "6px", fontSize: "18px", fontWeight: "bold", letterSpacing: "1px" }}>
-            {typeLabels[type]}
-          </div>
-          <p style={{ margin: "8px 0 2px", fontSize: "13px", color: "#555" }}>No: <strong>{docNumber}</strong></p>
-          <p style={{ margin: "2px 0", fontSize: "13px", color: "#555" }}>Date: {date}</p>
+          <p style={{ fontSize: "13px", color: "#666", margin: "0 0 2px" }}>{date}</p>
         </div>
+      </div>
+
+      {/* Shop Info - Clean */}
+      <div style={{ marginBottom: "36px" }}>
+        <p style={{ fontSize: "12px", textTransform: "uppercase", color: "#999", fontWeight: "600", margin: "0 0 6px", letterSpacing: "0.5px" }}>From</p>
+        <h2 style={{ fontSize: "16px", fontWeight: "600", color: "#1a1a1a", margin: "0 0 4px" }}>{shop?.name}</h2>
+        {shop?.address && <p style={{ margin: "1px 0", fontSize: "12px", color: "#666" }}>{shop.address}</p>}
+        {shop?.region_name && <p style={{ margin: "1px 0", fontSize: "12px", color: "#666" }}>{shop.region_name}, Zambia</p>}
+        {shop?.phone && <p style={{ margin: "4px 0 0", fontSize: "12px", color: "#0891b2", fontWeight: "500" }}>📞 {shop.phone}</p>}
       </div>
 
       {/* Bill To */}
