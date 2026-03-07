@@ -51,6 +51,7 @@ import ShippingStats from "@/components/shipping/ShippingStats";
 import ShippingManagement from "@/components/shipping/ShippingManagement";
 import AppointmentManager from "@/components/technicians/AppointmentManager";
 import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
+import SupportTicketForm from "@/components/support/SupportTicketForm";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -467,6 +468,7 @@ export default function ShopDashboard() {
    { id: "appointments", label: "Appointments", icon: Calendar, onClick: () => setView("appointments") },
    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
    { id: "returns", label: "Returns", icon: RotateCcw, onClick: () => setView("returns") },
+   { id: "support", label: "Support", icon: AlertTriangle, onClick: () => setView("support") },
    { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => setView("wallet") },
    {
       id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => setView("inventory"),
@@ -1239,6 +1241,10 @@ export default function ShopDashboard() {
 
         {view === "returns" && (
           <ShopReturnsPanel shop={shop} />
+        )}
+
+        {view === "support" && (
+          <SupportTicketForm user={user} />
         )}
 
         {view === "shipping" && (
