@@ -250,7 +250,12 @@ export default function Layout({ children, currentPageName }) {
                         <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Account</div>
                         <DropdownMenuItem asChild>
                           <Link to={createPageUrl("Messages")} className="flex items-center gap-2">
-                            <MessageSquare className="w-4 h-4" /> Messages
+                            <span className="relative">
+                              <MessageSquare className="w-4 h-4" />
+                              {unreadMessages > 0 && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />}
+                            </span>
+                            Messages
+                            {unreadMessages > 0 && <Badge className="ml-auto h-5 min-w-[20px] flex items-center justify-center p-0 px-1 text-[10px] bg-red-500">{unreadMessages}</Badge>}
                           </Link>
                         </DropdownMenuItem>
                         {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
