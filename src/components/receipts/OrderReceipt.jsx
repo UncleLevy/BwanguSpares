@@ -83,7 +83,8 @@ export default function OrderReceipt({ order, shop }) {
             const shippingCost = order.shipping_cost || 0;
             const discountAmount = order.discount_amount || 0;
             const total = order.total_amount || (itemsSubtotal + shippingCost - discountAmount);
-            const vat = (total / 1.16) * 0.16;
+            // VAT is included in the price — extract it from total (don't add it on top)
+            const vatIncluded = total * (0.16 / 1.16);
 
             return (
               <>
@@ -104,8 +105,8 @@ export default function OrderReceipt({ order, shop }) {
                   </div>
                 )}
                 <div className="flex justify-between text-slate-600 dark:text-slate-400 mb-2">
-                  <span>VAT (16%):</span>
-                  <span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                  <span>VAT (16% incl.):</span>
+                  <span>K{vatIncluded.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                 </div>
                 <div className="border-t-2 border-slate-900 dark:border-slate-700 pt-2 sm:pt-3 flex justify-between font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-lg">
                   <span>Total:</span>
