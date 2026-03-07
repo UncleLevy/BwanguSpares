@@ -121,9 +121,9 @@ export default function ShopPartsRequests({ shop }) {
   if (shop?.slot_type === "basic") {
     return (
       <div className="text-center py-20">
-        <Crown className="w-16 h-16 text-amber-300 mx-auto mb-4" />
-        <h3 className="font-semibold text-slate-700 text-lg">Upgrade to Access Parts Requests</h3>
-        <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto">
+        <Crown className="w-16 h-16 text-amber-300 dark:text-amber-500 mx-auto mb-4" />
+        <h3 className="font-semibold text-slate-700 dark:text-slate-300 text-lg">Upgrade to Access Parts Requests</h3>
+        <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-sm mx-auto">
           Buyer parts requests are available to <strong>Standard</strong> and <strong>Premium</strong> shops only.
         </p>
       </div>
@@ -140,63 +140,63 @@ export default function ShopPartsRequests({ shop }) {
     <div>
       <div className="flex items-center justify-between mb-2">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Parts Requests</h1>
-          <p className="text-sm text-slate-500 mt-0.5">Accept or counter-offer buyer requests</p>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Parts Requests</h1>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Accept or counter-offer buyer requests</p>
         </div>
         <div className="flex items-center gap-2">
           {shop?.slot_type === "premium" && (
-            <Badge className="bg-amber-50 text-amber-700 border-amber-200">
+            <Badge className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800">
               <Crown className="w-3 h-3 mr-1" /> Premium
             </Badge>
           )}
-          <Badge className="bg-blue-50 text-blue-700">{requests.length} open</Badge>
+          <Badge className="bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400">{requests.length} open</Badge>
         </div>
       </div>
 
       {requests.length === 0 ? (
         <div className="text-center py-20">
-          <Inbox className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700">No open requests right now</h3>
-          <p className="text-sm text-slate-500 mt-1">New buyer requests will appear here as they come in</p>
+          <Inbox className="w-16 h-16 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
+          <h3 className="font-semibold text-slate-700 dark:text-slate-300">No open requests right now</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">New buyer requests will appear here as they come in</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-6">
           {requests.map(req => (
-            <Card key={req.id} className="border-slate-100 hover:border-blue-200 transition-colors">
+            <Card key={req.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover:border-blue-200 dark:hover:border-blue-700 transition-colors">
               <CardContent className="p-5">
                 <div className="flex items-start justify-between mb-3">
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-semibold text-slate-900 truncate">{req.part_name}</h3>
+                    <h3 className="font-semibold text-slate-900 dark:text-slate-100 truncate">{req.part_name}</h3>
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
-                      <Badge variant="outline" className="text-[11px] capitalize">
+                      <Badge variant="outline" className="text-[11px] capitalize dark:border-slate-600 dark:text-slate-300">
                         {req.category?.replace("_", " ")}
                       </Badge>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-400 dark:text-slate-500">
                         {new Date(req.created_date).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
-                  <Clock className="w-4 h-4 text-amber-500 flex-shrink-0 ml-2 mt-0.5" />
+                  <Clock className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0 ml-2 mt-0.5" />
                 </div>
 
                 {req.description && (
-                  <p className="text-sm text-slate-600 mb-3 line-clamp-2">{req.description}</p>
+                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">{req.description}</p>
                 )}
 
                 <div className="space-y-1.5 mb-4">
                   {req.compatible_vehicles && (
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                       <Car className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>{req.compatible_vehicles}</span>
                     </div>
                   )}
                   {req.budget && (
-                    <div className="flex items-center gap-2 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                       <DollarSign className="w-3.5 h-3.5 flex-shrink-0" />
                       <span>Budget: K{req.budget.toLocaleString()}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                     <Phone className="w-3.5 h-3.5 flex-shrink-0" />
                     <span>{req.buyer_name} • {req.buyer_phone || "Contact shown after acceptance"}</span>
                   </div>
@@ -216,7 +216,7 @@ export default function ShopPartsRequests({ shop }) {
                     onClick={() => openCounterDialog(req)}
                     disabled={accepting === req.id}
                     variant="outline"
-                    className="flex-1 border-purple-200 text-purple-700 hover:bg-purple-50"
+                    className="flex-1 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30"
                     size="sm"
                   >
                     Counter Offer
@@ -230,15 +230,15 @@ export default function ShopPartsRequests({ shop }) {
 
       {acceptedList.length > 0 && (
         <div className="mt-10">
-          <h2 className="text-lg font-semibold text-slate-800 mb-4">Accepted Requests — Print Quotation</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Accepted Requests — Print Quotation</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {acceptedList.map(req => (
-              <Card key={req.id} className="border-emerald-100">
+              <Card key={req.id} className="border-emerald-100 dark:border-emerald-900/50 dark:bg-slate-900">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="font-semibold text-sm text-slate-900">{req.part_name}</p>
-                      <p className="text-xs text-slate-500">{req.buyer_name} • {new Date(req.accepted_date || req.created_date).toLocaleDateString()}</p>
+                      <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{req.part_name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{req.buyer_name} • {new Date(req.accepted_date || req.created_date).toLocaleDateString()}</p>
                     </div>
                     <DocumentPrinter shop={shop} partsRequest={req} triggerLabel="Quotation" />
                   </div>
@@ -257,10 +257,10 @@ export default function ShopPartsRequests({ shop }) {
           </DialogHeader>
           <div className="space-y-4">
             <div className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-sm space-y-1">
-              <p className="font-semibold">{counterTarget?.part_name}</p>
-              {counterTarget?.description && <p className="text-slate-500">{counterTarget.description}</p>}
+              <p className="font-semibold text-slate-900 dark:text-slate-100">{counterTarget?.part_name}</p>
+              {counterTarget?.description && <p className="text-slate-500 dark:text-slate-400">{counterTarget.description}</p>}
               {counterTarget?.budget && (
-                <p className="text-blue-600 font-medium text-xs">Buyer's budget: K{counterTarget.budget.toLocaleString()}</p>
+                <p className="text-blue-600 dark:text-blue-400 font-medium text-xs">Buyer's budget: K{counterTarget.budget.toLocaleString()}</p>
               )}
             </div>
             <div>
