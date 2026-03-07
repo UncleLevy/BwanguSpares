@@ -66,6 +66,23 @@ export default function Messages() {
     await loadConversations(user, role);
   };
 
+  const handleArchiveToggle = (convId, isNowArchived) => {
+    setConversations((prev) =>
+      prev.map((c) => {
+        if (c.id !== convId) return c;
+        const field = role === "buyer" ? "archived_by_buyer" : "archived_by_shop";
+        return { ...c, [field]: isNowArchived };
+      })
+    );
+    // Deselect if it's moved out of the current tab
+    if (selected?.id === convId) setSelected(null);
+  };
+
+  const archivedField = role === "buyer" ? "archived_by_buyer" : "archived_by_shop";
+  const visibleConversations = conversations.filter((c) =>
+    tab === "archived" ? c[archivedField] : !c[archivedField]
+  );
+
   if (loading) {
     return (
       <div className="flex h-screen items-center justify-center">
