@@ -13,10 +13,10 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 
 const STATUS_STYLES = {
-  pending:   { label: "Pending",   class: "bg-amber-50 text-amber-700" },
-  confirmed: { label: "Confirmed", class: "bg-blue-50 text-blue-700" },
-  completed: { label: "Completed", class: "bg-emerald-50 text-emerald-700" },
-  cancelled: { label: "Cancelled", class: "bg-red-50 text-red-700" },
+  pending:   { label: "Pending",   class: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" },
+  confirmed: { label: "Confirmed", class: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400" },
+  completed: { label: "Completed", class: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" },
+  cancelled: { label: "Cancelled", class: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" },
 };
 
 const PROBLEM_LABELS = {
@@ -85,7 +85,7 @@ export default function AppointmentManager({ shop }) {
 
   if (loading) return (
     <div className="space-y-3">
-      {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse" />)}
+      {[1,2,3].map(i => <div key={i} className="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
     </div>
   );
 
@@ -130,20 +130,20 @@ export default function AppointmentManager({ shop }) {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-20 text-slate-500">
-          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-300" />
+        <div className="text-center py-20 text-slate-500 dark:text-slate-400">
+          <Calendar className="w-12 h-12 mx-auto mb-3 text-slate-300 dark:text-slate-600" />
           <p className="font-medium">No appointments found</p>
           <p className="text-sm mt-1">Bookings from customers will appear here</p>
         </div>
       ) : (
         <div className="space-y-3">
           {filtered.map(appt => (
-            <Card key={appt.id} className="border-slate-100 dark:border-slate-700 hover:shadow-md transition-shadow cursor-pointer" onClick={() => openDetail(appt)}>
+            <Card key={appt.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover:shadow-md dark:hover:shadow-slate-800 transition-shadow cursor-pointer" onClick={() => openDetail(appt)}>
               <CardContent className="p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-start gap-3 flex-1 min-w-0">
-                    <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-                      <Wrench className="w-5 h-5 text-blue-600" />
+                    <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
+                      <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
@@ -166,7 +166,7 @@ export default function AppointmentManager({ shop }) {
                       <Button size="sm" className="h-8 bg-blue-600 hover:bg-blue-700 gap-1 text-xs" onClick={() => updateStatus(appt, "confirmed")}>
                         <CheckCircle2 className="w-3 h-3" /> Confirm
                       </Button>
-                      <Button size="sm" variant="outline" className="h-8 text-red-600 border-red-200 hover:bg-red-50 gap-1 text-xs" onClick={() => updateStatus(appt, "cancelled")}>
+                      <Button size="sm" variant="outline" className="h-8 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950/30 gap-1 text-xs" onClick={() => updateStatus(appt, "cancelled")}>
                         <XCircle className="w-3 h-3" /> Decline
                       </Button>
                     </div>
@@ -194,32 +194,32 @@ export default function AppointmentManager({ shop }) {
           {selected && (
             <div className="space-y-4">
               <div className="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl">
-                <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center">
-                  <User className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                  <User className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
                   <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{selected.buyer_name}</p>
-                  <p className="text-xs text-slate-500">{selected.buyer_email} · {selected.buyer_phone}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{selected.buyer_email} · {selected.buyer_phone}</p>
                 </div>
                 <Badge className={`ml-auto ${STATUS_STYLES[selected.status]?.class}`}>{STATUS_STYLES[selected.status]?.label}</Badge>
               </div>
 
               <div className="grid grid-cols-2 gap-3 text-sm">
                 <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
-                  <p className="text-xs text-slate-400 mb-1">Technician</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Technician</p>
                   <p className="font-medium text-slate-900 dark:text-slate-100">{selected.technician_name}</p>
-                  <p className="text-xs text-slate-500">{PROBLEM_LABELS[selected.problem_type]}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{PROBLEM_LABELS[selected.problem_type]}</p>
                 </div>
                 <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-3">
-                  <p className="text-xs text-slate-400 mb-1">Schedule</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Schedule</p>
                   <p className="font-medium text-slate-900 dark:text-slate-100">{selected.appointment_date}</p>
-                  <p className="text-xs text-slate-500">{selected.time_slot}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">{selected.time_slot}</p>
                 </div>
               </div>
 
               {selected.description && (
                 <div>
-                  <p className="text-xs text-slate-400 mb-1">Problem Description</p>
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mb-1">Problem Description</p>
                   <p className="text-sm text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-lg p-3">{selected.description}</p>
                 </div>
               )}
@@ -245,7 +245,7 @@ export default function AppointmentManager({ shop }) {
                     <Button className="flex-1 bg-blue-600 hover:bg-blue-700 gap-1.5" onClick={() => { updateStatus(selected, "confirmed"); setDetailOpen(false); }}>
                       <CheckCircle2 className="w-4 h-4" /> Confirm
                     </Button>
-                    <Button variant="outline" className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5" onClick={() => { updateStatus(selected, "cancelled"); setDetailOpen(false); }}>
+                    <Button variant="outline" className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 hover:bg-red-50 dark:hover:bg-red-950/30 gap-1.5" onClick={() => { updateStatus(selected, "cancelled"); setDetailOpen(false); }}>
                       <XCircle className="w-4 h-4" /> Decline
                     </Button>
                   </>
