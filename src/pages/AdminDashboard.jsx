@@ -274,6 +274,7 @@ export default function AdminDashboard() {
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
     { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
     { id: "cities", label: "Cities", icon: MapPin, onClick: () => setView("cities") },
+    { id: "vehicles", label: "Vehicles", icon: Car, onClick: () => setView("vehicles"), badge: vehicleCount || null },
     { id: "users", label: "Users", icon: Users, onClick: () => setView("users") },
     { id: "loyalty", label: "Loyalty Programme", icon: Gift, onClick: () => setView("loyalty") },
     { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit") },
