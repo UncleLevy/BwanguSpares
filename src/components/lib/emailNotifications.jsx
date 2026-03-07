@@ -140,12 +140,26 @@ export const emailNewOrderToShop = (shopOwnerEmail, shopName, order) => {
 
 // ─── Support Tickets ────────────────────────────────────────────────────────
 
-export const emailSupportTicketReceived = (userEmail, userName, ticket) =>
-  send({
+export const emailSupportTicketReceived = (userEmail, userName, ticket) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${userName || "there"},</p>
+    <p style="margin: 0 0 16px;">Thank you for reaching out! We've received your support ticket and our team will review it shortly.</p>
+    
+    <div style="background: #eff6ff; padding: 16px; border-radius: 8px; border-left: 4px solid #0284c7; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">🎫 Ticket Details</p>
+      <p style="margin: 6px 0;"><strong>Subject:</strong> ${ticket.subject}</p>
+      <p style="margin: 6px 0;"><strong>Category:</strong> ${ticket.category?.replace("_", " ") || "General"}</p>
+      <p style="margin: 6px 0;"><strong>Status:</strong> <span style="background: #fef3c7; padding: 2px 8px; border-radius: 4px; color: #92400e;">Open</span></p>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">We typically respond within 24 hours. Keep an eye on your inbox for updates!</p>
+  `;
+  return send({
     to: userEmail,
-    subject: `Support Ticket Received – ${ticket.subject}`,
-    body: `Hi ${userName || "there"},\n\nWe've received your support ticket and our team will get back to you as soon as possible.\n\nTicket: ${ticket.subject}\nCategory: ${ticket.category?.replace("_", " ")}\nStatus: Open\n\nThank you for reaching out.\n\nBwanguSpares Support Team`,
+    subject: `🎫 Support Ticket Received – ${ticket.subject}`,
+    htmlBody: createEmailTemplate("Ticket Received", "🎫", "#0284c7", content),
   });
+};
 
 export const emailSupportTicketReply = (userEmail, userName, ticket, adminReply) =>
   send({
