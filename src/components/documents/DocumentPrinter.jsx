@@ -74,12 +74,19 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
         {shop?.phone && <p style={{ margin: "4px 0 0", fontSize: "12px", color: "#0891b2", fontWeight: "500" }}>📞 {shop.phone}</p>}
       </div>
 
-      {/* Bill To */}
-      <div style={{ marginBottom: "28px", background: "#f8f9fa", padding: "16px", borderRadius: "8px" }}>
-        <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#999", fontWeight: "bold", margin: "0 0 8px" }}>Bill To</p>
-        <p style={{ fontWeight: "bold", fontSize: "15px", margin: "0 0 4px" }}>{clientName}</p>
-        {clientPhone && <p style={{ margin: "2px 0", fontSize: "13px", color: "#555" }}>Phone: {clientPhone}</p>}
-        {clientRegion && <p style={{ margin: "2px 0", fontSize: "13px", color: "#555" }}>Address: {clientRegion}</p>}
+      {/* Bill To - Avatar Card */}
+      <div style={{ marginBottom: "36px", background: "#f0f9ff", padding: "20px", borderRadius: "12px", border: `1px solid ${color}20` }}>
+        <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#666", fontWeight: "600", margin: "0 0 8px", letterSpacing: "0.5px" }}>Bill To</p>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+          <div style={{ width: "40px", height: "40px", background: color, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontWeight: "600", fontSize: "16px", flexShrink: 0 }}>
+            {clientName?.charAt(0)?.toUpperCase() || "?"}
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontWeight: "600", fontSize: "14px", margin: "0 0 4px", color: "#1a1a1a" }}>{clientName}</p>
+            {clientPhone && <p style={{ margin: "2px 0", fontSize: "12px", color: "#666" }}>{clientPhone}</p>}
+            {clientRegion && <p style={{ margin: "2px 0", fontSize: "12px", color: "#666" }}>{clientRegion}</p>}
+          </div>
+        </div>
       </div>
 
       {/* Items Table */}
