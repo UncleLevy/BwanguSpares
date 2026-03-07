@@ -232,7 +232,7 @@ export default function BrowseProducts() {
             </Badge>
           )}
           {vehicleFilter.make && (
-            <Badge className="gap-1 cursor-pointer bg-blue-100 text-blue-800 hover:bg-blue-200" onClick={() => { setVehicleFilter({ make: "", model: "", year: "" }); setPage(1); }}>
+            <Badge className="gap-1 cursor-pointer bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60" onClick={() => { setVehicleFilter({ make: "", model: "", year: "" }); setPage(1); }}>
               🚗 {[vehicleFilter.make, vehicleFilter.model, vehicleFilter.year].filter(Boolean).join(" ")} <X className="w-3 h-3" />
             </Badge>
           )}
