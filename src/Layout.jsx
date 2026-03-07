@@ -25,10 +25,28 @@ const pageVariants = {
   exit:    { opacity: 0, x: -16, transition: { duration: 0.15 } },
 };
 
+function playTone() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, ctx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(660, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.18, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {}
+}
+
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
   const [user, setUser] = useState(null);
   const [cartCount, setCartCount] = useState(0);
+  const [unreadMessages, setUnreadMessages] = useState(0);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const prevPage = React.useRef(currentPageName);
