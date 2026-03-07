@@ -6,7 +6,7 @@ import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
   AlertCircle, BarChart3, DollarSign, Flag, ShieldOff, ScrollText, ShieldCheck, Truck, Gift,
-  Search, Download, Upload, Pencil
+  Search, Download, Upload, Pencil, TicketCheck
 } from "lucide-react";
 import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
 import { Button } from "@/components/ui/button";
@@ -564,6 +564,7 @@ export default function AdminDashboard() {
         {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
         {view === "audit" && <AuditLogPanel />}
 
+        {view === "support" && <SupportTicketsPanel adminUser={user} />}
         {view === "loyalty" && <AdminLoyaltyPanel />}
         {view === "users" && <UsersPanel adminUser={user} />}
 
