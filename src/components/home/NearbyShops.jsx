@@ -96,7 +96,7 @@ export default function NearbyShops({ shops, loading }) {
                   )}
                 </div>
                 {shop.distance && (
-                  <span className="inline-block mt-2 text-[11px] font-medium text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full">
+                  <span className="inline-block mt-2 text-[11px] font-medium text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full">
                     {shop.distance.toFixed(1)} km away
                   </span>
                 )}

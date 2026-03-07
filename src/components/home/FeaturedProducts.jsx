@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 const conditionColors = {
-  new: "bg-emerald-50 text-emerald-700 border-emerald-200",
-  used: "bg-amber-50 text-amber-700 border-amber-200",
-  refurbished: "bg-blue-50 text-blue-700 border-blue-200",
+  new: "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700",
+  used: "bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-700",
+  refurbished: "bg-blue-50 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-700",
 };
 
 export default function FeaturedProducts({ products, onAddToCart, loading }) {
@@ -54,7 +54,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
   }
 
   return (
-    <section className="py-16">
+    <section className="py-16 bg-white dark:bg-slate-950">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
@@ -100,7 +100,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{product.shop_name}</p>
                 <div className="flex items-center justify-between mt-3">
                   <span className="text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
-                  <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 text-blue-600 hover:bg-blue-50"
+                  <Button size="sm" variant="outline" className="h-8 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); onAddToCart(product); }}>
                     <ShoppingCart className="w-3.5 h-3.5 mr-1" /> Add
                   </Button>
