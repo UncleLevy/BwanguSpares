@@ -206,7 +206,10 @@ export default function SupportTicketForm({ user }) {
               <Card key={ticket.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                 <CardContent className="p-4 space-y-2">
                   <div className="flex items-start justify-between gap-2">
-                    <p className="font-semibold text-sm text-slate-900 dark:text-slate-100">{ticket.subject}</p>
+                    <div>
+                      {ticket.ticket_number && <span className="text-[11px] font-mono text-blue-500 font-semibold">#{ticket.ticket_number} · </span>}
+                      <span className="font-semibold text-sm text-slate-900 dark:text-slate-100">{ticket.subject}</span>
+                    </div>
                     <Badge className={`text-[11px] shrink-0 ${statusColors[ticket.status]}`}>{ticket.status.replace("_", " ")}</Badge>
                   </div>
                   <p className="text-xs text-slate-500">{new Date(ticket.created_date).toLocaleDateString()} · {CATEGORIES.find(c => c.value === ticket.category)?.label}</p>
