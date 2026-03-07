@@ -63,12 +63,28 @@ const createEmailTemplate = (title, emoji, color, content, cta) => `
 
 // ─── Orders ────────────────────────────────────────────────────────────────
 
-export const emailOrderConfirmation = (buyerEmail, buyerName, order) =>
-  send({
+export const emailOrderConfirmation = (buyerEmail, buyerName, order) => {
+  const itemsList = order.items?.map(i => `<li style="margin: 6px 0;">${i.product_name} <strong>×${i.quantity}</strong></li>`).join("") || "";
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Your order has been confirmed and is ready for processing! 🎉</p>
+    
+    <div style="background: #f5f5f5; padding: 16px; border-radius: 8px; margin: 16px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">📦 Order Summary</p>
+      <p style="margin: 0 0 4px;"><strong>Shop:</strong> ${order.shop_name}</p>
+      <p style="margin: 8px 0 0; font-size: 13px;"><strong>Items:</strong></p>
+      <ul style="margin: 6px 0 0; padding-left: 20px; color: #666;">${itemsList}</ul>
+      <p style="margin: 12px 0 0; border-top: 1px solid #ddd; padding-top: 8px; font-size: 16px; font-weight: 600; color: #0891b2;">Total: K${(order.total_amount || 0).toLocaleString()}</p>
+    </div>
+    
+    <p style="margin: 16px 0; font-size: 13px; color: #888;">You'll receive updates as your order progresses. Track it anytime from your Buyer Dashboard.</p>
+  `;
+  return send({
     to: buyerEmail,
-    subject: `Order Confirmed – BwanguSpares`,
-    body: `Hi ${buyerName || "there"},\n\nYour order has been placed successfully! 🎉\n\nShop: ${order.shop_name}\nItems: ${order.items?.map(i => `${i.product_name} x${i.quantity}`).join(", ")}\nTotal: K${(order.total_amount || 0).toLocaleString()}\n\nYou can track your order from your Buyer Dashboard.\n\nThank you for shopping with BwanguSpares!`,
+    subject: `✓ Order Confirmed – BwanguSpares`,
+    htmlBody: createEmailTemplate("Order Confirmed", "✓", "#0891b2", content, { text: "View Your Order", url: "https://bwangu.com" }),
   });
+};
 
 export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) => {
   const statusMessages = {
