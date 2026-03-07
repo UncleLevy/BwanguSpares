@@ -559,7 +559,7 @@ export default function ShopDashboard() {
             {shop && (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Basic Info Card */}
-                <Card className="lg:col-span-2 border-slate-100">
+                <Card className="lg:col-span-2 border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-6">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Basic Information</h2>
                     <div className="space-y-4">
@@ -578,7 +578,7 @@ export default function ShopDashboard() {
                         </div>
                         <div>
                           <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Status</p>
-                          <Badge className={shop.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-1" : "bg-amber-50 text-amber-700 mt-1"}>{shop.status}</Badge>
+                          <Badge className={shop.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-1"}>{shop.status}</Badge>
                         </div>
                       </div>
                     </div>
@@ -586,7 +586,7 @@ export default function ShopDashboard() {
                 </Card>
 
                 {/* Stats Card */}
-                <Card className="border-slate-100">
+                <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-6">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Stats</h2>
                     <div className="space-y-4">
@@ -607,7 +607,7 @@ export default function ShopDashboard() {
                 </Card>
 
                 {/* Location Card */}
-                <Card className="border-slate-100">
+                <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-6">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Location</h2>
                     <div className="space-y-3">
@@ -628,7 +628,7 @@ export default function ShopDashboard() {
                 </Card>
 
                 {/* Settings Card */}
-                <Card className="lg:col-span-2 border-slate-100">
+                <Card className="lg:col-span-2 border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-6">
                     <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Settings</h2>
                     <div className="space-y-3">
@@ -637,12 +637,12 @@ export default function ShopDashboard() {
                           <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Subscription Tier</p>
                           <p className="text-xs text-slate-500 mt-0.5">Your current plan</p>
                         </div>
-                        <Badge className="bg-blue-50 text-blue-700 capitalize">{subscription?.tier || "free"}</Badge>
+                        <Badge className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 capitalize">{subscription?.tier || "free"}</Badge>
                       </div>
                       <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Shop Slot Type</p>
                         <p className="text-xs text-slate-500 mt-0.5">{shop.slot_type}</p>
-                        <Badge className="bg-slate-100 text-slate-700 mt-2 capitalize">{shop.slot_type}</Badge>
+                        <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 mt-2 capitalize">{shop.slot_type}</Badge>
                       </div>
                       <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Rating</p>
@@ -695,7 +695,7 @@ export default function ShopDashboard() {
                          <div className="flex items-start justify-between mb-4">
                            <div className="flex-1">
                              <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{s.name}</h3>
-                             <Badge className={s.status === "approved" ? "bg-emerald-50 text-emerald-700 mt-2" : "bg-amber-50 text-amber-700 mt-2"}>{s.status}</Badge>
+                             <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-2" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-2"}>{s.status}</Badge>
                            </div>
                            <Store className="w-6 h-6 text-blue-600 flex-shrink-0" />
                          </div>
@@ -764,12 +764,12 @@ export default function ShopDashboard() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
-                { label: "Products", value: products.length, icon: Package, color: "bg-blue-50 text-blue-600" },
-                { label: "Technicians", value: technicians.length, icon: Wrench, color: "bg-emerald-50 text-emerald-600" },
-                { label: "Orders", value: orders.length, icon: ShoppingCart, color: "bg-purple-50 text-purple-600" },
-                { label: "Revenue", value: `K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-amber-50 text-amber-600" },
+                { label: "Products", value: products.length, icon: Package, color: "bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400" },
+                { label: "Technicians", value: technicians.length, icon: Wrench, color: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400" },
+                { label: "Orders", value: orders.length, icon: ShoppingCart, color: "bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400" },
+                { label: "Revenue", value: `K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, icon: DollarSign, color: "bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400" },
               ].map((s, i) => (
-                <Card key={i} className="border-slate-100">
+                <Card key={i} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-5 flex items-center gap-4">
                     <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${s.color}`}><s.icon className="w-5 h-5" /></div>
                     <div>
@@ -793,28 +793,28 @@ export default function ShopDashboard() {
                 value={`K${totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                 subtitle="All-time"
                 icon={DollarSign}
-                color="bg-emerald-50 text-emerald-600"
+                color="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400"
               />
               <StatsCard
                 title="Completed Orders"
                 value={completedOrders.length}
                 subtitle={`${orders.filter(o => o.status === "pending").length} pending`}
                 icon={ShoppingCart}
-                color="bg-blue-50 text-blue-600"
+                color="bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400"
               />
               <StatsCard
                 title="Active Products"
                 value={products.filter(p => p.status === "active").length}
                 subtitle={`${products.filter(p => p.stock_quantity === 0).length} out of stock`}
                 icon={Package}
-                color="bg-purple-50 text-purple-600"
+                color="bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400"
               />
               <StatsCard
                 title="Avg Order Value"
                 value={completedOrders.length > 0 ? `K${Math.round(totalRevenue / completedOrders.length).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : "K0.00"}
                 subtitle="Per completed order"
                 icon={TrendingUp}
-                color="bg-amber-50 text-amber-600"
+                color="bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400"
               />
             </div>
 
@@ -1027,7 +1027,7 @@ export default function ShopDashboard() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {technicians.map(t => (
-                <Card key={t.id} className="border-slate-100">
+                <Card key={t.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
@@ -1045,8 +1045,8 @@ export default function ShopDashboard() {
                     <div className="mt-3 flex items-center gap-3 text-xs text-slate-500">
                       {t.experience_years && <span>{t.experience_years} yrs</span>}
                       {t.hourly_rate && <span className="font-medium text-blue-600">K{t.hourly_rate}/hr</span>}
-                      <Badge className={t.available !== false ? "bg-emerald-50 text-emerald-700" : "bg-slate-100 text-slate-500"}>
-                        {t.available !== false ? "Available" : "Unavailable"}
+                      <Badge className={t.available !== false ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400" : "bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400"}>
+                       {t.available !== false ? "Available" : "Unavailable"}
                       </Badge>
                     </div>
                   </CardContent>
