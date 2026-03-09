@@ -202,6 +202,18 @@ export default function ShopDashboard() {
 
   const saveProduct = async () => {
     const qty = parseInt(productForm.stock_quantity) || 0;
+
+    // Convert compatible_vehicles string to array of objects for entity schema
+    const compatibleVehiclesArray = (productForm.compatible_vehicles || "")
+      .split(",")
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(entry => {
+        if (entry.toLowerCase() === "all vehicles") return { brand: "All Vehicles", model: "All Vehicles", years: [] };
+        const parts = entry.split(" ");
+        return { brand: parts[0] || entry, model: parts.slice(1).join(" ") || "", years: [] };
+      });
+
     const data = {
       ...productForm,
       price: parseFloat(productForm.price) || 0,
@@ -212,6 +224,7 @@ export default function ShopDashboard() {
       status: qty === 0 ? "out_of_stock" : "active",
       tags: productForm.tags,
       image_urls: (productForm.image_urls || []).filter(Boolean),
+      compatible_vehicles: compatibleVehiclesArray,
     };
     if (editProduct) {
       await base44.entities.Product.update(editProduct.id, data);
