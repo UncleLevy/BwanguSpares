@@ -136,6 +136,9 @@ export default function OrderDetails() {
               </CardContent>
             </Card>
 
+            {/* Tracking Timeline */}
+            <OrderTrackingTimeline order={order} />
+
             {/* Delivery Info */}
             <Card className="border-slate-100 dark:border-slate-800">
               <CardHeader className="pb-3">
