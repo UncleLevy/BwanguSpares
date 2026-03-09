@@ -567,12 +567,12 @@ export default function Cart() {
                          className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
                        />
                      </div>
-                     <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800">
-                       <span className="text-amber-600 text-sm">⚠️</span>
-                       <p className="text-xs text-amber-700 dark:text-amber-400">
-                         Mobile money payments via <strong>Flutterwave</strong> — coming soon. Add your Flutterwave API keys in settings to enable this.
-                       </p>
-                     </div>
+                     <div className="flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <span className="text-green-600 text-sm">💳</span>
+                        <p className="text-xs text-green-700 dark:text-green-400">
+                          Powered by <strong>MoneyUnify</strong> — supports MTN MoMo, Airtel Money &amp; Zamtel. You will be redirected to complete your payment securely. Amount of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be preset.
+                        </p>
+                      </div>
                    </div>
                  )}
 
