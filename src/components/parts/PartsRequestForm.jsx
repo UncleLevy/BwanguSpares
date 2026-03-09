@@ -69,6 +69,7 @@ export default function PartsRequestForm({ open, onClose, onSuccess, prefill = {
       status: "open",
     });
     emailPartsRequestReceived(user.email, user.full_name, form.part_name);
+    emailNewPartsRequestToShops(form.part_name, form.category, form.budget, form.buyer_region);
     toast.success("Request submitted! Shops will contact you shortly.");
     setForm({ part_name: "", description: "", category: "other", compatible_vehicles: "", budget: "", phone: "", buyer_region: "" });
     setSubmitting(false);
