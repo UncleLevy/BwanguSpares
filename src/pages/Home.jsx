@@ -10,6 +10,7 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 import MegaDiscounts from "@/components/home/MegaDiscounts";
 import NearbyShops from "@/components/home/NearbyShops";
 import PartnersSection from "@/components/home/PartnersSection";
+import TechPartnersSection from "@/components/home/TechPartnersSection";
 
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
