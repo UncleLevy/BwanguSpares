@@ -10,8 +10,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
+import { useGeoLock } from "@/components/shared/useGeoLock";
 
 export default function Cart() {
+  const { isZambia, loading: geoLoading } = useGeoLock();
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
