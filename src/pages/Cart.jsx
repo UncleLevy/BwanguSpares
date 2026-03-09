@@ -415,9 +415,16 @@ export default function Cart() {
              </div>
 
             {!checkout ? (
+              isZambia === false ? (
+                <div className="text-center py-3 px-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl">
+                  <p className="text-sm font-semibold text-red-700 dark:text-red-400">🌍 Orders are only available within Zambia.</p>
+                  <p className="text-xs text-red-500 dark:text-red-400 mt-1">We currently only ship to Zambian addresses.</p>
+                </div>
+              ) : (
               <Button onClick={() => setCheckout(true)} className="w-full h-12 bg-blue-600 hover:bg-blue-700 rounded-xl text-sm gap-2">
                 Proceed to Checkout <ArrowRight className="w-4 h-4" />
               </Button>
+              )
             ) : (
               <div className="space-y-4">
                  {/* Default address toggle */}
