@@ -249,10 +249,21 @@ export default function ShopDashboard() {
 
   const openEditProduct = (p) => {
     setEditProduct(p);
+
+    // Convert compatible_vehicles array of objects back to a display string
+    let compatVehiclesStr = "";
+    if (Array.isArray(p.compatible_vehicles)) {
+      compatVehiclesStr = p.compatible_vehicles
+        .map(v => v.brand === "All Vehicles" ? "All Vehicles" : `${v.brand} ${v.model}`.trim())
+        .join(", ");
+    } else if (typeof p.compatible_vehicles === "string") {
+      compatVehiclesStr = p.compatible_vehicles;
+    }
+
     setProductForm({
       name: p.name, description: p.description || "", price: String(p.price),
       category: p.category, sub_category: p.sub_category || "", brand: p.brand || "",
-      compatible_vehicles: p.compatible_vehicles || "", condition: p.condition,
+      compatible_vehicles: compatVehiclesStr, condition: p.condition,
       stock_quantity: String(p.stock_quantity || 0), sku: p.sku || "",
       low_stock_threshold: String(p.low_stock_threshold ?? 5),
       tags: p.tags || [],
