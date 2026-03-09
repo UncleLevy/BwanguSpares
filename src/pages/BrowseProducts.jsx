@@ -134,6 +134,10 @@ export default function BrowseProducts() {
   const handleSearchChange = (val) => { setSearch(val); setPage(1); };
 
   const handleAddToCart = async (product) => {
+    if (isZambia === false) {
+      toast.error("Orders are only available within Zambia.");
+      return;
+    }
     if ((product.stock_quantity || 0) === 0) {
       toast.error("Out of stock — submit a parts request instead");
       return;
