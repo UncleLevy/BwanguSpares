@@ -134,6 +134,10 @@ export default function ShopDashboard() {
   }, []);
 
   useEffect(() => {
+    base44.entities.Vehicle.filter({ status: "active" }).then(setVehicles);
+  }, []);
+
+  useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
       setUser(u);
