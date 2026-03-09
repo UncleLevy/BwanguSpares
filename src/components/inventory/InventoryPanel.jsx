@@ -45,7 +45,7 @@ const SUB_CATEGORIES = {
   other: ["Other"],
 };
 
-export default function InventoryPanel({ products, orders, onProductsChange }) {
+export default function InventoryPanel({ products, orders, onProductsChange, shopOwnerEmail, shopName }) {
   const [search, setSearch] = useState("");
   const [filterCat, setFilterCat] = useState("all");
   const [filterStatus, setFilterStatus] = useState("all");
