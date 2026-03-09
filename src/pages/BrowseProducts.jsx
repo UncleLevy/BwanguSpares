@@ -317,14 +317,6 @@ export default function BrowseProducts() {
         </div>
       </div>
 
-      {/* Mobile vehicle filter — inline below filters */}
-      <div className="lg:hidden mb-4">
-        <VehicleFilterSidebar
-          vehicleFilter={vehicleFilter}
-          onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
-        />
-      </div>
-
       <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
     </div>
     </PullToRefresh>
