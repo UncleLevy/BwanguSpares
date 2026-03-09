@@ -142,16 +142,26 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
       {/* Totals - Clean Summary */}
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "32px" }}>
         <div style={{ width: "280px" }}>
+          {shippingCost > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#666" }}>
+              <span>Shipping</span><span>K{fmt(shippingCost)}</span>
+            </div>
+          )}
+          {discountAmount > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#059669" }}>
+              <span>Coupon{order?.coupon_code ? ` (${order.coupon_code})` : ""}</span><span>-K{fmt(discountAmount)}</span>
+            </div>
+          )}
           <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#666" }}>
-            <span>Subtotal</span><span>K{subtotal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span>Subtotal (excl. VAT)</span><span>K{fmt(subtotal)}</span>
           </div>
           {type !== "quotation" && (
             <div style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", fontSize: "12px", color: "#666" }}>
-              <span>VAT (16%)</span><span>K{vat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+              <span>VAT (16%)</span><span>K{fmt(vat)}</span>
             </div>
           )}
           <div style={{ display: "flex", justifyContent: "space-between", padding: "14px 16px", background: color, color: "#fff", borderRadius: "10px", fontWeight: "600", fontSize: "16px", marginTop: "12px" }}>
-            <span>Total</span><span>K{total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            <span>Total</span><span>K{fmt(total)}</span>
           </div>
         </div>
       </div>
