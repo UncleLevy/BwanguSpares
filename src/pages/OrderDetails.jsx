@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/select";
 import { toast } from "sonner";
 import OrderTrackingTimeline from "@/components/orders/OrderTrackingTimeline";
+import { emailOrderStatusUpdate } from "@/components/lib/emailNotifications";
 
 const orderStatusColors = {
   pending: "bg-amber-50 text-amber-700 border-amber-200",
