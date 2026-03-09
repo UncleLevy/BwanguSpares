@@ -113,6 +113,9 @@ export default function ShopDashboard() {
   const [productPriceMax, setProductPriceMax] = useState("");
   const [viewShopProduct, setViewShopProduct] = useState(null);
 
+  const [vehicles, setVehicles] = useState([]);
+  const [addVehicleBrand, setAddVehicleBrand] = useState("");
+  const [addVehicleModel, setAddVehicleModel] = useState("");
   const [uploading, setUploading] = useState(false);
   const [reportDialog, setReportDialog] = useState(false);
   const [reportForm, setReportForm] = useState({
