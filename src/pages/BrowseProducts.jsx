@@ -12,6 +12,7 @@ import PullToRefresh from "@/components/shared/PullToRefresh";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import VehicleFilterSidebar from "@/components/parts/VehicleFilterSidebar";
+import { useGeoLock } from "@/components/shared/useGeoLock";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
