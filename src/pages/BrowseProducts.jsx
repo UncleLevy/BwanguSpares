@@ -11,7 +11,7 @@ import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
-import VehicleFilterPanel from "@/components/parts/VehicleFilterPanel";
+import VehicleFilterSidebar from "@/components/parts/VehicleFilterSidebar";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
