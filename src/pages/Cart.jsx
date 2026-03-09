@@ -238,6 +238,12 @@ export default function Cart() {
       return;
     }
 
+    // Block non-Zambian users
+    if (isZambia === false) {
+      toast.error("Orders are only available within Zambia.");
+      return;
+    }
+
     // Block checkout inside iframe (preview) - open in new tab instead
     if (window.self !== window.top) {
       window.open(window.location.href, "_blank");
