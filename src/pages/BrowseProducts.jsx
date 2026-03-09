@@ -240,78 +240,84 @@ export default function BrowseProducts() {
         </div>
       )}
 
-      {loading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {[1,2,3,4,5,6,7,8].map(i => (
-            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
-              <div className="h-44 bg-slate-100 dark:bg-slate-700" />
-              <div className="p-4 space-y-3">
-                <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4" />
-                <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded w-1/2" />
+      <div className="flex gap-6 items-start">
+        {/* Sidebar — hidden on mobile */}
+        <aside className="hidden lg:block w-64 shrink-0 sticky top-24">
+          <VehicleFilterSidebar
+            vehicleFilter={vehicleFilter}
+            onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
+          />
+        </aside>
+
+        {/* Main content */}
+        <div className="flex-1 min-w-0">
+          {loading ? (
+            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
+              {[1,2,3,4,5,6].map(i => (
+                <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
+                  <div className="h-44 bg-slate-100 dark:bg-slate-700" />
+                  <div className="p-4 space-y-3">
+                    <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4" />
+                    <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded w-1/2" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : filteredProducts.length === 0 ? (
+            <div className="text-center py-20">
+              <SlidersHorizontal className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+              <h3 className="font-semibold text-slate-700 dark:text-slate-300">No parts found</h3>
+              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Try adjusting your search or filters</p>
+              <div className="mt-6 p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 max-w-sm mx-auto">
+                <FileSearch className="w-8 h-8 text-blue-500 mx-auto mb-2" />
+                <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Can't find what you need?</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Submit a parts request and verified shops will contact you directly.</p>
+                <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2">
+                  <FileSearch className="w-4 h-4" /> Request this Part
+                </Button>
               </div>
             </div>
-          ))}
-        </div>
-      ) : filteredProducts.length === 0 ? (
-        <div className="text-center py-20">
-          <SlidersHorizontal className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700 dark:text-slate-300">No parts found</h3>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Try adjusting your search or filters</p>
-          <div className="mt-6 p-5 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 max-w-sm mx-auto">
-            <FileSearch className="w-8 h-8 text-blue-500 mx-auto mb-2" />
-            <p className="text-sm font-medium text-slate-800 dark:text-slate-200">Can't find what you need?</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 mb-3">Submit a parts request and verified shops will contact you directly.</p>
-            <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2">
-              <FileSearch className="w-4 h-4" /> Request this Part
-            </Button>
-          </div>
-        </div>
-      ) : (
-       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-         {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
-       </div>
-      )}
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
+              {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
+            </div>
+          )}
 
-      {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-2 mt-10">
-          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === 1} className="rounded-xl">
-            ← Prev
-          </Button>
-          <div className="flex gap-1">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
-              <Button key={p} size="sm" variant={p === page ? "default" : "outline"}
-                onClick={() => { setPage(p); window.scrollTo({top: 0, behavior: 'smooth'}); }}
-                className="rounded-xl w-9">
-                {p}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-10">
+              <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === 1} className="rounded-xl">← Prev</Button>
+              <div className="flex gap-1">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <Button key={p} size="sm" variant={p === page ? "default" : "outline"} onClick={() => { setPage(p); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="rounded-xl w-9">{p}</Button>
+                ))}
+              </div>
+              <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === totalPages} className="rounded-xl">Next →</Button>
+            </div>
+          )}
+
+          {filteredProducts.length > 0 && (
+            <div className="mt-12 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-slate-800 dark:text-slate-200">Can't find the exact part?</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Submit a request and verified shops will contact you directly.</p>
+              </div>
+              <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2 shrink-0">
+                <FileSearch className="w-4 h-4" /> Request a Part
               </Button>
-            ))}
-          </div>
-          <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === totalPages} className="rounded-xl">
-            Next →
-          </Button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
-      {filteredProducts.length > 0 && (
-        <div className="mt-12 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            <p className="font-semibold text-slate-800 dark:text-slate-200">Can't find the exact part?</p>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Submit a request and verified shops will contact you directly.</p>
-          </div>
-          <Button onClick={() => setRequestFormOpen(true)} className="bg-blue-600 hover:bg-blue-700 gap-2 shrink-0">
-            <FileSearch className="w-4 h-4" /> Request a Part
-          </Button>
-        </div>
-      )}
+      {/* Mobile vehicle filter — inline below filters */}
+      <div className="lg:hidden mb-4">
+        <VehicleFilterSidebar
+          vehicleFilter={vehicleFilter}
+          onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
+        />
+      </div>
 
       <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
-      
-      {vehicleFilterOpen && (
-        <VehicleFilterPanel 
-          onFilterChange={setVehicleFilter}
-          onClose={() => setVehicleFilterOpen(false)}
-        />
-      )}
     </div>
     </PullToRefresh>
   );
