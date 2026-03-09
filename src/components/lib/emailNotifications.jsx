@@ -183,6 +183,30 @@ export const emailNewTicketToAdmin = async (ticket) => {
   }
 };
 
+// ─── Low Stock Alerts ────────────────────────────────────────────────────────
+
+export const emailLowStockAlert = (shopOwnerEmail, shopName, lowStockItems) => {
+  const itemsList = lowStockItems.map(p =>
+    `<li style="margin: 6px 0;"><strong>${p.name}</strong> — <span style="${p.stock_quantity === 0 ? 'color:#dc2626' : 'color:#d97706'}">Stock: ${p.stock_quantity}</span> (threshold: ${p.low_stock_threshold ?? 5})</li>`
+  ).join("");
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${shopName} team,</p>
+    <p style="margin: 0 0 16px;">The following products are running low or out of stock. Please restock soon to avoid missed orders.</p>
+    
+    <div style="background: #fffbeb; padding: 16px; border-radius: 8px; border-left: 4px solid #d97706; margin: 16px 0;">
+      <p style="margin: 0 0 10px; font-weight: 600; color: #1a1a1a;">⚠️ Low / Out-of-Stock Items</p>
+      <ul style="margin: 0; padding-left: 20px; color: #555;">${itemsList}</ul>
+    </div>
+    
+    <p style="margin: 12px 0 0; font-size: 13px; color: #888;">Update your stock levels in the Inventory section of your Shop Dashboard.</p>
+  `;
+  return send({
+    to: shopOwnerEmail,
+    subject: `⚠️ Low Stock Alert – ${lowStockItems.length} item${lowStockItems.length > 1 ? 's' : ''} need restocking`,
+    htmlBody: createEmailTemplate("Low Stock Alert", "⚠️", "#d97706", content, { text: "Update Inventory", url: "https://bwangu.com" }),
+  });
+};
+
 // ─── Parts Requests ─────────────────────────────────────────────────────────
 
 export const emailPartsRequestReceived = (buyerEmail, buyerName, partName) => {
