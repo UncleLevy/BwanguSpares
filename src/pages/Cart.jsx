@@ -617,7 +617,15 @@ export default function Cart() {
                  )}
 
                  <Button
-                   onClick={paymentMethod === "card" || paymentMethod === "wallet" ? handleCheckout : () => toast.info("Mobile money coming soon! Add your Flutterwave API keys to enable.")}
+                   onClick={
+                     paymentMethod === "mobile_money"
+                       ? () => {
+                           const amount = total.toFixed(2);
+                           const url = `https://moneyunify.one/pay/e5d54fb4-e1a3-4df4-8bc2-d757b79ffa2e?amount=${amount}&currency=ZMW&description=BwanguSpares+Order`;
+                           window.open(url, "_blank");
+                         }
+                       : paymentMethod === "card" || paymentMethod === "wallet" ? handleCheckout : undefined
+                   }
                    disabled={submitting || (paymentMethod === "wallet" && !useWallet)}
                    className={`w-full h-12 rounded-xl text-sm gap-2 ${
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
@@ -628,10 +636,10 @@ export default function Cart() {
                    }`}
                  >
                    {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-4 h-4" /> : <span>📱</span>}
-                   {submitting ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "wallet" ? "Complete Payment" : `Pay with ${mobileNetwork} Mobile Money`}
+                   {submitting ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "wallet" ? "Complete Payment" : `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via MoneyUnify`}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
-                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "Powered by Flutterwave · Supports MTN, Airtel & Zamtel"}
+                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "Powered by MoneyUnify · MTN, Airtel & Zamtel"}
                  </p>
               </div>
             )}
