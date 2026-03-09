@@ -43,9 +43,13 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
     return `${base}${createPageUrl("ProductDetail")}?id=${item.product_id}`;
   };
 
-   const total = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
-   const subtotal = type !== "quotation" ? Math.round((total / 1.16) * 100) / 100 : total;
-   const vat = type !== "quotation" ? Math.round((total - subtotal) * 100) / 100 : 0;
+   const itemsTotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
+   const shippingCost = isOrder ? (order.shipping_cost || 0) : 0;
+   const discountAmount = isOrder ? (order.discount_amount || 0) : 0;
+   const total = isOrder ? (order.total_amount || (itemsTotal + shippingCost - discountAmount)) : itemsTotal;
+   const subtotal = type !== "quotation" ? total / 1.16 : total;
+   const vat = type !== "quotation" ? total - subtotal : 0;
+   const fmt = (n) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
     <div id="printable-document" style={{ fontFamily: "'Segoe UI', Arial, sans-serif", padding: "40px", maxWidth: "700px", margin: "0 auto", background: "#fafafa", color: "#333" }}>
