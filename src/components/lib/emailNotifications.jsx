@@ -228,6 +228,22 @@ export const emailPartsRequestReceived = (buyerEmail, buyerName, partName) => {
   });
 };
 
+export const emailNewPartsRequestToShops = async (partName, category, budget, buyerRegion) => {
+  try {
+    const shops = await base44.entities.Shop.filter({ status: "approved" });
+    for (const shop of shops) {
+      if (!shop.owner_email) continue;
+      await send({
+        to: shop.owner_email,
+        subject: `🔧 New Parts Request – "${partName}"`,
+        body: `Hi ${shop.name} team,\n\nA buyer has submitted a new parts request that may match your inventory.\n\nPart: ${partName}\nCategory: ${category || "Not specified"}\nBudget: ${budget ? `K${Number(budget).toLocaleString()}` : "Open"}\nBuyer Region: ${buyerRegion || "Not specified"}\n\nLog in to your Shop Dashboard → Parts Requests to respond.\n\nBwanguSpares Team`,
+      });
+    }
+  } catch (e) {
+    console.warn("emailNewPartsRequestToShops failed:", e?.message);
+  }
+};
+
 export const emailPartsRequestCounterOffer = (buyerEmail, buyerName, partName, shopName, counterBudget, message) =>
   send({
     to: buyerEmail,
