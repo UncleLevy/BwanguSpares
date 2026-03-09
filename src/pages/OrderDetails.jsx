@@ -50,6 +50,7 @@ export default function OrderDetails() {
   const updateStatus = async (status) => {
     await base44.entities.Order.update(order.id, { status });
     setOrder({ ...order, status });
+    emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, status);
     toast.success("Order status updated");
   };
 
