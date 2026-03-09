@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { emailLowStockAlert } from "@/components/lib/emailNotifications";
 import {
   AlertTriangle, Package, TrendingUp, BarChart3, Search,
   Save, Edit3, CheckCircle2
