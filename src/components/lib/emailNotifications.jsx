@@ -228,7 +228,7 @@ export const emailPartsRequestReceived = (buyerEmail, buyerName, partName) => {
   });
 };
 
-export const emailNewPartsRequestToShops = async (partName, category, budget, buyerRegion) => {
+export const emailNewPartsRequestToShops = async (partName, category, budget, buyerRegion) => { // notify all shops of new parts request
   try {
     const shops = await base44.entities.Shop.filter({ status: "approved" });
     for (const shop of shops) {
