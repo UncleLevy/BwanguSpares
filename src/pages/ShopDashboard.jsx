@@ -998,7 +998,55 @@ export default function ShopDashboard() {
                     <div><Label>Low Stock Alert ≤</Label><Input type="number" min="0" value={productForm.low_stock_threshold} onChange={e => setProductForm({...productForm, low_stock_threshold: e.target.value})} className="mt-1" /></div>
                   </div>
                   <div><Label>Brand</Label><Input value={productForm.brand} onChange={e => setProductForm({...productForm, brand: e.target.value})} className="mt-1" /></div>
-                  <div><Label>Compatible Vehicles</Label><Input value={productForm.compatible_vehicles} onChange={e => setProductForm({...productForm, compatible_vehicles: e.target.value})} placeholder="e.g. Toyota Corolla 2015-2020" className="mt-1" /></div>
+                  <div>
+                    <Label>Compatible Vehicles</Label>
+                    <div className="mt-1 space-y-2">
+                      {/* Brand → Model picker */}
+                      <div className="flex gap-2">
+                        <Select value={addVehicleBrand} onValueChange={v => { setAddVehicleBrand(v); setAddVehicleModel(""); }}>
+                          <SelectTrigger className="flex-1"><SelectValue placeholder="Brand" /></SelectTrigger>
+                          <SelectContent>
+                            {[...new Set(vehicles.map(v => v.brand))].sort().map(b => (
+                              <SelectItem key={b} value={b}>{b}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Select value={addVehicleModel} onValueChange={setAddVehicleModel} disabled={!addVehicleBrand}>
+                          <SelectTrigger className="flex-1"><SelectValue placeholder="Model" /></SelectTrigger>
+                          <SelectContent>
+                            {vehicles.filter(v => v.brand === addVehicleBrand).map(v => (
+                              <SelectItem key={v.id} value={`${v.brand} ${v.model}`}>{v.model}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <Button type="button" variant="outline" size="sm"
+                          disabled={!addVehicleModel}
+                          onClick={() => {
+                            if (!addVehicleModel) return;
+                            const current = productForm.compatible_vehicles ? productForm.compatible_vehicles.split(",").map(s => s.trim()).filter(Boolean) : [];
+                            if (!current.includes(addVehicleModel)) {
+                              setProductForm({ ...productForm, compatible_vehicles: [...current, addVehicleModel].join(", ") });
+                            }
+                            setAddVehicleBrand(""); setAddVehicleModel("");
+                          }}
+                        >Add</Button>
+                      </div>
+                      {/* Selected vehicles as tags */}
+                      {productForm.compatible_vehicles && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {productForm.compatible_vehicles.split(",").map(s => s.trim()).filter(Boolean).map((v, i) => (
+                            <span key={i} className="inline-flex items-center gap-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs px-2 py-0.5 rounded-full border border-blue-200 dark:border-blue-700">
+                              {v}
+                              <button type="button" onClick={() => {
+                                const updated = productForm.compatible_vehicles.split(",").map(s => s.trim()).filter(s => s && s !== v);
+                                setProductForm({ ...productForm, compatible_vehicles: updated.join(", ") });
+                              }} className="ml-0.5 text-blue-400 hover:text-red-500">✕</button>
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div><Label>Tags</Label><Input value={productForm.tags.join(", ")} onChange={e => setProductForm({...productForm, tags: e.target.value.split(",").map(t => t.trim())})} placeholder="e.g. new, popular, sale" className="mt-1" /></div>
                   <div>
                    <Label>Product Photos (up to 5)</Label>
