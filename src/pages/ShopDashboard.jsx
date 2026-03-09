@@ -224,6 +224,7 @@ export default function ShopDashboard() {
     }
     setProductDialog(false);
     setEditProduct(null);
+    setAddVehicleBrand(""); setAddVehicleModel("");
     setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [], image_url: "", image_urls: [] });
   };
 
