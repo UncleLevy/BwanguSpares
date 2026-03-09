@@ -42,9 +42,13 @@ export default function ProductCard({ product, onAddToCart, user }) {
           <MapPin className="w-3 h-3 text-slate-400" />
           <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
         </div>
-        {product.compatible_vehicles && (
-          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {product.compatible_vehicles}</p>
-        )}
+        {product.compatible_vehicles && (() => {
+          const cv = product.compatible_vehicles;
+          const display = Array.isArray(cv)
+            ? cv.map(v => v.brand === "All Vehicles" ? "All Vehicles" : `${v.brand} ${v.model}`.trim()).join(", ")
+            : String(cv);
+          return display ? <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {display}</p> : null;
+        })()}
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
            <div className="flex items-baseline gap-2">
              {product.original_price && product.original_price > product.price && (
