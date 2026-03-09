@@ -97,15 +97,29 @@ export default function BrowseProducts() {
       return (p.price || 0) >= min && (p.price || 0) <= max;
     })();
     
-    // Check vehicle compatibility using structured compatible_vehicles array
+    // Check vehicle compatibility
     let matchesVehicle = true;
     if (vehicleFilter.vehicle_brand) {
-      const compatible = p.compatible_vehicles || [];
-      matchesVehicle = compatible.some(v => 
-        v.brand?.toLowerCase() === vehicleFilter.vehicle_brand?.toLowerCase() &&
-        (!vehicleFilter.vehicle_model || v.model?.toLowerCase() === vehicleFilter.vehicle_model?.toLowerCase()) &&
-        (!vehicleFilter.vehicle_year || v.years?.includes(vehicleFilter.vehicle_year))
-      );
+      const compatible = p.compatible_vehicles;
+      if (!compatible || (Array.isArray(compatible) && compatible.length === 0)) {
+        matchesVehicle = false;
+      } else if (typeof compatible === "string") {
+        // String format: "Toyota Corolla, All Vehicles"
+        const entries = compatible.split(",").map(s => s.trim().toLowerCase());
+        const brand = vehicleFilter.vehicle_brand.toLowerCase();
+        const model = vehicleFilter.vehicle_model?.toLowerCase();
+        matchesVehicle = entries.some(e =>
+          e === "all vehicles" ||
+          e.startsWith(brand) && (!model || e.includes(model))
+        );
+      } else if (Array.isArray(compatible)) {
+        // Structured array format: [{ brand, model, years }]
+        matchesVehicle = compatible.some(v =>
+          (v.brand?.toLowerCase() === "all vehicles" || v.brand?.toLowerCase() === vehicleFilter.vehicle_brand?.toLowerCase()) &&
+          (!vehicleFilter.vehicle_model || v.model?.toLowerCase() === vehicleFilter.vehicle_model?.toLowerCase()) &&
+          (!vehicleFilter.vehicle_year || v.years?.includes(vehicleFilter.vehicle_year))
+        );
+      }
     }
     
     return matchesSearch && matchesPrice && matchesVehicle;
