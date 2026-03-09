@@ -1004,16 +1004,17 @@ export default function ShopDashboard() {
                     <div className="mt-1 space-y-2">
                       {/* Brand → Model picker */}
                       <div className="flex gap-2">
-                        <Select value={addVehicleBrand} onValueChange={v => { setAddVehicleBrand(v); setAddVehicleModel(""); }}>
+                        <Select value={addVehicleBrand} onValueChange={v => { setAddVehicleBrand(v); setAddVehicleModel(v === "All Vehicles" ? "All Vehicles" : ""); }}>
                           <SelectTrigger className="flex-1"><SelectValue placeholder="Brand" /></SelectTrigger>
                           <SelectContent>
+                            <SelectItem value="All Vehicles">All Vehicles</SelectItem>
                             {[...new Set(vehicles.map(v => v.brand))].sort().map(b => (
                               <SelectItem key={b} value={b}>{b}</SelectItem>
                             ))}
                           </SelectContent>
                         </Select>
-                        <Select value={addVehicleModel} onValueChange={setAddVehicleModel} disabled={!addVehicleBrand}>
-                          <SelectTrigger className="flex-1"><SelectValue placeholder="Model" /></SelectTrigger>
+                        <Select value={addVehicleModel} onValueChange={setAddVehicleModel} disabled={!addVehicleBrand || addVehicleBrand === "All Vehicles"}>
+                          <SelectTrigger className="flex-1"><SelectValue placeholder={addVehicleBrand === "All Vehicles" ? "All Models" : "Model"} /></SelectTrigger>
                           <SelectContent>
                             {vehicles.filter(v => v.brand === addVehicleBrand).map(v => (
                               <SelectItem key={v.id} value={`${v.brand} ${v.model}`}>{v.model}</SelectItem>
