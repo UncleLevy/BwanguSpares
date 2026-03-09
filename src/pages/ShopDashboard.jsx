@@ -1279,7 +1279,7 @@ export default function ShopDashboard() {
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Inventory</h1>
             <LowStockAlerts shopId={shop?.id} products={products} />
-            <InventoryPanel products={products} orders={orders} onProductsChange={setProducts} />
+            <InventoryPanel products={products} orders={orders} onProductsChange={setProducts} shopOwnerEmail={user?.email} shopName={shop?.name} />
           </div>
         )}
 
