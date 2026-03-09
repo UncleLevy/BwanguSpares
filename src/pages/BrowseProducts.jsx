@@ -46,6 +46,7 @@ export default function BrowseProducts() {
   const [vehicleFilter, setVehicleFilter] = useState({ vehicle_brand: null, vehicle_model: null, vehicle_year: null });
   const [requestFormOpen, setRequestFormOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const { isZambia } = useGeoLock();
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 12;
 
