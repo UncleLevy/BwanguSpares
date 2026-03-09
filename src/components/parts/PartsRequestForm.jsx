@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { FileSearch } from "lucide-react";
 import { emailPartsRequestReceived } from "@/components/lib/emailNotifications";
+import { base44 as _b44 } from "@/api/base44Client";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
