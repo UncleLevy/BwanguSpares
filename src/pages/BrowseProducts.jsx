@@ -240,6 +240,14 @@ export default function BrowseProducts() {
         </div>
       )}
 
+      {/* Mobile vehicle filter */}
+      <div className="lg:hidden mb-4">
+        <VehicleFilterSidebar
+          vehicleFilter={vehicleFilter}
+          onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
+        />
+      </div>
+
       <div className="flex gap-6 items-start">
         {/* Sidebar — hidden on mobile */}
         <aside className="hidden lg:block w-64 shrink-0 sticky top-24">
