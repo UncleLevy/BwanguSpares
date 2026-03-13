@@ -85,6 +85,11 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
       });
 
       // Send email notification to buyer
+      const currentCourierName = shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Your courier";
+      const currentCourierPhone = shipment.requires_handoff 
+        ? (shipment.status === "in_transit" || shipment.status === "picked_up" ? shipment.intercity_courier_phone : shipment.local_courier_phone)
+        : (shipment.local_courier_phone || shipment.courier_phone);
+      
       await base44.integrations.Core.SendEmail({
         to: shipment.buyer_email,
         subject: `Shipment Update - ${newStatus.replace(/_/g, " ")}`,
@@ -102,7 +107,17 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
           
           ${newStatus === "delivered" ? "<p><strong>Your order has been successfully delivered!</strong></p>" : ""}
           
-          <p>For any questions, contact your courier: ${shipment.courier_phone}</p>
+          <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin: 16px 0;">
+            <p style="margin: 0 0 6px; font-weight: 600;">Current Courier:</p>
+            <p style="margin: 0 0 4px;"><strong>Name:</strong> ${currentCourierName}</p>
+            <p style="margin: 0;"><strong>Contact:</strong> ${currentCourierPhone || "Contact shop for details"}</p>
+          </div>
+          
+          ${shipment.requires_handoff && shipment.is_intercity ? `
+          <p style="font-size: 13px; color: #666;">
+            📍 This is a multi-courier delivery. ${shipment.handoff_time ? "Your package was handed off to the local courier." : "Your package will be handed off to a local courier for final delivery."}
+          </p>
+          ` : ""}
         `
       });
 

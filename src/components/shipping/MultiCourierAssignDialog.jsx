@@ -46,14 +46,15 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
   const analyzeDeliveryRoute = (townsData, regionsData, ratesData) => {
     const addressLower = order.delivery_address?.toLowerCase() || "";
     
-    // Find delivery town
+    // Find delivery town from address
     const deliveryTown = townsData.find(t => addressLower.includes(t.name.toLowerCase()));
     const deliveryRegion = deliveryTown ? regionsData.find(r => r.id === deliveryTown.region_id) : null;
     
-    // Get shop location
-    const shopRegion = regionsData.find(r => r.id === shop.region);
+    // Get shop location - prioritize shop.town for matching
+    const shopTown = townsData.find(t => t.name.toLowerCase() === shop.town?.toLowerCase());
+    const shopRegion = shopTown ? regionsData.find(r => r.id === shopTown.region_id) : regionsData.find(r => r.id === shop.region);
     
-    // Determine if intercity delivery is needed
+    // Determine if intercity delivery is needed (different regions)
     const isIntercity = shopRegion && deliveryRegion && shopRegion.id !== deliveryRegion.id;
     
     // Calculate costs
@@ -63,7 +64,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
     
     if (isIntercity) {
       // Base intercity cost (distance-based estimate)
-      intercityCost = 150; // Base rate for intercity
+      intercityCost = 150; // Base rate for intercity transport
       
       // Local delivery cost at destination
       const rate = ratesData.find(r => r.town_id === deliveryTown?.id);
@@ -71,7 +72,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
       
       totalCost = intercityCost + localCost;
     } else {
-      // Same region - only local delivery
+      // Same region - only local delivery needed
       const rate = ratesData.find(r => r.town_id === deliveryTown?.id);
       localCost = rate?.default_rate || 50;
       totalCost = localCost;
@@ -79,7 +80,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
     
     setDeliveryInfo({
       isIntercity,
-      shopTown: shop.town,
+      shopTown: shop.town || "Unknown",
       shopRegion: shopRegion?.name || "Unknown",
       deliveryTown: deliveryTown?.name || "Unknown",
       deliveryRegion: deliveryRegion?.name || "Unknown",
@@ -93,7 +94,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
       ...prev,
       intercity_cost: intercityCost,
       local_cost: localCost,
-      handoff_location: deliveryTown?.name || ""
+      handoff_location: deliveryTown?.name || deliveryRegion?.name || ""
     }));
   };
 
@@ -135,7 +136,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
         order_id: order.id,
         shop_id: shop.id,
         shop_name: shop.name,
-        shop_town: shop.town,
+        shop_town: shop.town || deliveryInfo.shopTown,
         shop_region: deliveryInfo.shopRegion,
         buyer_email: order.buyer_email,
         buyer_name: order.buyer_name,
@@ -147,7 +148,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
         is_intercity: deliveryInfo.isIntercity,
         requires_handoff: deliveryInfo.requiresHandoff,
         shipping_cost: deliveryInfo.totalCost,
-        intercity_cost: formData.intercity_cost,
+        intercity_cost: deliveryInfo.isIntercity ? formData.intercity_cost : 0,
         local_delivery_cost: formData.local_cost,
         estimated_delivery_date: estimatedDelivery.toISOString().split("T")[0],
         delivery_notes: formData.delivery_notes,
