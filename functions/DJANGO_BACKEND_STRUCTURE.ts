@@ -17,13 +17,14 @@
 #   User, BannedUser          → users/
 #   Region, Town              → regions/
 #   Shop, Technician, Branch  → shops/
+#   Vehicle                   → vehicles/
 #   Product, ProductVariation → products/
 #   CartItem                  → cart/
-#   Order, OrderItem          → orders/
+#   Order                     → orders/
 #   Return                    → returns/
 #   ShippingRate              → shipping/
 #   Payment (Stripe)          → payments/
-#   BuyerWallet, WalletTransaction → wallet/
+#   BuyerWallet, WalletTransaction, ShopWallet → wallet/
 #   LoyaltyPoints, LoyaltyTransaction → loyalty/
 #   Conversation, Message     → messaging/
 #   PartsRequest              → parts_requests/
@@ -31,9 +32,9 @@
 #   Review                    → reviews/
 #   Notification              → notifications/
 #   DiscountCode              → discounts/
-#   Wishlist                  → wishlists/
-#   ShopWallet, Payout        → payouts/
-#   Report, AuditLog          → audit/
+#   Wishlist, WatchlistPart   → wishlists/
+#   Payout                    → payouts/
+#   Report, AuditLog, SupportTicket → audit/
 #   Subscription              → subscriptions/
 #   Customer, Campaign        → marketing/
 # =====================================================
@@ -94,6 +95,7 @@ Each app follows this layout:
 python manage.py startapp users
 python manage.py startapp regions
 python manage.py startapp shops
+python manage.py startapp vehicles
 python manage.py startapp products
 python manage.py startapp cart
 python manage.py startapp orders
@@ -146,6 +148,7 @@ INSTALLED_APPS = [
     'users',
     'regions',
     'shops',
+    'vehicles',
     'products',
     'cart',
     'orders',
@@ -513,6 +516,7 @@ urlpatterns = [
     path('api/users/', include('users.urls')),
     path('api/regions/', include('regions.urls')),
     path('api/shops/', include('shops.urls')),
+    path('api/vehicles/', include('vehicles.urls')),
     path('api/products/', include('products.urls')),
     path('api/cart/', include('cart.urls')),
     path('api/orders/', include('orders.urls')),
@@ -554,9 +558,11 @@ under "Periodic Tasks" after running migrations:
 | notifyNewReview              | reviews.tasks.notify_new_review           | On entity save  |
 | notifyNewShop                | shops.tasks.notify_new_shop               | On entity save  |
 | notifyOrderUpdate            | orders.tasks.notify_order_update          | On entity save  |
+| notifyPartsRequest           | parts_requests.tasks.notify_parts_request | On entity save  |
 | sendEmailCampaign            | marketing.tasks.send_email_campaign       | Scheduled       |
 | generateSalesReport          | audit.tasks.generate_sales_report         | Weekly Monday   |
 | deduplicateData              | audit.tasks.deduplicate_data              | Weekly Sunday   |
+| checkWatchlistAlerts         | wishlists.tasks.check_watchlist_alerts    | Every 4 hours   |
 
 Entity-save notifications should use **Django signals** (`post_save`) rather than scheduled tasks.
 
@@ -678,4 +684,4 @@ tail -f /var/log/bwangu/celery-error.log
 
 # Django shell for debugging
 python manage.py shell --settings=config.settings.production
-``
+`
