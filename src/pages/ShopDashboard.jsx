@@ -49,6 +49,7 @@ import MarketingAnalyticsDashboard from "@/components/marketing/MarketingAnalyti
 import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
 import ShippingStats from "@/components/shipping/ShippingStats";
 import ShippingManagement from "@/components/shipping/ShippingManagement";
+import ShippingDashboard from "@/components/shipping/ShippingDashboard";
 import AppointmentManager from "@/components/technicians/AppointmentManager";
 import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
@@ -1331,15 +1332,8 @@ export default function ShopDashboard() {
           <SupportTicketForm user={user} />
         )}
 
-        {view === "shipping" && (
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shipping Management</h1>
-            <ShippingStats shopId={shop?.id} />
-            <div className="mt-8">
-              <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">Configure Product Shipping</h2>
-              <ShippingManagement shopId={shop?.id} />
-            </div>
-          </div>
+        {view === "shipping" && shop && (
+          <ShippingDashboard shop={shop} />
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
