@@ -16,6 +16,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { emailLowStockAlert } from "@/components/lib/emailNotifications";
+import BulkInventoryUpload from "@/components/inventory/BulkInventoryUpload";
 import {
   AlertTriangle, Package, TrendingUp, BarChart3, Search,
   Save, Edit3, CheckCircle2
@@ -152,13 +153,19 @@ export default function InventoryPanel({ products, orders, onProductsChange, sho
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Inventory Management</h1>
-        {pendingBulkCount > 0 && (
-          <Button onClick={saveBulkUpdates} disabled={savingBulk} className="bg-emerald-600 hover:bg-emerald-700 gap-2">
-            <Save className="w-4 h-4" /> Save {pendingBulkCount} Stock Update{pendingBulkCount > 1 ? "s" : ""}
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          <BulkInventoryUpload 
+            shop={{ id: products[0]?.shop_id, name: shopName }}
+            onSuccess={() => onProductsChange([...products])}
+          />
+          {pendingBulkCount > 0 && (
+            <Button onClick={saveBulkUpdates} disabled={savingBulk} className="bg-emerald-600 hover:bg-emerald-700 gap-2">
+              <Save className="w-4 h-4" /> Save {pendingBulkCount} Stock Update{pendingBulkCount > 1 ? "s" : ""}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Stats */}
