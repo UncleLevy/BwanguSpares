@@ -50,13 +50,16 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
         proofUrl = file_url;
       }
 
-      const currentCourierName = shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Courier";
+      const activeCourierName = shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Courier";
+      const activeCourierPhone = shipment.requires_handoff 
+        ? (shipment.status === "in_transit" || shipment.status === "picked_up" ? shipment.intercity_courier_phone : shipment.local_courier_phone)
+        : (shipment.current_courier_phone || shipment.local_courier_phone || shipment.courier_phone);
       
       const newUpdate = {
         timestamp: new Date().toISOString(),
         status: newStatus,
         location: location.trim(),
-        courier_name: currentCourierName,
+        courier_name: activeCourierName,
         notes: notes.trim()
       };
 
@@ -86,12 +89,6 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
         status: orderStatus,
         current_location: location.trim()
       });
-
-      // Send email notification to buyer
-      const currentCourierName = shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Your courier";
-      const currentCourierPhone = shipment.requires_handoff 
-        ? (shipment.status === "in_transit" || shipment.status === "picked_up" ? shipment.intercity_courier_phone : shipment.local_courier_phone)
-        : (shipment.local_courier_phone || shipment.courier_phone);
       
       await base44.integrations.Core.SendEmail({
         to: shipment.buyer_email,
@@ -112,8 +109,8 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
           
           <div style="background: #f5f5f5; padding: 12px; border-radius: 8px; margin: 16px 0;">
             <p style="margin: 0 0 6px; font-weight: 600;">Current Courier:</p>
-            <p style="margin: 0 0 4px;"><strong>Name:</strong> ${currentCourierName}</p>
-            <p style="margin: 0;"><strong>Contact:</strong> ${currentCourierPhone || "Contact shop for details"}</p>
+            <p style="margin: 0 0 4px;"><strong>Name:</strong> ${activeCourierName}</p>
+            <p style="margin: 0;"><strong>Contact:</strong> ${activeCourierPhone || "Contact shop for details"}</p>
           </div>
           
           ${shipment.requires_handoff && shipment.is_intercity ? `
