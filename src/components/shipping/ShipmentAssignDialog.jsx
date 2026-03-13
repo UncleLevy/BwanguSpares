@@ -31,16 +31,13 @@ export default function ShipmentAssignDialog({ order, shop, couriers, onClose, o
     ]);
     setTowns(townsData);
     setShippingRates(ratesData);
-    calculateShippingCost(order.delivery_address);
-  };
-
-  const calculateShippingCost = (address) => {
-    // Extract town from address
-    const addressLower = address?.toLowerCase() || "";
-    const matchedTown = towns.find(t => addressLower.includes(t.name.toLowerCase()));
+    
+    // Calculate shipping cost with loaded data
+    const addressLower = order.delivery_address?.toLowerCase() || "";
+    const matchedTown = townsData.find(t => addressLower.includes(t.name.toLowerCase()));
     
     if (matchedTown) {
-      const rate = shippingRates.find(r => r.town_id === matchedTown.id);
+      const rate = ratesData.find(r => r.town_id === matchedTown.id);
       if (rate) {
         setFormData(prev => ({ ...prev, calculated_cost: rate.default_rate }));
         return;
