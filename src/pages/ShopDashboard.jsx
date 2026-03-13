@@ -50,6 +50,7 @@ import ShopWalletPanel from "@/components/financials/ShopWalletPanel";
 import ShippingStats from "@/components/shipping/ShippingStats";
 import ShippingManagement from "@/components/shipping/ShippingManagement";
 import ShippingDashboard from "@/components/shipping/ShippingDashboard";
+import CourierPerformancePanel from "@/components/shipping/CourierPerformancePanel";
 import AppointmentManager from "@/components/technicians/AppointmentManager";
 import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
@@ -496,6 +497,7 @@ export default function ShopDashboard() {
    { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => setView("marketing_analytics") },
     { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
     { id: "shipping", label: "Shipping", icon: Truck, onClick: () => setView("shipping") },
+    { id: "courier_performance", label: "Courier Performance", icon: TrendingUp, onClick: () => setView("courier_performance") },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
    { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
    { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
@@ -1334,6 +1336,13 @@ export default function ShopDashboard() {
 
         {view === "shipping" && shop && (
           <ShippingDashboard shop={shop} />
+        )}
+
+        {view === "courier_performance" && shop && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Courier Performance Analytics</h1>
+            <CourierPerformancePanel shop={shop} />
+          </div>
         )}
 
         <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
