@@ -22,6 +22,8 @@ import {
 } from "lucide-react";
 import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
 import { logAudit } from "@/components/shared/auditLog";
+import { usePagination } from "@/components/shared/usePagination";
+import TablePagination from "@/components/shared/TablePagination";
 
 const ROLE_COLORS = {
   admin: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
@@ -158,6 +160,11 @@ export default function UsersPanel({ adminUser }) {
 
   if (loading) return <div className="animate-pulse h-40 bg-slate-100 rounded-xl" />;
 
+  const sortedFiltered = sortData(filtered, sort);
+  const pagination = usePagination(sortedFiltered, 15);
+  const sortedBanned = sortData(bannedUsers, sort);
+  const bannedPagination = usePagination(sortedBanned, 15);
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -212,7 +219,7 @@ export default function UsersPanel({ adminUser }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortData(filtered, sort).map(u => {
+                {pagination.paginatedItems.map(u => {
                   const RoleIcon = ROLE_ICONS[u.role] || User;
                   const isBanned = bannedEmails.has(u.email);
                   const isSelf = u.email === adminUser?.email;
@@ -265,6 +272,14 @@ export default function UsersPanel({ adminUser }) {
                 )}
               </TableBody>
             </Table>
+            {filtered.length > 15 && (
+              <TablePagination
+                currentPage={pagination.currentPage}
+                totalItems={pagination.totalItems}
+                itemsPerPage={pagination.itemsPerPage}
+                onPageChange={pagination.setCurrentPage}
+              />
+            )}
           </div>
         </TabsContent>
 
@@ -290,7 +305,7 @@ export default function UsersPanel({ adminUser }) {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortData(bannedUsers, sort).map(b => (
+                  {bannedPagination.paginatedItems.map(b => (
                     <TableRow key={b.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                       <TableCell className="font-medium text-sm text-slate-900 dark:text-slate-100">{b.full_name || "—"}</TableCell>
                       <TableCell className="text-sm text-slate-700 dark:text-slate-300">{b.email}</TableCell>
@@ -311,6 +326,14 @@ export default function UsersPanel({ adminUser }) {
                   ))}
                 </TableBody>
               </Table>
+              {bannedUsers.length > 15 && (
+                <TablePagination
+                  currentPage={bannedPagination.currentPage}
+                  totalItems={bannedPagination.totalItems}
+                  itemsPerPage={bannedPagination.itemsPerPage}
+                  onPageChange={bannedPagination.setCurrentPage}
+                />
+              )}
             </div>
           )}
         </TabsContent>

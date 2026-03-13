@@ -55,6 +55,8 @@ import AppointmentManager from "@/components/technicians/AppointmentManager";
 import ShopReturnsPanel from "@/components/returns/ShopReturnsPanel.jsx";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
 import { emailOrderStatusUpdate, emailNewOrderToShop } from "@/components/lib/emailNotifications";
+import { usePagination } from "@/components/shared/usePagination";
+import TablePagination from "@/components/shared/TablePagination";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
@@ -125,6 +127,9 @@ export default function ShopDashboard() {
     end_date: new Date().toISOString().split('T')[0]
   });
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [productPage, setProductPage] = useState(1);
+  const [techPage, setTechPage] = useState(1);
+  const [orderPage, setOrderPage] = useState(1);
 
   const navigate = useNavigate();
 
@@ -933,49 +938,73 @@ export default function ShopDashboard() {
             </Card>
 
             <BulkEditPanel products={products} onUpdate={setProducts} />
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead className="dark:text-slate-300">Name</TableHead><TableHead className="dark:text-slate-300">Category</TableHead><TableHead className="dark:text-slate-300">Price</TableHead><TableHead className="dark:text-slate-300">Stock</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Tags</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {products.filter(p => {
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50 dark:bg-slate-800">
+                      <TableHead className="dark:text-slate-300">Name</TableHead><TableHead className="dark:text-slate-300">Category</TableHead><TableHead className="dark:text-slate-300">Price</TableHead><TableHead className="dark:text-slate-300">Stock</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Tags</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {products.filter(p => {
+                      if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
+                      if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
+                      if (productFilterStatus !== "all" && p.status !== productFilterStatus) return false;
+                      if (productPriceMin && p.price < parseFloat(productPriceMin)) return false;
+                      if (productPriceMax && p.price > parseFloat(productPriceMax)) return false;
+                      return true;
+                    }).slice((productPage - 1) * 15, productPage * 15).map(p => (
+                      <TableRow key={p.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setViewShopProduct(p)}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100 dark:border-slate-700" /> : <div className="w-8 h-8 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400 dark:text-slate-500" /></div>}
+                            <div>
+                              <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{p.name}</p>
+                              {p.brand && <p className="text-xs text-slate-400 dark:text-slate-500">{p.brand}</p>}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell><Badge variant="outline" className="text-[11px] capitalize dark:border-slate-600 dark:text-slate-300">{p.category?.replace("_"," ")}</Badge></TableCell>
+                        <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
+                        <TableCell><span className={p.stock_quantity === 0 ? "text-red-500 dark:text-red-400 font-medium" : "text-slate-700 dark:text-slate-300"}>{p.stock_quantity}</span></TableCell>
+                        <TableCell><Badge variant="outline" className="text-[11px] dark:border-slate-600 dark:text-slate-300">{p.status?.replace("_"," ")}</Badge></TableCell>
+                        <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px] dark:bg-slate-700 dark:text-slate-300">{tag}</Badge>)}</div></TableCell>
+                        <TableCell onClick={e => e.stopPropagation()}>
+                          <div className="flex gap-1">
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewShopProduct(p)}><Eye className="w-3.5 h-3.5" /></Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setSelectedProductForVariations(p); }}><Wrench className="w-3.5 h-3.5" /></Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEditProduct(p)}><Pencil className="w-3.5 h-3.5" /></Button>
+                            <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => deleteProduct(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+              {products.filter(p => {
+                if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
+                if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
+                if (productFilterStatus !== "all" && p.status !== productFilterStatus) return false;
+                if (productPriceMin && p.price < parseFloat(productPriceMin)) return false;
+                if (productPriceMax && p.price > parseFloat(productPriceMax)) return false;
+                return true;
+              }).length > 15 && (
+                <TablePagination
+                  currentPage={productPage}
+                  totalItems={products.filter(p => {
                     if (productSearch && !p.name?.toLowerCase().includes(productSearch.toLowerCase()) && !p.brand?.toLowerCase().includes(productSearch.toLowerCase()) && !p.sku?.toLowerCase().includes(productSearch.toLowerCase())) return false;
                     if (productFilterCategory !== "all" && p.category !== productFilterCategory) return false;
                     if (productFilterStatus !== "all" && p.status !== productFilterStatus) return false;
                     if (productPriceMin && p.price < parseFloat(productPriceMin)) return false;
                     if (productPriceMax && p.price > parseFloat(productPriceMax)) return false;
                     return true;
-                  }).map(p => (
-                    <TableRow key={p.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setViewShopProduct(p)}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {p.image_url ? <img src={p.image_url} alt="" className="w-8 h-8 rounded object-cover border border-slate-100 dark:border-slate-700" /> : <div className="w-8 h-8 rounded bg-slate-100 dark:bg-slate-800 flex items-center justify-center"><Package className="w-4 h-4 text-slate-400 dark:text-slate-500" /></div>}
-                          <div>
-                            <p className="font-medium text-sm text-slate-900 dark:text-slate-100">{p.name}</p>
-                            {p.brand && <p className="text-xs text-slate-400 dark:text-slate-500">{p.brand}</p>}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px] capitalize dark:border-slate-600 dark:text-slate-300">{p.category?.replace("_"," ")}</Badge></TableCell>
-                      <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
-                      <TableCell><span className={p.stock_quantity === 0 ? "text-red-500 dark:text-red-400 font-medium" : "text-slate-700 dark:text-slate-300"}>{p.stock_quantity}</span></TableCell>
-                      <TableCell><Badge variant="outline" className="text-[11px] dark:border-slate-600 dark:text-slate-300">{p.status?.replace("_"," ")}</Badge></TableCell>
-                      <TableCell><div className="flex gap-1">{p.tags?.slice(0,2).map((tag, i) => <Badge key={i} variant="secondary" className="text-[10px] dark:bg-slate-700 dark:text-slate-300">{tag}</Badge>)}</div></TableCell>
-                      <TableCell onClick={e => e.stopPropagation()}>
-                        <div className="flex gap-1">
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => setViewShopProduct(p)}><Eye className="w-3.5 h-3.5" /></Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => { setSelectedProductForVariations(p); }}><Wrench className="w-3.5 h-3.5" /></Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => openEditProduct(p)}><Pencil className="w-3.5 h-3.5" /></Button>
-                          <Button size="icon" variant="ghost" className="h-8 w-8 text-red-500" onClick={() => deleteProduct(p.id)}><Trash2 className="w-3.5 h-3.5" /></Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  }).length}
+                  itemsPerPage={15}
+                  onPageChange={setProductPage}
+                />
+              )}
             </div>
 
             {/* View Product Details Dialog */}
@@ -1121,7 +1150,7 @@ export default function ShopDashboard() {
                 className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Technician</Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {technicians.map(t => (
+              {technicians.slice((techPage - 1) * 15, techPage * 15).map(t => (
                 <Card key={t.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
                   <CardContent className="p-5">
                     <div className="flex items-start justify-between">
@@ -1150,6 +1179,17 @@ export default function ShopDashboard() {
                 </Card>
               ))}
             </div>
+            
+            {technicians.length > 15 && (
+              <div className="mt-6">
+                <TablePagination
+                  currentPage={techPage}
+                  totalItems={technicians.length}
+                  itemsPerPage={15}
+                  onPageChange={setTechPage}
+                />
+              </div>
+            )}
 
             <Dialog open={techDialog} onOpenChange={setTechDialog}>
               <DialogContent>
@@ -1198,7 +1238,7 @@ export default function ShopDashboard() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {orders.map(o => (
+                  {orders.slice((orderPage - 1) * 15, orderPage * 15).map(o => (
                     <TableRow key={o.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => navigate(createPageUrl("OrderDetails") + `?id=${o.id}`)}>
                      <TableCell className="font-mono text-xs text-slate-500 dark:text-slate-400">{o.id?.slice(0,8)}</TableCell>
                      <TableCell className="text-sm text-slate-900 dark:text-slate-100">{o.buyer_name || o.buyer_email}</TableCell>
@@ -1243,6 +1283,15 @@ export default function ShopDashboard() {
                 </TableBody>
               </Table>
             </div>
+            
+            {orders.length > 15 && (
+              <TablePagination
+                currentPage={orderPage}
+                totalItems={orders.length}
+                itemsPerPage={15}
+                onPageChange={setOrderPage}
+              />
+            )}
 
             <Dialog open={trackingDialog} onOpenChange={setTrackingDialog}>
               <DialogContent>
