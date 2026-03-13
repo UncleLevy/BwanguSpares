@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { FileText, Download, Printer } from "lucide-react";
-import QRCode from "qrcode.react";
+import { QRCodeSVG } from "qrcode.react";
 
 export default function ShippingLabelGenerator({ order, shipment, shop }) {
   const [showLabel, setShowLabel] = useState(false);
@@ -39,7 +39,7 @@ export default function ShippingLabelGenerator({ order, shipment, shop }) {
                 <p className="text-sm text-slate-600">{shop.phone}</p>
               </div>
               <div className="text-right">
-                <QRCode value={shipment.tracking_number} size={80} />
+                <QRCodeSVG value={shipment.tracking_number} size={80} />
                 <p className="text-xs font-mono mt-1">{shipment.tracking_number}</p>
               </div>
             </div>
