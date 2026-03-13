@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2 } from "lucide-react";
+import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2, Eye } from "lucide-react";
 import { toast } from "sonner";
+import { usePagination } from "@/components/shared/usePagination";
+import TablePagination from "@/components/shared/TablePagination";
 
 export default function PayoutsPanel({ adminUser }) {
   const [wallets, setWallets] = useState([]);
@@ -21,6 +23,7 @@ export default function PayoutsPanel({ adminUser }) {
   const [form, setForm] = useState({ amount: "", method: "bank_transfer", reference: "", notes: "" });
   const [saving, setSaving] = useState(false);
   const [autoRunning, setAutoRunning] = useState(false);
+  const [viewTransaction, setViewTransaction] = useState(null);
 
   useEffect(() => {
     load();
@@ -130,6 +133,9 @@ export default function PayoutsPanel({ adminUser }) {
   const totalPaidOut = wallets.reduce((s, w) => s + (w.total_paid_out || 0), 0);
   const totalFees = wallets.reduce((s, w) => s + (w.total_fees_deducted || 0), 0);
 
+  const walletsPagination = usePagination(wallets, 15);
+  const payoutsPagination = usePagination(payouts, 15);
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -201,7 +207,7 @@ export default function PayoutsPanel({ adminUser }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {wallets.map(w => (
+                {walletsPagination.paginatedItems.map(w => (
                   <TableRow key={w.id}>
                     <TableCell className="font-medium">
                       <div>{w.shop_name}</div>
@@ -232,6 +238,15 @@ export default function PayoutsPanel({ adminUser }) {
               </TableBody>
             </Table>
           )}
+          {wallets.length > 15 && (
+            <TablePagination
+              currentPage={walletsPagination.currentPage}
+              totalItems={walletsPagination.totalItems}
+              itemsPerPage={walletsPagination.itemsPerPage}
+              onPageChange={walletsPagination.setCurrentPage}
+            />
+          )}
+          )}
         </CardContent>
       </Card>
 
@@ -259,8 +274,8 @@ export default function PayoutsPanel({ adminUser }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {payouts.map(p => (
-                  <TableRow key={p.id}>
+                {payoutsPagination.paginatedItems.map(p => (
+                  <TableRow key={p.id} className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50" onClick={() => setViewTransaction(p)}>
                     <TableCell className="text-sm">{new Date(p.created_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</TableCell>
                     <TableCell className="font-medium">{p.shop_name}</TableCell>
                     <TableCell className="font-bold text-emerald-600">K{p.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
@@ -272,6 +287,15 @@ export default function PayoutsPanel({ adminUser }) {
                 ))}
               </TableBody>
             </Table>
+          )}
+          {payouts.length > 15 && (
+            <TablePagination
+              currentPage={payoutsPagination.currentPage}
+              totalItems={payoutsPagination.totalItems}
+              itemsPerPage={payoutsPagination.itemsPerPage}
+              onPageChange={payoutsPagination.setCurrentPage}
+            />
+          )}
           )}
         </CardContent>
       </Card>
