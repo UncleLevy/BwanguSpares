@@ -12,6 +12,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogD
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
+import { usePagination } from "@/components/shared/usePagination";
+import TablePagination from "@/components/shared/TablePagination";
 
 const statusOptions = [
   { value: "pending", label: "Pending", color: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" },
@@ -90,6 +92,9 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
     return statusOptions.find(s => s.value === status)?.color || "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300";
   };
 
+  const sortedOrders = sortData(orders, sort);
+  const pagination = usePagination(sortedOrders, 15);
+
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Order Management</h1>
@@ -111,7 +116,7 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {sortData(orders, sort).map(order => (
+                {pagination.paginatedItems.map(order => (
                   <TableRow key={order.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
                     <TableCell className="font-mono text-xs text-slate-500 dark:text-slate-400">{order.id?.slice(0, 8)}</TableCell>
                     <TableCell className="text-sm text-slate-900 dark:text-slate-100">{order.buyer_name || order.buyer_email}</TableCell>
@@ -153,6 +158,14 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
               </TableBody>
             </Table>
           </div>
+          {orders.length > 15 && (
+            <TablePagination
+              currentPage={pagination.currentPage}
+              totalItems={pagination.totalItems}
+              itemsPerPage={pagination.itemsPerPage}
+              onPageChange={pagination.setCurrentPage}
+            />
+          )}
         </CardContent>
       </Card>
 
