@@ -50,10 +50,13 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
         proofUrl = file_url;
       }
 
+      const currentCourierName = shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Courier";
+      
       const newUpdate = {
         timestamp: new Date().toISOString(),
         status: newStatus,
         location: location.trim(),
+        courier_name: currentCourierName,
         notes: notes.trim()
       };
 
@@ -150,9 +153,26 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
             </div>
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
-                <p className="text-slate-500 dark:text-slate-400">Courier</p>
-                <p className="font-medium text-slate-900 dark:text-slate-100">{shipment.courier_name}</p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">{shipment.courier_phone}</p>
+                <p className="text-slate-500 dark:text-slate-400">Current Courier</p>
+                <p className="font-medium text-slate-900 dark:text-slate-100">
+                  {shipment.current_courier_name || shipment.local_courier_name || shipment.intercity_courier_name || shipment.courier_name || "Not assigned"}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  {shipment.requires_handoff 
+                    ? (shipment.status === "in_transit" || shipment.status === "picked_up" || shipment.status === "assigned" || shipment.status === "awaiting_handoff"
+                        ? shipment.intercity_courier_phone 
+                        : shipment.local_courier_phone)
+                    : (shipment.current_courier_phone || shipment.local_courier_phone || shipment.courier_phone || "—")
+                  }
+                </p>
+                {shipment.requires_handoff && (
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                    {shipment.status === "handoff_complete" || shipment.status === "out_for_delivery" || shipment.status === "delivered"
+                      ? "📍 Local delivery courier"
+                      : "📍 Intercity transit courier"
+                    }
+                  </p>
+                )}
               </div>
               <div>
                 <p className="text-slate-500 dark:text-slate-400">Estimated Delivery</p>
@@ -161,6 +181,29 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
                 </p>
               </div>
             </div>
+            
+            {shipment.requires_handoff && (
+              <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mb-2">Multi-Courier Delivery</p>
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div>
+                    <p className="text-slate-500 dark:text-slate-400 mb-0.5">Intercity Courier</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">{shipment.intercity_courier_name}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{shipment.intercity_courier_phone}</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-500 dark:text-slate-400 mb-0.5">Local Courier</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">{shipment.local_courier_name}</p>
+                    <p className="text-slate-500 dark:text-slate-400">{shipment.local_courier_phone}</p>
+                  </div>
+                </div>
+                {shipment.handoff_location && (
+                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                    Handoff at: {shipment.handoff_location}
+                  </p>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Tracking History */}
@@ -180,6 +223,11 @@ export default function ShipmentTrackingPanel({ shipment, onClose, onUpdate }) {
                       <MapPin className="w-3 h-3" />
                       {update.location}
                     </p>
+                    {update.courier_name && (
+                      <p className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                        Courier: {update.courier_name}
+                      </p>
+                    )}
                     {update.notes && <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{update.notes}</p>}
                   </div>
                 </div>
