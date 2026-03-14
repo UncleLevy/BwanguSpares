@@ -246,7 +246,6 @@ export default function PayoutsPanel({ adminUser }) {
               onPageChange={walletsPagination.setCurrentPage}
             />
           )}
-          )}
         </CardContent>
       </Card>
 
@@ -295,7 +294,6 @@ export default function PayoutsPanel({ adminUser }) {
               itemsPerPage={payoutsPagination.itemsPerPage}
               onPageChange={payoutsPagination.setCurrentPage}
             />
-          )}
           )}
         </CardContent>
       </Card>
