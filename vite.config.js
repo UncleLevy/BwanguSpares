@@ -16,5 +16,15 @@ export default defineConfig({
       visualEditAgent: true
     }),
     react(),
-  ]
+  ],
+  server: {
+    // Allow this exact host (most precise/safe option)
+    allowedHosts: ['ta-01kkq27vv33h30bwy0e2dvp24j-5173-yutqhx4ndj9jsuw2lntqcpmfz.w.modal.host'],
+    
+    // OR — if the subdomain changes frequently (common on Modal), allow the entire domain:
+    // allowedHosts: ['.w.modal.host'],   // the leading dot allows all subdomains
+    
+    // OR — least restrictive (convenient for dev, but less secure):
+    // allowedHosts: true,
+  },
 });
