@@ -365,7 +365,11 @@ export default function UsersPanel({ adminUser }) {
                 <SelectContent>
                   <SelectItem value="user">User (Buyer)</SelectItem>
                   <SelectItem value="shop_owner">Shop Owner</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="admin">Super Admin</SelectItem>
+                  <SelectItem value="staff_finance">Finance Staff</SelectItem>
+                  <SelectItem value="staff_shipping">Shipping Staff</SelectItem>
+                  <SelectItem value="staff_support">Support Staff</SelectItem>
+                  <SelectItem value="staff_shop_management">Shop Management Staff</SelectItem>
                 </SelectContent>
               </Select>
             </div>
