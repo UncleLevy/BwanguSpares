@@ -128,10 +128,6 @@ export default function PayoutsPanel({ adminUser }) {
     load();
   };
 
-  // Hooks must be called before any conditional returns
-  const walletsPagination = usePagination(wallets, 15);
-  const payoutsPagination = usePagination(payouts, 15);
-
   const payoutStatusColors = {
     pending: "bg-amber-50 text-amber-700",
     completed: "bg-emerald-50 text-emerald-700",
@@ -143,6 +139,9 @@ export default function PayoutsPanel({ adminUser }) {
   const totalPending = wallets.reduce((s, w) => s + (w.pending_balance || 0), 0);
   const totalPaidOut = wallets.reduce((s, w) => s + (w.total_paid_out || 0), 0);
   const totalFees = wallets.reduce((s, w) => s + (w.total_fees_deducted || 0), 0);
+
+  const walletsPagination = usePagination(wallets, 15);
+  const payoutsPagination = usePagination(payouts, 15);
 
   return (
     <div className="space-y-6">

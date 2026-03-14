@@ -41,7 +41,6 @@ import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
 import AdminReturnsPanel from "@/components/admin/AdminReturnsPanel";
 import AdminVehiclesPanel from "@/components/admin/AdminVehiclesPanel";
 import { emailShopStatusUpdate } from "@/components/lib/emailNotifications";
-import { ROLE_PERMISSIONS, hasViewAccess, getAccessibleViews } from "@/components/admin/rolePermissions";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
@@ -74,9 +73,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     (async () => {
       const u = await base44.auth.me();
-      // Check if user has any staff role or admin
-      const isStaff = u.role === "admin" || u.role?.startsWith("staff_");
-      if (!isStaff) { navigate(createPageUrl("Home")); return; }
+      if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
       setUser(u);
       const [s, p, o, r, t] = await Promise.all([
         base44.entities.Shop.list("-created_date", 50),
@@ -265,28 +262,23 @@ export default function AdminDashboard() {
     base44.entities.Vehicle.list().then(v => setVehicleCount(v.length));
   }, []);
 
-  // Filter sidebar items based on user role
-  const allSidebarItems = [
-    { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview"), department: "all" },
-    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics"), department: "analytics" },
-    { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts"), department: "finance" },
-    { id: "returns", label: "Returns & Refunds", icon: RotateCcw, onClick: () => setView("returns"), badge: pendingRefundCount || null, department: "finance" },
-    { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports"), department: "support" },
-    { id: "support", label: "Support Tickets", icon: TicketCheck, onClick: () => setView("support"), badge: ticketCount || null, department: "support" },
-    { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping"), department: "shipping" },
-    { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null, department: "shop_management" },
-    { id: "products", label: "Products", icon: Package, onClick: () => setView("products"), department: "shop_management" },
-    { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions"), department: "shop_management" },
-    { id: "cities", label: "Cities", icon: MapPin, onClick: () => setView("cities"), department: "shop_management" },
-    { id: "vehicles", label: "Vehicles", icon: Car, onClick: () => setView("vehicles"), badge: vehicleCount || null, department: "shop_management" },
-    { id: "users", label: "Users", icon: Users, onClick: () => setView("users"), department: "admin" },
-    { id: "loyalty", label: "Loyalty Programme", icon: Gift, onClick: () => setView("loyalty"), department: "admin" },
-    { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit"), department: "admin" },
+  const sidebarItems = [
+    { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
+    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
+    { id: "payouts", label: "Payouts", icon: DollarSign, onClick: () => setView("payouts") },
+    { id: "returns", label: "Returns & Refunds", icon: RotateCcw, onClick: () => setView("returns"), badge: pendingRefundCount || null },
+    { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
+    { id: "support", label: "Support Tickets", icon: TicketCheck, onClick: () => setView("support"), badge: ticketCount || null },
+    { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping") },
+    { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
+    { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
+    { id: "regions", label: "Regions", icon: MapPin, onClick: () => setView("regions") },
+    { id: "cities", label: "Cities", icon: MapPin, onClick: () => setView("cities") },
+    { id: "vehicles", label: "Vehicles", icon: Car, onClick: () => setView("vehicles"), badge: vehicleCount || null },
+    { id: "users", label: "Users", icon: Users, onClick: () => setView("users") },
+    { id: "loyalty", label: "Loyalty Programme", icon: Gift, onClick: () => setView("loyalty") },
+    { id: "audit", label: "Audit Log", icon: ScrollText, onClick: () => setView("audit") },
   ];
-
-  const sidebarItems = allSidebarItems.filter(item => 
-    hasViewAccess(user?.role, item.id, user?.department_permissions || [])
-  );
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
@@ -404,38 +396,12 @@ export default function AdminDashboard() {
     cancelled: "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400",
   };
 
-  // Check access before rendering protected views
-  const canAccessView = hasViewAccess(user?.role, view, user?.department_permissions || []);
-  
-  // Role badge for header
-  const roleConfig = ROLE_PERMISSIONS[user?.role] || { label: "Staff", color: "bg-slate-600" };
-
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <DashboardSidebar items={sidebarItems} active={view} title={
-        <div className="flex flex-col gap-1">
-          <span>Admin Panel</span>
-          <span className={`text-xs px-2 py-0.5 rounded ${roleConfig.color} text-white w-fit`}>
-            {roleConfig.label}
-          </span>
-        </div>
-      } />
+      <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
       <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
-        {!canAccessView && (
-          <div className="flex flex-col items-center justify-center py-20">
-            <ShieldOff className="w-16 h-16 text-slate-300 mb-4" />
-            <h2 className="text-xl font-bold text-slate-700 mb-2">Access Denied</h2>
-            <p className="text-slate-500 text-center max-w-md">
-              You don't have permission to access this section. Contact an administrator if you need access.
-            </p>
-            <Button onClick={() => setView("overview")} className="mt-6">
-              Go to Overview
-            </Button>
-          </div>
-        )}
-        
-        {canAccessView && view === "overview" && (
+        {view === "overview" && (
           <div>
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Dashboard Overview</h1>
@@ -506,7 +472,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {canAccessView && view === "analytics" && (
+        {view === "analytics" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Platform Analytics</h1>
             
@@ -557,7 +523,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {canAccessView && view === "shops" && (
+        {view === "shops" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Manage Shops</h1>
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
@@ -615,7 +581,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {canAccessView && view === "products" && (
+        {view === "products" && (
           <AdminProductsPanel
             products={products}
             shops={shops}
@@ -624,7 +590,7 @@ export default function AdminDashboard() {
           />
         )}
 
-        {canAccessView && view === "orders" && (
+        {view === "orders" && (
           <OrdersPanel 
             orders={orders} 
             onOrderUpdate={(updatedOrder) => {
@@ -633,18 +599,18 @@ export default function AdminDashboard() {
           />
         )}
 
-        {canAccessView && view === "payouts" && <PayoutsPanel adminUser={user} />}
-        {canAccessView && view === "returns" && <AdminReturnsPanel adminUser={user} />}
-        {canAccessView && view === "shipping" && <AdminShippingRates />}
-        {canAccessView && view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
-        {canAccessView && view === "audit" && <AuditLogPanel />}
+        {view === "payouts" && <PayoutsPanel adminUser={user} />}
+        {view === "returns" && <AdminReturnsPanel adminUser={user} />}
+        {view === "shipping" && <AdminShippingRates />}
+        {view === "reports" && <ReportingPanel orders={orders} products={products} shops={shops} />}
+        {view === "audit" && <AuditLogPanel />}
 
-        {canAccessView && view === "support" && <SupportTicketsPanel adminUser={user} />}
-        {canAccessView && view === "loyalty" && <AdminLoyaltyPanel />}
-        {canAccessView && view === "users" && <UsersPanel adminUser={user} />}
-        {canAccessView && view === "vehicles" && <AdminVehiclesPanel />}
+        {view === "support" && <SupportTicketsPanel adminUser={user} />}
+        {view === "loyalty" && <AdminLoyaltyPanel />}
+        {view === "users" && <UsersPanel adminUser={user} />}
+        {view === "vehicles" && <AdminVehiclesPanel />}
 
-        {canAccessView && view === "regions" && (
+        {view === "regions" && (
           <div>
             <div className="flex items-center justify-between mb-6">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Regions</h1>
@@ -689,7 +655,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {canAccessView && view === "cities" && (
+        {view === "cities" && (
           <div>
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Cities/Towns</h1>
