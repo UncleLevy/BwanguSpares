@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
+import AdminNavbar from "@/components/dashboard/AdminNavbar";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
@@ -397,10 +398,12 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <AdminNavbar user={user} />
+      <div className="flex">
+        <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
-      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
+        <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
         {view === "overview" && (
           <div>
             <div className="flex items-center justify-between mb-6">
@@ -909,6 +912,7 @@ export default function AdminDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   );
 }

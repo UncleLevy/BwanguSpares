@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
+import ShopNavbar from "@/components/dashboard/ShopNavbar";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, Package, Wrench, ShoppingCart, Plus,
@@ -596,9 +597,11 @@ export default function ShopDashboard() {
   };
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
-      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <ShopNavbar user={user} />
+      <div className="flex">
+        <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
+        <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
 
         {view === "shop_info" && (
           <div>
@@ -1448,7 +1451,8 @@ export default function ShopDashboard() {
              )}
            </DialogContent>
          </Dialog>
-         </main>
-         </div>
-         );
-         }
+        </main>
+      </div>
+    </div>
+  );
+}
