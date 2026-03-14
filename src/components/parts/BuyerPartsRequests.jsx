@@ -106,7 +106,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
 
       {requests.length === 0 ? (
         <div className="text-center py-20">
-          <FileSearch className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+          <FileSearch className="w-16 h-16 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 dark:text-slate-300">No parts requests yet</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">
             Can't find a part? Submit a request and verified shops will contact you.
@@ -119,18 +119,18 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
             const sc = statusConfig[req.status] || statusConfig.open;
             const isCounter = req.status === "counter_offered";
             return (
-              <Card key={req.id} className={`border-slate-100 dark:border-slate-700 ${isCounter ? "border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800" : ""}`}>
+              <Card key={req.id} className={`border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${isCounter ? "border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800/50" : ""}`}>
                 <CardContent className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="flex-1">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <h3 className="font-semibold text-slate-900 dark:text-slate-100">{req.part_name}</h3>
-                        <Badge className={`${sc.color} text-xs border`}>
+                        <Badge className={`${sc.color} dark:bg-opacity-20 text-xs border dark:border-opacity-50`}>
                           <sc.icon className="w-3 h-3 mr-1" />
                           {sc.label}
                         </Badge>
                       </div>
-                      <p className="text-xs text-slate-400">
+                      <p className="text-xs text-slate-400 dark:text-slate-500">
                         Submitted {new Date(req.created_date).toLocaleDateString()}
                         {req.category && ` • ${req.category.replace("_", " ")}`}
                         {req.compatible_vehicles && ` • ${req.compatible_vehicles}`}
@@ -139,14 +139,14 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
                         <p className="text-sm text-slate-600 dark:text-slate-400 mt-1.5">{req.description}</p>
                       )}
                       {req.budget && (
-                        <p className="text-xs text-slate-500 mt-1">Your budget: K{req.budget.toLocaleString()}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Your budget: K{req.budget.toLocaleString()}</p>
                       )}
                     </div>
                     {req.status === "open" && (
                       <Button
                         size="sm" variant="outline"
                         onClick={() => cancelRequest(req)}
-                        className="text-red-600 border-red-100 hover:bg-red-50 shrink-0"
+                        className="text-red-600 dark:text-red-400 border-red-100 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30 shrink-0"
                       >
                         Cancel
                       </Button>
@@ -155,7 +155,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
 
                   {/* Counter Offer Banner */}
                   {isCounter && (
-                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60 rounded-xl">
                       <p className="font-semibold text-purple-800 dark:text-purple-300 flex items-center gap-2 mb-1">
                         <MessageSquare className="w-4 h-4" /> Counter Offer from {req.counter_by_shop_name}
                       </p>
@@ -167,7 +167,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
                         <p className="text-sm text-purple-600 dark:text-purple-400 mt-1 italic">"{req.shop_counter_message}"</p>
                       )}
                       {req.counter_by_shop_phone && (
-                        <p className="text-xs text-purple-500 mt-1 flex items-center gap-1">
+                        <p className="text-xs text-purple-500 dark:text-purple-400 mt-1 flex items-center gap-1">
                           <Phone className="w-3 h-3" /> {req.counter_by_shop_phone}
                         </p>
                       )}
@@ -177,7 +177,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
                           Accept Offer
                         </Button>
                         <Button size="sm" variant="outline" onClick={() => handleCounterResponse(req, false)} disabled={submitting === req.id}
-                          className="text-red-600 border-red-200 hover:bg-red-50">
+                          className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30">
                           Decline &amp; Reopen
                         </Button>
                       </div>
@@ -186,7 +186,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
 
                   {/* Accepted by shop */}
                   {req.status === "accepted" && (
-                    <div className="mt-3 p-3.5 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800">
+                    <div className="mt-3 p-3.5 bg-emerald-50 dark:bg-emerald-950/30 rounded-xl border border-emerald-100 dark:border-emerald-800/60">
                       <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
                         <Store className="w-4 h-4" />
                         <strong>{req.accepted_by_shop_name}</strong> has accepted your request!
@@ -197,7 +197,7 @@ export default function BuyerPartsRequests({ user, onNewRequest }) {
                           Call them: <strong>{req.accepted_by_shop_phone}</strong>
                         </p>
                       )}
-                      <p className="text-xs text-emerald-600 mt-1">
+                      <p className="text-xs text-emerald-600 dark:text-emerald-400 mt-1">
                         Accepted on {new Date(req.accepted_date).toLocaleDateString()}
                       </p>
                     </div>
