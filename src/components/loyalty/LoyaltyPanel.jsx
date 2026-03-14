@@ -130,25 +130,25 @@ export default function LoyaltyPanel({ user }) {
       <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Loyalty Rewards</h1>
 
       {/* Main points card */}
-      <Card className={`border-2 ${tier.border} overflow-hidden`}>
-        <div className={`${tier.bg} px-6 pt-6 pb-4`}>
+      <Card className={`border-2 ${tier.border} dark:border-opacity-50 overflow-hidden bg-white dark:bg-slate-900`}>
+        <div className={`${tier.bg} dark:bg-slate-800/30 px-6 pt-6 pb-4`}>
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <span className="text-2xl">{tier.icon}</span>
               <div>
-                <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Tier</p>
-                <p className={`text-lg font-bold ${tier.color}`}>{tier.label} Member</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-semibold">Tier</p>
+                <p className={`text-lg font-bold ${tier.color} dark:opacity-90`}>{tier.label} Member</p>
               </div>
             </div>
             <div className="text-right">
-              <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Points Balance</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-800">{pointsBalance.toLocaleString()}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-semibold">Points Balance</p>
+              <p className="text-3xl font-bold text-slate-900 dark:text-slate-100">{pointsBalance.toLocaleString()}</p>
             </div>
           </div>
 
           {nextTier && (
             <div>
-              <div className="flex justify-between text-xs text-slate-500 mb-1">
+              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
                 <span>{tier.label}</span>
                 <span>{pointsToNext > 0 ? `${pointsToNext.toLocaleString()} pts to ${nextTier.label}` : `${nextTier.label} reached!`}</span>
               </div>
@@ -156,47 +156,47 @@ export default function LoyaltyPanel({ user }) {
             </div>
           )}
           {!nextTier && (
-            <p className="text-sm font-medium text-blue-700 flex items-center gap-1.5">
+            <p className="text-sm font-medium text-blue-700 dark:text-blue-400 flex items-center gap-1.5">
               <Award className="w-4 h-4" /> You've reached the highest tier! 💎
             </p>
           )}
         </div>
 
-        <CardContent className="px-6 py-4">
+        <CardContent className="px-6 py-4 bg-white dark:bg-slate-900">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div>
               <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{totalEarned.toLocaleString()}</p>
-              <p className="text-xs text-slate-400">Total Earned</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Total Earned</p>
             </div>
             <div>
               <p className="text-xl font-bold text-slate-900 dark:text-slate-100">{(loyalty?.total_redeemed || 0).toLocaleString()}</p>
-              <p className="text-xs text-slate-400">Total Redeemed</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Total Redeemed</p>
             </div>
             <div>
-              <p className="text-xl font-bold text-emerald-600">{pointsBalance.toLocaleString()}</p>
-              <p className="text-xs text-slate-400">Available</p>
+              <p className="text-xl font-bold text-emerald-600 dark:text-emerald-500">{pointsBalance.toLocaleString()}</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500">Available</p>
             </div>
           </div>
         </CardContent>
       </Card>
 
       {/* How points work */}
-      <Card className="border-slate-100 dark:border-slate-700">
+      <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <CardContent className="p-5">
           <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3 flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-500" /> How to Earn Points
+            <Zap className="w-4 h-4 text-amber-500 dark:text-amber-400" /> How to Earn Points
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm text-slate-600 dark:text-slate-400">
-            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <ShoppingCart className="w-4 h-4 text-blue-500 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+              <ShoppingCart className="w-4 h-4 text-blue-500 dark:text-blue-400 mt-0.5 shrink-0" />
               <div><p className="font-medium text-slate-800 dark:text-slate-200">Make a Purchase</p><p className="text-xs mt-0.5">Earn 1 point per K1 spent</p></div>
             </div>
-            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <Star className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+              <Star className="w-4 h-4 text-amber-500 dark:text-amber-400 mt-0.5 shrink-0" />
               <div><p className="font-medium text-slate-800 dark:text-slate-200">Leave a Review</p><p className="text-xs mt-0.5">+50 bonus points per review</p></div>
             </div>
-            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
-              <TrendingUp className="w-4 h-4 text-emerald-500 mt-0.5 shrink-0" />
+            <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-700">
+              <TrendingUp className="w-4 h-4 text-emerald-500 dark:text-emerald-400 mt-0.5 shrink-0" />
               <div><p className="font-medium text-slate-800 dark:text-slate-200">Tier Bonuses</p><p className="text-xs mt-0.5">Higher tiers earn 1.5× – 2× points</p></div>
             </div>
           </div>
@@ -212,14 +212,14 @@ export default function LoyaltyPanel({ user }) {
           {REWARDS.map(reward => {
             const canRedeem = pointsBalance >= reward.points;
             return (
-              <Card key={reward.id} className={`border transition-all ${canRedeem ? "border-blue-200 hover:shadow-md" : "border-slate-100 opacity-60"}`}>
+              <Card key={reward.id} className={`border transition-all bg-white dark:bg-slate-900 ${canRedeem ? "border-blue-200 dark:border-blue-800 hover:shadow-md" : "border-slate-200 dark:border-slate-700 opacity-60"}`}>
                 <CardContent className="p-4 flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <span className="text-2xl">{reward.icon}</span>
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{reward.label}</p>
-                      <p className="text-xs text-slate-400">{reward.description}</p>
-                      <Badge variant="outline" className="text-[10px] mt-1">{reward.points.toLocaleString()} pts required</Badge>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">{reward.description}</p>
+                      <Badge variant="outline" className="text-[10px] mt-1 dark:border-slate-600">{reward.points.toLocaleString()} pts required</Badge>
                     </div>
                   </div>
                   <Button
@@ -238,20 +238,20 @@ export default function LoyaltyPanel({ user }) {
       </div>
 
       {/* Transaction History */}
-      <Card className="border-slate-100 dark:border-slate-700">
+      <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
         <CardContent className="p-5">
           <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Points History</h2>
           {txns.length === 0 ? (
-            <p className="text-sm text-slate-400 text-center py-8">No transactions yet. Start shopping to earn points!</p>
+            <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">No transactions yet. Start shopping to earn points!</p>
           ) : (
             <div className="space-y-2">
               {txns.map(txn => (
-                <div key={txn.id} className="flex items-center justify-between py-2 border-b border-slate-50 dark:border-slate-700 last:border-0">
+                <div key={txn.id} className="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700/50 last:border-0">
                   <div>
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{txn.reason}</p>
-                    <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
+                    <p className="text-xs text-slate-400 dark:text-slate-500">{new Date(txn.created_date).toLocaleDateString()}</p>
                   </div>
-                  <span className={`text-sm font-bold ${txn.type === "earn" ? "text-emerald-600" : "text-blue-600"}`}>
+                  <span className={`text-sm font-bold ${txn.type === "earn" ? "text-emerald-600 dark:text-emerald-500" : "text-blue-600 dark:text-blue-400"}`}>
                     {txn.type === "earn" ? "+" : "-"}{txn.points.toLocaleString()} pts
                   </span>
                 </div>
