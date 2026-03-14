@@ -266,10 +266,12 @@ export default function BuyerDashboard() {
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
   return (
-    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
-      <DashboardSidebar items={sidebarItems} active={view} title="My Account" />
-      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+      <AdminNavbar user={user} />
+      <div className="flex">
+        <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
+        <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
         {view === "orders" && (
           <PullToRefresh onRefresh={async () => {
             const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
