@@ -24,17 +24,26 @@ import SortableTableHead, { toggleSort, sortData } from "@/components/shared/Sor
 import { logAudit } from "@/components/shared/auditLog";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
+import { ROLE_PERMISSIONS } from "@/components/admin/rolePermissions";
 
 const ROLE_COLORS = {
   admin: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",
   shop_owner: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
   user: "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300",
+  staff_finance: "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400",
+  staff_shipping: "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400",
+  staff_support: "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400",
+  staff_shop_management: "bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400",
 };
 
 const ROLE_ICONS = {
   admin: Shield,
   shop_owner: Store,
   user: User,
+  staff_finance: ShieldCheck,
+  staff_shipping: ShieldCheck,
+  staff_support: ShieldCheck,
+  staff_shop_management: ShieldCheck,
 };
 
 export default function UsersPanel({ adminUser }) {
@@ -199,7 +208,11 @@ export default function UsersPanel({ adminUser }) {
               <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="admin">Super Admin</SelectItem>
+                <SelectItem value="staff_finance">Finance Staff</SelectItem>
+                <SelectItem value="staff_shipping">Shipping Staff</SelectItem>
+                <SelectItem value="staff_support">Support Staff</SelectItem>
+                <SelectItem value="staff_shop_management">Shop Management</SelectItem>
                 <SelectItem value="shop_owner">Shop Owner</SelectItem>
                 <SelectItem value="user">User</SelectItem>
               </SelectContent>
@@ -229,7 +242,7 @@ export default function UsersPanel({ adminUser }) {
                       <TableCell className="text-sm text-slate-500 dark:text-slate-400">{u.email}</TableCell>
                       <TableCell>
                         <Badge className={`${ROLE_COLORS[u.role] || "bg-slate-100 text-slate-600"} flex items-center gap-1 w-fit text-[11px]`}>
-                          <RoleIcon className="w-3 h-3" /> {u.role || "user"}
+                          <RoleIcon className="w-3 h-3" /> {ROLE_PERMISSIONS[u.role]?.label || u.role || "user"}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs text-slate-400 dark:text-slate-500">{new Date(u.created_date).toLocaleDateString()}</TableCell>
@@ -380,7 +393,11 @@ export default function UsersPanel({ adminUser }) {
                 <SelectContent>
                   <SelectItem value="user">User (Buyer)</SelectItem>
                   <SelectItem value="shop_owner">Shop Owner</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="admin">Super Admin</SelectItem>
+                  <SelectItem value="staff_finance">Finance Staff</SelectItem>
+                  <SelectItem value="staff_shipping">Shipping Staff</SelectItem>
+                  <SelectItem value="staff_support">Support Staff</SelectItem>
+                  <SelectItem value="staff_shop_management">Shop Management Staff</SelectItem>
                 </SelectContent>
               </Select>
             </div>
