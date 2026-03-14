@@ -268,519 +268,521 @@ export default function BuyerDashboard() {
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
       <BuyerNavbar user={user} />
-      <DashboardSidebar items={sidebarItems} active={view} title="My Account" />
-      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
+      <div className="flex">
+        <DashboardSidebar items={sidebarItems} active={view} title="My Account" />
+        <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
 
-        {view === "orders" && (
-          <PullToRefresh onRefresh={async () => {
-            const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
-            setOrders(o);
-          }}>
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Orders</h1>
-            {orders.length === 0 ? (
-              <div className="text-center py-20">
-                <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-                <h3 className="font-semibold text-slate-700 dark:text-slate-300">No orders yet</h3>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Browse parts and place your first order</p>
-                <Link to={createPageUrl("BrowseProducts")}>
-                  <Button className="mt-4 bg-blue-600 hover:bg-blue-700">Browse Parts</Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {orders.map(order => {
-                  const sc = orderStatusConfig[order.status] || orderStatusConfig.pending;
-                  return (
-                    <Card key={order.id} className={`border ${sc.border}`}>
-                      <CardContent className="p-5">
-                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-mono text-xs text-slate-400">#{order.id?.slice(0,8)}</span>
-                              <Badge className={`${sc.bg} ${sc.color}`}>
-                                <sc.icon className="w-3 h-3 mr-1" /> {order.status}
-                              </Badge>
-                            </div>
-                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                              From: <span className="font-medium text-slate-700 dark:text-slate-300">{order.shop_name}</span>
-                              <span className="mx-2">•</span>
-                              {new Date(order.created_date).toLocaleDateString()}
-                            </p>
-                          </div>
-                          <div className="flex flex-col items-end gap-2">
-                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                            {order.status === "confirmed" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => { setReceiptOrder(order); setReceiptDialog(true); }}
-                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
-                              >
-                                <Eye className="w-3.5 h-3.5" /> Receipt
-                              </Button>
-                            )}
-                            {order.status === "pending" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => setRetryPaymentOrder(order)}
-                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
-                              >
-                                💳 Complete Payment
-                              </Button>
-                            )}
-                            {order.status === "delivered" && (
-                             <div className="flex flex-col gap-1.5">
-                               <Button
-                                 size="sm"
-                                 variant="outline"
-                                 onClick={() => {
-                                   setReviewOrder(order);
-                                   setReviewDialog(true);
-                                 }}
-                                 className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
-                               >
-                                 <Star className="w-3.5 h-3.5" /> Leave Review
-                               </Button>
-                               <Button
-                                 size="sm"
-                                 variant="outline"
-                                 onClick={() => { setReturnOrder(order); setReturnDialog(true); }}
-                                 className="gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
-                               >
-                                 <RotateCcw className="w-3.5 h-3.5" /> Request Return
-                               </Button>
-                             </div>
-                            )}
-                            <ReportButton
-                              reportedEmail={order.shop_name}
-                              reportedName={order.shop_name}
-                              reportedType="shop"
-                              reportedId={order.shop_id}
-                              size="sm"
-                            />
-                          </div>
-                        </div>
-                        <div className="mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-                          <OrderTrackingBar status={order.status} />
-                        </div>
-                        <div className="space-y-2">
-                          {order.items?.map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 first:border-0">
-                              <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
+          {view === "orders" && (
+            <PullToRefresh onRefresh={async () => {
+              const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
+              setOrders(o);
+            }}>
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Orders</h1>
+              {orders.length === 0 ? (
+                <div className="text-center py-20">
+                  <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                  <h3 className="font-semibold text-slate-700 dark:text-slate-300">No orders yet</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Browse parts and place your first order</p>
+                  <Link to={createPageUrl("BrowseProducts")}>
+                    <Button className="mt-4 bg-blue-600 hover:bg-blue-700">Browse Parts</Button>
+                  </Link>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {orders.map(order => {
+                    const sc = orderStatusConfig[order.status] || orderStatusConfig.pending;
+                    return (
+                      <Card key={order.id} className={`border ${sc.border}`}>
+                        <CardContent className="p-5">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                            <div>
+                              <div className="flex items-center gap-2">
+                                <span className="font-mono text-xs text-slate-400">#{order.id?.slice(0,8)}</span>
+                                <Badge className={`${sc.bg} ${sc.color}`}>
+                                  <sc.icon className="w-3 h-3 mr-1" /> {order.status}
+                                </Badge>
                               </div>
-                              <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                              </div>
+                              <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                                From: <span className="font-medium text-slate-700 dark:text-slate-300">{order.shop_name}</span>
+                                <span className="mx-2">•</span>
+                                {new Date(order.created_date).toLocaleDateString()}
+                              </p>
                             </div>
-                          ))}
-                        </div>
-                        {order.status === "cancelled" && (
-                          <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
-                            {order.cancellation_reason && <p><span className="font-medium">Reason: </span>{order.cancellation_reason}</p>}
-                            {order.stripe_session_id && order.payment_method === 'stripe' && (
-                              <p className="mt-1 text-emerald-700 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
-                            )}
+                            <div className="flex flex-col items-end gap-2">
+                              <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                              {order.status === "confirmed" && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => { setReceiptOrder(order); setReceiptDialog(true); }}
+                                  className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                                >
+                                  <Eye className="w-3.5 h-3.5" /> Receipt
+                                </Button>
+                              )}
+                              {order.status === "pending" && (
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setRetryPaymentOrder(order)}
+                                  className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                                >
+                                  💳 Complete Payment
+                                </Button>
+                              )}
+                              {order.status === "delivered" && (
+                              <div className="flex flex-col gap-1.5">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => {
+                                    setReviewOrder(order);
+                                    setReviewDialog(true);
+                                  }}
+                                  className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
+                                >
+                                  <Star className="w-3.5 h-3.5" /> Leave Review
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => { setReturnOrder(order); setReturnDialog(true); }}
+                                  className="gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                                >
+                                  <RotateCcw className="w-3.5 h-3.5" /> Request Return
+                                </Button>
+                              </div>
+                              )}
+                              <ReportButton
+                                reportedEmail={order.shop_name}
+                                reportedName={order.shop_name}
+                                reportedType="shop"
+                                reportedId={order.shop_id}
+                                size="sm"
+                              />
+                            </div>
                           </div>
-                        )}
-                        {(order.status === "shipped" || order.status === "delivered") && (
-                         <div className="mt-4 pt-4 border-t border-slate-100">
-                           <TrackingInfo order={order} />
-                         </div>
-                        )}
-                        </CardContent>
-                        </Card>
-                        );
-                        })}
-                        </div>
-            )}
-          </div>
-          </PullToRefresh>
-        )}
+                          <div className="mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                            <OrderTrackingBar status={order.status} />
+                          </div>
+                          <div className="space-y-2">
+                            {order.items?.map((item, i) => (
+                              <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 first:border-0">
+                                <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                  {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
+                                  <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          {order.status === "cancelled" && (
+                            <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+                              {order.cancellation_reason && <p><span className="font-medium">Reason: </span>{order.cancellation_reason}</p>}
+                              {order.stripe_session_id && order.payment_method === 'stripe' && (
+                                <p className="mt-1 text-emerald-700 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
+                              )}
+                            </div>
+                          )}
+                          {(order.status === "shipped" || order.status === "delivered") && (
+                          <div className="mt-4 pt-4 border-t border-slate-100">
+                            <TrackingInfo order={order} />
+                          </div>
+                          )}
+                          </CardContent>
+                          </Card>
+                          );
+                          })}
+                          </div>
+              )}
+            </div>
+            </PullToRefresh>
+          )}
 
-        {view === "parts_requests" && (
-          <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
-        )}
+          {view === "parts_requests" && (
+            <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
+          )}
 
-        {view === "technician_requests" && (
-          <BuyerTechnicianRequests user={user} />
-        )}
+          {view === "technician_requests" && (
+            <BuyerTechnicianRequests user={user} />
+          )}
 
-        {view === "appointments" && (
-          <BuyerAppointments user={user} />
-        )}
+          {view === "appointments" && (
+            <BuyerAppointments user={user} />
+          )}
 
-        {view === "messages" && (
-          <BuyerMessages user={user} />
-        )}
+          {view === "messages" && (
+            <BuyerMessages user={user} />
+          )}
 
-        {view === "wallet" && (
-          <div className="max-w-xl">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wallet</h1>
-            <Card className="border-blue-100 bg-gradient-to-br from-blue-600 to-cyan-600 text-white mb-4">
-              <CardContent className="p-6">
-                <p className="text-sm text-blue-100 mb-1">Available Balance</p>
-                <p className="text-4xl font-bold">K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-blue-200 mt-2">Site credits from refunded orders</p>
-              </CardContent>
-            </Card>
+          {view === "wallet" && (
+            <div className="max-w-xl">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wallet</h1>
+              <Card className="border-blue-100 bg-gradient-to-br from-blue-600 to-cyan-600 text-white mb-4">
+                <CardContent className="p-6">
+                  <p className="text-sm text-blue-100 mb-1">Available Balance</p>
+                  <p className="text-4xl font-bold">K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                  <p className="text-xs text-blue-200 mt-2">Site credits from refunded orders</p>
+                </CardContent>
+              </Card>
 
-            {(wallet?.balance || 0) > 0 && (
-              <div className="grid grid-cols-2 gap-3 mb-6">
-                <Button
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                  onClick={() => { window.location.href = createPageUrl("BrowseProducts"); }}
-                >
-                  <ShoppingCart className="w-4 h-4 mr-2" /> Use on Next Order
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-slate-300 text-slate-700"
-                  onClick={() => setStripeRefundDialog(true)}
-                >
-                  <Wallet className="w-4 h-4 mr-2" /> Refund to Card
-                </Button>
-              </div>
-            )}
+              {(wallet?.balance || 0) > 0 && (
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <Button
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    onClick={() => { window.location.href = createPageUrl("BrowseProducts"); }}
+                  >
+                    <ShoppingCart className="w-4 h-4 mr-2" /> Use on Next Order
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="border-slate-300 text-slate-700"
+                    onClick={() => setStripeRefundDialog(true)}
+                  >
+                    <Wallet className="w-4 h-4 mr-2" /> Refund to Card
+                  </Button>
+                </div>
+              )}
 
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
-              <CardContent className="p-5">
-                <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
-                {walletTxns.length === 0 ? (
-                  <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
-                ) : (
-                  <div className="space-y-1">
-                    {walletTxns.map(txn => (
-                      <button
-                        key={txn.id}
-                        onClick={() => setSelectedTxn(txn)}
-                        className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-700/50 last:border-0 text-left group"
-                      >
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{txn.reason}</p>
-                          <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
-                        </div>
-                        <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                          <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
-                            {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
-                          </span>
-                          <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 transition-colors">›</span>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {view === "loyalty" && (
-          <LoyaltyPanel user={user} />
-        )}
-
-        {view === "support" && (
-          <SupportTicketForm user={user} />
-        )}
-
-        {view === "cart" && (
-          <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 max-w-2xl">
-              <CardContent className="p-6">
-                <DashboardCartPreview userEmail={user?.email} />
-              </CardContent>
-            </Card>
-          </div>
-        )}
-
-        {view === "profile" && (
-          <div className="max-w-lg space-y-5">
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
-
-            {/* Personal Info */}
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
-              <CardContent className="p-6 space-y-4">
-                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
-
-                {/* Profile Picture */}
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border-2 border-blue-200 dark:border-blue-700">
-                      {profileForm.profile_picture_url ? (
-                        <img src={profileForm.profile_picture_url} alt="Profile" className="w-full h-full object-cover" />
-                      ) : (
-                        <User className="w-8 h-8 text-blue-400" />
-                      )}
+              <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+                <CardContent className="p-5">
+                  <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
+                  {walletTxns.length === 0 ? (
+                    <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
+                  ) : (
+                    <div className="space-y-1">
+                      {walletTxns.map(txn => (
+                        <button
+                          key={txn.id}
+                          onClick={() => setSelectedTxn(txn)}
+                          className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-700/50 last:border-0 text-left group"
+                        >
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{txn.reason}</p>
+                            <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
+                          </div>
+                          <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                            <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
+                              {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                            </span>
+                            <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 transition-colors">›</span>
+                          </div>
+                        </button>
+                      ))}
                     </div>
-                    <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer shadow-md">
-                      <Camera className="w-3.5 h-3.5 text-white" />
-                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
-                        const file = e.target.files[0];
-                        if (!file) return;
-                        setUploadingPicture(true);
-                        const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                        setProfileForm(f => ({ ...f, profile_picture_url: file_url }));
-                        setUploadingPicture(false);
-                        toast.success("Photo uploaded!");
-                      }} />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {view === "loyalty" && (
+            <LoyaltyPanel user={user} />
+          )}
+
+          {view === "support" && (
+            <SupportTicketForm user={user} />
+          )}
+
+          {view === "cart" && (
+            <div>
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
+              <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 max-w-2xl">
+                <CardContent className="p-6">
+                  <DashboardCartPreview userEmail={user?.email} />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {view === "profile" && (
+            <div className="max-w-lg space-y-5">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
+
+              {/* Personal Info */}
+              <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+                <CardContent className="p-6 space-y-4">
+                  <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
+
+                  {/* Profile Picture */}
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border-2 border-blue-200 dark:border-blue-700">
+                        {profileForm.profile_picture_url ? (
+                          <img src={profileForm.profile_picture_url} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                          <User className="w-8 h-8 text-blue-400" />
+                        )}
+                      </div>
+                      <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer shadow-md">
+                        <Camera className="w-3.5 h-3.5 text-white" />
+                        <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                          const file = e.target.files[0];
+                          if (!file) return;
+                          setUploadingPicture(true);
+                          const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                          setProfileForm(f => ({ ...f, profile_picture_url: file_url }));
+                          setUploadingPicture(false);
+                          toast.success("Photo uploaded!");
+                        }} />
+                      </label>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.full_name}</p>
+                      <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
+                      {uploadingPicture && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+                    </div>
+                  </div>
+
+                  <div>
+                    <Label className="text-sm text-slate-500 dark:text-slate-400">Email (cannot be changed)</Label>
+                    <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5 text-sm">{user?.email}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>First Name *</Label>
+                      <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400" : ""}`} />
+                      {profileErrors.first_name && <p className="text-xs text-red-500 mt-1">{profileErrors.first_name}</p>}
+                    </div>
+                    <div>
+                      <Label>Last Name *</Label>
+                      <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400" : ""}`} />
+                      {profileErrors.last_name && <p className="text-xs text-red-500 mt-1">{profileErrors.last_name}</p>}
+                    </div>
+                  </div>
+                  <div>
+                    <Label>Phone Number</Label>
+                    <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
+                    {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
+                  </div>
+                  <AddressInput 
+                    value={{ region: profileForm.region, town: profileForm.town, address: profileForm.address }}
+                    onChange={(newAddr) => setProfileForm({...profileForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
+                    errors={profileErrors}
+                  />
+                  <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                    <input
+                      type="checkbox"
+                      id="use_default_address"
+                      checked={profileForm.use_default_address}
+                      onChange={e => setProfileForm({...profileForm, use_default_address: e.target.checked})}
+                      className="w-4 h-4 rounded accent-blue-600"
+                    />
+                    <label htmlFor="use_default_address" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                      <span className="font-medium">Use this address as default at checkout</span>
+                      <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
                     </label>
                   </div>
-                  <div>
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.full_name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
-                    {uploadingPicture && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
-                  </div>
-                </div>
+                  <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
+                </CardContent>
+              </Card>
 
-                <div>
-                  <Label className="text-sm text-slate-500 dark:text-slate-400">Email (cannot be changed)</Label>
-                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5 text-sm">{user?.email}</p>
-                </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <Label>First Name *</Label>
-                    <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400" : ""}`} />
-                    {profileErrors.first_name && <p className="text-xs text-red-500 mt-1">{profileErrors.first_name}</p>}
-                  </div>
-                  <div>
-                    <Label>Last Name *</Label>
-                    <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400" : ""}`} />
-                    {profileErrors.last_name && <p className="text-xs text-red-500 mt-1">{profileErrors.last_name}</p>}
-                  </div>
-                </div>
-                <div>
-                  <Label>Phone Number</Label>
-                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
-                  {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
-                </div>
-                <AddressInput 
-                  value={{ region: profileForm.region, town: profileForm.town, address: profileForm.address }}
-                  onChange={(newAddr) => setProfileForm({...profileForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
-                  errors={profileErrors}
-                />
-                <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
-                  <input
-                    type="checkbox"
-                    id="use_default_address"
-                    checked={profileForm.use_default_address}
-                    onChange={e => setProfileForm({...profileForm, use_default_address: e.target.checked})}
-                    className="w-4 h-4 rounded accent-blue-600"
-                  />
-                  <label htmlFor="use_default_address" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
-                    <span className="font-medium">Use this address as default at checkout</span>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
-                  </label>
-                </div>
-                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
-              </CardContent>
-            </Card>
+              {/* Password Reset */}
+              <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+                <CardContent className="p-6 space-y-3">
+                  <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
+                  {passwordResetSent ? (
+                    <p className="text-sm text-emerald-600 font-medium">✓ Reset link sent! Check your email.</p>
+                  ) : (
+                    <Button variant="outline" onClick={async () => {
+                      await base44.integrations.Core.SendEmail({
+                        to: user.email,
+                        subject: "Password Reset Request – BwanguSpares",
+                        body: `Hello ${user.full_name},\n\nYou requested a password reset for your BwanguSpares account.\n\nPlease use your login page to reset your password, or contact support at admin@bwangu.com if you need help.\n\nBwanguSpares Team`
+                      });
+                      setPasswordResetSent(true);
+                      toast.success("Password reset email sent!");
+                    }}>
+                      Send Password Reset Email
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
 
-            {/* Password Reset */}
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
-              <CardContent className="p-6 space-y-3">
-                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
-                {passwordResetSent ? (
-                  <p className="text-sm text-emerald-600 font-medium">✓ Reset link sent! Check your email.</p>
-                ) : (
-                  <Button variant="outline" onClick={async () => {
-                    await base44.integrations.Core.SendEmail({
-                      to: user.email,
-                      subject: "Password Reset Request – BwanguSpares",
-                      body: `Hello ${user.full_name},\n\nYou requested a password reset for your BwanguSpares account.\n\nPlease use your login page to reset your password, or contact support at admin@bwangu.com if you need help.\n\nBwanguSpares Team`
-                    });
-                    setPasswordResetSent(true);
-                    toast.success("Password reset email sent!");
-                  }}>
-                    Send Password Reset Email
+              {/* Danger Zone */}
+              <Card className="border-red-100 dark:border-red-900/40">
+                <CardContent className="p-6 space-y-3">
+                  <h2 className="font-semibold text-red-600 text-sm uppercase tracking-wide">Danger Zone</h2>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
+                  <Button
+                    variant="outline"
+                    onClick={() => setDeleteAccountDialog(true)}
+                    className="text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    Delete My Account
                   </Button>
-                )}
-              </CardContent>
-            </Card>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+        </main>
 
-            {/* Danger Zone */}
-            <Card className="border-red-100 dark:border-red-900/40">
-              <CardContent className="p-6 space-y-3">
-                <h2 className="font-semibold text-red-600 text-sm uppercase tracking-wide">Danger Zone</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
-                <Button
-                  variant="outline"
-                  onClick={() => setDeleteAccountDialog(true)}
-                  className="text-red-600 border-red-200 hover:bg-red-50"
-                >
-                  Delete My Account
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        )}
-      </main>
+        <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
 
-      <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
+        <Dialog open={deleteAccountDialog} onOpenChange={(v) => { setDeleteAccountDialog(v); setDeleteConfirmText(""); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Account</DialogTitle>
+              <DialogDescription>
+                This action is <strong>permanent</strong> and cannot be undone. All your orders, requests and data will be removed.
+                <br /><br />
+                Type <strong>DELETE</strong> below to confirm.
+              </DialogDescription>
+            </DialogHeader>
+            <Input
+              value={deleteConfirmText}
+              onChange={e => setDeleteConfirmText(e.target.value)}
+              placeholder="Type DELETE to confirm"
+              className="rounded-xl"
+            />
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
+              <Button
+                variant="destructive"
+                disabled={deleteConfirmText !== "DELETE"}
+                onClick={async () => {
+                  await base44.auth.logout();
+                  toast.success("Account deleted. Goodbye!");
+                }}
+              >
+                Delete My Account
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-      <Dialog open={deleteAccountDialog} onOpenChange={(v) => { setDeleteAccountDialog(v); setDeleteConfirmText(""); }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Account</DialogTitle>
-            <DialogDescription>
-              This action is <strong>permanent</strong> and cannot be undone. All your orders, requests and data will be removed.
-              <br /><br />
-              Type <strong>DELETE</strong> below to confirm.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={deleteConfirmText}
-            onChange={e => setDeleteConfirmText(e.target.value)}
-            placeholder="Type DELETE to confirm"
-            className="rounded-xl"
-          />
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
-            <Button
-              variant="destructive"
-              disabled={deleteConfirmText !== "DELETE"}
-              onClick={async () => {
-                await base44.auth.logout();
-                toast.success("Account deleted. Goodbye!");
-              }}
-            >
-              Delete My Account
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+        <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
+            </DialogHeader>
+            <ReviewForm
+              onSubmit={handleReviewSubmit}
+              submitting={submitting}
+              type="shop"
+            />
+          </DialogContent>
+        </Dialog>
 
-      <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
-         <DialogContent>
-           <DialogHeader>
-             <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
-           </DialogHeader>
-           <ReviewForm
-             onSubmit={handleReviewSubmit}
-             submitting={submitting}
-             type="shop"
-           />
-         </DialogContent>
-       </Dialog>
+        <Dialog open={stripeRefundDialog} onOpenChange={setStripeRefundDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Refund Wallet Balance to Card</DialogTitle>
+              <DialogDescription>
+                Your full wallet balance of <strong>K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> will be refunded back to your original payment card via Stripe. This may take 5–10 business days to appear.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
+                onClick={async () => {
+                  setStripeRefundSubmitting(true);
+                  try {
+                    const res = await base44.functions.invoke('walletStripeRefund', { amount: wallet.balance });
+                    if (res.data?.success) {
+                      toast.success("Refund initiated! It will appear on your card in 5–10 business days.");
+                      setStripeRefundDialog(false);
+                      const [wallets, txns] = await Promise.all([
+                        base44.entities.BuyerWallet.filter({ buyer_email: user.email }),
+                        base44.entities.WalletTransaction.filter({ buyer_email: user.email }, "-created_date", 20),
+                      ]);
+                      setWallet(wallets[0] || null);
+                      setWalletTxns(txns);
+                    } else {
+                      toast.error(res.data?.error || "Refund failed. Please contact support.");
+                    }
+                  } catch (e) {
+                    toast.error("Refund failed. Please contact support.");
+                  }
+                  setStripeRefundSubmitting(false);
+                }}
+              >
+                {stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
-       <Dialog open={stripeRefundDialog} onOpenChange={setStripeRefundDialog}>
-         <DialogContent>
-           <DialogHeader>
-             <DialogTitle>Refund Wallet Balance to Card</DialogTitle>
-             <DialogDescription>
-               Your full wallet balance of <strong>K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> will be refunded back to your original payment card via Stripe. This may take 5–10 business days to appear.
-             </DialogDescription>
-           </DialogHeader>
-           <DialogFooter className="gap-2">
-             <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
-             <Button
-               className="bg-blue-600 hover:bg-blue-700"
-               disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
-               onClick={async () => {
-                 setStripeRefundSubmitting(true);
-                 try {
-                   const res = await base44.functions.invoke('walletStripeRefund', { amount: wallet.balance });
-                   if (res.data?.success) {
-                     toast.success("Refund initiated! It will appear on your card in 5–10 business days.");
-                     setStripeRefundDialog(false);
-                     const [wallets, txns] = await Promise.all([
-                       base44.entities.BuyerWallet.filter({ buyer_email: user.email }),
-                       base44.entities.WalletTransaction.filter({ buyer_email: user.email }, "-created_date", 20),
-                     ]);
-                     setWallet(wallets[0] || null);
-                     setWalletTxns(txns);
-                   } else {
-                     toast.error(res.data?.error || "Refund failed. Please contact support.");
-                   }
-                 } catch (e) {
-                   toast.error("Refund failed. Please contact support.");
-                 }
-                 setStripeRefundSubmitting(false);
-               }}
-             >
-               {stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
-             </Button>
-           </DialogFooter>
-         </DialogContent>
-       </Dialog>
+        <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
+          <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
+            <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
+            {receiptOrder && (
+              <div className="space-y-4">
+                <OrderReceipt order={receiptOrder} shop={receiptOrder} />
+                <DialogFooter>
+                  <ReceiptDownloader order={receiptOrder} />
+                </DialogFooter>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
 
-       <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
-         <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
-           <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
-           {receiptOrder && (
-             <div className="space-y-4">
-               <OrderReceipt order={receiptOrder} shop={receiptOrder} />
-               <DialogFooter>
-                 <ReceiptDownloader order={receiptOrder} />
-               </DialogFooter>
-             </div>
-           )}
-         </DialogContent>
-       </Dialog>
+        <ReturnRequestDialog
+          open={returnDialog}
+          onClose={() => { setReturnDialog(false); setReturnOrder(null); }}
+          order={returnOrder}
+          user={user}
+        />
 
-       <ReturnRequestDialog
-         open={returnDialog}
-         onClose={() => { setReturnDialog(false); setReturnOrder(null); }}
-         order={returnOrder}
-         user={user}
-       />
+        <WalletTransactionDetail
+          txn={selectedTxn}
+          open={!!selectedTxn}
+          onClose={() => setSelectedTxn(null)}
+          userEmail={user?.email}
+        />
 
-       <WalletTransactionDetail
-         txn={selectedTxn}
-         open={!!selectedTxn}
-         onClose={() => setSelectedTxn(null)}
-         userEmail={user?.email}
-       />
-
-       <Dialog open={!!retryPaymentOrder} onOpenChange={(open) => { if (!open) setRetryPaymentOrder(null); }}>
-         <DialogContent>
-           <DialogHeader>
-             <DialogTitle>Complete Payment</DialogTitle>
-             <DialogDescription>
-               Your order for <strong>K{retryPaymentOrder?.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> is pending payment. Click below to complete payment and confirm your order.
-             </DialogDescription>
-           </DialogHeader>
-           <DialogFooter className="gap-2">
-             <Button variant="outline" onClick={() => setRetryPaymentOrder(null)}>Cancel</Button>
-             <Button
-               className="bg-blue-600 hover:bg-blue-700"
-               disabled={retryPaymentSubmitting}
-               onClick={async () => {
-                 setRetryPaymentSubmitting(true);
-                 try {
-                   // Add items back to cart for retry checkout
-                   for (const item of retryPaymentOrder.items) {
-                     await base44.entities.CartItem.create({
-                       buyer_email: user.email,
-                       product_id: item.product_id,
-                       product_name: item.product_name,
-                       shop_id: retryPaymentOrder.shop_id,
-                       shop_name: retryPaymentOrder.shop_name,
-                       price: item.price,
-                       quantity: item.quantity,
-                       image_url: item.image_url,
-                     });
-                   }
-                   toast.success("Items added to cart. Redirecting to checkout...");
-                   // Redirect to cart with checkout open
-                   setTimeout(() => {
-                     window.location.href = createPageUrl("Cart");
-                   }, 1000);
-                 } catch (error) {
-                   toast.error("Failed to restore items. Please try again.");
-                 }
-                 setRetryPaymentSubmitting(false);
-               }}
-             >
-               {retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
-             </Button>
-           </DialogFooter>
-         </DialogContent>
-       </Dialog>
-       </div>
-       );
-       }
+        <Dialog open={!!retryPaymentOrder} onOpenChange={(open) => { if (!open) setRetryPaymentOrder(null); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Complete Payment</DialogTitle>
+              <DialogDescription>
+                Your order for <strong>K{retryPaymentOrder?.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> is pending payment. Click below to complete payment and confirm your order.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setRetryPaymentOrder(null)}>Cancel</Button>
+              <Button
+                className="bg-blue-600 hover:bg-blue-700"
+                disabled={retryPaymentSubmitting}
+                onClick={async () => {
+                  setRetryPaymentSubmitting(true);
+                  try {
+                    // Add items back to cart for retry checkout
+                    for (const item of retryPaymentOrder.items) {
+                      await base44.entities.CartItem.create({
+                        buyer_email: user.email,
+                        product_id: item.product_id,
+                        product_name: item.product_name,
+                        shop_id: retryPaymentOrder.shop_id,
+                        shop_name: retryPaymentOrder.shop_name,
+                        price: item.price,
+                        quantity: item.quantity,
+                        image_url: item.image_url,
+                      });
+                    }
+                    toast.success("Items added to cart. Redirecting to checkout...");
+                    // Redirect to cart with checkout open
+                    setTimeout(() => {
+                      window.location.href = createPageUrl("Cart");
+                    }, 1000);
+                  } catch (error) {
+                    toast.error("Failed to restore items. Please try again.");
+                  }
+                  setRetryPaymentSubmitting(false);
+                }}
+              >
+                {retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </div>
+    </div>
+  );
+}
