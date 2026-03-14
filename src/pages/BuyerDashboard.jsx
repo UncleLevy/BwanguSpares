@@ -447,7 +447,7 @@ export default function BuyerDashboard() {
               </div>
             )}
 
-            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
               <CardContent className="p-5">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
                 {walletTxns.length === 0 ? (
