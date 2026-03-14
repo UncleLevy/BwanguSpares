@@ -781,7 +781,8 @@ export default function BuyerDashboard() {
              </Button>
            </DialogFooter>
          </DialogContent>
-       </Dialog>
-       </div>
-       );
-       }
+         </Dialog>
+         </div>
+         </div>
+         );
+         }
