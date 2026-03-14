@@ -164,7 +164,7 @@ export default function Layout({ children, currentPageName }) {
                 {isAuthenticated && (
                    <>
                      {user?.role !== 'admin' && <NotificationBell userEmail={user?.email} />}
-                     <Link to={createPageUrl("Messages")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
+                     <Link to={createPageUrl(user?.role === 'shop_owner' ? "ShopDashboard" : "BuyerDashboard") + "?view=messages"} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                        <MessageSquare className="w-5 h-5" />
                        {unreadMessages > 0 && (
                          <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900 pointer-events-none" />
@@ -253,7 +253,7 @@ export default function Layout({ children, currentPageName }) {
                         <DropdownMenuSeparator />
                         <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Account</div>
                         <DropdownMenuItem asChild>
-                          <Link to={createPageUrl("Messages")} className="flex items-center gap-2">
+                          <Link to={createPageUrl(user?.role === 'shop_owner' ? "ShopDashboard" : "BuyerDashboard") + "?view=messages"} className="flex items-center gap-2">
                             <span className="relative">
                               <MessageSquare className="w-4 h-4" />
                               {unreadMessages > 0 && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-red-500 rounded-full" />}
