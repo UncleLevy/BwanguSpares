@@ -111,7 +111,7 @@ export default function BuyerTechnicianRequests({ user }) {
 
       {requests.length === 0 ? (
         <div className="text-center py-20">
-          <Wrench className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+          <Wrench className="w-16 h-16 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 dark:text-slate-300">No technician requests yet</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
             Visit a shop's profile to hire a technician
@@ -124,13 +124,13 @@ export default function BuyerTechnicianRequests({ user }) {
             const Icon = sc.icon;
             const isCounterOffer = req.status === "counter_offered";
             return (
-              <Card key={req.id} className={`border-slate-200 dark:border-slate-700 ${isCounterOffer ? "border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800" : ""}`}>
+              <Card key={req.id} className={`border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 ${isCounterOffer ? "border-purple-300 dark:border-purple-700 ring-1 ring-purple-200 dark:ring-purple-800/50" : ""}`}>
                 <CardContent className="p-5">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <p className="font-semibold text-slate-900 dark:text-slate-100">{req.technician_name}</p>
-                        <Badge className={sc.color}>
+                        <Badge className={`${sc.color} dark:bg-opacity-20 dark:border-opacity-50`}>
                           <Icon className="w-3 h-3 mr-1" /> {sc.label}
                         </Badge>
                       </div>
@@ -149,12 +149,12 @@ export default function BuyerTechnicianRequests({ user }) {
                           </span>
                         )}
                         {req.buyer_budget && (
-                          <span className="flex items-center gap-1 font-medium text-blue-600">
+                          <span className="flex items-center gap-1 font-medium text-blue-600 dark:text-blue-400">
                             Your budget: K{req.buyer_budget.toLocaleString()}
                           </span>
                         )}
                         {req.shop_counter_budget && (
-                          <span className="flex items-center gap-1 font-medium text-purple-600">
+                          <span className="flex items-center gap-1 font-medium text-purple-600 dark:text-purple-400">
                             Shop's offer: K{req.shop_counter_budget.toLocaleString()}
                           </span>
                         )}
@@ -162,14 +162,14 @@ export default function BuyerTechnicianRequests({ user }) {
                       <p className="text-sm text-slate-600 dark:text-slate-400 mt-2 line-clamp-2">{req.description}</p>
                     </div>
                     <div className="flex gap-2 shrink-0">
-                      <Button size="sm" variant="outline" onClick={() => setSelectedRequest(req)}>
+                      <Button size="sm" variant="outline" onClick={() => setSelectedRequest(req)} className="dark:border-slate-600 dark:text-slate-300">
                         View Details
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => setDeleteTarget(req)}
-                        className="text-red-600 border-red-200 hover:bg-red-50"
+                        className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -178,7 +178,7 @@ export default function BuyerTechnicianRequests({ user }) {
 
                   {/* Counter Offer Banner */}
                   {isCounterOffer && req.shop_counter_budget && (
-                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-xl">
+                    <div className="mt-4 p-4 bg-purple-50 dark:bg-purple-950/30 border border-purple-200 dark:border-purple-800/60 rounded-xl">
                       <p className="font-semibold text-purple-800 dark:text-purple-300 flex items-center gap-2 mb-1">
                         <MessageSquare className="w-4 h-4" /> Counter Offer from {req.shop_name}
                       </p>
@@ -193,7 +193,7 @@ export default function BuyerTechnicianRequests({ user }) {
                           Accept Offer
                         </Button>
                         <Button size="sm" variant="outline" onClick={() => handleCounterResponse(req, false)} disabled={submitting}
-                          className="text-red-600 border-red-200 hover:bg-red-50">
+                          className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30">
                           Decline &amp; Reopen
                         </Button>
                       </div>
@@ -204,8 +204,8 @@ export default function BuyerTechnicianRequests({ user }) {
                   {!isCounterOffer && req.shop_response && (
                     <div className={`mt-4 p-3 rounded-xl border text-sm ${
                       req.status === "accepted"
-                        ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
-                        : "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800 text-red-800 dark:text-red-300"
+                        ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300"
+                        : "bg-red-50 border-red-200 dark:bg-red-950/30 dark:border-red-800/60 text-red-800 dark:text-red-300"
                     }`}>
                       <p className="font-semibold flex items-center gap-1 mb-1">
                         <MessageSquare className="w-3.5 h-3.5" /> Shop Response
@@ -215,7 +215,7 @@ export default function BuyerTechnicianRequests({ user }) {
                   )}
 
                   {req.status === "pending" && !req.shop_response && (
-                    <div className="mt-3 p-2.5 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded-lg text-xs text-amber-700 dark:text-amber-400">
+                    <div className="mt-3 p-2.5 bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-800/60 rounded-lg text-xs text-amber-700 dark:text-amber-400">
                       ⏳ Awaiting response from the shop
                     </div>
                   )}
@@ -242,33 +242,33 @@ export default function BuyerTechnicianRequests({ user }) {
                   <Badge className={sc.color}><Icon className="w-3 h-3 mr-1" />{sc.label}</Badge>
                 </div>
                 <div className="grid grid-cols-2 gap-3 text-slate-600 dark:text-slate-400">
-                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Shop</p><p>{selectedRequest.shop_name}</p></div>
-                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Specialization</p><p>{specLabels[selectedRequest.problem_type] || selectedRequest.problem_type}</p></div>
-                  {selectedRequest.preferred_date && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Preferred Date</p><p>{format(new Date(selectedRequest.preferred_date), "MMM dd, yyyy")}</p></div>}
-                  {selectedRequest.location && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Location</p><p>{selectedRequest.location}</p></div>}
-                  {selectedRequest.buyer_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Your Budget</p><p className="text-blue-600 font-medium">K{selectedRequest.buyer_budget.toLocaleString()}</p></div>}
-                  {selectedRequest.shop_counter_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Shop Counter</p><p className="text-purple-600 font-medium">K{selectedRequest.shop_counter_budget.toLocaleString()}</p></div>}
-                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Submitted</p><p>{format(new Date(selectedRequest.created_date), "MMM dd, yyyy")}</p></div>
+                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Shop</p><p>{selectedRequest.shop_name}</p></div>
+                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Specialization</p><p>{specLabels[selectedRequest.problem_type] || selectedRequest.problem_type}</p></div>
+                  {selectedRequest.preferred_date && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Preferred Date</p><p>{format(new Date(selectedRequest.preferred_date), "MMM dd, yyyy")}</p></div>}
+                  {selectedRequest.location && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Location</p><p>{selectedRequest.location}</p></div>}
+                  {selectedRequest.buyer_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Your Budget</p><p className="text-blue-600 dark:text-blue-400 font-medium">K{selectedRequest.buyer_budget.toLocaleString()}</p></div>}
+                  {selectedRequest.shop_counter_budget && <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Shop Counter</p><p className="text-purple-600 dark:text-purple-400 font-medium">K{selectedRequest.shop_counter_budget.toLocaleString()}</p></div>}
+                  <div><p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Submitted</p><p>{format(new Date(selectedRequest.created_date), "MMM dd, yyyy")}</p></div>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Problem Description</p>
-                  <p className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800 rounded-lg p-3">{selectedRequest.description}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Problem Description</p>
+                  <p className="text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/50 rounded-lg p-3">{selectedRequest.description}</p>
                 </div>
                 {selectedRequest.shop_response ? (
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-1">Shop Response</p>
+                    <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500 mb-1">Shop Response</p>
                     <div className={`p-3 rounded-lg border ${
                       selectedRequest.status === "accepted"
-                        ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800 text-emerald-800 dark:text-emerald-300"
+                        ? "bg-emerald-50 border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800/60 text-emerald-800 dark:text-emerald-300"
                         : selectedRequest.status === "counter_offered"
-                        ? "bg-purple-50 border-purple-200 dark:bg-purple-900/20 dark:border-purple-800 text-purple-800 dark:text-purple-300"
-                        : "bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800 text-red-800 dark:text-red-300"
+                        ? "bg-purple-50 border-purple-200 dark:bg-purple-950/30 dark:border-purple-800/60 text-purple-800 dark:text-purple-300"
+                        : "bg-red-50 border-red-200 dark:bg-red-950/30 dark:border-red-800/60 text-red-800 dark:text-red-300"
                     }`}>
                       {selectedRequest.shop_response}
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 rounded-lg text-amber-700 dark:text-amber-400">
+                  <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-100 dark:border-amber-800/60 rounded-lg text-amber-700 dark:text-amber-400">
                     ⏳ Awaiting response from the shop
                   </div>
                 )}
@@ -279,7 +279,7 @@ export default function BuyerTechnicianRequests({ user }) {
                       Accept Offer
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => handleCounterResponse(selectedRequest, false)} disabled={submitting}
-                      className="text-red-600 border-red-200 hover:bg-red-50 flex-1">
+                      className="text-red-600 dark:text-red-400 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30 flex-1">
                       Decline &amp; Reopen
                     </Button>
                   </div>

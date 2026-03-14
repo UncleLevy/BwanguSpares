@@ -44,7 +44,7 @@ export default function BuyerAppointments({ user }) {
 
       {appointments.length === 0 ? (
         <div className="text-center py-20">
-          <Calendar className="w-14 h-14 text-slate-200 mx-auto mb-4" />
+          <Calendar className="w-14 h-14 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 dark:text-slate-300">No appointments yet</h3>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Book a technician from a shop profile to get started</p>
         </div>
@@ -78,17 +78,17 @@ export default function BuyerAppointments({ user }) {
 
 function AppointmentCard({ appt }) {
   return (
-    <Card className="border-slate-100 dark:border-slate-700">
+    <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-start gap-3 flex-1 min-w-0">
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center flex-shrink-0">
-              <Wrench className="w-5 h-5 text-blue-600" />
+              <Wrench className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm">{appt.technician_name}</p>
-                <Badge className={STATUS_STYLES[appt.status]?.class}>{STATUS_STYLES[appt.status]?.label}</Badge>
+                <Badge className={`${STATUS_STYLES[appt.status]?.class} dark:bg-opacity-20 dark:border-opacity-50`}>{STATUS_STYLES[appt.status]?.label}</Badge>
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                 {appt.shop_name} · {PROBLEM_LABELS[appt.problem_type] || appt.problem_type}
