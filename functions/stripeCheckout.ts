@@ -107,28 +107,46 @@ Deno.serve(async (req) => {
         shopGroups[item.shop_id].items.push(item);
       }
 
-      for (const [shopId, group] of Object.entries(shopGroups)) {
-        const shopTotal = group.items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
-        await base44.asServiceRole.entities.Order.create({
-          buyer_email: user.email,
-          buyer_name: user.full_name,
-          shop_id: shopId,
-          shop_name: group.shop_name,
-          items: group.items,
-          total_amount: shopTotal + (shippingCost || 0) - (discount_amount || 0),
-          status: 'pending',
-          delivery_address,
-          delivery_phone,
-          notes: notes || '',
-          payment_method: 'stripe',
-          stripe_session_id: session.id,
-          coupon_code: coupon_code || '',
-          discount_amount: discount_amount || 0,
-          shipping_option: shippingOption,
-          shipping_cost: shippingCost || 0,
-          payout_status: 'pending',
-        });
-      }
+      // Store complete session data for webhook processing
+      const orderData = JSON.stringify({
+        items,
+        shopGroups: Object.entries(shopGroups).map(([id, g]) => ({
+          shop_id: id,
+          shop_name: g.shop_name,
+          items: g.items
+        })),
+        buyer_email: user.email,
+        buyer_name: user.full_name,
+        delivery_address,
+        delivery_phone,
+        notes: notes || '',
+        coupon_code: coupon_code || '',
+        discount_amount: discount_amount || 0,
+        shipping_option: shippingOption,
+        shipping_cost: shippingCost || 0
+      });
+
+      // Orders will be created by webhook after payment success
+      // Store session metadata for retrieval
+      await base44.asServiceRole.entities.Order.create({
+        buyer_email: user.email,
+        buyer_name: user.full_name,
+        shop_id: 'PENDING_PAYMENT',
+        shop_name: 'Payment Pending',
+        items: items,
+        total_amount: total,
+        status: 'pending',
+        delivery_address,
+        delivery_phone,
+        notes: notes || '',
+        payment_method: 'stripe',
+        stripe_session_id: session.id,
+        coupon_code: coupon_code || '',
+        discount_amount: discount_amount || 0,
+        shipping_option: shippingOption,
+        shipping_cost: shippingCost || 0,
+        payout_status: 'pending',
+      });
 
       console.log(`Stripe checkout session created: ${session.id} for ${user.email}`);
       return Response.json({ url: session.url });
