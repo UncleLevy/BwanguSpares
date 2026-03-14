@@ -281,7 +281,7 @@ export default function BuyerDashboard() {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Orders</h1>
             {orders.length === 0 ? (
               <div className="text-center py-20">
-                <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <ShoppingCart className="w-16 h-16 text-slate-200 dark:text-slate-700 mx-auto mb-4" />
                 <h3 className="font-semibold text-slate-700 dark:text-slate-300">No orders yet</h3>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Browse parts and place your first order</p>
                 <Link to={createPageUrl("BrowseProducts")}>
@@ -293,12 +293,12 @@ export default function BuyerDashboard() {
                 {orders.map(order => {
                   const sc = orderStatusConfig[order.status] || orderStatusConfig.pending;
                   return (
-                    <Card key={order.id} className={`border ${sc.border}`}>
+                    <Card key={order.id} className={`border ${sc.border} bg-white dark:bg-slate-900`}>
                       <CardContent className="p-5">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-mono text-xs text-slate-400">#{order.id?.slice(0,8)}</span>
+                              <span className="font-mono text-xs text-slate-400 dark:text-slate-500">#{order.id?.slice(0,8)}</span>
                               <Badge className={`${sc.bg} ${sc.color}`}>
                                 <sc.icon className="w-3 h-3 mr-1" /> {order.status}
                               </Badge>
@@ -310,13 +310,13 @@ export default function BuyerDashboard() {
                             </p>
                           </div>
                           <div className="flex flex-col items-end gap-2">
-                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <p className="text-xl font-bold text-blue-600 dark:text-blue-400">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                             {order.status === "confirmed" && (
                               <Button
                                 size="sm"
                                 variant="outline"
                                 onClick={() => { setReceiptOrder(order); setReceiptDialog(true); }}
-                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                                className="gap-1.5 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                               >
                                 <Eye className="w-3.5 h-3.5" /> Receipt
                               </Button>
@@ -326,7 +326,7 @@ export default function BuyerDashboard() {
                                 size="sm"
                                 variant="outline"
                                 onClick={() => setRetryPaymentOrder(order)}
-                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                                className="gap-1.5 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30"
                               >
                                 💳 Complete Payment
                               </Button>
@@ -340,7 +340,7 @@ export default function BuyerDashboard() {
                                    setReviewOrder(order);
                                    setReviewDialog(true);
                                  }}
-                                 className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
+                                 className="gap-1.5 text-xs border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30"
                                >
                                  <Star className="w-3.5 h-3.5" /> Leave Review
                                </Button>
@@ -348,7 +348,7 @@ export default function BuyerDashboard() {
                                  size="sm"
                                  variant="outline"
                                  onClick={() => { setReturnOrder(order); setReturnDialog(true); }}
-                                 className="gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                                 className="gap-1.5 text-xs border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30"
                                >
                                  <RotateCcw className="w-3.5 h-3.5" /> Request Return
                                </Button>
@@ -368,9 +368,9 @@ export default function BuyerDashboard() {
                         </div>
                         <div className="space-y-2">
                           {order.items?.map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 first:border-0">
+                            <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 dark:border-slate-700/50 first:border-0">
                               <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                                {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
+                                {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300 dark:text-slate-600" />}
                               </div>
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
@@ -380,15 +380,15 @@ export default function BuyerDashboard() {
                           ))}
                         </div>
                         {order.status === "cancelled" && (
-                          <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+                          <div className="mt-3 p-3 bg-red-50 dark:bg-red-950/30 border border-red-100 dark:border-red-900/40 rounded-lg text-sm text-red-700 dark:text-red-400">
                             {order.cancellation_reason && <p><span className="font-medium">Reason: </span>{order.cancellation_reason}</p>}
                             {order.stripe_session_id && order.payment_method === 'stripe' && (
-                              <p className="mt-1 text-emerald-700 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
+                              <p className="mt-1 text-emerald-700 dark:text-emerald-400 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
                             )}
                           </div>
                         )}
                         {(order.status === "shipped" || order.status === "delivered") && (
-                         <div className="mt-4 pt-4 border-t border-slate-100">
+                         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-slate-700">
                            <TrackingInfo order={order} />
                          </div>
                         )}
