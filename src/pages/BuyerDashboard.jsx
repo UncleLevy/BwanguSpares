@@ -421,11 +421,11 @@ export default function BuyerDashboard() {
         {view === "wallet" && (
           <div className="max-w-xl">
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wallet</h1>
-            <Card className="border-blue-100 bg-gradient-to-br from-blue-600 to-cyan-600 text-white mb-4">
+            <Card className="border-blue-100 dark:border-blue-900 bg-gradient-to-br from-blue-600 to-cyan-600 dark:from-blue-700 dark:to-cyan-700 text-white mb-4">
               <CardContent className="p-6">
-                <p className="text-sm text-blue-100 mb-1">Available Balance</p>
+                <p className="text-sm text-blue-100 dark:text-blue-200 mb-1">Available Balance</p>
                 <p className="text-4xl font-bold">K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
-                <p className="text-xs text-blue-200 mt-2">Site credits from refunded orders</p>
+                <p className="text-xs text-blue-200 dark:text-blue-300 mt-2">Site credits from refunded orders</p>
               </CardContent>
             </Card>
 
@@ -439,7 +439,7 @@ export default function BuyerDashboard() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-slate-300 text-slate-700"
+                  className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                   onClick={() => setStripeRefundDialog(true)}
                 >
                   <Wallet className="w-4 h-4 mr-2" /> Refund to Card
@@ -447,28 +447,28 @@ export default function BuyerDashboard() {
               </div>
             )}
 
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
               <CardContent className="p-5">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
                 {walletTxns.length === 0 ? (
-                  <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
+                  <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">No transactions yet</p>
                 ) : (
                   <div className="space-y-1">
                     {walletTxns.map(txn => (
                       <button
                         key={txn.id}
                         onClick={() => setSelectedTxn(txn)}
-                        className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-700/50 last:border-0 text-left group"
+                        className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors border-b border-slate-100 dark:border-slate-700/50 last:border-0 text-left group"
                       >
                         <div className="min-w-0">
                           <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{txn.reason}</p>
-                          <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
+                          <p className="text-xs text-slate-400 dark:text-slate-500">{new Date(txn.created_date).toLocaleDateString()}</p>
                         </div>
                         <div className="flex items-center gap-2 flex-shrink-0 ml-3">
-                          <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
+                          <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600 dark:text-emerald-500' : 'text-red-500 dark:text-red-400'}`}>
                             {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                           </span>
-                          <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 transition-colors">›</span>
+                          <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 dark:group-hover:text-slate-500 transition-colors">›</span>
                         </div>
                       </button>
                     ))}
@@ -490,7 +490,7 @@ export default function BuyerDashboard() {
         {view === "cart" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 max-w-2xl">
+            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 max-w-2xl">
               <CardContent className="p-6">
                 <DashboardCartPreview userEmail={user?.email} />
               </CardContent>
@@ -503,7 +503,7 @@ export default function BuyerDashboard() {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
 
             {/* Personal Info */}
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-4">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
 
@@ -581,7 +581,7 @@ export default function BuyerDashboard() {
             </Card>
 
             {/* Password Reset */}
-            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-3">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
@@ -604,14 +604,14 @@ export default function BuyerDashboard() {
             </Card>
 
             {/* Danger Zone */}
-            <Card className="border-red-100 dark:border-red-900/40">
+            <Card className="border-red-100 dark:border-red-900/40 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-3">
-                <h2 className="font-semibold text-red-600 text-sm uppercase tracking-wide">Danger Zone</h2>
+                <h2 className="font-semibold text-red-600 dark:text-red-500 text-sm uppercase tracking-wide">Danger Zone</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
                 <Button
                   variant="outline"
                   onClick={() => setDeleteAccountDialog(true)}
-                  className="text-red-600 border-red-200 hover:bg-red-50"
+                  className="text-red-600 dark:text-red-500 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30"
                 >
                   Delete My Account
                 </Button>
