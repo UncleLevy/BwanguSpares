@@ -267,9 +267,9 @@ export default function BuyerDashboard() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
-      <AdminNavbar user={user} />
+      <BuyerNavbar user={user} />
       <div className="flex">
-        <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
+        <DashboardSidebar items={sidebarItems} active={view} title="My Dashboard" />
 
         <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
         {view === "orders" && (
