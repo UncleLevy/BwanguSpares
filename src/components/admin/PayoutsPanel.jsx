@@ -134,14 +134,14 @@ export default function PayoutsPanel({ adminUser }) {
     failed: "bg-red-50 text-red-700",
   };
 
-  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
-
   const totalPending = wallets.reduce((s, w) => s + (w.pending_balance || 0), 0);
   const totalPaidOut = wallets.reduce((s, w) => s + (w.total_paid_out || 0), 0);
   const totalFees = wallets.reduce((s, w) => s + (w.total_fees_deducted || 0), 0);
 
   const walletsPagination = usePagination(wallets, 15);
   const payoutsPagination = usePagination(payouts, 15);
+
+  if (loading) return <div className="flex justify-center py-12"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
   return (
     <div className="space-y-6">
