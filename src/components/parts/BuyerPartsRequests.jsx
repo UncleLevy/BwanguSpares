@@ -7,11 +7,11 @@ import { FileSearch, Store, Phone, Clock, CheckCircle2, XCircle, MessageSquare }
 import { toast } from "sonner";
 
 const statusConfig = {
-  open:           { label: "Waiting for shops",  color: "bg-amber-50 text-amber-700 border-amber-200",     icon: Clock },
-  counter_offered:{ label: "Counter Offer",       color: "bg-purple-50 text-purple-700 border-purple-200",  icon: MessageSquare },
-  accepted:       { label: "Accepted by shop",    color: "bg-emerald-50 text-emerald-700 border-emerald-200", icon: CheckCircle2 },
-  fulfilled:      { label: "Fulfilled",           color: "bg-blue-50 text-blue-700 border-blue-200",        icon: CheckCircle2 },
-  cancelled:      { label: "Cancelled",           color: "bg-slate-100 text-slate-500 border-slate-200",    icon: XCircle },
+  open:           { label: "Waiting for shops",  color: "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800/50",     icon: Clock },
+  counter_offered:{ label: "Counter Offer",       color: "bg-purple-50 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-400 dark:border-purple-800/50",  icon: MessageSquare },
+  accepted:       { label: "Accepted by shop",    color: "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800/50", icon: CheckCircle2 },
+  fulfilled:      { label: "Fulfilled",           color: "bg-blue-50 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-400 dark:border-blue-800/50",        icon: CheckCircle2 },
+  cancelled:      { label: "Cancelled",           color: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700",    icon: XCircle },
 };
 
 export default function BuyerPartsRequests({ user, onNewRequest }) {

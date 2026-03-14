@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/dialog";
 
 const statusConfig = {
-  pending:         { label: "Pending",        color: "bg-amber-100 text-amber-800",   icon: Clock },
-  counter_offered: { label: "Counter Offered", color: "bg-purple-100 text-purple-800", icon: MessageSquare },
-  accepted:        { label: "Accepted",        color: "bg-emerald-100 text-emerald-800", icon: CheckCircle2 },
-  rejected:        { label: "Rejected",        color: "bg-red-100 text-red-800",       icon: XCircle },
-  completed:       { label: "Completed",       color: "bg-blue-100 text-blue-800",     icon: CheckCircle2 },
+  pending:         { label: "Pending",        color: "bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400",   icon: Clock },
+  counter_offered: { label: "Counter Offered", color: "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-400", icon: MessageSquare },
+  accepted:        { label: "Accepted",        color: "bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400", icon: CheckCircle2 },
+  rejected:        { label: "Rejected",        color: "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400",       icon: XCircle },
+  completed:       { label: "Completed",       color: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400",     icon: CheckCircle2 },
 };
 
 const specLabels = {
