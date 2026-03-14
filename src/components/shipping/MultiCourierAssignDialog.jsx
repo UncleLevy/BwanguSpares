@@ -168,6 +168,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
         shipmentData.local_courier_phone = localCourier.phone;
         shipmentData.current_courier_id = intercityCourier.id;
         shipmentData.current_courier_name = intercityCourier.full_name;
+        shipmentData.current_courier_phone = intercityCourier.phone;
         shipmentData.handoff_location = formData.handoff_location;
         shipmentData.status = "assigned";
         
@@ -235,6 +236,7 @@ export default function MultiCourierAssignDialog({ order, shop, couriers, onClos
         shipmentData.local_courier_phone = localCourier.phone;
         shipmentData.current_courier_id = localCourier.id;
         shipmentData.current_courier_name = localCourier.full_name;
+        shipmentData.current_courier_phone = localCourier.phone;
         shipmentData.status = "assigned";
         
         shipmentData.tracking_updates = [

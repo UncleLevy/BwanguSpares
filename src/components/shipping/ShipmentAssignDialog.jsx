@@ -73,16 +73,22 @@ export default function ShipmentAssignDialog({ order, shop, couriers, onClose, o
         order_id: order.id,
         shop_id: shop.id,
         shop_name: shop.name,
+        shop_town: shop.town,
+        shop_region: shop.region_name,
         buyer_email: order.buyer_email,
         buyer_name: order.buyer_name,
         buyer_phone: order.delivery_phone,
         delivery_address: order.delivery_address,
-        town: order.delivery_address.split(",").pop().trim(),
-        region: "",
-        courier_id: selectedCourier.id,
-        courier_name: selectedCourier.full_name,
-        courier_phone: selectedCourier.phone,
-        courier_vehicle: `${selectedCourier.vehicle_type} - ${selectedCourier.vehicle_registration}`,
+        delivery_town: order.delivery_address.split(",").pop().trim(),
+        delivery_region: "",
+        is_intercity: false,
+        requires_handoff: false,
+        local_courier_id: selectedCourier.id,
+        local_courier_name: selectedCourier.full_name,
+        local_courier_phone: selectedCourier.phone,
+        current_courier_id: selectedCourier.id,
+        current_courier_name: selectedCourier.full_name,
+        current_courier_phone: selectedCourier.phone,
         tracking_number: trackingNumber,
         status: "assigned",
         shipping_cost: formData.calculated_cost,
@@ -93,6 +99,7 @@ export default function ShipmentAssignDialog({ order, shop, couriers, onClose, o
             timestamp: new Date().toISOString(),
             status: "assigned",
             location: shop.address || shop.town,
+            courier_name: selectedCourier.full_name,
             notes: `Shipment assigned to ${selectedCourier.full_name}`
           }
         ]
@@ -120,7 +127,7 @@ export default function ShipmentAssignDialog({ order, shop, couriers, onClose, o
             <li><strong>Tracking Number:</strong> ${trackingNumber}</li>
             <li><strong>Courier:</strong> ${selectedCourier.full_name}</li>
             <li><strong>Contact:</strong> ${selectedCourier.phone}</li>
-            <li><strong>Vehicle:</strong> ${selectedCourier.vehicle_type} - ${selectedCourier.vehicle_registration}</li>
+            <li><strong>Vehicle:</strong> ${selectedCourier.vehicle_type}${selectedCourier.vehicle_registration ? ` - ${selectedCourier.vehicle_registration}` : ''}</li>
             <li><strong>Estimated Delivery:</strong> ${estimatedDelivery.toLocaleDateString()}</li>
             <li><strong>Shipping Cost:</strong> K${formData.calculated_cost}</li>
           </ul>
