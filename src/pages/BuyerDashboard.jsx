@@ -1,283 +1,785 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useSearchParams, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { createPageUrl } from '@/utils';
+import React, { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import {
-    Package, ShoppingBag, Wrench, Clock, CheckCircle,
-    XCircle, Truck, MapPin, Phone, ChevronRight, Calendar
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Skeleton } from '@/components/ui/skeleton';
-import { format } from 'date-fns';
+  LayoutDashboard, ShoppingCart, User, Settings, Package,
+  Clock, CheckCircle2, Truck, XCircle, Star, FileSearch, MessageSquare, Eye, Wallet, Wrench, Gift, Camera, MapPin, Calendar, RotateCcw
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from "@/components/ui/dialog";
+import { toast } from "sonner";
+import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import BuyerPartsRequests from "@/components/parts/BuyerPartsRequests";
+import PartsRequestForm from "@/components/parts/PartsRequestForm";
+import ReviewForm from "@/components/reviews/ReviewForm";
+import BuyerMessages from "@/components/messaging/BuyerMessages";
+import PullToRefresh from "@/components/shared/PullToRefresh";
+import ReportButton from "@/components/reports/ReportButton";
+import TrackingInfo from "@/components/orders/TrackingInfo.jsx";
+import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
+import BuyerTechnicianRequests from "@/components/technicians/BuyerTechnicianRequests";
+import BuyerAppointments from "@/components/technicians/BuyerAppointments";
+import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
+import AddressInput from "@/components/shared/AddressInput";
+import OrderReceipt from "@/components/receipts/OrderReceipt";
+import ReceiptDownloader from "@/components/receipts/ReceiptDownloader";
+import LoyaltyPanel from "@/components/loyalty/LoyaltyPanel";
+import WalletTransactionDetail from "@/components/wallet/WalletTransactionDetail";
+import ReturnRequestDialog from "@/components/returns/ReturnRequestDialog.jsx";
+import SupportTicketForm from "@/components/support/SupportTicketForm";
+import { emailNewReviewToShop, emailNewOrderToShop } from "@/components/lib/emailNotifications";
+import BuyerNavbar from "@/components/dashboard/BuyerNavbar";
 
-const ORDER_STATUS_CONFIG = {
-    pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800', icon: Clock },
-    confirmed: { label: 'Confirmed', color: 'bg-blue-100 text-blue-800', icon: CheckCircle },
-    processing: { label: 'Processing', color: 'bg-purple-100 text-purple-800', icon: Package },
-    shipped: { label: 'Shipped', color: 'bg-indigo-100 text-indigo-800', icon: Truck },
-    delivered: { label: 'Delivered', color: 'bg-green-100 text-green-800', icon: CheckCircle },
-    cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-800', icon: XCircle }
-};
-
-const BOOKING_STATUS_CONFIG = {
-    pending: { label: 'Pending', color: 'bg-yellow-100 text-yellow-800' },
-    confirmed: { label: 'Confirmed', color: 'bg-blue-100 text-blue-800' },
-    in_progress: { label: 'In Progress', color: 'bg-purple-100 text-purple-800' },
-    completed: { label: 'Completed', color: 'bg-green-100 text-green-800' },
-    cancelled: { label: 'Cancelled', color: 'bg-red-100 text-red-800' }
+const orderStatusConfig = {
+  pending: { icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800" },
+  confirmed: { icon: CheckCircle2, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-900/20", border: "border-blue-200 dark:border-blue-800" },
+  processing: { icon: Package, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-50 dark:bg-indigo-900/20", border: "border-indigo-200 dark:border-indigo-800" },
+  shipped: { icon: Truck, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-900/20", border: "border-purple-200 dark:border-purple-800" },
+  delivered: { icon: CheckCircle2, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-900/20", border: "border-emerald-200 dark:border-emerald-800" },
+  cancelled: { icon: XCircle, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-900/20", border: "border-red-200 dark:border-red-800" },
 };
 
 export default function BuyerDashboard() {
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-    const defaultTab = searchParams.get('tab') || 'orders';
+  const [user, setUser] = useState(null);
+  const [view, setView] = useState("orders");
+  const [orders, setOrders] = useState([]);
+  const [wallet, setWallet] = useState(null);
+  const [walletTxns, setWalletTxns] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [profileForm, setProfileForm] = useState({ first_name: "", last_name: "", phone: "", region: "", town: "", address: "", profile_picture_url: "", use_default_address: true });
+  const [uploadingPicture, setUploadingPicture] = useState(false);
+  const [profileErrors, setProfileErrors] = useState({});
+  const [reviewDialog, setReviewDialog] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [partsRequestOpen, setPartsRequestOpen] = useState(false);
+  const [deleteAccountDialog, setDeleteAccountDialog] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [passwordResetSent, setPasswordResetSent] = useState(false);
+  const [receiptDialog, setReceiptDialog] = useState(false);
+  const [receiptOrder, setReceiptOrder] = useState(null);
+  const [stripeRefundDialog, setStripeRefundDialog] = useState(false);
+  const [selectedTxn, setSelectedTxn] = useState(null);
+  const [stripeRefundSubmitting, setStripeRefundSubmitting] = useState(false);
+  const [retryPaymentOrder, setRetryPaymentOrder] = useState(null);
+  const [retryPaymentSubmitting, setRetryPaymentSubmitting] = useState(false);
+  const [returnDialog, setReturnDialog] = useState(false);
+  const [returnOrder, setReturnOrder] = useState(null);
 
-    const [user, setUser] = useState(null);
-    const [orders, setOrders] = useState([]);
-    const [bookings, setBookings] = useState([]);
-    const [loading, setLoading] = useState(true);
+  // Read initial view from URL query param
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const viewParam = params.get("view");
+    if (viewParam) setView(viewParam);
+  }, []);
 
-    useEffect(() => {
-        loadData();
-    }, []);
+  useEffect(() => {
+    (async () => {
+      const u = await base44.auth.me();
+      // Redirect shop owners and admins away from buyer dashboard
+      if (u.role === "shop_owner") {
+        window.location.href = createPageUrl("ShopDashboard");
+        return;
+      }
+      if (u.role === "admin") {
+        window.location.href = createPageUrl("AdminDashboard");
+        return;
+      }
+      // Redirect to profile completion if not completed
+      if (!u.profile_completed) {
+        window.location.href = createPageUrl("ProfileCompletion");
+        return;
+      }
+      setUser(u);
+      setProfileForm({ first_name: u.first_name || "", last_name: u.last_name || "", phone: u.phone || "", region: u.region || "", town: u.town || "", address: u.address || "", profile_picture_url: u.profile_picture_url || "", use_default_address: u.use_default_address !== false });
+      const [o, wallets, txns] = await Promise.all([
+        base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50),
+        base44.entities.BuyerWallet.filter({ buyer_email: u.email }),
+        base44.entities.WalletTransaction.filter({ buyer_email: u.email }, "-created_date", 20),
+      ]);
+      setOrders(o);
+      setWallet(wallets[0] || null);
+      setWalletTxns(txns);
+      setLoading(false);
 
-    const loadData = async () => {
-        try {
-            const isAuth = await base44.auth.isAuthenticated();
-            if (!isAuth) {
-                navigate(createPageUrl('Home'));
-                return;
+      // Auto-confirm orders after successful Stripe payment
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("payment") === "success" && params.get("session_id")) {
+        const sessionId = params.get("session_id");
+        const pendingOrders = o.filter(ord => ord.stripe_session_id === sessionId && ord.status === "pending");
+        if (pendingOrders.length > 0) {
+          await Promise.all(pendingOrders.map(ord => base44.entities.Order.update(ord.id, { status: "confirmed" })));
+          const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+          setOrders(updated);
+          toast.success("Payment successful! Your order has been confirmed.");
+          // Notify each shop owner
+          for (const ord of pendingOrders) {
+            const shops = await base44.entities.Shop.filter({ id: ord.shop_id });
+            if (shops[0]?.owner_email) {
+              emailNewOrderToShop(shops[0].owner_email, ord.shop_name, ord);
             }
-
-            const userData = await base44.auth.me();
-            setUser(userData);
-
-            const [ordersData, bookingsData] = await Promise.all([
-                base44.entities.Order.filter({ buyer_email: userData.email }, '-created_date'),
-                base44.entities.TechnicianBooking.filter({ customer_email: userData.email }, '-created_date')
-            ]);
-
-            setOrders(ordersData);
-            setBookings(bookingsData);
-        } catch (error) {
-            console.error('Error loading data:', error);
+          }
         }
-        setLoading(false);
-    };
+        // Clean URL
+        window.history.replaceState({}, "", window.location.pathname);
+      }
+      
+      // Real-time updates for orders, wallet, and returns
+      const unsubscribeOrder = base44.entities.Order.subscribe((event) => {
+        if (event.data?.buyer_email === u.email) {
+          (async () => {
+            const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+            setOrders(updated);
+          })();
+        }
+      });
 
-    if (loading) {
-        return (
-            <div className="max-w-7xl mx-auto px-4 py-8">
-                <Skeleton className="h-8 w-48 mb-8" />
-                <div className="grid md:grid-cols-3 gap-4 mb-8">
-                    {[...Array(3)].map((_, i) => <Skeleton key={i} className="h-32" />)}
-                </div>
-            </div>
-        );
+      const unsubscribeWallet = base44.entities.BuyerWallet.subscribe((event) => {
+        if (event.data?.buyer_email === u.email) {
+          setWallet(event.data);
+        }
+      });
+
+      const unsubscribeReturn = base44.entities.Return.subscribe((event) => {
+        if (event.data?.status === "refunded") {
+          (async () => {
+            const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+            setOrders(updated);
+            const wallets = await base44.entities.BuyerWallet.filter({ buyer_email: u.email });
+            setWallet(wallets[0] || null);
+          })();
+        }
+      });
+
+      return () => {
+        unsubscribeOrder();
+        unsubscribeWallet();
+        unsubscribeReturn();
+      };
+    })();
+  }, []);
+
+  const saveProfile = async () => {
+     const errors = {};
+     if (!profileForm.first_name.trim()) errors.first_name = "First name is required";
+     if (!profileForm.last_name.trim()) errors.last_name = "Last name is required";
+     if (!profileForm.region) errors.region = "Region is required";
+     if (!profileForm.town) errors.town = "Town is required";
+     if (profileForm.phone && !/^\+?\d{7,15}$/.test(profileForm.phone.replace(/\s/g, ""))) {
+       errors.phone = "Enter a valid phone number (e.g. +260...)";
+     }
+     if (Object.keys(errors).length > 0) { setProfileErrors(errors); return; }
+     setProfileErrors({});
+     setSubmitting(true);
+     try {
+       await base44.auth.updateMe({ 
+           first_name: profileForm.first_name,
+           last_name: profileForm.last_name,
+           phone: profileForm.phone, 
+           region: profileForm.region,
+           town: profileForm.town,
+           address: profileForm.address,
+           profile_picture_url: profileForm.profile_picture_url,
+           use_default_address: profileForm.use_default_address,
+         });
+       const updatedUser = await base44.auth.me();
+       setUser(updatedUser);
+       toast.success("✓ Profile updated successfully!");
+     } catch (error) {
+       toast.error("✗ Failed to update profile. Please try again.");
+     } finally {
+       setSubmitting(false);
+     }
+   };
+
+  const handleReviewSubmit = async (reviewData) => {
+    setSubmitting(true);
+    try {
+      const existingReview = await base44.entities.Review.filter({
+        order_id: reviewOrder.id,
+        reviewer_email: user.email,
+      });
+
+      if (existingReview.length > 0) {
+        toast.error("You've already reviewed this order");
+        setSubmitting(false);
+        return;
+      }
+
+      await base44.entities.Review.create({
+        order_id: reviewOrder.id,
+        reviewer_email: user.email,
+        reviewer_name: user.full_name,
+        shop_id: reviewOrder.shop_id,
+        shop_name: reviewOrder.shop_name,
+        rating: reviewData.rating,
+        comment: reviewData.comment,
+        type: "shop",
+      });
+
+      // Update shop rating
+      const allShopReviews = await base44.entities.Review.filter({
+        shop_id: reviewOrder.shop_id,
+        type: "shop",
+      });
+      const avgRating =
+        allShopReviews.reduce((sum, r) => sum + r.rating, 0) /
+        allShopReviews.length;
+      await base44.entities.Shop.update(reviewOrder.shop_id, {
+        rating: avgRating,
+      });
+
+      // Email the shop owner
+      const shops = await base44.entities.Shop.filter({ id: reviewOrder.shop_id });
+      if (shops[0]?.owner_email) {
+        emailNewReviewToShop(shops[0].owner_email, reviewOrder.shop_name, user.full_name, reviewData.rating, reviewData.comment);
+      }
+      toast.success("Review submitted successfully!");
+      setReviewDialog(false);
+      setReviewOrder(null);
+    } catch (error) {
+      toast.error("Failed to submit review");
     }
+    setSubmitting(false);
+  };
 
-    const pendingOrders = orders.filter(o => ['pending', 'confirmed', 'processing', 'shipped'].includes(o.status));
-    const completedOrders = orders.filter(o => o.status === 'delivered');
-    const pendingBookings = bookings.filter(b => ['pending', 'confirmed', 'in_progress'].includes(b.status));
+  const sidebarItems = [
+    { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => setView("orders") },
+    { id: "cart", label: "Cart", icon: ShoppingCart, onClick: () => setView("cart") },
+    { id: "wallet", label: "My Wallet", icon: Wallet, onClick: () => setView("wallet"), badge: wallet?.balance > 0 ? `K${Math.round(wallet.balance)}` : null },
+    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
+    { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => setView("technician_requests") },
+    { id: "appointments", label: "My Appointments", icon: Calendar, onClick: () => setView("appointments") },
+    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
+    { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => setView("loyalty") },
+    { id: "support", label: "Support", icon: Settings, onClick: () => setView("support") },
+    { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
+  ];
 
-    return (
-        <div className="max-w-7xl mx-auto px-4 py-8">
-            {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold text-slate-800">My Dashboard</h1>
-                <p className="text-slate-500">Welcome back, {user?.full_name || 'User'}</p>
-            </div>
+  if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
 
-            {/* Stats */}
-            <div className="grid md:grid-cols-3 gap-4 mb-8">
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                                <ShoppingBag className="w-6 h-6 text-blue-600" />
+  return (
+    <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950">
+      <DashboardSidebar items={sidebarItems} active={view} title="My Account" />
+      <main className="flex-1 pt-16 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100">
+
+        {view === "orders" && (
+          <PullToRefresh onRefresh={async () => {
+            const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
+            setOrders(o);
+          }}>
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Orders</h1>
+            {orders.length === 0 ? (
+              <div className="text-center py-20">
+                <ShoppingCart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                <h3 className="font-semibold text-slate-700 dark:text-slate-300">No orders yet</h3>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Browse parts and place your first order</p>
+                <Link to={createPageUrl("BrowseProducts")}>
+                  <Button className="mt-4 bg-blue-600 hover:bg-blue-700">Browse Parts</Button>
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {orders.map(order => {
+                  const sc = orderStatusConfig[order.status] || orderStatusConfig.pending;
+                  return (
+                    <Card key={order.id} className={`border ${sc.border}`}>
+                      <CardContent className="p-5">
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-mono text-xs text-slate-400">#{order.id?.slice(0,8)}</span>
+                              <Badge className={`${sc.bg} ${sc.color}`}>
+                                <sc.icon className="w-3 h-3 mr-1" /> {order.status}
+                              </Badge>
                             </div>
-                            <div>
-                                <p className="text-2xl font-bold">{orders.length}</p>
-                                <p className="text-sm text-slate-500">Total Orders</p>
-                            </div>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                              From: <span className="font-medium text-slate-700 dark:text-slate-300">{order.shop_name}</span>
+                              <span className="mx-2">•</span>
+                              {new Date(order.created_date).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="flex flex-col items-end gap-2">
+                            <p className="text-xl font-bold text-blue-600">K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            {order.status === "confirmed" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => { setReceiptOrder(order); setReceiptDialog(true); }}
+                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                              >
+                                <Eye className="w-3.5 h-3.5" /> Receipt
+                              </Button>
+                            )}
+                            {order.status === "pending" && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setRetryPaymentOrder(order)}
+                                className="gap-1.5 text-xs border-blue-200 text-blue-700 hover:bg-blue-50"
+                              >
+                                💳 Complete Payment
+                              </Button>
+                            )}
+                            {order.status === "delivered" && (
+                             <div className="flex flex-col gap-1.5">
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 onClick={() => {
+                                   setReviewOrder(order);
+                                   setReviewDialog(true);
+                                 }}
+                                 className="gap-1.5 text-xs border-amber-200 text-amber-700 hover:bg-amber-50"
+                               >
+                                 <Star className="w-3.5 h-3.5" /> Leave Review
+                               </Button>
+                               <Button
+                                 size="sm"
+                                 variant="outline"
+                                 onClick={() => { setReturnOrder(order); setReturnDialog(true); }}
+                                 className="gap-1.5 text-xs border-orange-200 text-orange-700 hover:bg-orange-50"
+                               >
+                                 <RotateCcw className="w-3.5 h-3.5" /> Request Return
+                               </Button>
+                             </div>
+                            )}
+                            <ReportButton
+                              reportedEmail={order.shop_name}
+                              reportedName={order.shop_name}
+                              reportedType="shop"
+                              reportedId={order.shop_id}
+                              size="sm"
+                            />
+                          </div>
                         </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
-                                <Truck className="w-6 h-6 text-orange-600" />
-                            </div>
-                            <div>
-                                <p className="text-2xl font-bold">{pendingOrders.length}</p>
-                                <p className="text-sm text-slate-500">Active Orders</p>
-                            </div>
+                        <div className="mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
+                          <OrderTrackingBar status={order.status} />
                         </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardContent className="p-6">
-                        <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                                <Wrench className="w-6 h-6 text-green-600" />
+                        <div className="space-y-2">
+                          {order.items?.map((item, i) => (
+                            <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 first:border-0">
+                              <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                                {item.image_url ? <img src={item.image_url} alt="" className="w-full h-full object-cover" /> : <Package className="w-4 h-4 text-slate-300" />}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
+                                <p className="text-xs text-slate-500 dark:text-slate-400">Qty: {item.quantity} × K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                              </div>
                             </div>
-                            <div>
-                                <p className="text-2xl font-bold">{bookings.length}</p>
-                                <p className="text-sm text-slate-500">Technician Bookings</p>
-                            </div>
+                          ))}
                         </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Tabs */}
-            <Tabs defaultValue={defaultTab}>
-                <TabsList>
-                    <TabsTrigger value="orders">Orders ({orders.length})</TabsTrigger>
-                    <TabsTrigger value="bookings">Technician Bookings ({bookings.length})</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="orders" className="mt-6">
-                    {orders.length === 0 ? (
-                        <Card className="p-12 text-center">
-                            <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">No orders yet</h3>
-                            <p className="text-slate-500 mb-4">Start shopping to see your orders here</p>
-                            <Link to={createPageUrl('Products')}>
-                                <Button className="bg-orange-500 hover:bg-orange-600">Browse Products</Button>
-                            </Link>
+                        {order.status === "cancelled" && (
+                          <div className="mt-3 p-3 bg-red-50 border border-red-100 rounded-lg text-sm text-red-700">
+                            {order.cancellation_reason && <p><span className="font-medium">Reason: </span>{order.cancellation_reason}</p>}
+                            {order.stripe_session_id && order.payment_method === 'stripe' && (
+                              <p className="mt-1 text-emerald-700 font-medium">✓ K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })} credited to your wallet</p>
+                            )}
+                          </div>
+                        )}
+                        {(order.status === "shipped" || order.status === "delivered") && (
+                         <div className="mt-4 pt-4 border-t border-slate-100">
+                           <TrackingInfo order={order} />
+                         </div>
+                        )}
+                        </CardContent>
                         </Card>
-                    ) : (
-                        <div className="space-y-4">
-                            {orders.map((order) => {
-                                const statusConfig = ORDER_STATUS_CONFIG[order.status] || ORDER_STATUS_CONFIG.pending;
-                                const StatusIcon = statusConfig.icon;
-
-                                return (
-                                    <Card key={order.id}>
-                                        <CardContent className="p-6">
-                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                                                <div>
-                                                    <div className="flex items-center gap-3">
-                                                        <p className="font-semibold text-slate-800">{order.order_number}</p>
-                                                        <Badge className={statusConfig.color}>
-                                                            <StatusIcon className="w-3 h-3 mr-1" />
-                                                            {statusConfig.label}
-                                                        </Badge>
-                                                    </div>
-                                                    <p className="text-sm text-slate-500 mt-1">
-                                                        Placed on {format(new Date(order.created_date), 'PPP')}
-                                                    </p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <p className="text-xl font-bold text-[#1e3a5f]">K{order.total_amount?.toLocaleString()}</p>
-                                                    <p className="text-sm text-slate-500">{order.items?.length} item(s)</p>
-                                                </div>
-                                            </div>
-
-                                            {/* Order Items Preview */}
-                                            <div className="border-t pt-4">
-                                                <div className="flex flex-wrap gap-4">
-                                                    {order.items?.slice(0, 3).map((item, i) => (
-                                                        <div key={i} className="flex items-center gap-2 bg-slate-50 rounded-lg px-3 py-2">
-                                                            <span className="text-sm font-medium">{item.product_name}</span>
-                                                            <Badge variant="outline">×{item.quantity}</Badge>
-                                                        </div>
-                                                    ))}
-                                                    {order.items?.length > 3 && (
-                                                        <div className="flex items-center text-sm text-slate-500">
-                                                            +{order.items.length - 3} more
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            </div>
-
-                                            {/* Delivery Info */}
-                                            {order.delivery_address && (
-                                                <div className="flex items-start gap-2 mt-4 text-sm text-slate-500">
-                                                    <MapPin className="w-4 h-4 mt-0.5" />
-                                                    <span>{order.delivery_address}</span>
-                                                </div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
-                                );
-                            })}
+                        );
+                        })}
                         </div>
-                    )}
-                </TabsContent>
+            )}
+          </div>
+          </PullToRefresh>
+        )}
 
-                <TabsContent value="bookings" className="mt-6">
-                    {bookings.length === 0 ? (
-                        <Card className="p-12 text-center">
-                            <Wrench className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-semibold text-slate-700 mb-2">No bookings yet</h3>
-                            <p className="text-slate-500 mb-4">Book a technician for your vehicle needs</p>
-                            <Link to={createPageUrl('Technicians')}>
-                                <Button className="bg-orange-500 hover:bg-orange-600">Find Technicians</Button>
-                            </Link>
-                        </Card>
-                    ) : (
-                        <div className="space-y-4">
-                            {bookings.map((booking) => {
-                                const statusConfig = BOOKING_STATUS_CONFIG[booking.status] || BOOKING_STATUS_CONFIG.pending;
+        {view === "parts_requests" && (
+          <BuyerPartsRequests user={user} onNewRequest={() => setPartsRequestOpen(true)} />
+        )}
 
-                                return (
-                                    <Card key={booking.id}>
-                                        <CardContent className="p-6">
-                                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                <div>
-                                                    <div className="flex items-center gap-3">
-                                                        <p className="font-semibold text-slate-800">{booking.booking_number}</p>
-                                                        <Badge className={statusConfig.color}>{statusConfig.label}</Badge>
-                                                    </div>
-                                                    <p className="text-orange-600 font-medium mt-1">{booking.technician_name}</p>
-                                                    <p className="text-sm text-slate-500">{booking.shop_name}</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <div className="flex items-center gap-2 text-slate-600">
-                                                        <Calendar className="w-4 h-4" />
-                                                        <span>{format(new Date(booking.scheduled_date), 'PPP')}</span>
-                                                        {booking.scheduled_time && <span>at {booking.scheduled_time}</span>}
-                                                    </div>
-                                                    {booking.total_cost && (
-                                                        <p className="text-lg font-bold text-[#1e3a5f] mt-1">K{booking.total_cost?.toLocaleString()}</p>
-                                                    )}
-                                                </div>
-                                            </div>
+        {view === "technician_requests" && (
+          <BuyerTechnicianRequests user={user} />
+        )}
 
-                                            <div className="border-t mt-4 pt-4 grid md:grid-cols-2 gap-4 text-sm">
-                                                <div>
-                                                    <p className="text-slate-500">Service Type</p>
-                                                    <p className="font-medium">{booking.service_type}</p>
-                                                </div>
-                                                {booking.vehicle_info && (
-                                                    <div>
-                                                        <p className="text-slate-500">Vehicle</p>
-                                                        <p className="font-medium">{booking.vehicle_info}</p>
-                                                    </div>
-                                                )}
-                                                {booking.location && (
-                                                    <div>
-                                                        <p className="text-slate-500">Location</p>
-                                                        <p className="font-medium">{booking.location}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                );
-                            })}
+        {view === "appointments" && (
+          <BuyerAppointments user={user} />
+        )}
+
+        {view === "messages" && (
+          <BuyerMessages user={user} />
+        )}
+
+        {view === "wallet" && (
+          <div className="max-w-xl">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">My Wallet</h1>
+            <Card className="border-blue-100 bg-gradient-to-br from-blue-600 to-cyan-600 text-white mb-4">
+              <CardContent className="p-6">
+                <p className="text-sm text-blue-100 mb-1">Available Balance</p>
+                <p className="text-4xl font-bold">K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                <p className="text-xs text-blue-200 mt-2">Site credits from refunded orders</p>
+              </CardContent>
+            </Card>
+
+            {(wallet?.balance || 0) > 0 && (
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                <Button
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  onClick={() => { window.location.href = createPageUrl("BrowseProducts"); }}
+                >
+                  <ShoppingCart className="w-4 h-4 mr-2" /> Use on Next Order
+                </Button>
+                <Button
+                  variant="outline"
+                  className="border-slate-300 text-slate-700"
+                  onClick={() => setStripeRefundDialog(true)}
+                >
+                  <Wallet className="w-4 h-4 mr-2" /> Refund to Card
+                </Button>
+              </div>
+            )}
+
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+              <CardContent className="p-5">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
+                {walletTxns.length === 0 ? (
+                  <p className="text-sm text-slate-400 text-center py-8">No transactions yet</p>
+                ) : (
+                  <div className="space-y-1">
+                    {walletTxns.map(txn => (
+                      <button
+                        key={txn.id}
+                        onClick={() => setSelectedTxn(txn)}
+                        className="w-full flex items-center justify-between py-2.5 px-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors border-b border-slate-50 dark:border-slate-700/50 last:border-0 text-left group"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{txn.reason}</p>
+                          <p className="text-xs text-slate-400">{new Date(txn.created_date).toLocaleDateString()}</p>
                         </div>
-                    )}
-                </TabsContent>
-            </Tabs>
-        </div>
-    );
-}
+                        <div className="flex items-center gap-2 flex-shrink-0 ml-3">
+                          <span className={`text-sm font-bold ${txn.type === 'credit' ? 'text-emerald-600' : 'text-red-500'}`}>
+                            {txn.type === 'credit' ? '+' : '-'}K{txn.amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                          </span>
+                          <span className="text-slate-300 dark:text-slate-600 text-xs group-hover:text-slate-400 transition-colors">›</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {view === "loyalty" && (
+          <LoyaltyPanel user={user} />
+        )}
+
+        {view === "support" && (
+          <SupportTicketForm user={user} />
+        )}
+
+        {view === "cart" && (
+          <div>
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900 max-w-2xl">
+              <CardContent className="p-6">
+                <DashboardCartPreview userEmail={user?.email} />
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
+        {view === "profile" && (
+          <div className="max-w-lg space-y-5">
+            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
+
+            {/* Personal Info */}
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+              <CardContent className="p-6 space-y-4">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
+
+                {/* Profile Picture */}
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="w-20 h-20 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center overflow-hidden border-2 border-blue-200 dark:border-blue-700">
+                      {profileForm.profile_picture_url ? (
+                        <img src={profileForm.profile_picture_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        <User className="w-8 h-8 text-blue-400" />
+                      )}
+                    </div>
+                    <label className="absolute -bottom-1 -right-1 w-7 h-7 bg-blue-600 hover:bg-blue-700 rounded-full flex items-center justify-center cursor-pointer shadow-md">
+                      <Camera className="w-3.5 h-3.5 text-white" />
+                      <input type="file" accept="image/*" className="hidden" onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        setUploadingPicture(true);
+                        const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                        setProfileForm(f => ({ ...f, profile_picture_url: file_url }));
+                        setUploadingPicture(false);
+                        toast.success("Photo uploaded!");
+                      }} />
+                    </label>
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.full_name}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
+                    {uploadingPicture && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+                  </div>
+                </div>
+
+                <div>
+                  <Label className="text-sm text-slate-500 dark:text-slate-400">Email (cannot be changed)</Label>
+                  <p className="font-medium text-slate-900 dark:text-slate-100 mt-0.5 text-sm">{user?.email}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <Label>First Name *</Label>
+                    <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400" : ""}`} />
+                    {profileErrors.first_name && <p className="text-xs text-red-500 mt-1">{profileErrors.first_name}</p>}
+                  </div>
+                  <div>
+                    <Label>Last Name *</Label>
+                    <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400" : ""}`} />
+                    {profileErrors.last_name && <p className="text-xs text-red-500 mt-1">{profileErrors.last_name}</p>}
+                  </div>
+                </div>
+                <div>
+                  <Label>Phone Number</Label>
+                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
+                  {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
+                </div>
+                <AddressInput 
+                  value={{ region: profileForm.region, town: profileForm.town, address: profileForm.address }}
+                  onChange={(newAddr) => setProfileForm({...profileForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
+                  errors={profileErrors}
+                />
+                <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800">
+                  <input
+                    type="checkbox"
+                    id="use_default_address"
+                    checked={profileForm.use_default_address}
+                    onChange={e => setProfileForm({...profileForm, use_default_address: e.target.checked})}
+                    className="w-4 h-4 rounded accent-blue-600"
+                  />
+                  <label htmlFor="use_default_address" className="text-sm text-slate-700 dark:text-slate-300 cursor-pointer">
+                    <span className="font-medium">Use this address as default at checkout</span>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
+                  </label>
+                </div>
+                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
+              </CardContent>
+            </Card>
+
+            {/* Password Reset */}
+            <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+              <CardContent className="p-6 space-y-3">
+                <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
+                {passwordResetSent ? (
+                  <p className="text-sm text-emerald-600 font-medium">✓ Reset link sent! Check your email.</p>
+                ) : (
+                  <Button variant="outline" onClick={async () => {
+                    await base44.integrations.Core.SendEmail({
+                      to: user.email,
+                      subject: "Password Reset Request – BwanguSpares",
+                      body: `Hello ${user.full_name},\n\nYou requested a password reset for your BwanguSpares account.\n\nPlease use your login page to reset your password, or contact support at admin@bwangu.com if you need help.\n\nBwanguSpares Team`
+                    });
+                    setPasswordResetSent(true);
+                    toast.success("Password reset email sent!");
+                  }}>
+                    Send Password Reset Email
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Danger Zone */}
+            <Card className="border-red-100 dark:border-red-900/40">
+              <CardContent className="p-6 space-y-3">
+                <h2 className="font-semibold text-red-600 text-sm uppercase tracking-wide">Danger Zone</h2>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
+                <Button
+                  variant="outline"
+                  onClick={() => setDeleteAccountDialog(true)}
+                  className="text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  Delete My Account
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+      </main>
+
+      <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
+
+      <Dialog open={deleteAccountDialog} onOpenChange={(v) => { setDeleteAccountDialog(v); setDeleteConfirmText(""); }}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogDescription>
+              This action is <strong>permanent</strong> and cannot be undone. All your orders, requests and data will be removed.
+              <br /><br />
+              Type <strong>DELETE</strong> below to confirm.
+            </DialogDescription>
+          </DialogHeader>
+          <Input
+            value={deleteConfirmText}
+            onChange={e => setDeleteConfirmText(e.target.value)}
+            placeholder="Type DELETE to confirm"
+            className="rounded-xl"
+          />
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
+            <Button
+              variant="destructive"
+              disabled={deleteConfirmText !== "DELETE"}
+              onClick={async () => {
+                await base44.auth.logout();
+                toast.success("Account deleted. Goodbye!");
+              }}
+            >
+              Delete My Account
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Review {reviewOrder?.shop_name}</DialogTitle>
+           </DialogHeader>
+           <ReviewForm
+             onSubmit={handleReviewSubmit}
+             submitting={submitting}
+             type="shop"
+           />
+         </DialogContent>
+       </Dialog>
+
+       <Dialog open={stripeRefundDialog} onOpenChange={setStripeRefundDialog}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Refund Wallet Balance to Card</DialogTitle>
+             <DialogDescription>
+               Your full wallet balance of <strong>K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> will be refunded back to your original payment card via Stripe. This may take 5–10 business days to appear.
+             </DialogDescription>
+           </DialogHeader>
+           <DialogFooter className="gap-2">
+             <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
+             <Button
+               className="bg-blue-600 hover:bg-blue-700"
+               disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
+               onClick={async () => {
+                 setStripeRefundSubmitting(true);
+                 try {
+                   const res = await base44.functions.invoke('walletStripeRefund', { amount: wallet.balance });
+                   if (res.data?.success) {
+                     toast.success("Refund initiated! It will appear on your card in 5–10 business days.");
+                     setStripeRefundDialog(false);
+                     const [wallets, txns] = await Promise.all([
+                       base44.entities.BuyerWallet.filter({ buyer_email: user.email }),
+                       base44.entities.WalletTransaction.filter({ buyer_email: user.email }, "-created_date", 20),
+                     ]);
+                     setWallet(wallets[0] || null);
+                     setWalletTxns(txns);
+                   } else {
+                     toast.error(res.data?.error || "Refund failed. Please contact support.");
+                   }
+                 } catch (e) {
+                   toast.error("Refund failed. Please contact support.");
+                 }
+                 setStripeRefundSubmitting(false);
+               }}
+             >
+               {stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
+             </Button>
+           </DialogFooter>
+         </DialogContent>
+       </Dialog>
+
+       <Dialog open={receiptDialog} onOpenChange={setReceiptDialog}>
+         <DialogContent className="max-w-2xl max-h-[80vh] overflow-auto">
+           <DialogHeader><DialogTitle>Order Receipt</DialogTitle></DialogHeader>
+           {receiptOrder && (
+             <div className="space-y-4">
+               <OrderReceipt order={receiptOrder} shop={receiptOrder} />
+               <DialogFooter>
+                 <ReceiptDownloader order={receiptOrder} />
+               </DialogFooter>
+             </div>
+           )}
+         </DialogContent>
+       </Dialog>
+
+       <ReturnRequestDialog
+         open={returnDialog}
+         onClose={() => { setReturnDialog(false); setReturnOrder(null); }}
+         order={returnOrder}
+         user={user}
+       />
+
+       <WalletTransactionDetail
+         txn={selectedTxn}
+         open={!!selectedTxn}
+         onClose={() => setSelectedTxn(null)}
+         userEmail={user?.email}
+       />
+
+       <Dialog open={!!retryPaymentOrder} onOpenChange={(open) => { if (!open) setRetryPaymentOrder(null); }}>
+         <DialogContent>
+           <DialogHeader>
+             <DialogTitle>Complete Payment</DialogTitle>
+             <DialogDescription>
+               Your order for <strong>K{retryPaymentOrder?.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> is pending payment. Click below to complete payment and confirm your order.
+             </DialogDescription>
+           </DialogHeader>
+           <DialogFooter className="gap-2">
+             <Button variant="outline" onClick={() => setRetryPaymentOrder(null)}>Cancel</Button>
+             <Button
+               className="bg-blue-600 hover:bg-blue-700"
+               disabled={retryPaymentSubmitting}
+               onClick={async () => {
+                 setRetryPaymentSubmitting(true);
+                 try {
+                   // Add items back to cart for retry checkout
+                   for (const item of retryPaymentOrder.items) {
+                     await base44.entities.CartItem.create({
+                       buyer_email: user.email,
+                       product_id: item.product_id,
+                       product_name: item.product_name,
+                       shop_id: retryPaymentOrder.shop_id,
+                       shop_name: retryPaymentOrder.shop_name,
+                       price: item.price,
+                       quantity: item.quantity,
+                       image_url: item.image_url,
+                     });
+                   }
+                   toast.success("Items added to cart. Redirecting to checkout...");
+                   // Redirect to cart with checkout open
+                   setTimeout(() => {
+                     window.location.href = createPageUrl("Cart");
+                   }, 1000);
+                 } catch (error) {
+                   toast.error("Failed to restore items. Please try again.");
+                 }
+                 setRetryPaymentSubmitting(false);
+               }}
+             >
+               {retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
+             </Button>
+           </DialogFooter>
+         </DialogContent>
+       </Dialog>
+       </div>
+       );
+       }
