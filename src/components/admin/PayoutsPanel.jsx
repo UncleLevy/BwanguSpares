@@ -30,13 +30,20 @@ export default function PayoutsPanel({ adminUser }) {
   }, []);
 
   const load = async () => {
-    const [w, p] = await Promise.all([
-      base44.entities.ShopWallet.list("-created_date", 100),
-      base44.entities.Payout.list("-created_date", 100),
-    ]);
-    setWallets(w);
-    setPayouts(p);
-    setLoading(false);
+    try {
+      const [w, p] = await Promise.all([
+        base44.entities.ShopWallet.list("-created_date", 100),
+        base44.entities.Payout.list("-created_date", 100),
+      ]);
+      setWallets(w || []);
+      setPayouts(p || []);
+    } catch (e) {
+      console.error("Failed to load payouts data:", e);
+      setWallets([]);
+      setPayouts([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const openPayoutDialog = (wallet) => {
