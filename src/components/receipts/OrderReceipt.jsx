@@ -42,11 +42,27 @@ export default function OrderReceipt({ order, shop }) {
         </div>
       </div>
 
-      {/* Delivery Address */}
-      {order.delivery_address && (
+      {/* Delivery Info */}
+      {(order.delivery_address || order.shipping_option) && (
         <div className="bg-slate-50 dark:bg-slate-800 p-3 sm:p-4 rounded-lg mb-4 sm:mb-8">
-          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">Delivery Address</p>
-          <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300">{order.delivery_address}</p>
+          <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide mb-2">
+            {order.shipping_option === 'deliver' ? '🚚 Delivery Information' : '🏪 Collection Information'}
+          </p>
+          {order.delivery_address && (
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mb-1">
+              <strong>Address:</strong> {order.delivery_address}
+            </p>
+          )}
+          {order.shipping_option && (
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+              <strong>Method:</strong> {order.shipping_option === 'deliver' ? 'Delivery' : 'Collect in-store'}
+            </p>
+          )}
+          {order.tracking_number && (
+            <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 mt-2">
+              <strong>Tracking #:</strong> {order.tracking_number}
+            </p>
+          )}
         </div>
       )}
 
@@ -131,10 +147,20 @@ export default function OrderReceipt({ order, shop }) {
         </Badge>
       </div>
 
+      {/* Additional Notes */}
+      {order.notes && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 p-3 sm:p-4 rounded-lg mb-4 border-l-4 border-amber-500">
+          <p className="text-xs font-semibold text-amber-800 dark:text-amber-400 uppercase tracking-wide mb-1">📝 Order Notes</p>
+          <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300">{order.notes}</p>
+        </div>
+      )}
+
       {/* Footer */}
       <div className="border-t-2 border-slate-200 dark:border-slate-700 mt-4 sm:mt-8 pt-4 sm:pt-6 text-center">
         <p className="text-xs text-slate-500 dark:text-slate-400">Thank you for your purchase!</p>
-        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">This is a computer-generated receipt</p>
+        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          Payment: {order.payment_method?.toUpperCase() || 'N/A'} | This is a computer-generated receipt
+        </p>
       </div>
     </div>
   );
