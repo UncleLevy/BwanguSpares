@@ -166,6 +166,32 @@ function DocumentView({ type, shop, order, partsRequest, docNumber, isPrint = fa
         </div>
       </div>
 
+      {/* Shipping & Payment Info */}
+      {isOrder && (
+        <div style={{ marginBottom: "28px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div style={{ padding: "14px", background: "#f0f9ff", borderRadius: "10px", border: "1px solid #e0f2fe" }}>
+            <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#666", fontWeight: "600", margin: "0 0 8px", letterSpacing: "0.5px" }}>🚚 Shipping</p>
+            <p style={{ fontSize: "13px", margin: "0 0 4px", color: "#555" }}>
+              <strong>{order.shipping_option === 'deliver' ? 'Delivery' : 'Collect in-store'}</strong>
+            </p>
+            {order.tracking_number && (
+              <p style={{ fontSize: "12px", margin: "4px 0 0", color: "#666" }}>
+                Tracking: {order.tracking_number}
+              </p>
+            )}
+          </div>
+          <div style={{ padding: "14px", background: "#f0fdf4", borderRadius: "10px", border: "1px solid #dcfce7" }}>
+            <p style={{ fontSize: "11px", textTransform: "uppercase", color: "#666", fontWeight: "600", margin: "0 0 8px", letterSpacing: "0.5px" }}>💳 Payment</p>
+            <p style={{ fontSize: "13px", margin: 0, color: "#555" }}>
+              <strong>{order.payment_method?.toUpperCase() || 'N/A'}</strong>
+            </p>
+            <p style={{ fontSize: "12px", margin: "4px 0 0", color: "#666" }}>
+              {order.status === 'confirmed' || order.status === 'delivered' ? '✓ Paid' : 'Pending'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Notes */}
       {isOrder && order.notes && (
         <div style={{ marginBottom: "28px", padding: "14px", background: `${color}10`, borderRadius: "10px", borderLeft: `3px solid ${color}` }}>
