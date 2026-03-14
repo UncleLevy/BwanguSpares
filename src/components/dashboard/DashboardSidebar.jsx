@@ -8,15 +8,6 @@ import { cn } from "@/lib/utils";
 function SidebarContent({ items, active, title, onItemClick }) {
   return (
     <>
-      //<div className="p-5 border-b border-slate-100 dark:border-slate-700">
-        //<Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
-      //    <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
-       //     <Package className="w-4 h-4 text-white" />
-      //    </div>
-      //    <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">Bwangu<span className="text-blue-600">Spares</span></span>
-      //  </Link>
-      //  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-2 font-medium uppercase tracking-wider">{title}</p>
-      //</div>
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto">
          {items.map(item => 
            item.href ? (
