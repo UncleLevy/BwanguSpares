@@ -39,8 +39,6 @@ Deno.serve(async (req) => {
         const docNumber = `REC-${data.id.slice(0, 6).toUpperCase()}-${Date.now().toString().slice(-4)}`;
         const items = data.items || [];
         const subtotal = items.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0);
-        const vat = subtotal * 0.16;
-        const total = subtotal + vat;
         const color = '#065f46';
 
         const itemRows = items.map((item, i) => `
@@ -54,7 +52,7 @@ Deno.serve(async (req) => {
         const shippingCost = data.shipping_cost || 0;
         const discountAmount = data.discount_amount || 0;
         const subtotalExVat = (subtotal + shippingCost - discountAmount) / 1.16;
-        const vat = (subtotal + shippingCost - discountAmount) - subtotalExVat;
+        const vatAmount = (subtotal + shippingCost - discountAmount) - subtotalExVat;
         const grandTotal = data.total_amount || (subtotal + shippingCost - discountAmount);
         
         const receiptHtml = `
@@ -95,7 +93,7 @@ Deno.serve(async (req) => {
                 ${shippingCost > 0 ? `<tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#555">Shipping</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#555">K${shippingCost.toLocaleString()}</td></tr>` : ''}
                 ${discountAmount > 0 ? `<tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#059669">Discount${data.coupon_code ? ` (${data.coupon_code})` : ''}</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#059669">-K${discountAmount.toLocaleString()}</td></tr>` : ''}
                 <tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#555">Subtotal (excl. VAT)</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#555">K${subtotalExVat.toFixed(2)}</td></tr>
-                <tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#555">VAT (16%)</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#555">K${vat.toFixed(2)}</td></tr>
+                <tr><td colspan="2"></td><td style="padding:4px 12px;font-size:13px;color:#555">VAT (16%)</td><td style="padding:4px 12px;text-align:right;font-size:13px;color:#555">K${vatAmount.toFixed(2)}</td></tr>
                 <tr>
                   <td colspan="2"></td>
                   <td colspan="2" style="padding:10px 12px;background:${color};color:#fff;font-weight:bold;font-size:15px;border-radius:6px;text-align:right">TOTAL: K${grandTotal.toLocaleString()}</td>
