@@ -485,3 +485,125 @@ export const emailHireRequestResponseToBuyer = (buyerEmail, buyerName, shopName,
     body: `Hi ${buyerName || "there"},\n\n${shopName} has ${isCounter ? `made a counter offer on` : `responded to`} your technician hire request.\n\n${isCounter ? `Counter Budget: K${counterBudget?.toLocaleString() || "N/A"}\n` : ""}${message ? `Message: ${message}\n` : ""}\nLog in to your Buyer Dashboard to respond.\n\nBwanguSpares Team`,
   });
 };
+
+// ─── Shipping & Courier Notifications ────────────────────────────────────────
+
+export const emailCourierAssigned = (buyerEmail, buyerName, shipment, courier) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #0891b2;">🚚 Your courier has been assigned!</p>
+    
+    <div style="background: #f0f9ff; padding: 20px; border-radius: 8px; border-left: 4px solid #0891b2; margin: 20px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">Courier Details</p>
+      <p style="margin: 8px 0;"><strong>Name:</strong> ${courier.full_name}</p>
+      <p style="margin: 8px 0;"><strong>Phone:</strong> ${courier.phone}</p>
+      <p style="margin: 8px 0;"><strong>Vehicle:</strong> ${courier.vehicle_type}</p>
+      ${shipment.is_intercity ? `<p style="margin: 8px 0; color: #0891b2; font-size: 13px;">📍 This is an intercity courier who will transport your package to your region</p>` : ''}
+    </div>
+    
+    <div style="background: #fafafa; padding: 16px; border-radius: 8px; margin: 20px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">📦 Tracking</p>
+      <p style="margin: 6px 0; font-size: 14px;"><strong>Tracking #:</strong> ${shipment.tracking_number}</p>
+      <p style="margin: 6px 0; font-size: 13px; color: #666;">Estimated Delivery: ${new Date(shipment.estimated_delivery_date).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</p>
+    </div>
+    
+    <p style="margin: 16px 0 0; font-size: 13px; color: #888;">Track your shipment in real-time from your Buyer Dashboard.</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `🚚 Courier Assigned – Track ${shipment.tracking_number}`,
+    htmlBody: createEmailTemplate("Courier Assigned", "🚚", "#0891b2", content, { text: "Track Shipment", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailShipmentPickedUp = (buyerEmail, buyerName, shipment, courier) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600; color: #059669;">✓ Your package is on its way!</p>
+    
+    <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; border-left: 4px solid #059669; margin: 20px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📦 Shipment Update</p>
+      <p style="margin: 8px 0;">Your package has been picked up by ${courier.full_name} and is now in transit.</p>
+      <p style="margin: 12px 0 0; font-size: 13px; color: #666;">
+        <strong>Courier Contact:</strong> ${courier.phone}
+      </p>
+    </div>
+    
+    <div style="background: #fafafa; padding: 16px; border-radius: 8px; margin: 20px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">Tracking Info</p>
+      <p style="margin: 6px 0;"><strong>Tracking #:</strong> ${shipment.tracking_number}</p>
+      <p style="margin: 6px 0; color: #059669;">Status: <strong>In Transit</strong></p>
+    </div>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `✓ Package Picked Up – ${shipment.tracking_number}`,
+    htmlBody: createEmailTemplate("In Transit", "📦", "#059669", content, { text: "Track Package", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailShipmentDelivered = (buyerEmail, buyerName, shipment) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #059669;">🎉 Your package has been delivered!</p>
+    
+    <div style="background: #f0fdf4; padding: 24px; border-radius: 12px; border: 2px solid #059669; margin: 20px 0; text-align: center;">
+      <div style="font-size: 48px; margin-bottom: 12px;">✓</div>
+      <p style="margin: 0; font-size: 16px; font-weight: 600; color: #059669;">Delivery Confirmed</p>
+      <p style="margin: 8px 0 0; font-size: 13px; color: #666;">Tracking: ${shipment.tracking_number}</p>
+    </div>
+    
+    ${shipment.delivery_address ? `
+    <div style="background: #fafafa; padding: 16px; border-radius: 8px; margin: 20px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">📍 Delivered To</p>
+      <p style="margin: 0; font-size: 13px; color: #666;">${shipment.delivery_address}</p>
+    </div>
+    ` : ''}
+    
+    <p style="margin: 20px 0; font-size: 14px; color: #555;">
+      We hope you're satisfied with your purchase! Please consider leaving a review to help other buyers.
+    </p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `🎉 Package Delivered – ${shipment.tracking_number}`,
+    htmlBody: createEmailTemplate("Delivered", "🎉", "#059669", content, { text: "Leave a Review", url: "https://bwangu.com" }),
+  });
+};
+
+export const emailCourierHandoff = (buyerEmail, buyerName, shipment, fromCourier, toCourier, handoffLocation) => {
+  const content = `
+    <p style="margin: 0 0 16px;">Hi ${buyerName || "there"},</p>
+    <p style="margin: 0 0 16px;">Your package has reached ${handoffLocation} and is being transferred to a local courier for final delivery.</p>
+    
+    <div style="background: #fef3c7; padding: 20px; border-radius: 8px; border-left: 4px solid #d97706; margin: 20px 0;">
+      <p style="margin: 0 0 12px; font-weight: 600; color: #1a1a1a;">📍 Courier Handoff</p>
+      <div style="margin: 12px 0; padding: 12px; background: white; border-radius: 6px;">
+        <p style="margin: 0 0 6px; font-size: 12px; color: #666;">Intercity Courier</p>
+        <p style="margin: 0; font-weight: 600;">${fromCourier.full_name}</p>
+        <p style="margin: 2px 0 0; font-size: 13px; color: #666;">${fromCourier.phone}</p>
+      </div>
+      <div style="text-align: center; margin: 8px 0;">
+        <span style="font-size: 20px;">→</span>
+      </div>
+      <div style="margin: 12px 0; padding: 12px; background: white; border-radius: 6px;">
+        <p style="margin: 0 0 6px; font-size: 12px; color: #666;">Local Courier (Final Delivery)</p>
+        <p style="margin: 0; font-weight: 600;">${toCourier.full_name}</p>
+        <p style="margin: 2px 0 0; font-size: 13px; color: #666;">${toCourier.phone}</p>
+      </div>
+    </div>
+    
+    <div style="background: #fafafa; padding: 16px; border-radius: 8px; margin: 20px 0;">
+      <p style="margin: 0 0 8px; font-weight: 600; color: #1a1a1a;">Tracking Info</p>
+      <p style="margin: 6px 0;"><strong>Tracking #:</strong> ${shipment.tracking_number}</p>
+      <p style="margin: 6px 0; color: #d97706;">Status: <strong>Handoff Complete</strong></p>
+    </div>
+    
+    <p style="margin: 16px 0 0; font-size: 13px; color: #888;">Your local courier will deliver the package within the next 1-2 days.</p>
+  `;
+  return send({
+    to: buyerEmail,
+    subject: `📍 Courier Handoff Complete – ${shipment.tracking_number}`,
+    htmlBody: createEmailTemplate("Handoff Complete", "📍", "#d97706", content, { text: "Track Package", url: "https://bwangu.com" }),
+  });
+};
