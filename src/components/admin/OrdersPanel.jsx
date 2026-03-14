@@ -20,7 +20,7 @@ const statusOptions = [
   { value: "confirmed", label: "Confirmed", color: "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400" },
   { value: "processing", label: "Processing", color: "bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400" },
   { value: "shipped", label: "Shipped", color: "bg-purple-100 dark:bg-purple-900/40 text-purple-700 dark:text-purple-400" },
-  { value: "delivered", label: "Delivered", color: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" },
+  { value: "collected", label: "Collected", color: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" },
   { value: "cancelled", label: "Cancelled", color: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" },
 ];
 
@@ -222,36 +222,16 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
               </Select>
             </div>
 
-            {(formData.status === "shipped" || formData.status === "delivered") && (
-              <>
-                <div>
-                  <Label className="flex items-center gap-2"><Package className="w-4 h-4" /> Tracking Number</Label>
-                  <Input
-                    value={formData.tracking_number}
-                    onChange={e => setFormData({...formData, tracking_number: e.target.value})}
-                    placeholder="e.g., ZM2024001234"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label className="flex items-center gap-2"><Truck className="w-4 h-4" /> Current Location</Label>
-                  <Input
-                    value={formData.current_location}
-                    onChange={e => setFormData({...formData, current_location: e.target.value})}
-                    placeholder="e.g., Lusaka Hub, Transit"
-                    className="mt-1"
-                  />
-                </div>
-                <div>
-                  <Label className="flex items-center gap-2"><Calendar className="w-4 h-4" /> Estimated Delivery</Label>
-                  <Input
-                    type="date"
-                    value={formData.estimated_delivery}
-                    onChange={e => setFormData({...formData, estimated_delivery: e.target.value})}
-                    className="mt-1"
-                  />
-                </div>
-              </>
+            {formData.status === "shipped" && (
+              <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-slate-600 dark:text-slate-300">
+                ℹ️ Shipping and delivery tracking is managed in the <strong>Shipping Module</strong> of the shop's dashboard.
+              </div>
+            )}
+            
+            {formData.status === "collected" && (
+              <div className="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 rounded-lg p-3 text-sm text-slate-600 dark:text-slate-300">
+                ✓ Customer has collected this order from the shop.
+              </div>
             )}
           </div>
           <DialogFooter>
