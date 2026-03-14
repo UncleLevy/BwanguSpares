@@ -490,7 +490,7 @@ export default function BuyerDashboard() {
         {view === "cart" && (
           <div>
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Cart</h1>
-            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 max-w-2xl">
+            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 max-w-2xl">
               <CardContent className="p-6">
                 <DashboardCartPreview userEmail={user?.email} />
               </CardContent>
@@ -503,7 +503,7 @@ export default function BuyerDashboard() {
             <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Profile</h1>
 
             {/* Personal Info */}
-            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-4">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Personal Information</h2>
 
@@ -581,7 +581,7 @@ export default function BuyerDashboard() {
             </Card>
 
             {/* Password Reset */}
-            <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <Card className="border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-3">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
