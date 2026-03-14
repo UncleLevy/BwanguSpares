@@ -533,7 +533,7 @@ export default function BuyerDashboard() {
                   <div>
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{user?.full_name}</p>
                     <p className="text-xs text-slate-500 dark:text-slate-400">{user?.email}</p>
-                    {uploadingPicture && <p className="text-xs text-blue-500 mt-1">Uploading...</p>}
+                    {uploadingPicture && <p className="text-xs text-blue-500 dark:text-blue-400 mt-1">Uploading...</p>}
                   </div>
                 </div>
 
@@ -543,20 +543,20 @@ export default function BuyerDashboard() {
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <Label>First Name *</Label>
-                    <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400" : ""}`} />
-                    {profileErrors.first_name && <p className="text-xs text-red-500 mt-1">{profileErrors.first_name}</p>}
+                    <Label className="dark:text-slate-300">First Name *</Label>
+                    <Input value={profileForm.first_name} onChange={e => setProfileForm({...profileForm, first_name: e.target.value})} placeholder="First name" className={`mt-1 rounded-xl ${profileErrors.first_name ? "border-red-400 dark:border-red-600" : ""}`} />
+                    {profileErrors.first_name && <p className="text-xs text-red-500 dark:text-red-400 mt-1">{profileErrors.first_name}</p>}
                   </div>
                   <div>
-                    <Label>Last Name *</Label>
-                    <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400" : ""}`} />
-                    {profileErrors.last_name && <p className="text-xs text-red-500 mt-1">{profileErrors.last_name}</p>}
+                    <Label className="dark:text-slate-300">Last Name *</Label>
+                    <Input value={profileForm.last_name} onChange={e => setProfileForm({...profileForm, last_name: e.target.value})} placeholder="Last name" className={`mt-1 rounded-xl ${profileErrors.last_name ? "border-red-400 dark:border-red-600" : ""}`} />
+                    {profileErrors.last_name && <p className="text-xs text-red-500 dark:text-red-400 mt-1">{profileErrors.last_name}</p>}
                   </div>
                 </div>
                 <div>
-                  <Label>Phone Number</Label>
-                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400" : ""}`} />
-                  {profileErrors.phone && <p className="text-xs text-red-500 mt-1">{profileErrors.phone}</p>}
+                  <Label className="dark:text-slate-300">Phone Number</Label>
+                  <Input value={profileForm.phone} onChange={e => setProfileForm({...profileForm, phone: e.target.value})} placeholder="+260 7XX XXX XXX" className={`mt-1 rounded-xl ${profileErrors.phone ? "border-red-400 dark:border-red-600" : ""}`} />
+                  {profileErrors.phone && <p className="text-xs text-red-500 dark:text-red-400 mt-1">{profileErrors.phone}</p>}
                 </div>
                 <AddressInput 
                   value={{ region: profileForm.region, town: profileForm.town, address: profileForm.address }}
@@ -586,7 +586,7 @@ export default function BuyerDashboard() {
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 text-sm uppercase tracking-wide">Security</h2>
                 <p className="text-sm text-slate-500 dark:text-slate-400">A password reset link will be sent to <span className="font-medium text-slate-700 dark:text-slate-300">{user?.email}</span>.</p>
                 {passwordResetSent ? (
-                  <p className="text-sm text-emerald-600 font-medium">✓ Reset link sent! Check your email.</p>
+                  <p className="text-sm text-emerald-600 dark:text-emerald-500 font-medium">✓ Reset link sent! Check your email.</p>
                 ) : (
                   <Button variant="outline" onClick={async () => {
                     await base44.integrations.Core.SendEmail({
@@ -596,7 +596,7 @@ export default function BuyerDashboard() {
                     });
                     setPasswordResetSent(true);
                     toast.success("Password reset email sent!");
-                  }}>
+                  }} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
                     Send Password Reset Email
                   </Button>
                 )}
