@@ -85,53 +85,53 @@
 
 const REQUIREMENTS = `
 # Django Core
-Django==4.2.7
-djangorestframework==3.14.0
-django-cors-headers==4.3.0
-django-filter==23.3
-drf-spectacular==0.26.5
+Django
+djangorestframework
+django-cors-headers
+django-filter
+drf-spectacular
 
 # Database
-psycopg2-binary==2.9.9
-dj-database-url==2.1.0
+psycopg2-binary
+dj-database-url
 
 # Authentication
-djangorestframework-simplejwt==5.3.0
-django-allauth==0.57.0
+djangorestframework-simplejwt
+django-allauth
 
 # Celery & Redis
-celery==5.3.4
-redis==5.0.1
-django-redis==5.4.0
+celery
+redis
+django-redis
 
 # File Storage
-django-storages==1.14.2
-boto3==1.29.7
+django-storages
+boto3
 
 # Payments
-stripe==7.4.0
+stripe
 
 # Email
-sendgrid==6.11.0
+sendgrid
 
 # Monitoring
-sentry-sdk==1.38.0
+sentry-sdk
 
 # Image Processing
-Pillow==10.1.0
+Pillow
 
 # Utilities
-python-decouple==3.8
-requests==2.31.0
-python-dateutil==2.8.2
+python-decouple
+requests
+python-dateutil
 
 # Development
-django-debug-toolbar==4.2.0
-ipython==8.17.2
+django-debug-toolbar
+ipython
 
 # Production
-gunicorn==21.2.0
-whitenoise==6.6.0
+gunicorn
+whitenoise
 `;
 
 // ============================================================================
