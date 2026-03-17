@@ -103,12 +103,14 @@ export default function PartsRequestForm({ open, onClose, onSuccess, prefill = {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <Label>Category</Label>
-              <Select value={form.category} onValueChange={v => setForm({ ...form, category: v })}>
-                <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <div className="mt-1">
+                <MobileSelect
+                  value={form.category}
+                  onValueChange={v => setForm({ ...form, category: v })}
+                  placeholder="Category"
+                  options={CATEGORIES}
+                />
+              </div>
             </div>
             <div>
               <Label>Budget (ZMW)</Label>

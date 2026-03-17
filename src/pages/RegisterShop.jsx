@@ -243,14 +243,18 @@ export default function RegisterShop() {
              />
              <div>
                <Label>Slot Plan</Label>
-               <Select value={form.slot_type} onValueChange={v => setForm({...form, slot_type: v})}>
-                 <SelectTrigger className="mt-1 rounded-xl"><SelectValue /></SelectTrigger>
-                 <SelectContent>
-                   <SelectItem value="basic">Basic – Free</SelectItem>
-                   <SelectItem value="standard">Standard</SelectItem>
-                   <SelectItem value="premium">Premium</SelectItem>
-                 </SelectContent>
-               </Select>
+               <div className="mt-1">
+                 <MobileSelect
+                   value={form.slot_type}
+                   onValueChange={v => setForm({...form, slot_type: v})}
+                   placeholder="Select plan"
+                   options={[
+                     { value: "basic", label: "Basic – Free" },
+                     { value: "standard", label: "Standard" },
+                     { value: "premium", label: "Premium" },
+                   ]}
+                 />
+               </div>
              </div>
            </>
          )}
