@@ -115,11 +115,14 @@ export default function Layout({ children, currentPageName }) {
 
   if (hideLayout) {
     return (
-      <AnimatePresence mode="wait">
-        <motion.div key={location.pathname + location.search} {...pageVariants}>
-          {children}
-        </motion.div>
-      </AnimatePresence>
+      <>
+        <AnimatePresence mode="wait">
+          <motion.div key={location.pathname + location.search} {...pageVariants}>
+            {children}
+          </motion.div>
+        </AnimatePresence>
+        <BottomNav />
+      </>
     );
   }
 
