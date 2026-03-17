@@ -1261,14 +1261,13 @@ export default function ShopDashboard() {
                       )}
                       <TableCell onClick={e => e.stopPropagation()}>
                         <div className="flex gap-2">
-                          <Select value={o.status} onValueChange={v => updateOrderStatus(o, v)}>
-                            <SelectTrigger className="h-8 w-32 text-xs"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {["pending","confirmed","processing","shipped","delivered","cancelled"].map(s => (
-                                <SelectItem key={s} value={s}>{s}</SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
+                          <MobileSelect
+                            value={o.status}
+                            onValueChange={v => updateOrderStatus(o, v)}
+                            placeholder="Status"
+                            triggerClassName="h-8 w-32 text-xs"
+                            options={["pending","confirmed","processing","shipped","delivered","cancelled"].map(s => ({ value: s, label: s }))}
+                          />
                           {(o.status === "shipped" || o.status === "processing") && (
                             <Button size="sm" variant="outline" onClick={() => openTrackingDialog(o)} className="h-8 gap-1">
                               <MapPin className="w-3 h-3" /> Tracking
