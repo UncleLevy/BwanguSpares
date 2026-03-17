@@ -194,12 +194,16 @@ export default function FindNearby() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => { setTab("shops"); setSelected(null); }}
+            aria-label="Show shops"
+            aria-pressed={tab === "shops"}
             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${tab === "shops" ? "bg-blue-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}
           >
-            <Store className="w-3.5 h-3.5" /> Shops ({enrichShops.length})
+            <Store className="w-3.5 h-3.5" aria-hidden="true" /> Shops ({enrichShops.length})
           </button>
           <button
             onClick={() => { setTab("technicians"); setSelected(null); }}
+            aria-label="Show technicians"
+            aria-pressed={tab === "technicians"}
             className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-sm font-medium transition-all ${tab === "technicians" ? "bg-emerald-600 text-white" : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"}`}
           >
             <Wrench className="w-3.5 h-3.5" /> Technicians ({enrichTechs.length})
