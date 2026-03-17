@@ -69,10 +69,12 @@ export default function OrderDetails() {
   const subtotal = order.items?.reduce((s, i) => s + (i.price || 0) * (i.quantity || 1), 0) || 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 p-4 sm:p-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
+      <AppHeader title={`Order #${order.id?.slice(0,8)}`} backTo="ShopDashboard" />
+      <div className="p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex items-center gap-4 mb-6">
+        <div className="hidden md:flex items-center gap-4 mb-6">
           <Button variant="ghost" size="icon" onClick={() => navigate(createPageUrl("ShopDashboard") + "?view=orders")}>
             <ArrowLeft className="w-5 h-5" />
           </Button>
