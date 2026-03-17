@@ -901,22 +901,8 @@ export default function ShopDashboard() {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                     <Input value={productSearch} onChange={e => setProductSearch(e.target.value)} placeholder="Search name, brand, SKU..." className="pl-9" />
                   </div>
-                  <Select value={productFilterCategory} onValueChange={setProductFilterCategory}>
-                    <SelectTrigger className="w-40"><SelectValue placeholder="Category" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Categories</SelectItem>
-                      {CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                  <Select value={productFilterStatus} onValueChange={setProductFilterStatus}>
-                    <SelectTrigger className="w-36"><SelectValue placeholder="Status" /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="all">All Statuses</SelectItem>
-                      <SelectItem value="active">Active</SelectItem>
-                      <SelectItem value="inactive">Inactive</SelectItem>
-                      <SelectItem value="out_of_stock">Out of Stock</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <MobileSelect value={productFilterCategory} onValueChange={setProductFilterCategory} placeholder="Category" triggerClassName="w-40" options={[{value:"all",label:"All Categories"},...CATEGORIES]} />
+                  <MobileSelect value={productFilterStatus} onValueChange={setProductFilterStatus} placeholder="Status" triggerClassName="w-36" options={[{value:"all",label:"All Statuses"},{value:"active",label:"Active"},{value:"inactive",label:"Inactive"},{value:"out_of_stock",label:"Out of Stock"}]} />
                   <div className="flex items-center gap-1.5">
                     <Input value={productPriceMin} onChange={e => setProductPriceMin(e.target.value)} placeholder="Min K" className="w-20" type="number" min="0" />
                     <span className="text-slate-400 text-sm">–</span>
