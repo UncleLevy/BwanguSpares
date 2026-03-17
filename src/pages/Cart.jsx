@@ -25,6 +25,9 @@ export default function Cart() {
   const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money"
   const [mobileNetwork, setMobileNetwork] = useState("MTN");
   const [mobileNumber, setMobileNumber] = useState("");
+  const [momoReferenceId, setMomoReferenceId] = useState(null);
+  const [momoStatus, setMomoStatus] = useState(null); // null | "PENDING" | "SUCCESSFUL" | "FAILED"
+  const [momoPolling, setMomoPolling] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [regions, setRegions] = useState([]);
