@@ -147,23 +147,24 @@ export default function BrowseProducts() {
       base44.auth.redirectToLogin(createPageUrl("BrowseProducts"));
       return;
     }
-    const user = await base44.auth.me();
-    if (user.role === 'shop_owner' || user.role === 'admin') {
+    const u = await base44.auth.me();
+    if (u.role === 'shop_owner' || u.role === 'admin') {
       toast.error("Shop owners and admins cannot place orders");
       return;
     }
-    const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
+    // Optimistic: show success immediately
+    toast.success(`${product.name} added to cart!`);
+    const existing = await base44.entities.CartItem.filter({ buyer_email: u.email, product_id: product.id });
     if (existing.length > 0) {
       const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + 1);
       await base44.entities.CartItem.update(existing[0].id, { quantity: newQty });
     } else {
       await base44.entities.CartItem.create({
-        buyer_email: user.email, product_id: product.id, product_name: product.name,
+        buyer_email: u.email, product_id: product.id, product_name: product.name,
         shop_id: product.shop_id, shop_name: product.shop_name, price: product.price,
         quantity: 1, image_url: product.image_url,
       });
     }
-    toast.success("Added to cart");
   };
 
   return (
