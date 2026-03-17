@@ -135,11 +135,16 @@ export default function ShopDashboard() {
 
   const navigate = useNavigate();
 
-  // Read initial view from URL query param
+  // Sync view from URL (initial load + popstate/pushstate changes)
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const viewParam = params.get("view");
-    if (viewParam) setView(viewParam);
+    const sync = () => {
+      const params = new URLSearchParams(window.location.search);
+      const viewParam = params.get("view");
+      if (viewParam) setView(viewParam);
+    };
+    sync();
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
   }, []);
 
   useEffect(() => {
