@@ -666,6 +666,7 @@ export default function BuyerDashboard() {
             value={deleteConfirmText}
             onChange={e => setDeleteConfirmText(e.target.value)}
             placeholder="Type DELETE to confirm"
+            aria-label="Type DELETE to confirm account deletion"
             className="rounded-xl"
           />
           <DialogFooter className="gap-2">
