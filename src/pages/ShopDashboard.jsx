@@ -500,30 +500,35 @@ export default function ShopDashboard() {
     setGeneratingReport(false);
   };
 
+  const switchView = (v) => {
+    setView(v);
+    window.history.replaceState({}, "", window.location.pathname + "?view=" + v);
+  };
+
   const sidebarItems = [
-   { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => setView("overview") },
-   { id: "shop_info", label: "Shop Info", icon: Store, onClick: () => setView("shop_info") },
-   { id: "shops", label: "My Shops", icon: Store, onClick: () => setView("shops") },
-   { id: "branches", label: "Branches", icon: MapPin, onClick: () => setView("branches") },
-   { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => setView("analytics") },
-   { id: "customers", label: "Customers", icon: User, onClick: () => setView("customers") },
-   { id: "marketing", label: "Marketing", icon: TrendingUp, onClick: () => setView("marketing") },
-   { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => setView("marketing_analytics") },
-    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => setView("market_insights") },
-    { id: "shipping", label: "Shipping", icon: Truck, onClick: () => setView("shipping") },
-    { id: "courier_performance", label: "Courier Performance", icon: TrendingUp, onClick: () => setView("courier_performance") },
-    { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
-   { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => setView("technicians") },
-   { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => setView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
-   { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
-   { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => setView("hire_requests") },
-   { id: "appointments", label: "Appointments", icon: Calendar, onClick: () => setView("appointments") },
-   { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
-   { id: "returns", label: "Returns", icon: RotateCcw, onClick: () => setView("returns") },
-   { id: "support", label: "Support", icon: AlertTriangle, onClick: () => setView("support") },
-   { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => setView("wallet") },
+   { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => switchView("overview") },
+   { id: "shop_info", label: "Shop Info", icon: Store, onClick: () => switchView("shop_info") },
+   { id: "shops", label: "My Shops", icon: Store, onClick: () => switchView("shops") },
+   { id: "branches", label: "Branches", icon: MapPin, onClick: () => switchView("branches") },
+   { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => switchView("analytics") },
+   { id: "customers", label: "Customers", icon: User, onClick: () => switchView("customers") },
+   { id: "marketing", label: "Marketing", icon: TrendingUp, onClick: () => switchView("marketing") },
+   { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => switchView("marketing_analytics") },
+    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => switchView("market_insights") },
+    { id: "shipping", label: "Shipping", icon: Truck, onClick: () => switchView("shipping") },
+    { id: "courier_performance", label: "Courier Performance", icon: TrendingUp, onClick: () => switchView("courier_performance") },
+    { id: "products", label: "Products", icon: Package, onClick: () => switchView("products") },
+   { id: "technicians", label: "Technicians", icon: Wrench, onClick: () => switchView("technicians") },
+   { id: "orders", label: "Orders", icon: ShoppingCart, onClick: () => switchView("orders"), badge: orders.filter(o => o.status === "pending").length || null },
+   { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => switchView("parts_requests") },
+   { id: "hire_requests", label: "Hire Requests", icon: Wrench, onClick: () => switchView("hire_requests") },
+   { id: "appointments", label: "Appointments", icon: Calendar, onClick: () => switchView("appointments") },
+   { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => switchView("messages") },
+   { id: "returns", label: "Returns", icon: RotateCcw, onClick: () => switchView("returns") },
+   { id: "support", label: "Support", icon: AlertTriangle, onClick: () => switchView("support") },
+   { id: "wallet", label: "Wallet & Earnings", icon: DollarSign, onClick: () => switchView("wallet") },
    {
-      id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => setView("inventory"),
+      id: "inventory", label: "Inventory", icon: ClipboardList, onClick: () => switchView("inventory"),
       badge: products.filter(p => p.stock_quantity <= (p.low_stock_threshold ?? 5)).length || null
     },
    ];
