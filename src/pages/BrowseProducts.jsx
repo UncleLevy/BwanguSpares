@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import ProductCard from "@/components/shared/ProductCard";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
+import { ProductSkeleton } from "@/components/shared/SkeletonCard";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
@@ -281,15 +282,7 @@ export default function BrowseProducts() {
         <div className="flex-1 min-w-0">
           {loading ? (
             <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
-              {[1,2,3,4,5,6].map(i => (
-                <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse">
-                  <div className="h-44 bg-slate-100 dark:bg-slate-700" />
-                  <div className="p-4 space-y-3">
-                    <div className="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4" />
-                    <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded w-1/2" />
-                  </div>
-                </div>
-              ))}
+              {[1,2,3,4,5,6].map(i => <ProductSkeleton key={i} />)}
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20">
