@@ -406,8 +406,9 @@ function TechCard({ tech, selected, onClick }) {
         </div>
       </div>
       <Link to={createPageUrl("ShopProfile") + `?id=${tech.shop_id}`} onClick={e => e.stopPropagation()}
+        aria-label={`View ${tech.name}'s shop`}
         className="shrink-0 p-1.5 text-slate-400 hover:text-emerald-600 transition-colors">
-        <ChevronRight className="w-4 h-4" />
+        <ChevronRight className="w-4 h-4" aria-hidden="true" />
       </Link>
     </div>
   );
