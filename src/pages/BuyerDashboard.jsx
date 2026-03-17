@@ -264,7 +264,15 @@ export default function BuyerDashboard() {
     { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
   ];
 
-  if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950" style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}>
+      <div className="h-16 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800" />
+      <div className="p-4 lg:p-8 space-y-4 max-w-xl mt-6">
+        <Skeleton className="h-7 w-36 mb-6" />
+        {[1, 2, 3].map(i => <OrderSkeleton key={i} />)}
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
