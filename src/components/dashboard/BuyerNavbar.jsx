@@ -14,6 +14,7 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import { createPageUrl } from "@/utils";
 
 export default function BuyerNavbar({ user }) {
+  const navigate = useNavigate();
   return (
     <header className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

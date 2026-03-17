@@ -14,6 +14,7 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import { createPageUrl } from "@/utils";
 
 export default function ShopNavbar({ user }) {
+  const navigate = useNavigate();
   const [unreadMessages, setUnreadMessages] = useState(0);
 
   useEffect(() => {
