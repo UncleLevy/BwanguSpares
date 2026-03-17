@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import AppHeader from "@/components/shared/AppHeader";
 import PullToRefresh from "@/components/shared/PullToRefresh";
+import { CardSkeleton } from "@/components/shared/SkeletonCard";
 
 function getDistance(lat1, lon1, lat2, lon2) {
   const R = 6371;
@@ -112,12 +113,7 @@ export default function BrowseShops() {
 
       {loading ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          {[1,2,3,4,5,6].map(i => (
-            <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl animate-pulse">
-              <div className="h-36 bg-slate-100 dark:bg-slate-700 rounded-t-2xl" />
-              <div className="p-5 space-y-3"><div className="h-5 bg-slate-100 dark:bg-slate-700 rounded w-2/3" /></div>
-            </div>
-          ))}
+          {[1,2,3,4,5,6].map(i => <CardSkeleton key={i} lines={2} />)}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
