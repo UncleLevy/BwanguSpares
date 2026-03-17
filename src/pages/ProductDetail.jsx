@@ -57,6 +57,8 @@ export default function ProductDetail() {
     })();
   }, []);
 
+  const [addingToCart, setAddingToCart] = useState(false);
+
   const handleAddToCart = async () => {
     const isAuth = await base44.auth.isAuthenticated();
     if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("ProductDetail") + `?id=${id}`); return; }
@@ -65,18 +67,24 @@ export default function ProductDetail() {
       toast.error(`Only ${product.stock_quantity} unit(s) available. Submit a parts request for more.`);
       return;
     }
-    const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
-    if (existing.length > 0) {
-      const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + qty);
-      await base44.entities.CartItem.update(existing[0].id, { quantity: newQty });
-    } else {
-      await base44.entities.CartItem.create({
-        buyer_email: user.email, product_id: product.id, product_name: product.name,
-        shop_id: product.shop_id, shop_name: product.shop_name, price: product.price,
-        quantity: qty, image_url: product.image_url,
-      });
+    // Optimistic feedback immediately
+    setAddingToCart(true);
+    toast.success(`${product.name} added to cart!`);
+    try {
+      const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
+      if (existing.length > 0) {
+        const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + qty);
+        await base44.entities.CartItem.update(existing[0].id, { quantity: newQty });
+      } else {
+        await base44.entities.CartItem.create({
+          buyer_email: user.email, product_id: product.id, product_name: product.name,
+          shop_id: product.shop_id, shop_name: product.shop_name, price: product.price,
+          quantity: qty, image_url: product.image_url,
+        });
+      }
+    } finally {
+      setAddingToCart(false);
     }
-    toast.success("Added to cart");
   };
 
   if (loading) return (
@@ -148,7 +156,7 @@ export default function ProductDetail() {
                   <button onClick={() => setQty(Math.min(product.stock_quantity || 0, qty+1))} className="px-3 py-2 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700">+</button>
                 </div>
                 <Button onClick={handleAddToCart} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl gap-2"
-                  disabled={product.stock_quantity === 0}>
+                  disabled={product.stock_quantity === 0 || addingToCart}>
                   <ShoppingCart className="w-4 h-4" /> Add to Cart
                 </Button>
               </div>
