@@ -272,6 +272,7 @@ export default function OrderDetails() {
           </div>
         </div>
       </div>
+      </div>
     </div>
   );
 }
