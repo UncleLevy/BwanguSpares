@@ -132,7 +132,7 @@ export default function ShopProfile() {
 
   return (
     <PullToRefresh onRefresh={reload}>
-    <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
+      <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
       <AppHeader title={shop?.name || "Shop"} backTo="BrowseShops" />
       <div className="relative h-48 md:h-64 bg-gradient-to-br from-blue-600 to-blue-800 flex items-start pt-4 px-4">
         {shop.cover_url && <img src={shop.cover_url} alt="" className="w-full h-full object-cover opacity-40" />}
@@ -284,7 +284,7 @@ export default function ShopProfile() {
           onClose={() => { setHireDialog(false); setSelectedTech(null); }}
         />
       )}
-    </div>
+      </div>
     </PullToRefresh>
   );
 }

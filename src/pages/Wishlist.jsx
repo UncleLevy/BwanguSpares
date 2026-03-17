@@ -79,7 +79,7 @@ export default function WishlistPage() {
 
   return (
     <PullToRefresh onRefresh={loadWishlist}>
-    <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
+      <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
       <AppHeader title="Wishlist" backTo="BrowseProducts" />
       <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6">
         <Breadcrumbs items={[{ label: "Wishlist" }]} />
@@ -133,7 +133,7 @@ export default function WishlistPage() {
           </div>
         )}
       </div>
-    </div>
+      </div>
     </PullToRefresh>
   );
 }
