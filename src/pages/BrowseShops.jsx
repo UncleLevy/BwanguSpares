@@ -30,17 +30,18 @@ export default function BrowseShops() {
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 9;
 
-  useEffect(() => {
-    (async () => {
-      const [s, r] = await Promise.all([
-        base44.entities.Shop.filter({ status: "approved" }),
-        base44.entities.Region.list(),
-      ]);
-      setShops(s);
-      setRegions(r);
-      setLoading(false);
-    })();
-  }, []);
+  const loadData = async () => {
+    setLoading(true);
+    const [s, r] = await Promise.all([
+      base44.entities.Shop.filter({ status: "approved" }),
+      base44.entities.Region.list(),
+    ]);
+    setShops(s);
+    setRegions(r);
+    setLoading(false);
+  };
+
+  useEffect(() => { loadData(); }, []);
 
   const getLocation = () => {
     setLocating(true);
