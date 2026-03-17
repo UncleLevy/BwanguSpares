@@ -251,7 +251,7 @@ export default function BuyerDashboard() {
     setSubmitting(false);
   };
 
-  const navigate = useNavigate ? useNavigate() : null;
+  const navigate = useNavigate();
   const switchView = (v) => {
     setView(v);
     window.history.replaceState({}, "", window.location.pathname + "?view=" + v);
