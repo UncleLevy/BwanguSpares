@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Heart, ShoppingCart, Trash2, ArrowRight } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
