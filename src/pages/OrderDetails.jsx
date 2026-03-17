@@ -50,9 +50,13 @@ export default function OrderDetails() {
   }, [orderId]);
 
   const updateStatus = async (status) => {
-    await base44.entities.Order.update(order.id, { status });
-    setOrder({ ...order, status });
-    emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, status);
+    const prevStatus = order.status;
+    await applyOptimistic(
+      { status },
+      () => base44.entities.Order.update(order.id, { status }),
+      () => toast.error("Failed to update status")
+    );
+    emailOrderStatusUpdate(order.buyer_email, order.buyer_name, { ...order, status }, status);
     toast.success("Order status updated");
   };
 
