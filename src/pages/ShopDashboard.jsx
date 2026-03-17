@@ -26,6 +26,7 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
+import MobileSelect from "@/components/shared/MobileSelect";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import TechnicianHireRequests from "@/components/technicians/TechnicianHireRequests";
