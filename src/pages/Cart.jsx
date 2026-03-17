@@ -118,19 +118,22 @@ export default function Cart() {
     }
   };
 
-  const updateQty = async (item, delta) => {
+  const updateQty = (item, delta) => {
     const newQty = Math.max(1, (item.quantity || 1) + delta);
-    try {
-      await base44.entities.CartItem.update(item.id, { quantity: newQty });
-      setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i));
-    } catch (error) {
-      toast.error("Failed to update quantity");
-    }
+    updateItemOptimistic(
+      item.id,
+      { quantity: newQty },
+      () => base44.entities.CartItem.update(item.id, { quantity: newQty }),
+      () => toast.error("Failed to update quantity")
+    );
   };
 
-  const removeItem = async (item) => {
-    await base44.entities.CartItem.delete(item.id);
-    setItems(items.filter(i => i.id !== item.id));
+  const removeItem = (item) => {
+    removeItemOptimistic(
+      item.id,
+      () => base44.entities.CartItem.delete(item.id),
+      () => toast.error("Failed to remove item")
+    );
     toast.success("Item removed");
   };
 
