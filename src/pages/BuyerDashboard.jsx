@@ -466,7 +466,9 @@ export default function BuyerDashboard() {
             <Card className="border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
               <CardContent className="p-5">
                 <h2 className="font-semibold text-slate-800 dark:text-slate-200 mb-3">Transaction History</h2>
-                {walletTxns.length === 0 ? (
+                {loading ? (
+                  <RowSkeleton count={4} />
+                ) : walletTxns.length === 0 ? (
                   <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-8">No transactions yet</p>
                 ) : (
                   <div className="space-y-1">
