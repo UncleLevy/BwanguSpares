@@ -1201,7 +1201,7 @@ export default function ShopDashboard() {
                 <div className="space-y-4">
                   <div><Label>Name *</Label><Input value={techForm.name} onChange={e => setTechForm({...techForm, name: e.target.value})} className="mt-1" /></div>
                   <div><Label>Phone</Label><Input value={techForm.phone} onChange={e => setTechForm({...techForm, phone: e.target.value})} className="mt-1" /></div>
-                  <div><Label>Specialization</Label><Select value={techForm.specialization} onValueChange={v => setTechForm({...techForm, specialization: v})}><SelectTrigger className="mt-1"><SelectValue /></SelectTrigger><SelectContent>{SPECIALIZATIONS.map(s => <SelectItem key={s.value} value={s.value}>{s.label}</SelectItem>)}</SelectContent></Select></div>
+                  <div><Label>Specialization</Label><div className="mt-1"><MobileSelect value={techForm.specialization} onValueChange={v => setTechForm({...techForm, specialization: v})} placeholder="Specialization" options={SPECIALIZATIONS} /></div></div>
                   <div className="grid grid-cols-2 gap-3">
                     <div><Label>Experience (years)</Label><Input type="number" value={techForm.experience_years} onChange={e => setTechForm({...techForm, experience_years: e.target.value})} className="mt-1" /></div>
                     <div><Label>Hourly Rate (ZMW)</Label><Input type="number" value={techForm.hourly_rate} onChange={e => setTechForm({...techForm, hourly_rate: e.target.value})} className="mt-1" /></div>
