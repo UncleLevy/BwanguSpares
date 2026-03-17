@@ -251,17 +251,23 @@ export default function BuyerDashboard() {
     setSubmitting(false);
   };
 
+  const navigate = useNavigate ? useNavigate() : null;
+  const switchView = (v) => {
+    setView(v);
+    window.history.replaceState({}, "", window.location.pathname + "?view=" + v);
+  };
+
   const sidebarItems = [
-    { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => setView("orders") },
-    { id: "cart", label: "Cart", icon: ShoppingCart, onClick: () => setView("cart") },
-    { id: "wallet", label: "My Wallet", icon: Wallet, onClick: () => setView("wallet"), badge: wallet?.balance > 0 ? `K${Math.round(wallet.balance)}` : null },
-    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => setView("parts_requests") },
-    { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => setView("technician_requests") },
-    { id: "appointments", label: "My Appointments", icon: Calendar, onClick: () => setView("appointments") },
-    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => setView("messages") },
-    { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => setView("loyalty") },
-    { id: "support", label: "Support", icon: Settings, onClick: () => setView("support") },
-    { id: "profile", label: "Profile", icon: User, onClick: () => setView("profile") },
+    { id: "orders", label: "My Orders", icon: ShoppingCart, onClick: () => switchView("orders") },
+    { id: "cart", label: "Cart", icon: ShoppingCart, onClick: () => switchView("cart") },
+    { id: "wallet", label: "My Wallet", icon: Wallet, onClick: () => switchView("wallet"), badge: wallet?.balance > 0 ? `K${Math.round(wallet.balance)}` : null },
+    { id: "parts_requests", label: "Parts Requests", icon: FileSearch, onClick: () => switchView("parts_requests") },
+    { id: "technician_requests", label: "Technician Requests", icon: Wrench, onClick: () => switchView("technician_requests") },
+    { id: "appointments", label: "My Appointments", icon: Calendar, onClick: () => switchView("appointments") },
+    { id: "messages", label: "Messages", icon: MessageSquare, onClick: () => switchView("messages") },
+    { id: "loyalty", label: "Loyalty Rewards", icon: Gift, onClick: () => switchView("loyalty") },
+    { id: "support", label: "Support", icon: Settings, onClick: () => switchView("support") },
+    { id: "profile", label: "Profile", icon: User, onClick: () => switchView("profile") },
   ];
 
   if (loading) return (
