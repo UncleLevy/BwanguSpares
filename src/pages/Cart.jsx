@@ -579,22 +579,46 @@ export default function Cart() {
                          ))}
                        </div>
                      </div>
-                     <div>
-                       <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Mobile Money Number</Label>
-                       <Input
-                         type="tel"
-                         value={mobileNumber}
-                         onChange={e => setMobileNumber(e.target.value)}
-                         placeholder="e.g. 0976 000 000"
-                         className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                       />
-                     </div>
-                     <div className="flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
-                        <span className="text-green-600 text-sm">💳</span>
-                        <p className="text-xs text-green-700 dark:text-green-400">
-                          Powered by <strong>MoneyUnify</strong> — supports MTN MoMo, Airtel Money &amp; Zamtel. You will be redirected to complete your payment securely. Amount of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be preset.
-                        </p>
-                      </div>
+                     {mobileNetwork === "MTN" ? (
+                       <>
+                         <div>
+                           <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">MTN MoMo Number</Label>
+                           <Input
+                             type="tel"
+                             value={mobileNumber}
+                             onChange={e => setMobileNumber(e.target.value)}
+                             placeholder="e.g. 0976 000 000"
+                             className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                           />
+                         </div>
+                         <div className="flex items-start gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
+                           <span className="text-lg">📲</span>
+                           <p className="text-xs text-yellow-800 dark:text-yellow-300">
+                             <strong>MTN MoMo Direct</strong> — A payment prompt of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be sent to your MTN number. Approve it on your phone to complete the order.
+                           </p>
+                         </div>
+                       </>
+                     ) : (
+                       <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600">
+                         <span className="text-lg">🚧</span>
+                         <p className="text-xs text-slate-600 dark:text-slate-400">
+                           <strong>{mobileNetwork} Money</strong> integration is coming soon. Please use MTN MoMo or Card payment for now.
+                         </p>
+                       </div>
+                     )}
+
+                     {/* MoMo status modal */}
+                     {momoStatus && (
+                       <div className={`p-4 rounded-xl border text-center ${
+                         momoStatus === "SUCCESSFUL" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300" :
+                         momoStatus === "FAILED" ? "bg-red-50 dark:bg-red-900/20 border-red-300" :
+                         "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300"
+                       }`}>
+                         {momoStatus === "PENDING" && <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300 animate-pulse">⏳ Waiting for approval on your phone…</p>}
+                         {momoStatus === "SUCCESSFUL" && <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">✅ Payment successful! Redirecting…</p>}
+                         {momoStatus === "FAILED" && <p className="text-sm font-medium text-red-700 dark:text-red-400">❌ Payment failed or was declined. Please try again.</p>}
+                       </div>
+                     )}
                    </div>
                  )}
 
