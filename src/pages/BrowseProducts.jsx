@@ -13,6 +13,7 @@ import { ProductSkeleton } from "@/components/shared/SkeletonCard";
 import MobileSelect from "@/components/shared/MobileSelect";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
+import VehicleFilterSidebar from "@/components/parts/VehicleFilterSidebar";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" },
