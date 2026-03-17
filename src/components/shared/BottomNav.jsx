@@ -29,6 +29,7 @@ export default function BottomNav() {
   }, [location.pathname]);
 
   const handleTap = (href, isActive) => {
+    // Re-clicking active tab always resets to root of that tab (strips query params)
     if (isActive) {
       navigate(href, { replace: true });
     } else {
@@ -52,7 +53,7 @@ export default function BottomNav() {
       {navItems.map(({ label, icon: Icon, page, badge, hidden }) => {
         if (hidden) return null;
         const href = createPageUrl(page);
-        const active = location.pathname === href || location.pathname.startsWith(href + "?");
+        const active = location.pathname === href;
         return (
           <button
             key={label}
