@@ -162,7 +162,7 @@ export default function FindNearby() {
   const items = tab === "shops" ? enrichShops : enrichTechs;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] md:h-[calc(100vh-64px)]">
+    <div className="flex flex-col" style={{ height: "calc(100vh - 64px)", paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
       {/* Top bar */}
       <div className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 px-4 py-3 flex flex-col gap-3 z-10">
         <div className="flex items-center gap-3">
