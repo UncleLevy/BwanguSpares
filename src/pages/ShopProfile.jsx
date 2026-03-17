@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import { MapPin, Star, Phone, Package, Wrench, Store, User, ShieldCheck } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import MessageShopButton from "@/components/messaging/MessageShopButton";
 import ReportButton from "@/components/reports/ReportButton";
 import { Button } from "@/components/ui/button";
