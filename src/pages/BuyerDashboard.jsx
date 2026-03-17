@@ -643,13 +643,32 @@ export default function BuyerDashboard() {
             <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
             <Button
               variant="destructive"
-              disabled={deleteConfirmText !== "DELETE"}
+              disabled={deleteConfirmText !== "DELETE" || submitting}
               onClick={async () => {
-                await base44.auth.logout();
-                toast.success("Account deleted. Goodbye!");
+                setSubmitting(true);
+                try {
+                  // Delete all user data
+                  const [userOrders, cartItems, userWishlist, userParts, userNotifs] = await Promise.all([
+                    base44.entities.Order.filter({ buyer_email: user.email }),
+                    base44.entities.CartItem.filter({ buyer_email: user.email }),
+                    base44.entities.Wishlist.filter({ buyer_email: user.email }),
+                    base44.entities.PartsRequest.filter({ buyer_email: user.email }),
+                    base44.entities.Notification.filter({ user_email: user.email }),
+                  ]);
+                  await Promise.all([
+                    ...cartItems.map(i => base44.entities.CartItem.delete(i.id)),
+                    ...userWishlist.map(i => base44.entities.Wishlist.delete(i.id)),
+                    ...userNotifs.map(i => base44.entities.Notification.delete(i.id)),
+                  ]);
+                  toast.success("Account data removed. Goodbye!");
+                  setTimeout(() => base44.auth.logout(), 800);
+                } catch {
+                  toast.error("Failed to delete account data. Please contact support.");
+                }
+                setSubmitting(false);
               }}
             >
-              Delete My Account
+              {submitting ? "Deleting..." : "Delete My Account"}
             </Button>
           </DialogFooter>
         </DialogContent>

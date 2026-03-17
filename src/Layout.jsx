@@ -345,7 +345,7 @@ export default function Layout({ children, currentPageName }) {
 
       </header>
 
-      <main className="pb-16 md:pb-0">
+      <main className="pb-16 md:pb-0" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)" }}>
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
