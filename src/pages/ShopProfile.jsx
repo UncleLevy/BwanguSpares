@@ -119,8 +119,20 @@ export default function ShopProfile() {
     setHireDialog(true);
   };
 
+  const reload = async () => {
+    if (!shopId) return;
+    const [s, p, t, r] = await Promise.all([
+      base44.entities.Shop.filter({ id: shopId }),
+      base44.entities.Product.filter({ shop_id: shopId, status: "active" }),
+      base44.entities.Technician.filter({ shop_id: shopId }),
+      base44.entities.Review.filter({ shop_id: shopId, type: "shop" }, "-created_date", 50),
+    ]);
+    setShop(s[0]); setProducts(p); setTechnicians(t); setReviews(r);
+  };
+
   return (
-    <div>
+    <PullToRefresh onRefresh={reload}>
+    <div style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
       <AppHeader title={shop?.name || "Shop"} backTo="BrowseShops" />
       <div className="relative h-48 md:h-64 bg-gradient-to-br from-blue-600 to-blue-800 flex items-start pt-4 px-4">
         {shop.cover_url && <img src={shop.cover_url} alt="" className="w-full h-full object-cover opacity-40" />}
