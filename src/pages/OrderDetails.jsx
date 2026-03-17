@@ -25,7 +25,7 @@ const orderStatusColors = {
 };
 
 export default function OrderDetails() {
-  const [order, setOrder] = useState(null);
+  const [order, setOrder, applyOptimistic] = useOptimisticValue(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
