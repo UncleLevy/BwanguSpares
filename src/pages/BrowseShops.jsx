@@ -80,7 +80,9 @@ export default function BrowseShops() {
   const filteredShops = allFilteredShops.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <PullToRefresh onRefresh={loadData}>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
+      <AppHeader title="Auto Parts Shops" backTo="Home" />
       <Breadcrumbs items={[{ label: "Shops" }]} />
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
         <div>
