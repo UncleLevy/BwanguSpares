@@ -1,89 +1,45 @@
 /**
  * pages.config.js - Page routing configuration
- * 
- * This file is AUTO-GENERATED. Do not add imports or modify PAGES manually.
- * Pages are auto-registered when you create files in the ./pages/ folder.
- * 
- * THE ONLY EDITABLE VALUE: mainPage
- * This controls which page is the landing page (shown when users visit the app).
- * 
- * Example file structure:
- * 
- *   import HomePage from './pages/HomePage';
- *   import Dashboard from './pages/Dashboard';
- *   import Settings from './pages/Settings';
- *   
- *   export const PAGES = {
- *       "HomePage": HomePage,
- *       "Dashboard": Dashboard,
- *       "Settings": Settings,
- *   }
- *   
- *   export const pagesConfig = {
- *       mainPage: "HomePage",
- *       Pages: PAGES,
- *   };
- * 
- * Example with Layout (wraps all pages):
- *
- *   import Home from './pages/Home';
- *   import Settings from './pages/Settings';
- *   import __Layout from './Layout.jsx';
- *
- *   export const PAGES = {
- *       "Home": Home,
- *       "Settings": Settings,
- *   }
- *
- *   export const pagesConfig = {
- *       mainPage: "Home",
- *       Pages: PAGES,
- *       Layout: __Layout,
- *   };
- *
- * To change the main page from HomePage to Dashboard, use find_replace:
- *   Old: mainPage: "HomePage",
- *   New: mainPage: "Dashboard",
- *
- * The mainPage value must match a key in the PAGES object exactly.
+ * Uses React.lazy for code splitting across all pages.
  */
-import AdminDashboard from './pages/AdminDashboard';
-import BrowseProducts from './pages/BrowseProducts';
-import BrowseShops from './pages/BrowseShops';
-import BuyerDashboard from './pages/BuyerDashboard';
-import Cart from './pages/Cart';
-import FindNearby from './pages/FindNearby';
-import Home from './pages/Home';
-import Messages from './pages/Messages';
-import OrderDetails from './pages/OrderDetails';
-import ProductDetail from './pages/ProductDetail';
-import ProfileCompletion from './pages/ProfileCompletion';
-import RegisterShop from './pages/RegisterShop';
-import ShopCatalog from './pages/ShopCatalog';
-import ShopDashboard from './pages/ShopDashboard';
-import ShopProfile from './pages/ShopProfile';
-import Wishlist from './pages/Wishlist';
+import { lazy } from 'react';
 import __Layout from './Layout.jsx';
 
+const AdminDashboard   = lazy(() => import('./pages/AdminDashboard'));
+const BrowseProducts   = lazy(() => import('./pages/BrowseProducts'));
+const BrowseShops      = lazy(() => import('./pages/BrowseShops'));
+const BuyerDashboard   = lazy(() => import('./pages/BuyerDashboard'));
+const Cart             = lazy(() => import('./pages/Cart'));
+const FindNearby       = lazy(() => import('./pages/FindNearby'));
+const Home             = lazy(() => import('./pages/Home'));
+const Messages         = lazy(() => import('./pages/Messages'));
+const OrderDetails     = lazy(() => import('./pages/OrderDetails'));
+const ProductDetail    = lazy(() => import('./pages/ProductDetail'));
+const ProfileCompletion = lazy(() => import('./pages/ProfileCompletion'));
+const RegisterShop     = lazy(() => import('./pages/RegisterShop'));
+const ShopCatalog      = lazy(() => import('./pages/ShopCatalog'));
+const ShopDashboard    = lazy(() => import('./pages/ShopDashboard'));
+const ShopProfile      = lazy(() => import('./pages/ShopProfile'));
+const Wishlist         = lazy(() => import('./pages/Wishlist'));
 
 export const PAGES = {
-    "AdminDashboard": AdminDashboard,
-    "BrowseProducts": BrowseProducts,
-    "BrowseShops": BrowseShops,
-    "BuyerDashboard": BuyerDashboard,
-    "Cart": Cart,
-    "FindNearby": FindNearby,
-    "Home": Home,
-    "Messages": Messages,
-    "OrderDetails": OrderDetails,
-    "ProductDetail": ProductDetail,
+    "AdminDashboard":    AdminDashboard,
+    "BrowseProducts":    BrowseProducts,
+    "BrowseShops":       BrowseShops,
+    "BuyerDashboard":    BuyerDashboard,
+    "Cart":              Cart,
+    "FindNearby":        FindNearby,
+    "Home":              Home,
+    "Messages":          Messages,
+    "OrderDetails":      OrderDetails,
+    "ProductDetail":     ProductDetail,
     "ProfileCompletion": ProfileCompletion,
-    "RegisterShop": RegisterShop,
-    "ShopCatalog": ShopCatalog,
-    "ShopDashboard": ShopDashboard,
-    "ShopProfile": ShopProfile,
-    "Wishlist": Wishlist,
-}
+    "RegisterShop":      RegisterShop,
+    "ShopCatalog":       ShopCatalog,
+    "ShopDashboard":     ShopDashboard,
+    "ShopProfile":       ShopProfile,
+    "Wishlist":          Wishlist,
+};
 
 export const pagesConfig = {
     mainPage: "Home",
