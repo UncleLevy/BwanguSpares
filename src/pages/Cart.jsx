@@ -219,6 +219,102 @@ export default function Cart() {
     }
   };
 
+  const handleMomoPayment = async () => {
+    if (!form.region) { toast.error("Please select your region"); return; }
+    if (!form.address.trim()) { toast.error("Please enter your address"); return; }
+    if (!mobileNumber.trim()) { toast.error("Please enter your MTN MoMo number"); return; }
+
+    if (window.self !== window.top) {
+      window.open(window.location.href, "_blank");
+      toast.info("Opening the app in a new tab — please complete your checkout there.");
+      return;
+    }
+
+    setSubmitting(true);
+    setMomoStatus(null);
+    try {
+      const response = await base44.functions.invoke('mtnMomoCollect', {
+        phone: mobileNumber,
+        amount: total,
+        externalId: crypto.randomUUID(),
+      });
+
+      if (!response.data.success) {
+        toast.error(response.data.error || "Failed to initiate MTN MoMo payment");
+        return;
+      }
+
+      const { referenceId } = response.data;
+      setMomoReferenceId(referenceId);
+      setMomoStatus("PENDING");
+      toast.success("Payment prompt sent! Please approve on your phone.");
+
+      // Poll for status every 5s for up to 2 minutes
+      setMomoPolling(true);
+      const maxAttempts = 24;
+      for (let i = 0; i < maxAttempts; i++) {
+        await new Promise(r => setTimeout(r, 5000));
+        const statusRes = await base44.functions.invoke('mtnMomoStatus', { referenceId });
+        const txStatus = statusRes.data?.status;
+        setMomoStatus(txStatus);
+
+        if (txStatus === "SUCCESSFUL") {
+          // Create the order
+          const allItems = items.map(i => ({
+            product_id: i.product_id, product_name: i.product_name,
+            shop_id: i.shop_id, shop_name: i.shop_name,
+            price: i.price || 0, quantity: i.quantity || 1, image_url: i.image_url || '',
+          }));
+          const deliveryAddress = `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`;
+          
+          // Group items by shop and create orders
+          const byShop = allItems.reduce((acc, item) => {
+            if (!acc[item.shop_id]) acc[item.shop_id] = { shop_name: item.shop_name, items: [] };
+            acc[item.shop_id].items.push(item);
+            return acc;
+          }, {});
+          
+          for (const [shopId, group] of Object.entries(byShop)) {
+            const shopTotal = group.items.reduce((s, i) => s + i.price * i.quantity, 0);
+            await base44.entities.Order.create({
+              buyer_email: user.email, buyer_name: user.full_name,
+              shop_id: shopId, shop_name: group.shop_name,
+              items: group.items, total_amount: shopTotal,
+              delivery_address: deliveryAddress, delivery_phone: form.phone || mobileNumber,
+              notes: form.notes, payment_method: "mtn_momo",
+              status: "confirmed",
+              shipping_option: shippingOption, shipping_cost: shippingCost,
+            });
+          }
+
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+          }
+          for (const item of items) await base44.entities.CartItem.delete(item.id);
+
+          toast.success("Order placed successfully!");
+          setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
+          break;
+        } else if (txStatus === "FAILED") {
+          toast.error("MTN MoMo payment was declined or failed.");
+          break;
+        }
+        // still PENDING — keep polling
+      }
+
+      if (momoStatus === "PENDING") {
+        setMomoStatus("FAILED");
+        toast.error("Payment timed out. Please try again.");
+      }
+    } catch (error) {
+      toast.error("MTN MoMo payment error. Please try again.");
+      console.error(error);
+    } finally {
+      setSubmitting(false);
+      setMomoPolling(false);
+    }
+  };
+
   const handleCheckout = async () => {
     if (!form.region) { 
       toast.error("Please select your region"); 
