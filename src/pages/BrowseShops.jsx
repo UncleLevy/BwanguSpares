@@ -173,5 +173,6 @@ export default function BrowseShops() {
         </div>
       )}
     </div>
+    </PullToRefresh>
   );
 }
