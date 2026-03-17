@@ -46,7 +46,7 @@ Deno.serve(async (req) => {
         quantity: 1,
       }));
 
-      const appUrl = req.headers.get('origin') || 'https://app.base44.com';
+      const appUrl = req.headers.get('origin') || req.headers.get('referer')?.split('/').slice(0,3).join('/') || 'https://app.base44.com';
 
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
         mode: 'payment',
         success_url: `${appUrl}/BuyerDashboard?payment=success&session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${appUrl}/Cart?payment=cancelled`,
+        after_expiration: { recovery: { enabled: false } },
         customer_email: user.email,
         metadata: {
           base44_app_id: Deno.env.get("BASE44_APP_ID"),
