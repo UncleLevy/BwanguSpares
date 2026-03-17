@@ -184,8 +184,8 @@ export default function BrowseProducts() {
              placeholder="Search parts, brands..."
              className="pl-10 h-11 rounded-xl text-base" />
            {search && (
-             <button onClick={() => handleSearchChange("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-               <X className="w-4 h-4 text-slate-400" />
+             <button onClick={() => handleSearchChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2">
+               <X className="w-4 h-4 text-slate-400" aria-hidden="true" />
              </button>
            )}
          </div>
