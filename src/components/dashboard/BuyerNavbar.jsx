@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { Package, LogOut, User, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,6 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import { createPageUrl } from "@/utils";
 
 export default function BuyerNavbar({ user }) {
-  const navigate = useNavigate();
   return (
     <header
       className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
