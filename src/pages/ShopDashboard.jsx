@@ -338,10 +338,17 @@ export default function ShopDashboard() {
       setCancelDialog(true);
       return;
     }
+    // Optimistic update
+    const prevOrders = orders;
     setOrders(prev => prev.map(o => o.id === order.id ? { ...o, status: newStatus } : o));
-    await base44.entities.Order.update(order.id, { status: newStatus });
-    emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, newStatus);
-    toast.success("Order status updated");
+    try {
+      await base44.entities.Order.update(order.id, { status: newStatus });
+      emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, newStatus);
+      toast.success("Order status updated");
+    } catch {
+      setOrders(prevOrders);
+      toast.error("Failed to update order status");
+    }
   };
 
   const confirmCancelOrder = async () => {
