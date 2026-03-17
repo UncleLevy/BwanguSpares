@@ -285,5 +285,6 @@ export default function ShopProfile() {
         />
       )}
     </div>
+    </PullToRefresh>
   );
 }
