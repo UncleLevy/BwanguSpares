@@ -15,7 +15,7 @@ import { useGeoLock } from "@/components/shared/useGeoLock";
 
 export default function Cart() {
   const { isZambia, loading: geoLoading } = useGeoLock();
-  const [items, setItems] = useState([]);
+  const [items, setItems, updateItemOptimistic, removeItemOptimistic] = useOptimisticList([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [checkout, setCheckout] = useState(false);
