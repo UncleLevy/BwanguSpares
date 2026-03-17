@@ -175,7 +175,7 @@ export default function FindNearby() {
               className="pl-10 h-10 rounded-xl text-sm"
             />
             {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
+              <button onClick={() => setSearch("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2">
                 <X className="w-4 h-4 text-slate-400" />
               </button>
             )}
