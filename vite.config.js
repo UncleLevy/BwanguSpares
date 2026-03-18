@@ -25,6 +25,6 @@ export default defineConfig({
     // allowedHosts: ['.w.modal.host'],   // the leading dot allows all subdomains
     
     // OR — least restrictive (convenient for dev, but less secure):
-    // allowedHosts: true,
+    allowedHosts: true,
   },
 });
