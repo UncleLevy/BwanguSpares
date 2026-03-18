@@ -51,7 +51,7 @@ const orderStatusConfig = {
 export default function BuyerDashboard() {
   const [user, setUser] = useState(null);
   const [view, setView] = useState("orders");
-  const [orders, setOrders] = useState([]);
+  const [orders, setOrders, updateOrder, removeOrder] = useOptimisticList([]);
   const [wallet, setWallet] = useState(null);
   const [walletTxns, setWalletTxns] = useState([]);
   const [loading, setLoading] = useState(true);
