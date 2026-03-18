@@ -76,8 +76,8 @@ Deno.serve(async (req) => {
         redirectUrl: `${appUrl}/BuyerDashboard?payment=success`,
         cancelUrl: `${appUrl}/Cart?payment=cancelled`,
         skipConfirmationPage: true,
+        skip3DS: false,
       },
-      description: `BwanguSpares order for ${user.full_name}`,
     };
 
     const orderRes = await fetch(
