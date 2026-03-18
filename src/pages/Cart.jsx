@@ -400,7 +400,7 @@ export default function Cart() {
         // Card payment
         const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
 
-        const response = await base44.functions.invoke('stripeCheckout', {
+        const response = await base44.functions.invoke('ngeniusCheckout', {
           items: allItems,
           delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
           delivery_phone: form.phone,
