@@ -116,23 +116,16 @@ export default function BuyerDashboard() {
       setWalletTxns(txns);
       setLoading(false);
 
-      // Auto-confirm orders after successful Stripe payment
+      // Auto-confirm orders after successful N-Genius payment
       const params = new URLSearchParams(window.location.search);
-      if (params.get("payment") === "success" && params.get("session_id")) {
-        const sessionId = params.get("session_id");
-        const pendingOrders = o.filter(ord => ord.stripe_session_id === sessionId && ord.status === "pending");
+      if (params.get("payment") === "success") {
+        // Find all pending orders for this user that are awaiting payment confirmation
+        const pendingOrders = o.filter(ord => ord.status === "pending" && ord.shop_id === "PENDING_PAYMENT");
         if (pendingOrders.length > 0) {
           await Promise.all(pendingOrders.map(ord => base44.entities.Order.update(ord.id, { status: "confirmed" })));
           const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
           setOrders(updated);
           toast.success("Payment successful! Your order has been confirmed.");
-          // Notify each shop owner
-          for (const ord of pendingOrders) {
-            const shops = await base44.entities.Shop.filter({ id: ord.shop_id });
-            if (shops[0]?.owner_email) {
-              emailNewOrderToShop(shops[0].owner_email, ord.shop_name, ord);
-            }
-          }
         }
         // Clean URL
         window.history.replaceState({}, "", window.location.pathname);

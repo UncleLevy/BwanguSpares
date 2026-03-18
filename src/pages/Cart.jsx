@@ -777,7 +777,7 @@ export default function Cart() {
                    {submitting || momoPolling ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "wallet" ? "Complete Payment" : `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via MTN MoMo`}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
-                   {paymentMethod === "card" ? "Powered by Stripe · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "MTN MoMo Direct · Secure payment"}
+                   {paymentMethod === "card" ? "Powered by N-Genius · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "MTN MoMo Direct · Secure payment"}
                  </p>
               </div>
             )}
