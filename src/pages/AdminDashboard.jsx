@@ -36,6 +36,7 @@ import ReportingPanel from "@/components/admin/ReportingPanel";
 import PayoutsPanel from "@/components/admin/PayoutsPanel";
 import { logAudit } from "@/components/shared/auditLog";
 import AdminShippingRates from "@/components/admin/AdminShippingRates";
+import MobileSelect from "@/components/shared/MobileSelect";
 import AdminProductsPanel from "@/components/admin/AdminProductsPanel";
 import AdminLoyaltyPanel from "@/components/admin/AdminLoyaltyPanel";
 import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
