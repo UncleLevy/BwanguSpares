@@ -141,10 +141,14 @@ export default function BuyerDashboard() {
       // Real-time updates for orders, wallet, and returns
       const unsubscribeOrder = base44.entities.Order.subscribe((event) => {
         if (event.data?.buyer_email === u.email) {
-          (async () => {
-            const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
-            setOrders(updated);
-          })();
+          if (event.type === "update" && event.data) {
+            setOrders(prev => prev.map(o => o.id === event.id ? { ...o, ...event.data } : o));
+          } else {
+            (async () => {
+              const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
+              setOrders(updated);
+            })();
+          }
         }
       });
 
