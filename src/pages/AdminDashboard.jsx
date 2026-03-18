@@ -690,14 +690,13 @@ export default function AdminDashboard() {
                   className="pl-9"
                 />
               </div>
-              <select
-                value={cityRegionFilter}
-                onChange={e => setCityRegionFilter(e.target.value)}
-                className="px-3 py-2 border border-slate-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 text-sm min-w-[160px]"
-              >
-                <option value="">All Regions</option>
-                {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-              </select>
+              <MobileSelect
+                value={cityRegionFilter || "all"}
+                onValueChange={v => setCityRegionFilter(v === "all" ? "" : v)}
+                placeholder="All Regions"
+                triggerClassName="min-w-[160px]"
+                options={[{ value: "all", label: "All Regions" }, ...regions.map(r => ({ value: r.id, label: r.name }))]}
+              />
             </div>
 
             <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
