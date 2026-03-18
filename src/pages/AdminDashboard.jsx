@@ -749,19 +749,17 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <Label>Region *</Label>
-                    <select 
-                      value={newTown.region_id} 
-                      onChange={e => {
-                        const region = regions.find(r => r.id === e.target.value);
-                        setNewTown({...newTown, region_id: e.target.value, region_name: region?.name || ""});
-                      }}
-                      className="w-full mt-1 px-3 py-2 border border-slate-300 rounded-lg bg-white dark:bg-slate-900 dark:border-slate-700 text-slate-900 dark:text-slate-100"
-                    >
-                      <option value="">Select a region</option>
-                      {regions.map(r => (
-                        <option key={r.id} value={r.id}>{r.name}</option>
-                      ))}
-                    </select>
+                    <div className="mt-1">
+                      <MobileSelect
+                        value={newTown.region_id || ""}
+                        onValueChange={v => {
+                          const region = regions.find(r => r.id === v);
+                          setNewTown({...newTown, region_id: v, region_name: region?.name || ""});
+                        }}
+                        placeholder="Select a region"
+                        options={regions.map(r => ({ value: r.id, label: r.name }))}
+                      />
+                    </div>
                   </div>
                 </div>
                 <DialogFooter>
