@@ -656,57 +656,7 @@ export default function BuyerDashboard() {
 
       <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />
 
-      <Dialog open={deleteAccountDialog} onOpenChange={(v) => { setDeleteAccountDialog(v); setDeleteConfirmText(""); }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete Account</DialogTitle>
-            <DialogDescription>
-              This action is <strong>permanent</strong> and cannot be undone. All your orders, requests and data will be removed.
-              <br /><br />
-              Type <strong>DELETE</strong> below to confirm.
-            </DialogDescription>
-          </DialogHeader>
-          <Input
-            value={deleteConfirmText}
-            onChange={e => setDeleteConfirmText(e.target.value)}
-            placeholder="Type DELETE to confirm"
-            aria-label="Type DELETE to confirm account deletion"
-            className="rounded-xl"
-          />
-          <DialogFooter className="gap-2">
-            <Button variant="outline" onClick={() => { setDeleteAccountDialog(false); setDeleteConfirmText(""); }}>Cancel</Button>
-            <Button
-              variant="destructive"
-              disabled={deleteConfirmText !== "DELETE" || submitting}
-              onClick={async () => {
-                setSubmitting(true);
-                try {
-                  // Delete all user data
-                  const [userOrders, cartItems, userWishlist, userParts, userNotifs] = await Promise.all([
-                    base44.entities.Order.filter({ buyer_email: user.email }),
-                    base44.entities.CartItem.filter({ buyer_email: user.email }),
-                    base44.entities.Wishlist.filter({ buyer_email: user.email }),
-                    base44.entities.PartsRequest.filter({ buyer_email: user.email }),
-                    base44.entities.Notification.filter({ user_email: user.email }),
-                  ]);
-                  await Promise.all([
-                    ...cartItems.map(i => base44.entities.CartItem.delete(i.id)),
-                    ...userWishlist.map(i => base44.entities.Wishlist.delete(i.id)),
-                    ...userNotifs.map(i => base44.entities.Notification.delete(i.id)),
-                  ]);
-                  toast.success("Account data removed. Goodbye!");
-                  setTimeout(() => base44.auth.logout(), 800);
-                } catch {
-                  toast.error("Failed to delete account data. Please contact support.");
-                }
-                setSubmitting(false);
-              }}
-            >
-              {submitting ? "Deleting..." : "Delete My Account"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+
 
       <Dialog open={reviewDialog} onOpenChange={setReviewDialog}>
          <DialogContent>
