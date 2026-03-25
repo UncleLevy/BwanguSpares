@@ -16,23 +16,22 @@ export default function TablePagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-700">
-      <div className="text-sm text-slate-600 dark:text-slate-400">
-        Showing <span className="font-medium text-slate-900 dark:text-slate-100">{startItem}</span> to{" "}
-        <span className="font-medium text-slate-900 dark:text-slate-100">{endItem}</span> of{" "}
-        <span className="font-medium text-slate-900 dark:text-slate-100">{totalItems}</span> results
+    <div className="flex items-center justify-between px-4 py-3 border-t border-slate-200 dark:border-slate-700 gap-4">
+      <div className="text-sm text-slate-600 dark:text-slate-400 shrink-0">
+        <span className="font-medium text-slate-900 dark:text-slate-100">{startItem}</span>–<span className="font-medium text-slate-900 dark:text-slate-100">{endItem}</span>
+        {" "}of{" "}
+        <span className="font-medium text-slate-900 dark:text-slate-100">{totalItems}</span>
       </div>
       
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1.5">
         <Button
           variant="outline"
-          size="sm"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="gap-1"
+          className="h-11 px-3 gap-1 text-sm"
         >
           <ChevronLeft className="w-4 h-4" />
-          Previous
+          <span className="hidden sm:inline">Prev</span>
         </Button>
         
         <div className="flex items-center gap-1">
@@ -47,14 +46,12 @@ export default function TablePagination({
             } else {
               pageNum = currentPage - 2 + i;
             }
-            
             return (
               <Button
                 key={pageNum}
                 variant={currentPage === pageNum ? "default" : "outline"}
-                size="sm"
                 onClick={() => onPageChange(pageNum)}
-                className="w-9 h-9"
+                className="w-11 h-11 text-sm"
               >
                 {pageNum}
               </Button>
@@ -64,12 +61,11 @@ export default function TablePagination({
         
         <Button
           variant="outline"
-          size="sm"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="gap-1"
+          className="h-11 px-3 gap-1 text-sm"
         >
-          Next
+          <span className="hidden sm:inline">Next</span>
           <ChevronRight className="w-4 h-4" />
         </Button>
       </div>
