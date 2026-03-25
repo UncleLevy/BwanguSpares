@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
 import MobileSelect from "@/components/shared/MobileSelect";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 
 export default function Cart() {
   const { isZambia, loading: geoLoading } = useGeoLock();
@@ -443,6 +444,7 @@ export default function Cart() {
   );
 
   return (
+    <PullToRefresh onRefresh={loadCart}>
     <div>
       <AppHeader title="Shopping Cart" backTo="BrowseProducts" />
       <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
@@ -784,5 +786,6 @@ export default function Cart() {
       )}
       </div>
     </div>
+    </PullToRefresh>
   );
 }

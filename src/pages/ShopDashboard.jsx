@@ -20,9 +20,6 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
@@ -806,14 +803,7 @@ export default function ShopDashboard() {
               </div>
               <div className="flex items-center gap-3">
                 {shops.length > 1 && (
-                  <Select value={shop?.id} onValueChange={handleSwitchShop}>
-                    <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {shops.map(s => (
-                        <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <MobileSelect value={shop?.id} onValueChange={handleSwitchShop} placeholder="Select shop" triggerClassName="w-40" options={shops.map(s => ({ value: s.id, label: s.name }))} />
                 )}
                 <Button onClick={() => {
                   const tierLimits = { free: 1, standard: 3, premium: 5 };
@@ -1063,23 +1053,20 @@ export default function ShopDashboard() {
                     <div className="mt-1 space-y-2">
                       {/* Brand → Model picker */}
                       <div className="flex gap-2">
-                        <Select value={addVehicleBrand} onValueChange={v => { setAddVehicleBrand(v); setAddVehicleModel(v === "All Vehicles" ? "All Vehicles" : ""); }}>
-                          <SelectTrigger className="flex-1"><SelectValue placeholder="Brand" /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="All Vehicles">All Vehicles</SelectItem>
-                            {[...new Set(vehicles.map(v => v.brand))].sort().map(b => (
-                              <SelectItem key={b} value={b}>{b}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                        <Select value={addVehicleModel} onValueChange={setAddVehicleModel} disabled={!addVehicleBrand || addVehicleBrand === "All Vehicles"}>
-                          <SelectTrigger className="flex-1"><SelectValue placeholder={addVehicleBrand === "All Vehicles" ? "All Models" : "Model"} /></SelectTrigger>
-                          <SelectContent>
-                            {vehicles.filter(v => v.brand === addVehicleBrand).map(v => (
-                              <SelectItem key={v.id} value={`${v.brand} ${v.model}`}>{v.model}</SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <MobileSelect
+                          value={addVehicleBrand}
+                          onValueChange={v => { setAddVehicleBrand(v); setAddVehicleModel(v === "All Vehicles" ? "All Vehicles" : ""); }}
+                          placeholder="Brand"
+                          triggerClassName="flex-1"
+                          options={[{ value: "All Vehicles", label: "All Vehicles" }, ...([...new Set(vehicles.map(v => v.brand))].sort().map(b => ({ value: b, label: b })))]}
+                        />
+                        <MobileSelect
+                          value={addVehicleModel}
+                          onValueChange={setAddVehicleModel}
+                          placeholder={addVehicleBrand === "All Vehicles" ? "All Models" : "Model"}
+                          triggerClassName="flex-1"
+                          options={vehicles.filter(v => v.brand === addVehicleBrand).map(v => ({ value: `${v.brand} ${v.model}`, label: v.model }))}
+                        />
                         <Button type="button" variant="outline" size="sm"
                           disabled={!addVehicleModel}
                           onClick={() => {
