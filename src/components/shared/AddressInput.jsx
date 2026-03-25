@@ -61,35 +61,25 @@ export default function AddressInput({
     <div className="space-y-4">
       <div>
         <Label>Region *</Label>
-        <Select value={value.region || ""} onValueChange={handleRegionChange} disabled={loadingRegions}>
-          <SelectTrigger className="mt-1 rounded-xl">
-            <SelectValue placeholder={loadingRegions ? "Loading regions..." : "Select region"} />
-          </SelectTrigger>
-          <SelectContent>
-            {regions.map(r => (
-              <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={value.region || ""}
+          onValueChange={handleRegionChange}
+          placeholder={loadingRegions ? "Loading regions..." : "Select region"}
+          triggerClassName="mt-1 w-full rounded-xl"
+          options={regions.map(r => ({ value: r.id, label: r.name }))}
+        />
         {errors.region && <p className="text-xs text-red-500 mt-1">{errors.region}</p>}
       </div>
 
       <div>
         <Label>Town *</Label>
-        <Select value={value.town || ""} onValueChange={handleTownChange} disabled={!value.region || loadingTowns}>
-          <SelectTrigger className="mt-1 rounded-xl">
-            <SelectValue placeholder={
-              loadingTowns ? "Loading towns..." : 
-              !value.region ? "Select region first" : 
-              "Select town"
-            } />
-          </SelectTrigger>
-          <SelectContent>
-            {towns.map(t => (
-              <SelectItem key={t.id} value={t.name}>{t.name}</SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={value.town || ""}
+          onValueChange={handleTownChange}
+          placeholder={loadingTowns ? "Loading towns..." : !value.region ? "Select region first" : "Select town"}
+          triggerClassName="mt-1 w-full rounded-xl"
+          options={towns.map(t => ({ value: t.name, label: t.name }))}
+        />
         {errors.town && <p className="text-xs text-red-500 mt-1">{errors.town}</p>}
       </div>
 

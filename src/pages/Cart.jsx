@@ -558,29 +558,26 @@ export default function Cart() {
                    </div>
                  )}
                  <div className="grid grid-cols-2 gap-3">
-                   <div>
-                     <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Region *</Label>
-                     <select
-                       value={form.region}
-                       onChange={e => handleRegionChange(e.target.value)}
-                       className="mt-2 w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-                     >
-                       <option value="">Select region</option>
-                       {regions.map(r => <option key={r.id} value={r.id}>{r.name}</option>)}
-                     </select>
-                   </div>
-                   <div>
-                     <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">City / Town</Label>
-                     <select
-                       value={form.town}
-                       onChange={e => handleTownChange(e.target.value)}
-                       disabled={!form.region}
-                       className="mt-2 w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-700/50 border border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 disabled:opacity-50"
-                     >
-                       <option value="">Select city</option>
-                       {filteredTowns.map(t => <option key={t.id} value={t.name}>{t.name}</option>)}
-                     </select>
-                   </div>
+                  <div>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Region *</Label>
+                    <MobileSelect
+                      value={form.region}
+                      onValueChange={handleRegionChange}
+                      placeholder="Select region"
+                      triggerClassName="mt-2 w-full"
+                      options={regions.map(r => ({ value: r.id, label: r.name }))}
+                    />
+                  </div>
+                  <div>
+                    <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">City / Town</Label>
+                    <MobileSelect
+                      value={form.town}
+                      onValueChange={handleTownChange}
+                      placeholder={!form.region ? "Select region first" : "Select city"}
+                      triggerClassName="mt-2 w-full"
+                      options={filteredTowns.map(t => ({ value: t.name, label: t.name }))}
+                    />
+                  </div>
                  </div>
                  <div>
                     <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">{shippingOption === "deliver" ? "Delivery" : "Billing"} Address *</Label>
