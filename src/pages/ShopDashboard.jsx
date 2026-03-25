@@ -243,8 +243,6 @@ export default function ShopDashboard() {
     };
     if (editProduct) {
       const id = editProduct.id;
-      setProductDialog(false);
-      setEditProduct(null);
       await updateProduct(id, data, () => base44.entities.Product.update(id, data), () => toast.error("Failed to update product"));
       toast.success("Product updated");
     } else {
@@ -299,8 +297,6 @@ export default function ShopDashboard() {
     };
     if (editTech) {
       const id = editTech.id;
-      setTechDialog(false);
-      setEditTech(null);
       await updateTechnician(id, data, () => base44.entities.Technician.update(id, data), () => toast.error("Failed to update technician"));
       toast.success("Technician updated");
     } else {
