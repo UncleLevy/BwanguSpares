@@ -99,7 +99,51 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Order Management</h1>
 
-      <Card className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+      {/* Mobile: card list */}
+      <div className="md:hidden space-y-3">
+        {pagination.paginatedItems.map(order => (
+          <div key={order.id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 p-4 space-y-3">
+            <div className="flex items-start justify-between gap-2">
+              <div>
+                <span className="font-mono text-xs text-slate-400 dark:text-slate-500">#{order.id?.slice(0, 8)}</span>
+                <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm mt-0.5">{order.buyer_name || order.buyer_email}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{order.shop_name}</p>
+              </div>
+              <Badge className={getStatusColor(order.status)}>{order.status}</Badge>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <span className="font-semibold text-slate-900 dark:text-slate-100">K{order.total_amount?.toLocaleString()}</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{order.created_date ? new Date(order.created_date).toLocaleDateString() : "—"}</span>
+            </div>
+            {order.tracking_number && (
+              <p className="text-xs font-mono text-blue-600 dark:text-blue-400">📦 {order.tracking_number}</p>
+            )}
+            {order.refunded && <Badge className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px]">Refunded</Badge>}
+            <div className="flex gap-2 pt-1 border-t border-slate-100 dark:border-slate-700">
+              <Button size="sm" variant="outline" className="flex-1 gap-1.5 h-9" onClick={() => handleEditOrder(order)}>
+                <Pencil className="w-3.5 h-3.5" /> Edit
+              </Button>
+              {order.status !== 'cancelled' && (
+                <Button size="sm" variant="outline" className="flex-1 gap-1.5 h-9 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800"
+                  onClick={() => { setRefundOrder(order); setRefundReason(""); setRefundDialog(true); }}>
+                  <RefreshCcw className="w-3.5 h-3.5" /> Refund
+                </Button>
+              )}
+            </div>
+          </div>
+        ))}
+        {orders.length > 15 && (
+          <TablePagination
+            currentPage={pagination.currentPage}
+            totalItems={pagination.totalItems}
+            itemsPerPage={pagination.itemsPerPage}
+            onPageChange={pagination.setCurrentPage}
+          />
+        )}
+      </div>
+
+      {/* Desktop: table */}
+      <Card className="hidden md:block border-slate-100 dark:border-slate-700 dark:bg-slate-900">
         <CardContent className="p-0 overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
@@ -122,11 +166,7 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                     <TableCell className="text-sm text-slate-900 dark:text-slate-100">{order.buyer_name || order.buyer_email}</TableCell>
                     <TableCell className="text-sm text-slate-500 dark:text-slate-400">{order.shop_name}</TableCell>
                     <TableCell className="font-medium text-slate-900 dark:text-slate-100">K{order.total_amount?.toLocaleString()}</TableCell>
-                    <TableCell>
-                      <Badge className={getStatusColor(order.status)}>
-                        {order.status}
-                      </Badge>
-                    </TableCell>
+                    <TableCell><Badge className={getStatusColor(order.status)}>{order.status}</Badge></TableCell>
                     <TableCell>
                       {order.tracking_number ? (
                         <span className="text-xs font-mono text-blue-600 dark:text-blue-400">{order.tracking_number}</span>
@@ -141,12 +181,9 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
                           <Pencil className="w-3.5 h-3.5" /> Edit
                         </Button>
                         {order.status !== 'cancelled' && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
+                          <Button size="sm" variant="ghost"
                             className="h-8 gap-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 hover:text-red-700"
-                            onClick={() => { setRefundOrder(order); setRefundReason(""); setRefundDialog(true); }}
-                          >
+                            onClick={() => { setRefundOrder(order); setRefundReason(""); setRefundDialog(true); }}>
                             <RefreshCcw className="w-3.5 h-3.5" /> Refund
                           </Button>
                         )}

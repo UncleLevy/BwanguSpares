@@ -245,8 +245,72 @@ export default function InventoryPanel({ products, orders, onProductsChange, sho
         </Select>
       </div>
 
-      {/* Bulk Stock Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+      {/* Bulk Stock — Mobile cards */}
+      <div className="md:hidden space-y-3">
+        <div className="flex items-center gap-2 px-1">
+          <Edit3 className="w-4 h-4 text-slate-400" />
+          <span className="text-sm text-slate-600 dark:text-slate-300">Tap a product to update its stock</span>
+        </div>
+        {filtered.length === 0 && (
+          <p className="text-center py-10 text-slate-400 dark:text-slate-500">No products match filters</p>
+        )}
+        {filtered.map(p => {
+          const threshold = p.low_stock_threshold ?? 5;
+          const isLow = p.stock_quantity <= threshold && p.stock_quantity > 0;
+          const isOut = p.stock_quantity === 0;
+          const perf = salesMap[p.id] || { sold: 0, revenue: 0 };
+          const editVal = bulkEdits[p.id];
+          return (
+            <div key={p.id} className={`rounded-xl border p-4 space-y-3 ${isOut ? "bg-red-50/40 dark:bg-red-950/20 border-red-200 dark:border-red-800/40" : isLow ? "bg-amber-50/40 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800/40" : "bg-white dark:bg-slate-900 border-slate-100 dark:border-slate-700"}`}>
+              <div className="flex items-start gap-3">
+                {p.image_url && <img src={p.image_url} alt="" className="w-10 h-10 rounded object-cover border flex-shrink-0" />}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{p.name}</p>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 capitalize">{p.category?.replace(/_/g, " ")}{p.sub_category ? ` · ${p.sub_category}` : ""}</p>
+                  {p.sku && <p className="text-xs font-mono text-slate-400 dark:text-slate-500">{p.sku}</p>}
+                </div>
+                <Badge variant="outline" className="text-[10px] capitalize shrink-0">{p.status}</Badge>
+              </div>
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-xs text-slate-400 mb-0.5">Price</p>
+                  <p className="font-medium text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-400 mb-0.5">Current Stock</p>
+                  <div className="flex items-center gap-1.5">
+                    <span className={`font-semibold ${isOut ? "text-red-600 dark:text-red-400" : isLow ? "text-amber-600 dark:text-amber-400" : "text-slate-800 dark:text-slate-200"}`}>{p.stock_quantity}</span>
+                    {isOut && <Badge className="bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 text-[10px] px-1.5">Out</Badge>}
+                    {isLow && <Badge className="bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 text-[10px] px-1.5">Low</Badge>}
+                  </div>
+                </div>
+                {perf.sold > 0 && (
+                  <div>
+                    <p className="text-xs text-slate-400 mb-0.5">Sales</p>
+                    <p className="text-xs text-slate-700 dark:text-slate-300">{perf.sold} sold · K{perf.revenue.toLocaleString()}</p>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center gap-3 pt-1 border-t border-slate-100 dark:border-slate-700">
+                <div className="flex-1">
+                  <p className="text-xs text-slate-400 mb-1">New Stock Qty</p>
+                  <Input type="number" min="0" placeholder={String(p.stock_quantity)} value={editVal ?? ""}
+                    onChange={e => handleBulkChange(p.id, e.target.value)}
+                    className={`h-9 text-sm ${editVal !== undefined && editVal !== "" ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-500" : ""}`} />
+                </div>
+                <button onClick={() => openThreshold(p)}
+                  className="flex flex-col items-center gap-0.5 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors pt-4">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>≤{threshold}</span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Bulk Stock Table — Desktop */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
         <div className="px-4 py-3 bg-slate-50 dark:bg-slate-800 border-b border-slate-100 dark:border-slate-700 flex items-center gap-2">
           <Edit3 className="w-4 h-4 text-slate-400 dark:text-slate-500" />
           <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Edit stock quantities inline, then click "Save Stock Updates"</span>
@@ -296,20 +360,13 @@ export default function InventoryPanel({ products, orders, onProductsChange, sho
                     </div>
                   </TableCell>
                   <TableCell>
-                    <Input
-                      type="number"
-                      min="0"
-                      placeholder={String(p.stock_quantity)}
-                      value={editVal ?? ""}
+                    <Input type="number" min="0" placeholder={String(p.stock_quantity)} value={editVal ?? ""}
                       onChange={e => handleBulkChange(p.id, e.target.value)}
-                      className={`h-8 w-24 text-sm ${editVal !== undefined && editVal !== "" ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-500" : ""}`}
-                    />
+                      className={`h-8 w-24 text-sm ${editVal !== undefined && editVal !== "" ? "border-blue-400 bg-blue-50 dark:bg-blue-950/30 dark:border-blue-500" : ""}`} />
                   </TableCell>
                   <TableCell>
-                    <button
-                      onClick={() => openThreshold(p)}
-                      className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
-                    >
+                    <button onClick={() => openThreshold(p)}
+                      className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors">
                       <AlertTriangle className="w-3 h-3" /> ≤{threshold}
                     </button>
                   </TableCell>

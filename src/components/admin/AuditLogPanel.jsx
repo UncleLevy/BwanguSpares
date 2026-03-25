@@ -104,47 +104,76 @@ export default function AuditLogPanel() {
           <p>No audit log entries found</p>
         </div>
       ) : (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow className="bg-slate-50 dark:bg-slate-800">
-                <TableHead>When</TableHead>
-                <TableHead>Actor</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Action</TableHead>
-                <TableHead>Record</TableHead>
-                <TableHead>Details</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map(log => (
-                 <TableRow key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                   <TableCell className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
-                     {new Date(log.created_date).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                   </TableCell>
-                   <TableCell className="text-sm">
-                     <div className="font-medium text-slate-900 dark:text-slate-100">{log.actor_name || log.actor_email}</div>
-                     {log.actor_name && <div className="text-xs text-slate-400 dark:text-slate-500">{log.actor_email}</div>}
-                   </TableCell>
-                   <TableCell className="text-xs text-slate-500 dark:text-slate-400 capitalize">{log.actor_role || "—"}</TableCell>
-                   <TableCell>
-                     <Badge className={ACTION_COLORS[log.action] || "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}>
-                       {ACTION_LABELS[log.action] || log.action}
-                     </Badge>
-                   </TableCell>
-                   <TableCell className="text-sm">
-                     {log.entity_label ? (
-                       <span className="font-medium text-slate-900 dark:text-slate-100">{log.entity_label}</span>
-                     ) : log.entity_type ? (
-                       <span className="text-slate-400 dark:text-slate-500 text-xs">{log.entity_type}</span>
-                     ) : "—"}
-                   </TableCell>
-                   <TableCell className="text-xs text-slate-500 dark:text-slate-400 max-w-[220px] truncate">{log.details || "—"}</TableCell>
-                 </TableRow>
-               ))}
-            </TableBody>
-          </Table>
-        </div>
+        <>
+          {/* Mobile: card list */}
+          <div className="md:hidden space-y-3">
+            {filtered.map(log => (
+              <div key={log.id} className="bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-700 p-4 space-y-2">
+                <div className="flex items-start justify-between gap-2">
+                  <Badge className={ACTION_COLORS[log.action] || "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}>
+                    {ACTION_LABELS[log.action] || log.action}
+                  </Badge>
+                  <span className="text-[11px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                    {new Date(log.created_date).toLocaleString("en-GB", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{log.actor_name || log.actor_email}</span>
+                  {log.actor_role && <span className="ml-2 text-xs text-slate-400 capitalize">({log.actor_role})</span>}
+                </div>
+                {(log.entity_label || log.entity_type) && (
+                  <div className="text-xs text-slate-500 dark:text-slate-400">
+                    Record: <span className="font-medium text-slate-700 dark:text-slate-300">{log.entity_label || log.entity_type}</span>
+                  </div>
+                )}
+                {log.details && <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2">{log.details}</p>}
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop: table */}
+          <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow className="bg-slate-50 dark:bg-slate-800">
+                  <TableHead>When</TableHead>
+                  <TableHead>Actor</TableHead>
+                  <TableHead>Role</TableHead>
+                  <TableHead>Action</TableHead>
+                  <TableHead>Record</TableHead>
+                  <TableHead>Details</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filtered.map(log => (
+                  <TableRow key={log.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                    <TableCell className="text-xs text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                      {new Date(log.created_date).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      <div className="font-medium text-slate-900 dark:text-slate-100">{log.actor_name || log.actor_email}</div>
+                      {log.actor_name && <div className="text-xs text-slate-400 dark:text-slate-500">{log.actor_email}</div>}
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-500 dark:text-slate-400 capitalize">{log.actor_role || "—"}</TableCell>
+                    <TableCell>
+                      <Badge className={ACTION_COLORS[log.action] || "bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300"}>
+                        {ACTION_LABELS[log.action] || log.action}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {log.entity_label ? (
+                        <span className="font-medium text-slate-900 dark:text-slate-100">{log.entity_label}</span>
+                      ) : log.entity_type ? (
+                        <span className="text-slate-400 dark:text-slate-500 text-xs">{log.entity_type}</span>
+                      ) : "—"}
+                    </TableCell>
+                    <TableCell className="text-xs text-slate-500 dark:text-slate-400 max-w-[220px] truncate">{log.details || "—"}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        </>
       )}
     </div>
   );
