@@ -15,6 +15,7 @@ import {
 import { toast } from "sonner";
 import { Eye, Flag } from "lucide-react";
 import { logAudit } from "@/components/shared/auditLog";
+import { useOptimisticList } from "@/components/shared/useOptimistic";
 
 const STATUS_COLORS = {
   pending: "bg-amber-50 text-amber-700",

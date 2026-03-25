@@ -24,6 +24,7 @@ import SortableTableHead, { toggleSort, sortData } from "@/components/shared/Sor
 import { logAudit } from "@/components/shared/auditLog";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
+import { useOptimisticList } from "@/components/shared/useOptimistic";
 
 const ROLE_COLORS = {
   admin: "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400",

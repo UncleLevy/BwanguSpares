@@ -14,6 +14,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { toast } from "sonner";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
+import { useOptimisticList } from "@/components/shared/useOptimistic";
 
 const statusOptions = [
   { value: "pending", label: "Pending", color: "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400" },
