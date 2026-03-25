@@ -1,57 +1,54 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
-import { createPageUrl } from "@/utils";
+import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useNav } from "@/lib/navigationContext";
 
 /**
  * AppHeader — unified native-style header for child screens.
  *
  * Props:
- *  title         - Page/section title
- *  backTo        - Page name to navigate back to (e.g. "BrowseProducts"). Falls back to history.
+ *  title         - Page/section title (string or node)
+ *  backTo        - Page name to fall back to if the stack is empty (e.g. "BrowseProducts")
  *  action        - Optional React node rendered on the right side
- *  className     - Extra classes
- *  hideOnDesktop - If true (default), only renders on mobile (md:hidden). Pass false to show everywhere.
+ *  className     - Extra wrapper classes
+ *  hideOnDesktop - If true (default), only renders on mobile (md:hidden)
  */
 export default function AppHeader({ title, backTo, action, className, hideOnDesktop = true }) {
-  const navigate = useNavigate();
-
-  const handleBack = () => {
-    if (backTo) {
-      navigate(createPageUrl(backTo));
-    } else if (window.history.length > 1) {
-      navigate(-1);
-    } else {
-      navigate(createPageUrl("Home"));
-    }
-  };
+  const { pop } = useNav();
 
   return (
     <div
       role="banner"
       className={cn(
-        "flex items-center gap-3 px-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 sticky top-0 z-40",
+        "flex items-center gap-2 px-2 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 sticky top-0 z-40",
         hideOnDesktop ? "md:hidden" : "",
         className
       )}
       style={{
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 12px)",
-        paddingBottom: "12px",
-        paddingLeft: "max(env(safe-area-inset-left, 0px), 16px)",
-        paddingRight: "max(env(safe-area-inset-right, 0px), 16px)",
+        paddingTop: "calc(env(safe-area-inset-top, 0px) + 10px)",
+        paddingBottom: "10px",
+        paddingLeft: "max(env(safe-area-inset-left, 0px), 4px)",
+        paddingRight: "max(env(safe-area-inset-right, 0px), 8px)",
       }}
     >
       <button
-        onClick={handleBack}
+        onClick={() => pop(backTo)}
         aria-label="Go back"
-        className="flex items-center justify-center rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 active:scale-95 transition-all shrink-0"
-        style={{ minWidth: 44, minHeight: 44 }}
+        className="flex items-center gap-0.5 text-blue-600 dark:text-blue-400 active:opacity-60 transition-opacity shrink-0"
+        style={{ minWidth: 44, minHeight: 44, paddingLeft: 4 }}
       >
-        <ArrowLeft className="w-4 h-4 text-slate-700 dark:text-slate-300" />
+        <ChevronLeft className="w-6 h-6" strokeWidth={2.5} />
+        <span className="text-sm font-medium leading-none hidden xs:block">Back</span>
       </button>
-      <h1 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex-1 truncate">{title}</h1>
-      {action && <div className="shrink-0">{action}</div>}
+
+      <h1 className="text-base font-semibold text-slate-900 dark:text-slate-100 flex-1 text-center truncate px-2">
+        {title}
+      </h1>
+
+      {/* Keep right side balanced whether action exists or not */}
+      <div className="shrink-0" style={{ minWidth: 44 }}>
+        {action}
+      </div>
     </div>
   );
 }
