@@ -25,7 +25,8 @@ const statusOptions = [
   { value: "cancelled", label: "Cancelled", color: "bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400" },
 ];
 
-export default function OrdersPanel({ orders, onOrderUpdate }) {
+export default function OrdersPanel({ orders: initialOrders, onOrderUpdate }) {
+  const [orders, setOrders, updateOrderItem] = useOptimisticList(initialOrders);
   const [editingOrder, setEditingOrder] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [formData, setFormData] = useState({
@@ -52,40 +53,40 @@ export default function OrdersPanel({ orders, onOrderUpdate }) {
   };
 
   const handleSaveOrder = async () => {
-    try {
-      const updates = {
-        status: formData.status,
-        tracking_number: formData.tracking_number,
-        current_location: formData.current_location,
-        estimated_delivery: formData.estimated_delivery
-      };
-
-      await base44.entities.Order.update(editingOrder.id, updates);
-      
-      const updatedOrder = { ...editingOrder, ...updates };
-      onOrderUpdate(updatedOrder);
-      
-      setShowDialog(false);
-      setEditingOrder(null);
-      toast.success("Order updated successfully");
-    } catch (error) {
-      toast.error("Failed to update order");
-    }
+    const updates = {
+      status: formData.status,
+      tracking_number: formData.tracking_number,
+      current_location: formData.current_location,
+      estimated_delivery: formData.estimated_delivery
+    };
+    const target = editingOrder;
+    setShowDialog(false);
+    setEditingOrder(null);
+    await updateOrderItem(
+      target.id,
+      updates,
+      () => base44.entities.Order.update(target.id, updates),
+      () => toast.error("Failed to update order")
+    );
+    onOrderUpdate({ ...target, ...updates });
+    toast.success("Order updated successfully");
   };
 
   const handleRefund = async () => {
     if (!refundReason.trim()) { toast.error("Please provide a reason for the refund"); return; }
     setRefunding(true);
-    try {
-      await base44.functions.invoke('refundOrder', { order_id: refundOrder.id, reason: refundReason });
-      const updated = { ...refundOrder, status: 'cancelled', cancellation_reason: refundReason, refunded: true };
-      onOrderUpdate(updated);
-      toast.success("Refund processed and order cancelled");
-      setRefundDialog(false);
-      setRefundReason("");
-    } catch (error) {
-      toast.error(error?.response?.data?.error || "Failed to process refund");
-    }
+    const target = refundOrder;
+    const patch = { status: 'cancelled', cancellation_reason: refundReason, refunded: true };
+    setRefundDialog(false);
+    setRefundReason("");
+    await updateOrderItem(
+      target.id,
+      patch,
+      () => base44.functions.invoke('refundOrder', { order_id: target.id, reason: refundReason }),
+      (err) => toast.error(err?.response?.data?.error || "Failed to process refund")
+    );
+    onOrderUpdate({ ...target, ...patch });
+    toast.success("Refund processed and order cancelled");
     setRefunding(false);
   };
 
