@@ -115,14 +115,19 @@ export default function Layout({ children, currentPageName }) {
 
   if (hideLayout) {
     return (
-      <>
+      <div
+        style={{
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
+        }}
+      >
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
           </motion.div>
         </AnimatePresence>
         <BottomNav />
-      </>
+      </div>
     );
   }
 
@@ -140,7 +145,11 @@ export default function Layout({ children, currentPageName }) {
       <header
         role="banner"
         className={`sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm ${hasAppHeader ? "hidden md:block" : ""}`}
-        style={{ paddingTop: "env(safe-area-inset-top, 0px)", paddingLeft: "env(safe-area-inset-left, 0px)", paddingRight: "env(safe-area-inset-right, 0px)" }}
+        style={{
+          paddingTop: "env(safe-area-inset-top, 0px)",
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
+        }}
       >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
@@ -352,7 +361,14 @@ export default function Layout({ children, currentPageName }) {
 
       </header>
 
-      <main className="pb-16 md:pb-0" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)" }}>
+      <main
+        className="pb-16 md:pb-0"
+        style={{
+          paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)",
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
+        }}
+      >
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
@@ -361,7 +377,15 @@ export default function Layout({ children, currentPageName }) {
       </main>
       <BottomNav />
 
-      <footer role="contentinfo" className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
+      <footer
+        role="contentinfo"
+        className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20"
+        style={{
+          paddingLeft: "env(safe-area-inset-left, 0px)",
+          paddingRight: "env(safe-area-inset-right, 0px)",
+          paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        }}
+      >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
