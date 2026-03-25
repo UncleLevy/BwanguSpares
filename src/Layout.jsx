@@ -142,7 +142,7 @@ export default function Layout({ children, currentPageName }) {
         className={`sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{ paddingTop: "env(safe-area-inset-top, 0px)", paddingLeft: "env(safe-area-inset-left, 0px)", paddingRight: "env(safe-area-inset-right, 0px)" }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
@@ -362,7 +362,7 @@ export default function Layout({ children, currentPageName }) {
       <BottomNav />
 
       <footer role="contentinfo" className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
