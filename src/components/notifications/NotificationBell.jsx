@@ -120,6 +120,7 @@ export default function NotificationBell({ userEmail }) {
           {unreadCount > 0 && (
             <button
               onClick={markAllAsRead}
+              aria-label="Mark all notifications as read"
               className="h-9 px-2 text-xs text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors font-medium"
             >
               Mark all read
@@ -136,12 +137,13 @@ export default function NotificationBell({ userEmail }) {
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {notifications.map((notif) => (
                 <button
-                key={notif.id}
-                className={`w-full text-left px-4 py-3 min-h-[52px] flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
-                  !notif.read ? "bg-blue-50/60 dark:bg-blue-900/10" : ""
-                }`}
-                onClick={() => markAsRead(notif)}
-                >
+                 key={notif.id}
+                 aria-label={`${notif.title}${!notif.read ? " (unread)" : ""}`}
+                 className={`w-full text-left px-4 py-3 min-h-[52px] flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
+                   !notif.read ? "bg-blue-50/60 dark:bg-blue-900/10" : ""
+                 }`}
+                 onClick={() => markAsRead(notif)}
+                 >
                   <span className="text-lg mt-0.5 shrink-0">
                     {typeIcons[notif.type] || "🔔"}
                   </span>
