@@ -115,11 +115,14 @@ export default function NotificationBell({ userEmail }) {
         </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[340px] p-0">
-        <div className="flex items-center justify-between px-4 py-3 border-b">
+        <div className="flex items-center justify-between px-4 border-b" style={{ minHeight: 48 }}>
           <h3 className="font-semibold text-sm">Notifications</h3>
           {unreadCount > 0 && (
-            <button onClick={markAllAsRead} className="text-xs text-blue-600 hover:underline">
-              Mark all as read
+            <button
+              onClick={markAllAsRead}
+              className="h-9 px-2 text-xs text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg transition-colors font-medium"
+            >
+              Mark all read
             </button>
           )}
         </div>
@@ -133,11 +136,11 @@ export default function NotificationBell({ userEmail }) {
             <div className="divide-y divide-slate-100 dark:divide-slate-800">
               {notifications.map((notif) => (
                 <button
-                  key={notif.id}
-                  className={`w-full text-left px-4 py-3 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
-                    !notif.read ? "bg-blue-50/60 dark:bg-blue-900/10" : ""
-                  }`}
-                  onClick={() => markAsRead(notif)}
+                key={notif.id}
+                className={`w-full text-left px-4 py-3 min-h-[52px] flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors ${
+                  !notif.read ? "bg-blue-50/60 dark:bg-blue-900/10" : ""
+                }`}
+                onClick={() => markAsRead(notif)}
                 >
                   <span className="text-lg mt-0.5 shrink-0">
                     {typeIcons[notif.type] || "🔔"}

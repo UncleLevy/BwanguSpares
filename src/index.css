@@ -96,14 +96,22 @@
   [role="menuitem"],
   [role="option"],
   input[type="checkbox"],
-  input[type="radio"],
-  select {
+  input[type="radio"] {
     min-height: 44px;
   }
 
-  /* Exception: icon-only buttons inside table rows or toolbars */
+  /* Exception: icon-only action buttons inside table rows (edit/delete icons) */
+  /* and compact toolbar buttons that are intentionally smaller */
   .tap-compact button,
-  .tap-compact [role="button"] {
+  .tap-compact [role="button"],
+  td button,
+  td [role="button"] {
     min-height: unset;
+  }
+
+  /* Ensure table cell action buttons still have adequate touch area via padding */
+  td button {
+    min-height: 36px;
+    min-width: 36px;
   }
 }
