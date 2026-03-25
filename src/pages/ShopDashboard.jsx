@@ -59,6 +59,7 @@ import SupportTicketForm from "@/components/support/SupportTicketForm";
 import { emailOrderStatusUpdate, emailNewOrderToShop } from "@/components/lib/emailNotifications";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
+import { useOptimisticList } from "@/components/shared/useOptimistic";
 
 const CATEGORIES = [
   { value: "engine", label: "Engine" }, { value: "brakes", label: "Brakes" },
