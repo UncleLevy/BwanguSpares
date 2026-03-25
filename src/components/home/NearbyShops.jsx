@@ -27,7 +27,7 @@ export default function NearbyShops({ shops, loading }) {
   if (loading) {
     return (
       <section className="py-16 bg-slate-50/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-5 overflow-hidden">
             {[1,2,3].map(i => (
               <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse min-w-[300px]">
@@ -46,7 +46,7 @@ export default function NearbyShops({ shops, loading }) {
 
   return (
     <section className="py-16 bg-slate-50/50 dark:bg-slate-900/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Shops Near You</h2>

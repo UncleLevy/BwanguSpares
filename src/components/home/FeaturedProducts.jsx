@@ -35,7 +35,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
   if (loading) {
     return (
       <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex gap-5 overflow-hidden">
             {[1,2,3,4].map(i => (
               <div key={i} className="bg-white dark:bg-slate-800 rounded-2xl overflow-hidden animate-pulse min-w-[260px]">
@@ -55,7 +55,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
 
   return (
     <section className="py-16 bg-white dark:bg-slate-950">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-end justify-between mb-8">
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Featured Parts</h2>

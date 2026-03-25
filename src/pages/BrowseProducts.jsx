@@ -170,7 +170,7 @@ export default function BrowseProducts() {
 
   return (
     <PullToRefresh onRefresh={loadProducts}>
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
       <Breadcrumbs items={[{ label: "Browse Parts" }]} />
       <div className="mb-5 md:mb-8">
         <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Browse Auto Parts</h1>

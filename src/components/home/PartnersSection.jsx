@@ -42,7 +42,7 @@ const PARTNERS = [
 export default function PartnersSection() {
   return (
     <section className="py-14 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <p className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400 mb-2">Trusted By</p>
           <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Our Partners & Sponsors</h2>

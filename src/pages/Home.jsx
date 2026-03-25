@@ -123,7 +123,7 @@ export default function Home() {
       <HeroSection />
 
       <section className="py-8 md:py-12 border-b border-slate-100 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {features.map((f, i) => (
               <div key={i} className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-3 md:p-0 rounded-xl md:rounded-none bg-slate-50/80 md:bg-transparent dark:bg-slate-800/50 md:dark:bg-transparent">

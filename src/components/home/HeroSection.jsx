@@ -20,7 +20,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 gradient-blue opacity-85" />
       <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent" />
       
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-36">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-36">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-4 md:mb-6">
             <MapPin className="w-3.5 h-3.5" />
