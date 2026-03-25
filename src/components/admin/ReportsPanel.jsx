@@ -36,7 +36,7 @@ const REASON_LABELS = {
 };
 
 export default function ReportsPanel({ adminUser }) {
-  const [reports, setReports] = useState([]);
+  const [reports, setReports, updateReport] = useOptimisticList([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   const [adminNote, setAdminNote] = useState("");
@@ -59,22 +59,27 @@ export default function ReportsPanel({ adminUser }) {
   };
 
   const saveReport = async () => {
-    await base44.entities.Report.update(selected.id, {
-      status: newStatus,
-      admin_note: adminNote,
-    });
-    const actionMap = { resolved: "resolve_report", dismissed: "dismiss_report" };
-    if (actionMap[newStatus]) {
-      await logAudit(adminUser, actionMap[newStatus], {
-        entity_type: "Report",
-        entity_id: selected.id,
-        entity_label: `Report on ${selected.reported_name || selected.reported_email}`,
-        details: adminNote || `Status changed to ${newStatus}`,
-      });
-    }
-    setReports(reports.map(r => r.id === selected.id ? { ...r, status: newStatus, admin_note: adminNote } : r));
-    toast.success("Report updated");
+    const target = selected;
+    const patch = { status: newStatus, admin_note: adminNote };
     setSelected(null);
+    await updateReport(
+      target.id,
+      patch,
+      async () => {
+        await base44.entities.Report.update(target.id, patch);
+        const actionMap = { resolved: "resolve_report", dismissed: "dismiss_report" };
+        if (actionMap[newStatus]) {
+          await logAudit(adminUser, actionMap[newStatus], {
+            entity_type: "Report",
+            entity_id: target.id,
+            entity_label: `Report on ${target.reported_name || target.reported_email}`,
+            details: adminNote || `Status changed to ${newStatus}`,
+          });
+        }
+      },
+      () => toast.error("Failed to update report")
+    );
+    toast.success("Report updated");
   };
 
   if (loading) return <div className="animate-pulse h-40 bg-slate-100 rounded-xl" />;
