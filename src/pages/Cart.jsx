@@ -12,6 +12,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
+import MobileSelect from "@/components/shared/MobileSelect";
 
 export default function Cart() {
   const { isZambia, loading: geoLoading } = useGeoLock();
