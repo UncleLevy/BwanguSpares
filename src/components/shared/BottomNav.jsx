@@ -92,9 +92,11 @@ export default function BottomNav() {
 
   const handleViewTap = (viewKey, isActive) => {
     if (isActive) return;
+    // Use replaceState so it doesn't push a new history entry,
+    // then dispatch popstate so the dashboard page syncs its view state.
     const url = location.pathname + "?view=" + viewKey;
-    window.history.replaceState(null, "", url);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.history.replaceState({ view: viewKey }, "", url);
+    window.dispatchEvent(new PopStateEvent("popstate", { state: { view: viewKey } }));
   };
 
   const navItems = useContextNavItems({ user, cartCount, location });
