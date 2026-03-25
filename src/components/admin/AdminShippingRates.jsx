@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Edit2, Save, X, Trash2, Plus, Truck, MapPin, Search } from "lucide-react";
+import MobileSelect from "@/components/shared/MobileSelect";
 
 export default function AdminShippingRates() {
   const [towns, setTowns] = useState([]);
@@ -106,16 +107,13 @@ export default function AdminShippingRates() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div className="sm:col-span-2">
               <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Town</Label>
-              <select
+              <MobileSelect
                 value={newTownId}
-                onChange={e => setNewTownId(e.target.value)}
-                className="w-full mt-1 px-3 py-2 border border-slate-300 dark:border-slate-600 rounded-lg text-sm bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Select a town…</option>
-                {availableTowns.map(t => (
-                  <option key={t.id} value={t.id}>{t.name} ({t.region_name})</option>
-                ))}
-              </select>
+                onValueChange={setNewTownId}
+                placeholder="Select a town…"
+                triggerClassName="mt-1 w-full"
+                options={availableTowns.map(t => ({ value: t.id, label: `${t.name} (${t.region_name})` }))}
+              />
             </div>
             <div>
               <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Rate (ZMW)</Label>
@@ -169,7 +167,33 @@ export default function AdminShippingRates() {
                 </Badge>
               </div>
 
-              <div className="overflow-x-auto">
+              {/* Mobile cards (< 768px) */}
+              <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-700/50">
+                {rates.map(rate => (
+                  <div key={rate.id} className="px-4 py-3 flex items-center justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="font-medium text-slate-900 dark:text-slate-100 text-sm truncate">{rate.town_name}</p>
+                      {rate.set_by && <p className="text-xs text-slate-400 dark:text-slate-500 truncate">{rate.set_by}</p>}
+                    </div>
+                    {editingId === rate.id ? (
+                      <div className="flex items-center gap-1.5 flex-shrink-0">
+                        <Input type="number" value={editingRate} onChange={e => setEditingRate(e.target.value)} className="w-24 h-8" autoFocus />
+                        <Button size="sm" onClick={() => handleUpdateRate(rate.id)} className="h-8 bg-blue-600 hover:bg-blue-700"><Save className="w-3 h-3" /></Button>
+                        <Button size="sm" variant="ghost" onClick={() => setEditingId(null)} className="h-8"><X className="w-3 h-3" /></Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-400 text-sm">K{rate.default_rate.toLocaleString()}</span>
+                        <Button size="sm" variant="ghost" onClick={() => { setEditingId(rate.id); setEditingRate(rate.default_rate); }} className="h-8 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20"><Edit2 className="w-3.5 h-3.5" /></Button>
+                        <Button size="sm" variant="ghost" onClick={() => handleDeleteRate(rate.id)} className="h-8 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="w-3.5 h-3.5" /></Button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop table (≥ 768px) */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-slate-100 dark:border-slate-700/50">
@@ -181,20 +205,11 @@ export default function AdminShippingRates() {
                   </thead>
                   <tbody>
                     {rates.map((rate, idx) => (
-                      <tr
-                        key={rate.id}
-                        className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${idx < rates.length - 1 ? "border-b border-slate-100 dark:border-slate-700/50" : ""}`}
-                      >
+                      <tr key={rate.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors ${idx < rates.length - 1 ? "border-b border-slate-100 dark:border-slate-700/50" : ""}`}>
                         <td className="px-5 py-3 font-medium text-slate-900 dark:text-slate-100">{rate.town_name}</td>
                         <td className="px-5 py-3">
                           {editingId === rate.id ? (
-                            <Input
-                              type="number"
-                              value={editingRate}
-                              onChange={e => setEditingRate(e.target.value)}
-                              className="w-28 h-8"
-                              autoFocus
-                            />
+                            <Input type="number" value={editingRate} onChange={e => setEditingRate(e.target.value)} className="w-28 h-8" autoFocus />
                           ) : (
                             <span className="font-semibold text-emerald-600 dark:text-emerald-400">K{rate.default_rate.toLocaleString()}</span>
                           )}
@@ -203,29 +218,13 @@ export default function AdminShippingRates() {
                         <td className="px-5 py-3 text-right">
                           {editingId === rate.id ? (
                             <div className="flex justify-end gap-1.5">
-                              <Button size="sm" onClick={() => handleUpdateRate(rate.id)} className="h-7 bg-blue-600 hover:bg-blue-700 gap-1 text-xs">
-                                <Save className="w-3 h-3" /> Save
-                              </Button>
-                              <Button size="sm" variant="ghost" onClick={() => setEditingId(null)} className="h-7">
-                                <X className="w-3 h-3" />
-                              </Button>
+                              <Button size="sm" onClick={() => handleUpdateRate(rate.id)} className="h-7 bg-blue-600 hover:bg-blue-700 gap-1 text-xs"><Save className="w-3 h-3" /> Save</Button>
+                              <Button size="sm" variant="ghost" onClick={() => setEditingId(null)} className="h-7"><X className="w-3 h-3" /></Button>
                             </div>
                           ) : (
                             <div className="flex justify-end gap-1.5">
-                              <Button
-                                size="sm" variant="ghost"
-                                onClick={() => { setEditingId(rate.id); setEditingRate(rate.default_rate); }}
-                                className="h-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 text-xs"
-                              >
-                                <Edit2 className="w-3 h-3" /> Edit
-                              </Button>
-                              <Button
-                                size="sm" variant="ghost"
-                                onClick={() => handleDeleteRate(rate.id)}
-                                className="h-7 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
-                              >
-                                <Trash2 className="w-3 h-3" />
-                              </Button>
+                              <Button size="sm" variant="ghost" onClick={() => { setEditingId(rate.id); setEditingRate(rate.default_rate); }} className="h-7 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 gap-1 text-xs"><Edit2 className="w-3 h-3" /> Edit</Button>
+                              <Button size="sm" variant="ghost" onClick={() => handleDeleteRate(rate.id)} className="h-7 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"><Trash2 className="w-3 h-3" /></Button>
                             </div>
                           )}
                         </td>

@@ -11,10 +11,9 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { toast } from "sonner";
 import {
   ShieldOff, RotateCcw, Ban, Users, Search, UserPlus,
@@ -205,18 +204,76 @@ export default function UsersPanel({ adminUser }) {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input className="pl-9" placeholder="Search by name or email…" value={search} onChange={e => setSearch(e.target.value)} />
             </div>
-            <Select value={filterRole} onValueChange={setFilterRole}>
-              <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Roles</SelectItem>
-                <SelectItem value="admin">Admin</SelectItem>
-                <SelectItem value="shop_owner">Shop Owner</SelectItem>
-                <SelectItem value="user">User</SelectItem>
-              </SelectContent>
-            </Select>
+            <MobileSelect
+              value={filterRole}
+              onValueChange={setFilterRole}
+              placeholder="All Roles"
+              triggerClassName="w-40"
+              options={[
+                { value: "all", label: "All Roles" },
+                { value: "admin", label: "Admin" },
+                { value: "shop_owner", label: "Shop Owner" },
+                { value: "user", label: "User" },
+              ]}
+            />
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+          {/* Mobile cards (< 768px) */}
+          <div className="md:hidden space-y-3">
+            {pagination.paginatedItems.length === 0 ? (
+              <p className="text-center py-12 text-slate-400">No users found</p>
+            ) : pagination.paginatedItems.map(u => {
+              const RoleIcon = ROLE_ICONS[u.role] || User;
+              const isBanned = bannedEmails.has(u.email);
+              const isSelf = u.email === adminUser?.email;
+              return (
+                <Card key={u.id} className={`border-slate-100 dark:border-slate-700 dark:bg-slate-900 ${isBanned ? "ring-1 ring-red-300 dark:ring-red-700" : ""}`}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between gap-2 mb-3">
+                      <div className="min-w-0">
+                        <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">{u.full_name || "—"}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{u.email}</p>
+                        <p className="text-[10px] text-slate-400 mt-0.5">Joined {new Date(u.created_date).toLocaleDateString()}</p>
+                      </div>
+                      <div className="flex flex-col items-end gap-1 flex-shrink-0">
+                        <Badge className={`${ROLE_COLORS[u.role] || "bg-slate-100 text-slate-600"} flex items-center gap-1 text-[10px]`}>
+                          <RoleIcon className="w-2.5 h-2.5" /> {u.role || "user"}
+                        </Badge>
+                        {isBanned
+                          ? <Badge className="bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px]">Banned</Badge>
+                          : <Badge className="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px]">Active</Badge>
+                        }
+                      </div>
+                    </div>
+                    {!isSelf && (
+                      <div className="flex gap-2">
+                        <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-blue-600 hover:bg-blue-50" onClick={() => openRoleChange(u)}>
+                          <ShieldCheck className="w-3 h-3 mr-1" /> Role
+                        </Button>
+                        {!isBanned ? (
+                          <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-red-600 hover:bg-red-50" onClick={() => openBanForUser(u)}>
+                            <Ban className="w-3 h-3 mr-1" /> Ban
+                          </Button>
+                        ) : (
+                          <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-emerald-600 hover:bg-emerald-50"
+                            onClick={() => { const b = bannedUsers.find(b => b.email === u.email); if (b) removeBan(b.id, b.email); }}>
+                            <RotateCcw className="w-3 h-3 mr-1" /> Unblock
+                          </Button>
+                        )}
+                      </div>
+                    )}
+                    {isSelf && <p className="text-xs text-slate-400 text-center">Your account</p>}
+                  </CardContent>
+                </Card>
+              );
+            })}
+            {filtered.length > 15 && (
+              <TablePagination currentPage={pagination.currentPage} totalItems={pagination.totalItems} itemsPerPage={pagination.itemsPerPage} onPageChange={pagination.setCurrentPage} />
+            )}
+          </div>
+
+          {/* Desktop table (≥ 768px) */}
+          <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
             <Table>
               <TableHeader>
                 <TableRow className="bg-slate-50 dark:bg-slate-800">
@@ -262,10 +319,7 @@ export default function UsersPanel({ adminUser }) {
                                 </Button>
                               ) : (
                                 <Button size="sm" variant="ghost" className="h-8 text-emerald-600 hover:bg-emerald-50"
-                                  onClick={() => {
-                                    const b = bannedUsers.find(b => b.email === u.email);
-                                    if (b) removeBan(b.id, b.email);
-                                  }}>
+                                  onClick={() => { const b = bannedUsers.find(b => b.email === u.email); if (b) removeBan(b.id, b.email); }}>
                                   <RotateCcw className="w-3.5 h-3.5 mr-1" /> Unblock
                                 </Button>
                               )}
@@ -278,17 +332,12 @@ export default function UsersPanel({ adminUser }) {
                   );
                 })}
                 {filtered.length === 0 && (
-                <TableRow><TableCell colSpan={6} className="text-center py-12 text-slate-400 dark:text-slate-500">No users found</TableCell></TableRow>
+                  <TableRow><TableCell colSpan={6} className="text-center py-12 text-slate-400 dark:text-slate-500">No users found</TableCell></TableRow>
                 )}
               </TableBody>
             </Table>
             {filtered.length > 15 && (
-              <TablePagination
-                currentPage={pagination.currentPage}
-                totalItems={pagination.totalItems}
-                itemsPerPage={pagination.itemsPerPage}
-                onPageChange={pagination.setCurrentPage}
-              />
+              <TablePagination currentPage={pagination.currentPage} totalItems={pagination.totalItems} itemsPerPage={pagination.itemsPerPage} onPageChange={pagination.setCurrentPage} />
             )}
           </div>
         </TabsContent>
@@ -357,14 +406,9 @@ export default function UsersPanel({ adminUser }) {
             <p className="text-sm text-slate-600">Update role for <strong>{roleDialog?.full_name || roleDialog?.email}</strong></p>
             <div>
               <Label>Role</Label>
-              <Select value={newRole} onValueChange={setNewRole}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">User (Buyer)</SelectItem>
-                  <SelectItem value="shop_owner">Shop Owner</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+              <MobileSelect value={newRole} onValueChange={setNewRole} placeholder="Select role" triggerClassName="mt-1 w-full"
+                options={[{ value: "user", label: "User (Buyer)" }, { value: "shop_owner", label: "Shop Owner" }, { value: "admin", label: "Admin" }]}
+              />
             </div>
           </div>
           <DialogFooter>
@@ -385,14 +429,9 @@ export default function UsersPanel({ adminUser }) {
             </div>
             <div>
               <Label>Role</Label>
-              <Select value={inviteRole} onValueChange={setInviteRole}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="user">User (Buyer)</SelectItem>
-                  <SelectItem value="shop_owner">Shop Owner</SelectItem>
-                  <SelectItem value="admin">Admin</SelectItem>
-                </SelectContent>
-              </Select>
+              <MobileSelect value={inviteRole} onValueChange={setInviteRole} placeholder="Select role" triggerClassName="mt-1 w-full"
+                options={[{ value: "user", label: "User (Buyer)" }, { value: "shop_owner", label: "Shop Owner" }, { value: "admin", label: "Admin" }]}
+              />
             </div>
           </div>
           <DialogFooter>
@@ -432,13 +471,9 @@ export default function UsersPanel({ adminUser }) {
             </div>
             <div>
               <Label>Restriction Type *</Label>
-              <Select value={banForm.ban_type} onValueChange={v => setBanForm({...banForm, ban_type: v})}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="suspended">Suspended (temporary)</SelectItem>
-                  <SelectItem value="banned">Banned (permanent)</SelectItem>
-                </SelectContent>
-              </Select>
+              <MobileSelect value={banForm.ban_type} onValueChange={v => setBanForm({...banForm, ban_type: v})} placeholder="Select type" triggerClassName="mt-1 w-full"
+                options={[{ value: "suspended", label: "Suspended (temporary)" }, { value: "banned", label: "Banned (permanent)" }]}
+              />
             </div>
             {banForm.ban_type === "suspended" && (
               <div>

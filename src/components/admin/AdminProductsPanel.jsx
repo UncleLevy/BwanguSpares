@@ -7,16 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-import { Search, Plus, Eye, Pencil, Trash2, X, Package, Store, Tag, BarChart2 } from "lucide-react";
+import { Search, Plus, Eye, Pencil, Trash2, X, Package, Store } from "lucide-react";
 import { toast } from "sonner";
+import MobileSelect from "@/components/shared/MobileSelect";
 
 const CATEGORIES = [
   "engine","brakes","suspension","electrical","body","transmission",
   "exhaust","cooling","steering","interior","accessories","tyres","filters","oils_fluids","other"
 ];
-
 const CONDITIONS = ["new", "used", "refurbished"];
 const STATUSES = ["active", "inactive", "out_of_stock"];
 
@@ -49,10 +48,8 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
   const [deleteDialog, setDeleteDialog] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
-  // Update local products when parent passes new ones
   useEffect(() => { setProducts(initialProducts || []); }, [initialProducts]);
 
-  // Derive unique shops from products + shops prop for filter dropdown
   const shopOptions = useMemo(() => {
     const fromProducts = products.map(p => ({ id: p.shop_id, name: p.shop_name })).filter(s => s.id);
     const fromShops = (shops || []).map(s => ({ id: s.id, name: s.name }));
@@ -61,7 +58,6 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
     return Object.entries(map).map(([id, name]) => ({ id, name }));
   }, [products, shops]);
 
-  // Build a map of shopId -> region for filtering by region
   const shopRegionMap = useMemo(() => {
     const map = {};
     (shops || []).forEach(s => { map[s.id] = s.region_name || s.region || ""; });
@@ -81,11 +77,7 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
     });
   }, [products, search, filterShop, filterStatus, filterRegion, filterPriceMin, filterPriceMax, shopRegionMap]);
 
-  const openAdd = () => {
-    setEditProduct(null);
-    setForm(EMPTY_FORM);
-    setShowForm(true);
-  };
+  const openAdd = () => { setEditProduct(null); setForm(EMPTY_FORM); setShowForm(true); };
 
   const openEdit = (p) => {
     setEditProduct(p);
@@ -112,14 +104,10 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
     if (!form.category) { toast.error("Category is required"); return; }
     if (!form.shop_id) { toast.error("Please assign this product to a shop"); return; }
     setSaving(true);
-    const payload = {
-      ...form,
-      price: parseFloat(form.price),
-      stock_quantity: parseInt(form.stock_quantity) || 0,
-    };
+    const payload = { ...form, price: parseFloat(form.price), stock_quantity: parseInt(form.stock_quantity) || 0 };
     try {
       if (editProduct) {
-        const updated = await base44.entities.Product.update(editProduct.id, payload);
+        await base44.entities.Product.update(editProduct.id, payload);
         setProducts(prev => prev.map(p => p.id === editProduct.id ? { ...p, ...payload } : p));
         toast.success("Product updated");
       } else {
@@ -150,7 +138,6 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
   };
 
   const hasFilters = search || filterShop !== "all" || filterStatus !== "all" || filterRegion !== "all" || filterPriceMin || filterPriceMax;
-
   const uniqueRegions = useMemo(() => [...new Set(Object.values(shopRegionMap).filter(Boolean))].sort(), [shopRegionMap]);
 
   return (
@@ -170,34 +157,27 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search name, brand, SKU..." className="pl-9" />
             </div>
-            <Select value={filterShop} onValueChange={setFilterShop}>
-              <SelectTrigger className="w-44">
-                <Store className="w-3.5 h-3.5 mr-1.5 text-slate-400" />
-                <SelectValue placeholder="Shop" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Shops</SelectItem>
-                {shopOptions.map(s => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                {STATUSES.map(s => <SelectItem key={s} value={s}>{s.replace("_", " ")}</SelectItem>)}
-              </SelectContent>
-            </Select>
-            <Select value={filterRegion} onValueChange={setFilterRegion}>
-              <SelectTrigger className="w-40">
-                <SelectValue placeholder="Region" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Regions</SelectItem>
-                {uniqueRegions.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
-              </SelectContent>
-            </Select>
+            <MobileSelect
+              value={filterShop}
+              onValueChange={setFilterShop}
+              placeholder="All Shops"
+              triggerClassName="w-44"
+              options={[{ value: "all", label: "All Shops" }, ...shopOptions.map(s => ({ value: s.id, label: s.name }))]}
+            />
+            <MobileSelect
+              value={filterStatus}
+              onValueChange={setFilterStatus}
+              placeholder="All Statuses"
+              triggerClassName="w-40"
+              options={[{ value: "all", label: "All Statuses" }, ...STATUSES.map(s => ({ value: s, label: s.replace("_", " ") }))]}
+            />
+            <MobileSelect
+              value={filterRegion}
+              onValueChange={setFilterRegion}
+              placeholder="All Regions"
+              triggerClassName="w-40"
+              options={[{ value: "all", label: "All Regions" }, ...uniqueRegions.map(r => ({ value: r, label: r }))]}
+            />
             <div className="flex items-center gap-1.5">
               <Input value={filterPriceMin} onChange={e => setFilterPriceMin(e.target.value)} placeholder="Min K" className="w-20" type="number" min="0" />
               <span className="text-slate-400 text-sm">–</span>
@@ -213,8 +193,65 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
         </CardContent>
       </Card>
 
-      {/* Table */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+      {/* Mobile card layout (< 768px) */}
+      <div className="md:hidden space-y-3">
+        {filtered.length === 0 ? (
+          <div className="text-center py-12 text-slate-400">
+            <Package className="w-10 h-10 mx-auto mb-2 opacity-30" />
+            No products found
+          </div>
+        ) : filtered.map(p => (
+          <Card key={p.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+            <CardContent className="p-4">
+              <div className="flex items-start gap-3 mb-3">
+                {p.image_url ? (
+                  <img src={p.image_url} alt="" className="w-12 h-12 rounded-lg object-cover border border-slate-100 flex-shrink-0" />
+                ) : (
+                  <div className="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
+                    <Package className="w-5 h-5 text-slate-400" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">{p.name}</p>
+                  {p.brand && <p className="text-xs text-slate-400">{p.brand}</p>}
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{p.shop_name || "—"}</p>
+                </div>
+                <Badge className={`${statusColors[p.status] || ""} text-[11px] border flex-shrink-0`}>
+                  {p.status?.replace("_", " ")}
+                </Badge>
+              </div>
+              <div className="grid grid-cols-3 gap-2 text-xs mb-3">
+                <div>
+                  <p className="text-slate-400">Price</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">K{p.price?.toLocaleString()}</p>
+                </div>
+                <div>
+                  <p className="text-slate-400">Stock</p>
+                  <p className={p.stock_quantity === 0 ? "text-red-500 font-medium" : "text-slate-700 dark:text-slate-300"}>{p.stock_quantity}</p>
+                </div>
+                <div>
+                  <p className="text-slate-400">Category</p>
+                  <p className="text-slate-700 dark:text-slate-300 truncate">{p.category?.replace("_", " ")}</p>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs" onClick={() => setViewProduct(p)}>
+                  <Eye className="w-3.5 h-3.5 mr-1" /> View
+                </Button>
+                <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-blue-600 hover:bg-blue-50" onClick={() => openEdit(p)}>
+                  <Pencil className="w-3.5 h-3.5 mr-1" /> Edit
+                </Button>
+                <Button size="sm" variant="ghost" className="flex-1 h-8 text-xs text-red-600 hover:bg-red-50" onClick={() => setDeleteDialog(p)}>
+                  <Trash2 className="w-3.5 h-3.5 mr-1" /> Delete
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Desktop table (≥ 768px) */}
+      <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
@@ -338,25 +375,23 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
             </div>
             <div>
               <Label>Assign to Shop *</Label>
-              <Select value={form.shop_id} onValueChange={handleShopSelect}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue placeholder="Select a shop" />
-                </SelectTrigger>
-                <SelectContent>
-                  {(shops || []).filter(s => s.status === "approved").map(s => (
-                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.shop_id}
+                onValueChange={handleShopSelect}
+                placeholder="Select a shop"
+                triggerClassName="mt-1 w-full"
+                options={(shops || []).filter(s => s.status === "approved").map(s => ({ value: s.id, label: s.name }))}
+              />
             </div>
             <div>
               <Label>Category *</Label>
-              <Select value={form.category} onValueChange={v => setForm(f => ({...f, category: v}))}>
-                <SelectTrigger className="mt-1"><SelectValue placeholder="Select category" /></SelectTrigger>
-                <SelectContent>
-                  {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c.replace("_", " ")}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.category}
+                onValueChange={v => setForm(f => ({...f, category: v}))}
+                placeholder="Select category"
+                triggerClassName="mt-1 w-full"
+                options={CATEGORIES.map(c => ({ value: c, label: c.replace("_", " ") }))}
+              />
             </div>
             <div>
               <Label>Price (ZMW) *</Label>
@@ -376,21 +411,23 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
             </div>
             <div>
               <Label>Condition</Label>
-              <Select value={form.condition} onValueChange={v => setForm(f => ({...f, condition: v}))}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {CONDITIONS.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.condition}
+                onValueChange={v => setForm(f => ({...f, condition: v}))}
+                placeholder="Condition"
+                triggerClassName="mt-1 w-full"
+                options={CONDITIONS.map(c => ({ value: c, label: c }))}
+              />
             </div>
             <div>
               <Label>Status</Label>
-              <Select value={form.status} onValueChange={v => setForm(f => ({...f, status: v}))}>
-                <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  {STATUSES.map(s => <SelectItem key={s} value={s}>{s.replace("_", " ")}</SelectItem>)}
-                </SelectContent>
-              </Select>
+              <MobileSelect
+                value={form.status}
+                onValueChange={v => setForm(f => ({...f, status: v}))}
+                placeholder="Status"
+                triggerClassName="mt-1 w-full"
+                options={STATUSES.map(s => ({ value: s, label: s.replace("_", " ") }))}
+              />
             </div>
             <div className="sm:col-span-2">
               <Label>Compatible Vehicles</Label>
