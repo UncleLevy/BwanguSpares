@@ -7,8 +7,10 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { base44 } from '@/api/base44Client';
-import { useEffect, useState, Suspense } from 'react';
+import { useEffect, useState, Suspense, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
+import { NavProvider, useNav, ownerTabFor } from '@/lib/navigationContext';
+import { createPageUrl } from '@/utils';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
@@ -18,32 +20,102 @@ const LayoutWrapper = ({ children, currentPageName }) => Layout
   ? <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
 
-// Page-level loading fallback (lightweight spinner)
+// ─── Loading fallback ────────────────────────────────────────────────────────
 const PageFallback = () => (
   <div className="fixed inset-0 flex items-center justify-center bg-background">
     <div className="w-8 h-8 border-4 border-slate-200 border-t-cyan-600 rounded-full animate-spin" />
   </div>
 );
 
-// Framer Motion variants for native-feel slide transitions
-const pageVariants = {
-  initial: { opacity: 0, x: 18 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.2, ease: [0.25, 0.46, 0.45, 0.94] } },
-  exit:    { opacity: 0, x: -12, transition: { duration: 0.15 } },
+// ─── iOS-style spring transitions ────────────────────────────────────────────
+// direction: "forward" = push right-to-left; "back" = pop left-to-right
+const iosSpring = { type: "spring", stiffness: 380, damping: 36, mass: 1 };
+const iosExit   = { type: "spring", stiffness: 380, damping: 36, mass: 1 };
+
+function makeVariants(direction) {
+  const forward = direction !== "back";
+  return {
+    initial: {
+      x: forward ? "100%" : "-30%",
+      opacity: forward ? 1 : 0.6,
+    },
+    animate: {
+      x: 0,
+      opacity: 1,
+      transition: { ...iosSpring },
+    },
+    exit: {
+      x: forward ? "-30%" : "100%",
+      opacity: forward ? 0.6 : 1,
+      transition: { ...iosExit },
+    },
+  };
+}
+
+// ─── Animated page wrapper ───────────────────────────────────────────────────
+const AnimatedPage = ({ children, direction }) => {
+  const variants = makeVariants(direction);
+  return (
+    <motion.div
+      variants={variants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      style={{ minHeight: "100%", willChange: "transform, opacity", overflow: "hidden" }}
+    >
+      {children}
+    </motion.div>
+  );
 };
 
-const AnimatedPage = ({ children }) => (
-  <motion.div
-    variants={pageVariants}
-    initial="initial"
-    animate="animate"
-    exit="exit"
-    style={{ minHeight: "100%" }}
-  >
-    {children}
-  </motion.div>
-);
+// ─── Route recorder — sync browser navigations into the nav context ──────────
+function RouteRecorder() {
+  const location = useLocation();
+  const { recordNavigation } = useNav();
+  const isFirst = useRef(true);
 
+  useEffect(() => {
+    if (isFirst.current) { isFirst.current = false; return; }
+    recordNavigation(location.pathname, location.search);
+  }, [location.pathname, location.search]);
+
+  return null;
+}
+
+// ─── All animated routes ─────────────────────────────────────────────────────
+const AnimatedRoutes = () => {
+  const location = useLocation();
+  const { direction } = useNav();
+
+  return (
+    <>
+      <RouteRecorder />
+      <AnimatePresence mode="wait" initial={false}>
+        <Routes location={location} key={location.pathname}>
+          <Route path="/" element={<DashboardRedirect />} />
+          {Object.entries(Pages).map(([path, Page]) => (
+            <Route
+              key={path}
+              path={`/${path}`}
+              element={
+                <AnimatedPage direction={direction}>
+                  <LayoutWrapper currentPageName={path}>
+                    <Suspense fallback={<PageFallback />}>
+                      <Page />
+                    </Suspense>
+                  </LayoutWrapper>
+                </AnimatedPage>
+              }
+            />
+          ))}
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </AnimatePresence>
+    </>
+  );
+};
+
+// ─── Dashboard redirect at "/" ────────────────────────────────────────────────
 const DashboardRedirect = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -71,34 +143,7 @@ const DashboardRedirect = () => {
   );
 };
 
-const AnimatedRoutes = () => {
-  const location = useLocation();
-
-  return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<DashboardRedirect />} />
-        {Object.entries(Pages).map(([path, Page]) => (
-          <Route
-            key={path}
-            path={`/${path}`}
-            element={
-              <AnimatedPage>
-                <LayoutWrapper currentPageName={path}>
-                  <Suspense fallback={<PageFallback />}>
-                    <Page />
-                  </Suspense>
-                </LayoutWrapper>
-              </AnimatedPage>
-            }
-          />
-        ))}
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </AnimatePresence>
-  );
-};
-
+// ─── Auth gate ───────────────────────────────────────────────────────────────
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
@@ -109,9 +154,14 @@ const AuthenticatedApp = () => {
     if (authError.type === 'auth_required') { navigateToLogin(); return null; }
   }
 
-  return <AnimatedRoutes />;
+  return (
+    <NavProvider>
+      <AnimatedRoutes />
+    </NavProvider>
+  );
 };
 
+// ─── App root ────────────────────────────────────────────────────────────────
 function App() {
   return (
     <AuthProvider>
