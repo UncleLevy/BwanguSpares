@@ -242,12 +242,14 @@ export default function ShopDashboard() {
       compatible_vehicles: compatibleVehiclesArray,
     };
     if (editProduct) {
-      await base44.entities.Product.update(editProduct.id, data);
-      setProducts(products.map(p => p.id === editProduct.id ? { ...p, ...data } : p));
+      const id = editProduct.id;
+      setProductDialog(false);
+      setEditProduct(null);
+      await updateProduct(id, data, () => base44.entities.Product.update(id, data), () => toast.error("Failed to update product"));
       toast.success("Product updated");
     } else {
       const created = await base44.entities.Product.create(data);
-      setProducts([created, ...products]);
+      setProducts(prev => [created, ...prev]);
       toast.success("Product added");
     }
     setProductDialog(false);
@@ -257,8 +259,7 @@ export default function ShopDashboard() {
   };
 
   const deleteProduct = async (id) => {
-    await base44.entities.Product.delete(id);
-    setProducts(products.filter(p => p.id !== id));
+    await removeProduct(id, () => base44.entities.Product.delete(id), () => toast.error("Failed to delete product"));
     toast.success("Product deleted");
   };
 
@@ -297,12 +298,14 @@ export default function ShopDashboard() {
       shop_name: shop.name,
     };
     if (editTech) {
-      await base44.entities.Technician.update(editTech.id, data);
-      setTechnicians(technicians.map(t => t.id === editTech.id ? { ...t, ...data } : t));
+      const id = editTech.id;
+      setTechDialog(false);
+      setEditTech(null);
+      await updateTechnician(id, data, () => base44.entities.Technician.update(id, data), () => toast.error("Failed to update technician"));
       toast.success("Technician updated");
     } else {
       const created = await base44.entities.Technician.create(data);
-      setTechnicians([created, ...technicians]);
+      setTechnicians(prev => [created, ...prev]);
       toast.success("Technician added");
     }
     setTechDialog(false);
@@ -311,8 +314,7 @@ export default function ShopDashboard() {
   };
 
   const deleteTech = async (id) => {
-    await base44.entities.Technician.delete(id);
-    setTechnicians(technicians.filter(t => t.id !== id));
+    await removeTechnician(id, () => base44.entities.Technician.delete(id), () => toast.error("Failed to delete technician"));
     toast.success("Technician deleted");
   };
 
