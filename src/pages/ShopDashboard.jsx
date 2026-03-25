@@ -86,9 +86,9 @@ export default function ShopDashboard() {
   const [shop, setShop] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [view, setView] = useState("overview");
-  const [products, setProducts] = useState([]);
-  const [technicians, setTechnicians] = useState([]);
-  const [orders, setOrders] = useState([]);
+  const [products, setProducts, updateProduct, removeProduct] = useOptimisticList([]);
+  const [technicians, setTechnicians, updateTechnician, removeTechnician] = useOptimisticList([]);
+  const [orders, setOrders, updateOrder] = useOptimisticList([]);
   const [loading, setLoading] = useState(true);
   const [showNewShopDialog, setShowNewShopDialog] = useState(false);
   const [newShopForm, setNewShopForm] = useState({ name: "", phone: "", address: "", region: "", town: "" });
