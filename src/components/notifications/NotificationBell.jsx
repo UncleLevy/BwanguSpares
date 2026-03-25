@@ -105,7 +105,7 @@ export default function NotificationBell({ userEmail }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="relative p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-colors">
+        <button className="relative w-11 h-11 flex items-center justify-center hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors" aria-label="Notifications">
           <Bell className="w-5 h-5 text-slate-600 dark:text-slate-400" />
           {unreadCount > 0 && (
             <Badge className="absolute -top-1 -right-1 h-5 min-w-[20px] flex items-center justify-center bg-red-500 text-white text-[10px] px-1 pointer-events-none">
