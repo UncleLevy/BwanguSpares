@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Search, MapPin, Star, Store, Navigation, ShieldCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
@@ -102,13 +102,13 @@ export default function BrowseShops() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input value={search} onChange={e => { setSearch(e.target.value); setPage(1); }} placeholder="Search shops..." className="pl-10 h-11 rounded-xl" />
         </div>
-        <Select value={regionFilter} onValueChange={(v) => { setRegionFilter(v); setPage(1); }}>
-          <SelectTrigger className="w-full sm:w-48 h-11 rounded-xl"><SelectValue placeholder="Region" /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Regions</SelectItem>
-            {regions.map(r => <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>)}
-          </SelectContent>
-        </Select>
+        <MobileSelect
+          value={regionFilter}
+          onValueChange={(v) => { setRegionFilter(v); setPage(1); }}
+          placeholder="All Regions"
+          triggerClassName="w-full sm:w-48"
+          options={[{ value: "all", label: "All Regions" }, ...regions.map(r => ({ value: r.id, label: r.name }))]}
+        />
       </div>
 
       {loading ? (

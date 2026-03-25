@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { Button } from "@/components/ui/button";
 import { Car, X } from "lucide-react";
 
@@ -79,38 +79,35 @@ export default function VehicleFilterSidebar({ vehicleFilter, onFilterChange }) 
       <div className="space-y-3">
         <div>
           <label className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">Brand</label>
-          <Select value={selectedBrand} onValueChange={handleBrandChange}>
-            <SelectTrigger className="mt-1.5 h-9 text-sm">
-              <SelectValue placeholder="Select brand..." />
-            </SelectTrigger>
-            <SelectContent>
-              {brands.map(b => <SelectItem key={b} value={b}>{b}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <MobileSelect
+            value={selectedBrand}
+            onValueChange={handleBrandChange}
+            placeholder="Select brand..."
+            triggerClassName="mt-1.5 w-full"
+            options={brands.map(b => ({ value: b, label: b }))}
+          />
         </div>
 
         <div>
           <label className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">Model</label>
-          <Select value={selectedModel} onValueChange={handleModelChange} disabled={!selectedBrand}>
-            <SelectTrigger className="mt-1.5 h-9 text-sm disabled:opacity-50">
-              <SelectValue placeholder={selectedBrand ? "Select model..." : "Select brand first"} />
-            </SelectTrigger>
-            <SelectContent>
-              {models.map(m => <SelectItem key={m} value={m}>{m}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <MobileSelect
+            value={selectedModel}
+            onValueChange={handleModelChange}
+            placeholder={selectedBrand ? "Select model..." : "Select brand first"}
+            triggerClassName="mt-1.5 w-full"
+            options={models.map(m => ({ value: m, label: m }))}
+          />
         </div>
 
         <div>
           <label className="text-xs font-medium text-slate-600 dark:text-slate-400 uppercase tracking-wide">Year <span className="normal-case font-normal">(optional)</span></label>
-          <Select value={selectedYear} onValueChange={handleYearChange} disabled={!selectedModel}>
-            <SelectTrigger className="mt-1.5 h-9 text-sm disabled:opacity-50">
-              <SelectValue placeholder={selectedModel ? "Any year" : "Select model first"} />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map(y => <SelectItem key={y} value={String(y)}>{y}</SelectItem>)}
-            </SelectContent>
-          </Select>
+          <MobileSelect
+            value={selectedYear}
+            onValueChange={handleYearChange}
+            placeholder={selectedModel ? "Any year" : "Select model first"}
+            triggerClassName="mt-1.5 w-full"
+            options={years.map(y => ({ value: String(y), label: String(y) }))}
+          />
         </div>
       </div>
 
