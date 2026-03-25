@@ -133,9 +133,10 @@ export default function Messages() {
           {showChat && isMobile && (
             <button
               onClick={() => setSelected(null)}
-              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-blue-600 dark:text-blue-400 font-medium"
+              aria-label="Back to conversations"
+              className="flex items-center gap-2 px-4 py-3 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-blue-600 dark:text-blue-400 font-medium min-h-[44px] active:bg-slate-50 dark:active:bg-slate-700 transition-colors"
             >
-              ← Back to conversations
+              <ChevronLeft className="w-4 h-4" /> Back to conversations
             </button>
           )}
           {user && (
