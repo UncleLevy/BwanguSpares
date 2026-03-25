@@ -39,8 +39,8 @@ const ROLE_ICONS = {
 };
 
 export default function UsersPanel({ adminUser }) {
-  const [users, setUsers] = useState([]);
-  const [bannedUsers, setBannedUsers] = useState([]);
+  const [users, setUsers, updateUser] = useOptimisticList([]);
+  const [bannedUsers, setBannedUsers, , removeBannedItem] = useOptimisticList([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [filterRole, setFilterRole] = useState("all");
@@ -78,6 +78,7 @@ export default function UsersPanel({ adminUser }) {
     setLoading(false);
   };
 
+
   const bannedEmails = new Set(bannedUsers.map(b => b.email));
 
   const filtered = users.filter(u => {
@@ -95,10 +96,15 @@ export default function UsersPanel({ adminUser }) {
   };
 
   const saveRole = async () => {
-    await base44.entities.User.update(roleDialog.id, { role: newRole });
-    setUsers(users.map(u => u.id === roleDialog.id ? { ...u, role: newRole } : u));
-    toast.success(`${roleDialog.full_name}'s role updated to ${newRole}`);
+    const target = roleDialog;
     setRoleDialog(null);
+    await updateUser(
+      target.id,
+      { role: newRole },
+      () => base44.entities.User.update(target.id, { role: newRole }),
+      () => toast.error("Failed to update role")
+    );
+    toast.success(`${target.full_name}'s role updated to ${newRole}`);
   };
 
   // ── Invite ──
@@ -153,8 +159,11 @@ export default function UsersPanel({ adminUser }) {
 
   // ── Unban ──
   const removeBan = async (id, email) => {
-    await base44.entities.BannedUser.delete(id);
-    setBannedUsers(bannedUsers.filter(b => b.id !== id));
+    await removeBannedItem(
+      id,
+      () => base44.entities.BannedUser.delete(id),
+      () => toast.error("Failed to unblock user")
+    );
     await logAudit(adminUser, "unban_user", { entity_type: "User", entity_id: email, entity_label: email, details: "Removed by admin" });
     toast.success(`${email} has been unblocked`);
   };
