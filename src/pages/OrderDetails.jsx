@@ -70,7 +70,7 @@ export default function OrderDetails() {
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950" style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}>
-      <AppHeader title={`Order #${order.id?.slice(0,8)}`} backTo="ShopDashboard" />
+      <AppHeader title={`Order #${order.id?.slice(0,8)}`} />
       <div className="p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         {/* Header */}

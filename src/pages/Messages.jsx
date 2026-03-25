@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { MessageSquare, Archive } from "lucide-react";
+import { MessageSquare, Archive, ChevronLeft } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import ConversationList from "@/components/messaging/ConversationList";
 import ChatWindow from "@/components/messaging/ChatWindow";
