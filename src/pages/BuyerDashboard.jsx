@@ -35,6 +35,7 @@ import WalletTransactionDetail from "@/components/wallet/WalletTransactionDetail
 import ReturnRequestDialog from "@/components/returns/ReturnRequestDialog.jsx";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
 import { emailNewReviewToShop, emailNewOrderToShop } from "@/components/lib/emailNotifications";
+import DeleteAccountFlow from "@/components/profile/DeleteAccountFlow";
 import BuyerNavbar from "@/components/dashboard/BuyerNavbar";
 import { OrderSkeleton, RowSkeleton, Skeleton } from "@/components/shared/SkeletonCard";
 import { useOptimisticList } from "@/components/shared/useOptimistic";
