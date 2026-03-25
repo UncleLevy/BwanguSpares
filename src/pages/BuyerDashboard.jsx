@@ -634,14 +634,20 @@ export default function BuyerDashboard() {
             <Card className="border-red-100 dark:border-red-900/40 bg-white dark:bg-slate-900">
               <CardContent className="p-6 space-y-3">
                 <h2 className="font-semibold text-red-600 dark:text-red-500 text-sm uppercase tracking-wide">Danger Zone</h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
-                <Button
-                  variant="outline"
-                  onClick={() => setDeleteAccountDialog(true)}
-                  className="text-red-600 dark:text-red-500 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30"
-                >
-                  Delete My Account
-                </Button>
+                {deleteAccountDialog ? (
+                  <DeleteAccountFlow user={user} onCancel={() => setDeleteAccountDialog(false)} />
+                ) : (
+                  <>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Permanently delete your account and all associated data. This cannot be undone.</p>
+                    <Button
+                      variant="outline"
+                      onClick={() => setDeleteAccountDialog(true)}
+                      className="text-red-600 dark:text-red-500 border-red-200 dark:border-red-900 hover:bg-red-50 dark:hover:bg-red-950/30"
+                    >
+                      Delete My Account
+                    </Button>
+                  </>
+                )}
               </CardContent>
             </Card>
           </div>
