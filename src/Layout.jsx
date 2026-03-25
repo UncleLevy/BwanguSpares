@@ -7,7 +7,7 @@ import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation
 } from "lucide-react";
-import BottomNav from "@/components/shared/BottomNav";
+import BottomNav from "@/components/shared/BottomNav.jsx";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
