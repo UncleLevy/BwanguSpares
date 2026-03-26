@@ -35,64 +35,104 @@ export default function MegaDiscounts({ onAddToCart, user }) {
   if (loading || discountedProducts.length === 0) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-r from-red-50 via-orange-50 to-yellow-50 dark:from-red-950/30 dark:via-orange-950/30 dark:to-yellow-950/30 border-b border-red-200 dark:border-red-900/40">
-      <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center shadow-lg">
-            <Zap className="w-6 h-6 text-white" />
+    <section className="relative py-16 md:py-20 overflow-hidden">
+      {/* Background with animated gradient */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-red-900/20 to-slate-900 dark:from-slate-950 dark:via-red-950/40 dark:to-slate-950" />
+      <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent_25%,rgba(199,39,39,0.1)_25%,rgba(199,39,39,0.1)_50%,transparent_50%,transparent_75%,rgba(199,39,39,0.1)_75%,rgba(199,39,39,0.1))] bg-[length:40px_40px] opacity-30" />
+      
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Premium Header */}
+        <div className="mb-12 text-center">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="h-1 w-8 bg-gradient-to-r from-red-500 to-orange-500 rounded-full" />
+            <span className="text-sm font-semibold tracking-wider text-red-500 uppercase">Limited Time Offers</span>
+            <div className="h-1 w-8 bg-gradient-to-l from-red-500 to-orange-500 rounded-full" />
           </div>
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-slate-100">Mega Discounts</h2>
-            <p className="text-sm text-slate-600 dark:text-slate-400">Limited time deals on auto parts</p>
-          </div>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-black text-white mb-3">
+            Mega Discounts
+          </h2>
+          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto">
+            Score incredible deals on premium auto parts. Limited stock available!
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {discountedProducts.map((product) => {
+        {/* Products Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {discountedProducts.map((product, idx) => {
             const discountPercent = Math.round(((product.original_price - product.price) / product.original_price) * 100);
             return (
               <Link key={product.id} to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
-                <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden hover-lift transition-all h-full">
-                  {/* Image */}
-                  <div className="relative h-40 sm:h-48 bg-slate-100 dark:bg-slate-700/50 overflow-hidden">
-                    {product.image_url ? (
-                      <img src={product.image_url} alt={product.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="w-12 h-12 text-slate-300 dark:text-slate-600" />
+                <div className="group h-full">
+                  {/* Card with premium styling */}
+                  <div className="relative bg-gradient-to-br from-slate-800 to-slate-900 dark:from-slate-800/80 dark:to-slate-900/80 rounded-2xl overflow-hidden border border-slate-700 dark:border-slate-600 hover:border-red-500/50 transition-all duration-300 h-full flex flex-col shadow-2xl hover:shadow-red-500/20">
+                    {/* Image Container */}
+                    <div className="relative h-48 sm:h-56 bg-slate-700/50 overflow-hidden">
+                      {product.image_url ? (
+                        <img 
+                          src={product.image_url} 
+                          alt={product.name} 
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 brightness-90 group-hover:brightness-100" 
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-600 to-slate-700">
+                          <Package className="w-16 h-16 text-slate-500 opacity-50" />
+                        </div>
+                      )}
+                      
+                      {/* Premium Discount Badge */}
+                      <div className="absolute inset-0 flex items-end justify-end p-4">
+                        <div className="relative">
+                          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-orange-600 rounded-full blur-lg opacity-60" />
+                          <div className="relative w-16 h-16 bg-gradient-to-br from-red-500 via-red-600 to-orange-500 rounded-full flex flex-col items-center justify-center shadow-2xl border-2 border-white/20">
+                            <span className="text-lg font-black text-white leading-tight">-{discountPercent}%</span>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                    {/* Discount Badge - Large */}
-                    <div className="absolute top-3 right-3 bg-gradient-to-br from-red-500 to-orange-500 text-white rounded-full w-14 h-14 flex flex-col items-center justify-center shadow-lg">
-                      <span className="text-lg font-black">-{discountPercent}%</span>
-                    </div>
-                  </div>
 
-                  {/* Content */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-2 group-hover:text-blue-600 transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 truncate">{product.shop_name}</p>
-
-                    {/* Price Section */}
-                    <div className="flex items-baseline gap-2 mt-3">
-                      <span className="text-xs text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
-                      <span className="text-lg font-bold text-red-600 dark:text-red-400">K{product.price?.toLocaleString()}</span>
+                      {/* Flash Icon Badge */}
+                      <div className="absolute top-4 left-4">
+                        <div className="w-9 h-9 rounded-full bg-gradient-to-br from-yellow-400 to-amber-500 flex items-center justify-center shadow-lg">
+                          <Zap className="w-5 h-5 text-white" />
+                        </div>
+                      </div>
                     </div>
 
-                    {/* Add to Cart Button */}
-                    {canAddToCart && (
-                      <Button
-                        className="w-full mt-4 bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white h-9 rounded-xl gap-2 text-sm font-semibold shadow-lg"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          onAddToCart?.(product);
-                        }}
-                      >
-                        <ShoppingCart className="w-4 h-4" /> Add to Cart
-                      </Button>
-                    )}
+                    {/* Content */}
+                    <div className="flex-1 p-5 flex flex-col justify-between">
+                      {/* Title and Shop */}
+                      <div>
+                        <h3 className="font-bold text-sm md:text-base text-white line-clamp-2 group-hover:text-red-400 transition-colors mb-2">
+                          {product.name}
+                        </h3>
+                        <p className="text-xs text-slate-400 group-hover:text-slate-300 transition-colors truncate">{product.shop_name}</p>
+                      </div>
+
+                      {/* Price Section */}
+                      <div className="mt-4 pb-4 border-b border-slate-700/50">
+                        <div className="flex items-center gap-3">
+                          <span className="text-xs text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
+                          <span className="text-xl font-black text-transparent bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text">
+                            K{product.price?.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="mt-2 text-xs text-emerald-400 font-semibold">
+                          Save K{(product.original_price - product.price).toLocaleString()}
+                        </div>
+                      </div>
+
+                      {/* Add to Cart Button */}
+                      {canAddToCart && (
+                        <Button
+                          className="w-full mt-4 bg-gradient-to-r from-red-500 via-red-600 to-orange-600 hover:from-red-600 hover:via-red-700 hover:to-orange-700 text-white font-bold h-10 rounded-xl gap-2 text-sm shadow-lg hover:shadow-red-500/40 transition-all duration-300 border border-red-400/30"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            onAddToCart?.(product);
+                          }}
+                        >
+                          <ShoppingCart className="w-4 h-4" /> Quick Add
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Link>

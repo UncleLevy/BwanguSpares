@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Pencil, Truck, Calendar, Package, RefreshCcw } from "lucide-react";
 import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";

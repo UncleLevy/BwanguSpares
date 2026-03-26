@@ -120,21 +120,22 @@ export default function Home() {
   ];
 
   return (
-    <div>
+    <div className="bg-white dark:bg-slate-950">
       <HeroSection />
       <BannerAdsSection />
 
-      <section className="py-8 md:py-12 border-b border-slate-100 dark:border-slate-800">
+      {/* Features Section */}
+      <section className="py-10 md:py-14 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 border-b border-slate-100 dark:border-slate-800">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {features.map((f, i) => (
-              <div key={i} className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-3 md:p-0 rounded-xl md:rounded-none bg-slate-50/80 md:bg-transparent dark:bg-slate-800/50 md:dark:bg-transparent">
-                <div className="w-10 h-10 md:w-12 md:h-12 shrink-0 rounded-xl bg-blue-50 dark:bg-blue-900/30 flex items-center justify-center md:mb-3">
-                  <f.icon className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <div key={i} className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-4 md:p-5 rounded-xl bg-gradient-to-br from-blue-50/50 to-cyan-50/50 md:bg-transparent dark:from-blue-900/20 dark:to-cyan-900/20 md:dark:from-transparent md:dark:to-transparent hover:shadow-md transition-shadow duration-300">
+                <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center md:mb-3 shadow-lg shadow-cyan-500/20">
+                  <f.icon className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-xs md:text-sm text-slate-900 dark:text-slate-100">{f.title}</h3>
-                  <p className="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 mt-0.5 leading-tight">{f.desc}</p>
+                  <h3 className="font-bold text-sm md:text-base text-slate-900 dark:text-slate-100">{f.title}</h3>
+                  <p className="text-[11px] md:text-sm text-slate-600 dark:text-slate-400 mt-1 leading-snug">{f.desc}</p>
                 </div>
               </div>
             ))}
@@ -142,9 +143,20 @@ export default function Home() {
         </div>
       </section>
 
-      <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} user={user} />
+      {/* Featured Products Section */}
+      <div className="bg-white dark:bg-slate-950">
+        <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} user={user} />
+      </div>
+
+      {/* Mega Discounts Section */}
       <MegaDiscounts onAddToCart={handleAddToCart} user={user} />
-      <NearbyShops shops={shops} loading={loading} />
+
+      {/* Nearby Shops Section */}
+      <div className="bg-white dark:bg-slate-950">
+        <NearbyShops shops={shops} loading={loading} />
+      </div>
+
+      {/* Partners Sections */}
       <TechPartnersSection />
       <PartnersSection />
     </div>
