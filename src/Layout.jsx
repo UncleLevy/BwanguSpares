@@ -5,7 +5,7 @@ import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User, 
-  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock
 } from "lucide-react";
 import BottomNav from "@/components/shared/BottomNav.jsx";
 import { Button } from "@/components/ui/button";
@@ -405,6 +405,7 @@ export default function Layout({ children, currentPageName }) {
                 <Link to={createPageUrl("BrowseShops")} className="flex items-center gap-2 hover:text-white transition-colors"><Store className="w-4 h-4 shrink-0" /> Find Shops</Link>
                 <Link to={createPageUrl("RegisterShop")} className="flex items-center gap-2 hover:text-white transition-colors"><ExternalLink className="w-4 h-4 shrink-0" /> Register Your Shop</Link>
                 <Link to={createPageUrl("TermsAndConditions")} className="flex items-center gap-2 hover:text-white transition-colors"><Scale className="w-4 h-4 shrink-0" /> Terms &amp; Conditions</Link>
+                <Link to={createPageUrl("PrivacyPolicy")} className="flex items-center gap-2 hover:text-white transition-colors"><Lock className="w-4 h-4 shrink-0" /> Privacy Policy</Link>
               </div>
             </div>
             <div>
