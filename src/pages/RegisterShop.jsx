@@ -28,7 +28,7 @@ export default function RegisterShop() {
   const [form, setForm] = useState({
     name: "", description: "", phone: "", address: "", town: "",
     region: "", slot_type: "basic", logo_url: "", cover_url: "",
-    business_registration_number: "", tax_identification_number: "", terms_accepted: false
+    business_registration_number: "", tax_identification_number: "", pacra_certificate_url: "", terms_accepted: false
   });
 
   useEffect(() => {
@@ -92,7 +92,10 @@ export default function RegisterShop() {
     }
     if (currentStep === 4) {
       if (!form.business_registration_number.trim()) { toast.error("Business registration number is required"); return false; }
+      if (!/^\d{12}$/.test(form.business_registration_number)) { toast.error("Business registration number must be exactly 12 digits"); return false; }
       if (!form.tax_identification_number.trim()) { toast.error("Tax identification number is required"); return false; }
+      if (!/^\d{10}$/.test(form.tax_identification_number)) { toast.error("Tax identification number must be exactly 10 digits"); return false; }
+      if (!form.pacra_certificate_url) { toast.error("PACRA certificate is required"); return false; }
       if (!form.terms_accepted) { toast.error("You must accept the terms and conditions"); return false; }
       return true;
     }
@@ -137,6 +140,7 @@ export default function RegisterShop() {
         cover_url: form.cover_url,
         business_registration_number: form.business_registration_number,
         tax_identification_number: form.tax_identification_number,
+        pacra_certificate_url: form.pacra_certificate_url,
         owner_email: user.email,
         owner_name: user.full_name,
         region_name: regionObj?.name || "",
@@ -279,12 +283,42 @@ export default function RegisterShop() {
         {step === 4 && (
           <>
             <div>
-              <Label>Business Registration Number *</Label>
-              <Input value={form.business_registration_number} onChange={e => setForm({...form, business_registration_number: e.target.value})} placeholder="e.g., BRN123456" className="mt-1 rounded-xl" />
+              <Label>Business Registration Number (12 digits) *</Label>
+              <Input 
+                value={form.business_registration_number} 
+                onChange={e => {
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 12);
+                  setForm({...form, business_registration_number: value});
+                }} 
+                placeholder="e.g., 123456789012" 
+                className="mt-1 rounded-xl" 
+                maxLength="12"
+              />
+              <p className="text-xs text-slate-500 mt-1">{form.business_registration_number.length}/12 digits</p>
             </div>
             <div>
-              <Label>Tax Identification Number *</Label>
-              <Input value={form.tax_identification_number} onChange={e => setForm({...form, tax_identification_number: e.target.value})} placeholder="e.g., TIN123456789" className="mt-1 rounded-xl" />
+              <Label>Tax Identification Number - TPIN (10 digits) *</Label>
+              <Input 
+                value={form.tax_identification_number} 
+                onChange={e => {
+                  const value = e.target.value.replace(/\D/g, "").slice(0, 10);
+                  setForm({...form, tax_identification_number: value});
+                }} 
+                placeholder="e.g., 1234567890" 
+                className="mt-1 rounded-xl" 
+                maxLength="10"
+              />
+              <p className="text-xs text-slate-500 mt-1">{form.tax_identification_number.length}/10 digits</p>
+            </div>
+            <div>
+              <Label>PACRA Certificate *</Label>
+              <Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={e => handleFileUpload(e, "pacra_certificate_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer" />
+              {form.pacra_certificate_url && (
+                <div className="mt-2 flex items-center gap-2 text-sm text-emerald-600">
+                  <CheckCircle2 className="w-4 h-4" />
+                  Certificate uploaded
+                </div>
+              )}
             </div>
             <div className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl border border-slate-200">
               <Checkbox
