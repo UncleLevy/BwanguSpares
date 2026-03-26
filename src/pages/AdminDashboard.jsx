@@ -46,7 +46,7 @@ import { emailShopStatusUpdate } from "@/components/lib/emailNotifications";
 
 export default function AdminDashboard() {
   const [user, setUser] = useState(null);
-  const [view, setView] = useState("overview");
+  const [view, setView] = useState(() => new URLSearchParams(window.location.search).get("view") || "overview");
   const [shops, setShops] = useState([]);
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
@@ -71,6 +71,15 @@ export default function AdminDashboard() {
   const [shopSort, setShopSort] = useState(null);
   const [citySort, setCitySort] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const onPop = () => {
+      const v = new URLSearchParams(window.location.search).get("view");
+      if (v) setView(v);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
 
   useEffect(() => {
     (async () => {
