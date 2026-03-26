@@ -127,6 +127,11 @@ export default function ShopDashboard() {
     end_date: new Date().toISOString().split('T')[0]
   });
   const [generatingReport, setGeneratingReport] = useState(false);
+  const [savingProduct, setSavingProduct] = useState(false);
+  const [savingTech, setSavingTech] = useState(false);
+  const [savingBranch, setSavingBranch] = useState(false);
+  const [savingTracking, setSavingTracking] = useState(false);
+  const [savingCancel, setSavingCancel] = useState(false);
   const [productPage, setProductPage] = useState(1);
   const [techPage, setTechPage] = useState(1);
   const [orderPage, setOrderPage] = useState(1);
@@ -215,6 +220,7 @@ export default function ShopDashboard() {
   };
 
   const saveProduct = async () => {
+    setSavingProduct(true);
     const qty = parseInt(productForm.stock_quantity) || 0;
 
     // Convert compatible_vehicles string to array of objects for entity schema
@@ -253,6 +259,7 @@ export default function ShopDashboard() {
     setEditProduct(null);
     setAddVehicleBrand(""); setAddVehicleModel("");
     setProductForm({ name: "", description: "", price: "", category: "other", sub_category: "", brand: "", compatible_vehicles: "", condition: "new", stock_quantity: "", sku: "", low_stock_threshold: "5", tags: [], image_url: "", image_urls: [] });
+    setSavingProduct(false);
   };
 
   const deleteProduct = async (id) => {
@@ -287,6 +294,7 @@ export default function ShopDashboard() {
   };
 
   const saveTech = async () => {
+    setSavingTech(true);
     const data = {
       ...techForm,
       experience_years: parseInt(techForm.experience_years) || 0,
@@ -306,6 +314,7 @@ export default function ShopDashboard() {
     setTechDialog(false);
     setEditTech(null);
     setTechForm({ name: "", phone: "", specialization: "general", experience_years: "", hourly_rate: "", available: true });
+    setSavingTech(false);
   };
 
   const deleteTech = async (id) => {
@@ -353,6 +362,7 @@ export default function ShopDashboard() {
 
   const confirmCancelOrder = async () => {
     if (!cancelReason.trim()) { toast.error("Please provide a cancellation reason"); return; }
+    setSavingCancel(true);
     setOrders(prev => prev.map(o => o.id === cancelOrder.id ? { ...o, status: 'cancelled', cancellation_reason: cancelReason } : o));
     await base44.entities.Order.update(cancelOrder.id, { status: 'cancelled', cancellation_reason: cancelReason });
 
@@ -397,6 +407,7 @@ export default function ShopDashboard() {
     emailOrderStatusUpdate(cancelOrder.buyer_email, cancelOrder.buyer_name, { ...cancelOrder, cancellation_reason: cancelReason }, 'cancelled');
     setCancelDialog(false);
     setCancelReason("");
+    setSavingCancel(false);
   };
 
   const openTrackingDialog = (order) => {
@@ -410,10 +421,12 @@ export default function ShopDashboard() {
   };
 
   const saveTracking = async () => {
+    setSavingTracking(true);
     await base44.entities.Order.update(trackingOrder.id, trackingForm);
     setOrders(orders.map(o => o.id === trackingOrder.id ? { ...o, ...trackingForm } : o));
     toast.success("Tracking information updated");
     setTrackingDialog(false);
+    setSavingTracking(false);
   };
 
   const handleSwitchShop = async (shopId) => {
@@ -440,6 +453,7 @@ export default function ShopDashboard() {
       toast.error("Please fill in all required fields");
       return;
     }
+    setSavingBranch(true);
     const tierLimits = { free: 1, standard: 3, premium: 5 };
     const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
     const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
@@ -469,6 +483,7 @@ export default function ShopDashboard() {
     } catch (error) {
       toast.error("✗ Failed to add branch. Please try again.");
     }
+    setSavingBranch(false);
   };
 
   const handleGenerateReport = async () => {
@@ -1193,7 +1208,7 @@ export default function ShopDashboard() {
                    </div>
                   </div>
                 </div>
-                <DialogFooter><Button onClick={saveProduct} disabled={uploading} className="bg-blue-600 hover:bg-blue-700">{editProduct ? "Update" : "Add"} Product</Button></DialogFooter>
+                <DialogFooter><Button onClick={saveProduct} disabled={uploading || savingProduct} className="bg-blue-600 hover:bg-blue-700 gap-2">{savingProduct && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingProduct ? "Saving..." : (editProduct ? "Update" : "Add") + " Product"}</Button></DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
@@ -1269,7 +1284,7 @@ export default function ShopDashboard() {
                     {techForm.photo_url && <img src={techForm.photo_url} alt="Technician" className="mt-2 w-32 h-32 object-cover rounded-lg border" />}
                   </div>
                 </div>
-                <DialogFooter><Button onClick={saveTech} disabled={uploading} className="bg-blue-600 hover:bg-blue-700">{editTech ? "Update" : "Add"} Technician</Button></DialogFooter>
+                <DialogFooter><Button onClick={saveTech} disabled={uploading || savingTech} className="bg-blue-600 hover:bg-blue-700 gap-2">{savingTech && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingTech ? "Saving..." : (editTech ? "Update" : "Add") + " Technician"}</Button></DialogFooter>
               </DialogContent>
             </Dialog>
           </div>
@@ -1357,7 +1372,7 @@ export default function ShopDashboard() {
                   <div><Label>Current Location</Label><Input value={trackingForm.current_location} onChange={e => setTrackingForm({...trackingForm, current_location: e.target.value})} className="mt-1" placeholder="e.g. Lusaka Distribution Center" /></div>
                   <div><Label>Estimated Delivery</Label><Input type="date" value={trackingForm.estimated_delivery} onChange={e => setTrackingForm({...trackingForm, estimated_delivery: e.target.value})} className="mt-1" /></div>
                 </div>
-                <DialogFooter><Button onClick={saveTracking} className="bg-blue-600 hover:bg-blue-700">Update Tracking</Button></DialogFooter>
+                <DialogFooter><Button onClick={saveTracking} disabled={savingTracking} className="bg-blue-600 hover:bg-blue-700 gap-2">{savingTracking && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingTracking ? "Saving..." : "Update Tracking"}</Button></DialogFooter>
               </DialogContent>
             </Dialog>
 
@@ -1374,8 +1389,8 @@ export default function ShopDashboard() {
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button variant="outline" onClick={() => setCancelDialog(false)}>Go Back</Button>
-                  <Button onClick={confirmCancelOrder} className="bg-red-600 hover:bg-red-700">Confirm Cancellation</Button>
+                  <Button variant="outline" onClick={() => setCancelDialog(false)} disabled={savingCancel}>Go Back</Button>
+                  <Button onClick={confirmCancelOrder} disabled={savingCancel} className="bg-red-600 hover:bg-red-700 gap-2">{savingCancel && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingCancel ? "Cancelling..." : "Confirm Cancellation"}</Button>
                 </DialogFooter>
               </DialogContent>
             </Dialog>
@@ -1461,7 +1476,7 @@ export default function ShopDashboard() {
                  onChange={(newAddr) => setNewShopForm({...newShopForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
                />
              </div>
-             <DialogFooter><Button onClick={handleAddShop} className="bg-blue-600 hover:bg-blue-700">Add Branch</Button></DialogFooter>
+             <DialogFooter><Button onClick={handleAddShop} disabled={savingBranch} className="bg-blue-600 hover:bg-blue-700 gap-2">{savingBranch && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingBranch ? "Adding..." : "Add Branch"}</Button></DialogFooter>
            </DialogContent>
          </Dialog>
 
