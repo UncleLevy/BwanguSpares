@@ -603,7 +603,7 @@ export default function BuyerDashboard() {
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
                   </label>
                 </div>
-                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700">{submitting ? "Saving..." : "Save Changes"}</Button>
+                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700 gap-2">{submitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{submitting ? "Saving..." : "Save Changes"}</Button>
               </CardContent>
             </Card>
 
@@ -682,7 +682,7 @@ export default function BuyerDashboard() {
            <DialogFooter className="gap-2">
              <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
              <Button
-               className="bg-blue-600 hover:bg-blue-700"
+               className="bg-blue-600 hover:bg-blue-700 gap-2"
                disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
                onClick={async () => {
                  setStripeRefundSubmitting(true);
@@ -706,7 +706,7 @@ export default function BuyerDashboard() {
                  setStripeRefundSubmitting(false);
                }}
              >
-               {stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
+               {stripeRefundSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
              </Button>
            </DialogFooter>
          </DialogContent>
@@ -751,7 +751,7 @@ export default function BuyerDashboard() {
            <DialogFooter className="gap-2">
              <Button variant="outline" onClick={() => setRetryPaymentOrder(null)}>Cancel</Button>
              <Button
-               className="bg-blue-600 hover:bg-blue-700"
+               className="bg-blue-600 hover:bg-blue-700 gap-2"
                disabled={retryPaymentSubmitting}
                onClick={async () => {
                  setRetryPaymentSubmitting(true);
@@ -780,7 +780,7 @@ export default function BuyerDashboard() {
                  setRetryPaymentSubmitting(false);
                }}
              >
-               {retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
+               {retryPaymentSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
              </Button>
            </DialogFooter>
          </DialogContent>
