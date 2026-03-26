@@ -130,6 +130,7 @@ export default function ShopDashboard() {
   const [productPage, setProductPage] = useState(1);
   const [techPage, setTechPage] = useState(1);
   const [orderPage, setOrderPage] = useState(1);
+  const [infoShop, setInfoShop] = useState(null); // for shop_info view
 
   const navigate = useNavigate();
 
@@ -163,6 +164,7 @@ export default function ShopDashboard() {
       // Load the first shop's data
       const firstShop = userShops[0];
       setShop(firstShop);
+      setInfoShop(firstShop);
       const [p, t, o, c, camps, codes] = await Promise.all([
         base44.entities.Product.filter({ shop_id: firstShop.id }),
         base44.entities.Technician.filter({ shop_id: firstShop.id }),
@@ -617,8 +619,24 @@ export default function ShopDashboard() {
 
         {view === "shop_info" && (
           <div>
-            <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shop Information</h1>
-            {shop && (
+            <div className="flex items-center justify-between mb-6">
+              <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Shop Information</h1>
+              {shops.length > 1 && (
+                <MobileSelect
+                  value={infoShop?.id || shop?.id}
+                  onValueChange={v => setInfoShop(shops.find(s => s.id === v))}
+                  placeholder="Select branch"
+                  triggerClassName="w-48"
+                  options={shops.map(s => ({ value: s.id, label: s.name }))}
+                />
+              )}
+            </div>
+            {(infoShop || shop) && (() => {
+              const displayShop = infoShop || shop;
+              const shopProducts = products.filter(p => p.shop_id === displayShop.id);
+              const shopOrders = orders.filter(o => o.shop_id === displayShop.id);
+              const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((s, o) => s + (o.total_amount || 0), 0);
+              return (
               <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 {/* Basic Info Card */}
                 <Card className="lg:col-span-2 border-slate-100 dark:border-slate-700 dark:bg-slate-900">
@@ -627,20 +645,20 @@ export default function ShopDashboard() {
                     <div className="space-y-4">
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Shop Name</p>
-                        <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-1">{shop.name}</p>
+                        <p className="text-lg font-semibold text-slate-900 dark:text-slate-100 mt-1">{displayShop.name}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Description</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{shop.description || "No description added"}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{displayShop.description || "No description added"}</p>
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Contact Phone</p>
-                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.phone || "Not provided"}</p>
+                          <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{displayShop.phone || "Not provided"}</p>
                         </div>
                         <div>
                           <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Status</p>
-                          <Badge className={shop.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-1"}>{shop.status}</Badge>
+                          <Badge className={displayShop.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-1"}>{displayShop.status}</Badge>
                         </div>
                       </div>
                     </div>
@@ -654,15 +672,15 @@ export default function ShopDashboard() {
                     <div className="space-y-4">
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Products</p>
-                        <p className="text-2xl font-bold text-blue-600 mt-1">{products.length}</p>
+                        <p className="text-2xl font-bold text-blue-600 mt-1">{shopProducts.length}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Orders</p>
-                        <p className="text-2xl font-bold text-purple-600 mt-1">{orders.length}</p>
+                        <p className="text-2xl font-bold text-purple-600 mt-1">{shopOrders.length}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Total Revenue</p>
-                        <p className="text-xl font-bold text-emerald-600 mt-1">K{totalRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
+                        <p className="text-xl font-bold text-emerald-600 mt-1">K{shopRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -675,15 +693,15 @@ export default function ShopDashboard() {
                     <div className="space-y-3">
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Region</p>
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.region_name || "Not specified"}</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{displayShop.region_name || "Not specified"}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Town</p>
-                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{shop.town || "Not specified"}</p>
+                        <p className="text-sm font-medium text-slate-900 dark:text-slate-100 mt-1">{displayShop.town || "Not specified"}</p>
                       </div>
                       <div>
                         <p className="text-xs text-slate-500 uppercase tracking-wide font-semibold">Address</p>
-                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{shop.address || "Not specified"}</p>
+                        <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">{displayShop.address || "Not specified"}</p>
                       </div>
                     </div>
                   </CardContent>
@@ -703,19 +721,20 @@ export default function ShopDashboard() {
                       </div>
                       <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Shop Slot Type</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{shop.slot_type}</p>
-                        <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 mt-2 capitalize">{shop.slot_type}</Badge>
+                        <p className="text-xs text-slate-500 mt-0.5">{displayShop.slot_type}</p>
+                        <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 mt-2 capitalize">{displayShop.slot_type}</Badge>
                       </div>
                       <div className="border-t border-slate-100 dark:border-slate-700 pt-3">
                         <p className="text-sm font-medium text-slate-900 dark:text-slate-100">Rating</p>
                         <p className="text-xs text-slate-500 mt-0.5">Customer reviews</p>
-                        <p className="text-lg font-bold text-amber-600 mt-1">{shop.rating?.toFixed(1) || "0.0"} ★</p>
+                        <p className="text-lg font-bold text-amber-600 mt-1">{displayShop.rating?.toFixed(1) || "0.0"} ★</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
-            )}
+              );
+            })()}
           </div>
         )}
 
@@ -832,6 +851,60 @@ export default function ShopDashboard() {
                 </Card>
               ))}
             </div>
+
+            {/* Branch Cards - only shown when there are multiple branches */}
+            {shops.length > 1 && (
+              <div className="mt-8">
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Your Branches</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {shops.map(s => {
+                    const isActive = shop?.id === s.id;
+                    const branchOrders = orders.filter(o => o.shop_id === s.id);
+                    const branchRevenue = branchOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
+                    const branchProducts = products.filter(p => p.shop_id === s.id);
+                    return (
+                      <Card
+                        key={s.id}
+                        onClick={() => handleSwitchShop(s.id)}
+                        className={`cursor-pointer transition-all border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover:shadow-md ${isActive ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-950' : ''}`}
+                      >
+                        <CardContent className="p-4">
+                          <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 flex items-center justify-center overflow-hidden shrink-0">
+                              {s.logo_url ? <img src={s.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-5 h-5 text-blue-500 dark:text-blue-400" />}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{s.name}</p>
+                              <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px]" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px]"}>{s.status}</Badge>
+                            </div>
+                            {isActive && <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full shrink-0">Active</span>}
+                          </div>
+                          {(s.town || s.address) && (
+                            <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-3 truncate">
+                              <MapPin className="w-3 h-3 shrink-0" /> {s.town || s.address}
+                            </p>
+                          )}
+                          <div className="grid grid-cols-3 gap-2 text-center">
+                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
+                              <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{branchProducts.length}</p>
+                              <p className="text-[10px] text-slate-500">Products</p>
+                            </div>
+                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
+                              <p className="text-sm font-bold text-purple-600 dark:text-purple-400">{branchOrders.length}</p>
+                              <p className="text-[10px] text-slate-500">Orders</p>
+                            </div>
+                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
+                              <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">K{branchRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
+                              <p className="text-[10px] text-slate-500">Revenue</p>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
