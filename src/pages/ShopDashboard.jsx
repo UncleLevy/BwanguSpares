@@ -723,16 +723,7 @@ export default function ShopDashboard() {
            <div>
              <div className="flex items-center justify-between mb-6">
                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">My Shops</h1>
-               <Button onClick={() => {
-                 const tierLimits = { free: 1, standard: 3, premium: 5 };
-                 const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
-                 if (shops.length >= maxShops) {
-                   const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
-                   toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to add more branches.`);
-                 } else {
-                   setShowNewShopDialog(true);
-                 }
-               }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Branch</Button>
+
              </div>
 
              {shops.length === 0 ? (
