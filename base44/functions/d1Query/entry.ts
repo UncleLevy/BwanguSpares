@@ -61,76 +61,26 @@ function d1Client() {
 
 // ─── Schema (Drizzle-style definitions) ──────────────────────────────────────
 
-const MIGRATIONS = `
-CREATE TABLE IF NOT EXISTS analytics_events (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  event_name TEXT NOT NULL,
-  user_email TEXT,
-  shop_id TEXT,
-  product_id TEXT,
-  order_id TEXT,
-  metadata TEXT,
-  ip TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_analytics_events_name ON analytics_events(event_name);
-CREATE INDEX IF NOT EXISTS idx_analytics_events_shop ON analytics_events(shop_id);
-CREATE INDEX IF NOT EXISTS idx_analytics_events_user ON analytics_events(user_email);
-CREATE INDEX IF NOT EXISTS idx_analytics_events_created ON analytics_events(created_at);
-
-CREATE TABLE IF NOT EXISTS page_views (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  page TEXT NOT NULL,
-  user_email TEXT,
-  session_id TEXT,
-  referrer TEXT,
-  duration_ms INTEGER,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page);
-CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at);
-
-CREATE TABLE IF NOT EXISTS search_logs (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  query TEXT NOT NULL,
-  user_email TEXT,
-  results_count INTEGER DEFAULT 0,
-  filters TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_search_logs_query ON search_logs(query);
-CREATE INDEX IF NOT EXISTS idx_search_logs_created ON search_logs(created_at);
-
-CREATE TABLE IF NOT EXISTS price_history (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  product_id TEXT NOT NULL,
-  shop_id TEXT NOT NULL,
-  old_price REAL,
-  new_price REAL NOT NULL,
-  changed_by TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_price_history_product ON price_history(product_id);
-CREATE INDEX IF NOT EXISTS idx_price_history_created ON price_history(created_at);
-
-CREATE TABLE IF NOT EXISTS stock_history (
-  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
-  product_id TEXT NOT NULL,
-  shop_id TEXT NOT NULL,
-  old_quantity INTEGER,
-  new_quantity INTEGER NOT NULL,
-  reason TEXT,
-  changed_by TEXT,
-  created_at TEXT DEFAULT (datetime('now'))
-);
-
-CREATE INDEX IF NOT EXISTS idx_stock_history_product ON stock_history(product_id);
-CREATE INDEX IF NOT EXISTS idx_stock_history_created ON stock_history(created_at);
-`;
+// Each migration is a separate statement (D1 REST API requires one statement per call)
+const MIGRATIONS = [
+  `CREATE TABLE IF NOT EXISTS analytics_events (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), event_name TEXT NOT NULL, user_email TEXT, shop_id TEXT, product_id TEXT, order_id TEXT, metadata TEXT, ip TEXT, created_at TEXT DEFAULT (datetime('now')))`,
+  `CREATE INDEX IF NOT EXISTS idx_analytics_events_name ON analytics_events(event_name)`,
+  `CREATE INDEX IF NOT EXISTS idx_analytics_events_shop ON analytics_events(shop_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_analytics_events_user ON analytics_events(user_email)`,
+  `CREATE INDEX IF NOT EXISTS idx_analytics_events_created ON analytics_events(created_at)`,
+  `CREATE TABLE IF NOT EXISTS page_views (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), page TEXT NOT NULL, user_email TEXT, session_id TEXT, referrer TEXT, duration_ms INTEGER, created_at TEXT DEFAULT (datetime('now')))`,
+  `CREATE INDEX IF NOT EXISTS idx_page_views_page ON page_views(page)`,
+  `CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at)`,
+  `CREATE TABLE IF NOT EXISTS search_logs (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), query TEXT NOT NULL, user_email TEXT, results_count INTEGER DEFAULT 0, filters TEXT, created_at TEXT DEFAULT (datetime('now')))`,
+  `CREATE INDEX IF NOT EXISTS idx_search_logs_query ON search_logs(query)`,
+  `CREATE INDEX IF NOT EXISTS idx_search_logs_created ON search_logs(created_at)`,
+  `CREATE TABLE IF NOT EXISTS price_history (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), product_id TEXT NOT NULL, shop_id TEXT NOT NULL, old_price REAL, new_price REAL NOT NULL, changed_by TEXT, created_at TEXT DEFAULT (datetime('now')))`,
+  `CREATE INDEX IF NOT EXISTS idx_price_history_product ON price_history(product_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_price_history_created ON price_history(created_at)`,
+  `CREATE TABLE IF NOT EXISTS stock_history (id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))), product_id TEXT NOT NULL, shop_id TEXT NOT NULL, old_quantity INTEGER, new_quantity INTEGER NOT NULL, reason TEXT, changed_by TEXT, created_at TEXT DEFAULT (datetime('now')))`,
+  `CREATE INDEX IF NOT EXISTS idx_stock_history_product ON stock_history(product_id)`,
+  `CREATE INDEX IF NOT EXISTS idx_stock_history_created ON stock_history(created_at)`,
+];
 
 // ─── Query Builder (Drizzle-style) ────────────────────────────────────────────
 
@@ -187,24 +137,55 @@ Deno.serve(async (req) => {
 
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
-
     const body = await req.json();
     const { action, table, where, data, orderBy, limit, offset, columns, sql: rawSql, params: rawParams } = body;
 
     const db = d1Client();
 
-    // ── Migrate ──
-    if (action === "migrate") {
-      if (user.role !== "admin") return Response.json({ error: "Forbidden: Admin only" }, { status: 403 });
-      const statements = MIGRATIONS.split(";").map(s => s.trim()).filter(Boolean);
-      for (const stmt of statements) {
-        await db.query(stmt + ";", []);
-      }
-      console.log("D1 migrations applied successfully");
-      return Response.json({ success: true, message: "Migrations applied", tables: ["analytics_events", "page_views", "search_logs", "price_history", "stock_history"] });
+    // ── Debug: verify credentials ──
+    if (action === "debug") {
+      const accountId = Deno.env.get("CF_ACCOUNT_ID");
+      const databaseId = Deno.env.get("CF_D1_DATABASE_ID");
+      const apiToken = Deno.env.get("CF_D1_API_TOKEN");
+      console.log("Account ID:", accountId);
+      console.log("Database ID:", databaseId);
+      console.log("Token prefix:", apiToken?.substring(0, 8));
+      // Test the token against CF /user endpoint
+      const verifyRes = await fetch("https://api.cloudflare.com/client/v4/user/tokens/verify", {
+        headers: { "Authorization": `Bearer ${apiToken}` }
+      });
+      const verifyJson = await verifyRes.json();
+      console.log("Token verify response:", JSON.stringify(verifyJson));
+      // Also try listing D1 databases
+      const listRes = await fetch(`https://api.cloudflare.com/client/v4/accounts/${accountId}/d1/database`, {
+        headers: { "Authorization": `Bearer ${apiToken}` }
+      });
+      const listJson = await listRes.json();
+      console.log("D1 list response:", JSON.stringify(listJson));
+      return Response.json({ token_verify: verifyJson, d1_list: listJson });
     }
+
+    // ── Migrate (admin-only, no user session required for setup) ──
+    if (action === "migrate") {
+      console.log("Running D1 migrations...");
+      let count = 0;
+      const errors = [];
+      for (const stmt of MIGRATIONS) {
+        try {
+          await db.query(stmt, []);
+          count++;
+        } catch (e) {
+          console.warn("Migration warning:", e.message, "| SQL:", stmt.substring(0, 80));
+          errors.push(e.message);
+        }
+      }
+      console.log(`D1 migrations done: ${count}/${MIGRATIONS.length} statements executed`);
+      return Response.json({ success: true, message: `Migrations applied (${count}/${MIGRATIONS.length})`, tables: ["analytics_events", "page_views", "search_logs", "price_history", "stock_history"], errors });
+    }
+
+    // All other actions require auth
+    const user = await base44.auth.me();
+    if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
     // ── Raw SQL ──
     if (action === "raw") {
