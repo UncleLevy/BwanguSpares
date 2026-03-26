@@ -43,6 +43,7 @@ import AdminLoyaltyPanel from "@/components/admin/AdminLoyaltyPanel";
 import SupportTicketsPanel from "@/components/support/SupportTicketsPanel";
 import AdminReturnsPanel from "@/components/admin/AdminReturnsPanel";
 import AdminVehiclesPanel from "@/components/admin/AdminVehiclesPanel";
+import BannerManager from "@/components/admin/BannerManager";
 import { emailShopStatusUpdate } from "@/components/lib/emailNotifications";
 
 export default function AdminDashboard() {
@@ -297,6 +298,7 @@ export default function AdminDashboard() {
     { id: "returns", label: "Returns & Refunds", icon: RotateCcw, onClick: () => setView("returns"), badge: pendingRefundCount || null },
     { id: "reports", label: "Reports", icon: Flag, onClick: () => setView("reports") },
     { id: "support", label: "Support Tickets", icon: TicketCheck, onClick: () => setView("support"), badge: ticketCount || null },
+    { id: "banners", label: "Hero Banners", icon: Gift, onClick: () => setView("banners") },
     { id: "shipping", label: "Shipping Rates", icon: Truck, onClick: () => setView("shipping") },
     { id: "shops", label: "Shops", icon: Store, onClick: () => setView("shops"), badge: pendingShops.length || null },
     { id: "products", label: "Products", icon: Package, onClick: () => setView("products") },
@@ -652,6 +654,7 @@ export default function AdminDashboard() {
         {view === "loyalty" && <AdminLoyaltyPanel />}
         {view === "users" && <UsersPanel adminUser={user} />}
         {view === "vehicles" && <AdminVehiclesPanel />}
+        {view === "banners" && <BannerManager />}
 
         {view === "regions" && (
           <div>
