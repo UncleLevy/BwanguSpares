@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "@/components/dashboard/AdminNavbar";
 import { createPageUrl } from "@/utils";
+import { RefreshCcw } from "lucide-react";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
   CheckCircle2, XCircle, Clock, Eye, ShoppingCart, TrendingUp,
@@ -53,6 +54,7 @@ export default function AdminDashboard() {
   const [regions, setRegions] = useState([]);
   const [towns, setTowns] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
   const [regionDialog, setRegionDialog] = useState(false);
   const [newRegion, setNewRegion] = useState({ name: "", province: "" });
   const [townDialog, setTownDialog] = useState(false);
@@ -81,23 +83,27 @@ export default function AdminDashboard() {
     return () => window.removeEventListener("popstate", onPop);
   }, []);
 
+  const loadData = async () => {
+    setLoadError(false);
+    setLoading(true);
+    const u = await base44.auth.me();
+    if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
+    setUser(u);
+    const [s, p, o, r, t] = await Promise.all([
+      base44.entities.Shop.list("-created_date", 50),
+      base44.entities.Product.list("-created_date", 50),
+      base44.entities.Order.list("-created_date", 50),
+      base44.entities.Region.list(),
+      base44.entities.Town.list(),
+    ]);
+    setShops(s); setProducts(p); setOrders(o); setRegions(r); setTowns(t);
+    const reports = await base44.entities.Report.filter({ status: "pending" });
+    setReportCount(reports.length);
+    setLoading(false);
+  };
+
   useEffect(() => {
-    (async () => {
-      const u = await base44.auth.me();
-      if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
-      setUser(u);
-      const [s, p, o, r, t] = await Promise.all([
-        base44.entities.Shop.list("-created_date", 50),
-        base44.entities.Product.list("-created_date", 50),
-        base44.entities.Order.list("-created_date", 50),
-        base44.entities.Region.list(),
-        base44.entities.Town.list(),
-      ]);
-      setShops(s); setProducts(p); setOrders(o); setRegions(r); setTowns(t);
-      const reports = await base44.entities.Report.filter({ status: "pending" });
-      setReportCount(reports.length);
-      setLoading(false);
-    })();
+    loadData().catch(() => { setLoading(false); setLoadError(true); });
   }, []);
 
   const pendingShops = shops.filter(s => s.status === "pending");
@@ -292,6 +298,19 @@ export default function AdminDashboard() {
   ];
 
   if (loading) return <div className="flex h-screen items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full" /></div>;
+
+  if (loadError) return (
+    <div className="flex h-screen items-center justify-center flex-col gap-4 text-center px-6">
+      <div className="w-14 h-14 rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-2">
+        <AlertCircle className="w-7 h-7 text-red-500" />
+      </div>
+      <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">Failed to load dashboard</h2>
+      <p className="text-sm text-slate-500 dark:text-slate-400">A temporary server error occurred. Please try again.</p>
+      <Button onClick={() => loadData().catch(() => { setLoading(false); setLoadError(true); })} className="bg-blue-600 hover:bg-blue-700 gap-2">
+        <RefreshCcw className="w-4 h-4" /> Retry
+      </Button>
+    </div>
+  );
 
   const stats = [
     { label: "Total Shops", value: shops.length, icon: Store, color: "bg-blue-50 text-blue-600" },
