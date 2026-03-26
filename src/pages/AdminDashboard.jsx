@@ -89,14 +89,20 @@ export default function AdminDashboard() {
     const u = await base44.auth.me();
     if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
     setUser(u);
-    const [s, p, o, r, t] = await Promise.all([
+    // Batch 1: core data
+    const [s, o, r] = await Promise.all([
       base44.entities.Shop.list("-created_date", 50),
-      base44.entities.Product.list("-created_date", 50),
       base44.entities.Order.list("-created_date", 50),
       base44.entities.Region.list(),
+    ]);
+    setShops(s); setOrders(o); setRegions(r);
+    // Batch 2: secondary data
+    const [p, t] = await Promise.all([
+      base44.entities.Product.list("-created_date", 50),
       base44.entities.Town.list(),
     ]);
-    setShops(s); setProducts(p); setOrders(o); setRegions(r); setTowns(t);
+    setProducts(p); setTowns(t);
+    // Batch 3: counts
     const reports = await base44.entities.Report.filter({ status: "pending" });
     setReportCount(reports.length);
     setLoading(false);
@@ -274,9 +280,14 @@ export default function AdminDashboard() {
   const [pendingRefundCount, setPendingRefundCount] = useState(0);
   const [vehicleCount, setVehicleCount] = useState(0);
   useEffect(() => {
+    // Stagger these to avoid rate limit
     base44.entities.SupportTicket.filter({ status: "open" }).then(t => setTicketCount(t.length));
-    base44.entities.Return.filter({ status: "return_received" }).then(r => setPendingRefundCount(r.length));
-    base44.entities.Vehicle.list().then(v => setVehicleCount(v.length));
+    setTimeout(() => {
+      base44.entities.Return.filter({ status: "return_received" }).then(r => setPendingRefundCount(r.length));
+    }, 400);
+    setTimeout(() => {
+      base44.entities.Vehicle.list().then(v => setVehicleCount(v.length));
+    }, 800);
   }, []);
 
   const sidebarItems = [

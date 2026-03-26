@@ -68,11 +68,9 @@ export default function UsersPanel({ adminUser }) {
 
   const loadData = async () => {
     setLoading(true);
-    const [u, b] = await Promise.all([
-      base44.entities.User.list("-created_date", 200),
-      base44.entities.BannedUser.list("-created_date", 200),
-    ]);
+    const u = await base44.entities.User.list("-created_date", 200);
     setUsers(u);
+    const b = await base44.entities.BannedUser.list("-created_date", 200);
     setBannedUsers(b);
     setLoading(false);
   };
