@@ -4,7 +4,6 @@ import { createPageUrl } from "@/utils";
 import { Search, MapPin, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import HeroBannerSlider from "./HeroBannerSlider";
 
 export default function HeroSection() {
   const [query, setQuery] = useState("");
@@ -16,9 +15,7 @@ export default function HeroSection() {
   };
 
   return (
-    <>
-      <HeroBannerSlider />
-      <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920&q=80')] bg-cover bg-center" />
       <div className="absolute inset-0 gradient-blue opacity-85" />
       <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent" />
@@ -67,6 +64,5 @@ export default function HeroSection() {
         </div>
       </div>
     </section>
-    </>
   );
 }

@@ -6,6 +6,7 @@ import { Wrench, Shield, Truck, MapPin } from "lucide-react";
 import { toast } from "sonner";
 
 import HeroSection from "@/components/home/HeroSection";
+import BannerAdsSection from "@/components/home/HeroBannerSlider";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
 import MegaDiscounts from "@/components/home/MegaDiscounts";
 import NearbyShops from "@/components/home/NearbyShops";
@@ -121,6 +122,7 @@ export default function Home() {
   return (
     <div>
       <HeroSection />
+      <BannerAdsSection />
 
       <section className="py-8 md:py-12 border-b border-slate-100 dark:border-slate-800">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
