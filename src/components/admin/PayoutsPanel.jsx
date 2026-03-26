@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2, Eye } from "lucide-react";
+import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2, Eye, Archive } from "lucide-react";
 import { toast } from "sonner";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
@@ -287,7 +287,16 @@ export default function PayoutsPanel({ adminUser }) {
                     <TableCell className="font-bold text-emerald-600">K{p.amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>
                     <TableCell className="capitalize text-sm">{p.method?.replace('_', ' ')}</TableCell>
                     <TableCell className="font-mono text-xs">{p.reference || '—'}</TableCell>
-                    <TableCell><Badge className={payoutStatusColors[p.status]}>{p.status}</Badge></TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <Badge className={payoutStatusColors[p.status]}>{p.status}</Badge>
+                        {p.archived_at && (
+                          <Badge variant="outline" className="text-slate-400 border-slate-300 gap-1 text-[10px]">
+                            <Archive className="w-2.5 h-2.5" /> archived
+                          </Badge>
+                        )}
+                      </div>
+                    </TableCell>
                     <TableCell className="text-xs text-slate-500">{p.processed_by || '—'}</TableCell>
                   </TableRow>
                 ))}
