@@ -290,7 +290,7 @@ export default function BuyerDashboard() {
         <DashboardSidebar items={sidebarItems} active={view} title="My Dashboard" />
 
         <main
-          className="flex-1 pt-20 lg:pt-8 p-4 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100"
+          className="flex-1 pt-16 md:pt-8 p-4 md:p-6 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100"
           style={{
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)",
             paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
