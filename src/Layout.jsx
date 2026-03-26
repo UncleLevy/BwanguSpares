@@ -144,15 +144,16 @@ export default function Layout({ children, currentPageName }) {
       <Toaster position="top-right" richColors closeButton />
       <header
         role="banner"
-        className={`sticky top-0 z-50 bg-transparent md:bg-white/80 dark:md:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm md:shadow-sm ${hasAppHeader ? "hidden md:block" : ""}`}
+        className={`sticky top-0 z-50 ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
-        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+        <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm md:shadow-sm">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -357,10 +358,9 @@ export default function Layout({ children, currentPageName }) {
               )}
             </div>
           </div>
-        </div>
-
-
-      </header>
+          </div>
+          </div>
+          </header>
 
       <main
         className="w-full pb-16 md:pb-0"
