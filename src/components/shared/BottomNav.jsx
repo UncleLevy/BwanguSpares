@@ -105,8 +105,18 @@ export default function BottomNav() {
     <nav
       role="navigation"
       aria-label="Main navigation"
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200 dark:border-slate-700 flex md:hidden select-none"
+      className="md:hidden select-none"
       style={{
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 9999,
+        display: "flex",
+        backgroundColor: "var(--nav-bg, rgba(255,255,255,0.97))",
+        borderTop: "1px solid var(--nav-border, rgba(226,232,240,1))",
+        backdropFilter: "blur(16px)",
+        WebkitBackdropFilter: "blur(16px)",
         paddingBottom: "env(safe-area-inset-bottom, 0px)",
         paddingLeft:   "env(safe-area-inset-left, 0px)",
         paddingRight:  "env(safe-area-inset-right, 0px)",

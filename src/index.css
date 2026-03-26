@@ -85,6 +85,16 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  :root {
+    --nav-bg: rgba(255, 255, 255, 0.97);
+    --nav-border: rgba(226, 232, 240, 1);
+  }
+
+  .dark {
+    --nav-bg: rgba(15, 23, 42, 0.97);
+    --nav-border: rgba(51, 65, 85, 1);
+  }
 }
 
 /* Branded 44 mobile standards: 44px min tap targets */
