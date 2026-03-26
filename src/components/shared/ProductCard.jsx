@@ -49,28 +49,28 @@ export default function ProductCard({ product, onAddToCart, user }) {
             : String(cv);
           return display ? <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 truncate">Fits: {display}</p> : null;
         })()}
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
-           <div className="flex items-baseline gap-2">
-             {product.original_price && product.original_price > product.price && (
-               <span className="text-xs sm:text-sm text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
-             )}
-             <span className="text-base sm:text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
-             {product.original_price && product.original_price > product.price && (
-               <span className="text-[10px] sm:text-xs font-semibold px-1.5 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 rounded">
-                 -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
-               </span>
-             )}
-           </div>
-           <div className="flex gap-1.5">
-             <WatchlistPartButton product={product} userEmail={user?.email} disabled={!canAddToCart} />
-             {canAddToCart && (
-               <Button size="sm" variant="outline" className="h-8 px-2 sm:px-3 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
-                 onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}>
-                 <ShoppingCart className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Add</span>
-               </Button>
-             )}
-           </div>
-         </div>
+        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-700">
+           <div className="flex items-baseline gap-1.5 sm:gap-2 mb-2">
+              {product.original_price && product.original_price > product.price && (
+                <span className="text-[10px] sm:text-sm text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
+              )}
+              <span className="text-sm sm:text-lg font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+              {product.original_price && product.original_price > product.price && (
+                <span className="text-[9px] sm:text-xs font-semibold px-1 sm:px-1.5 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-400 rounded">
+                  -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
+                </span>
+              )}
+            </div>
+            <div className="flex gap-1.5">
+              <WatchlistPartButton product={product} userEmail={user?.email} disabled={!canAddToCart} />
+              {canAddToCart && (
+                <Button size="sm" variant="outline" className="flex-1 h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                  onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}>
+                  <ShoppingCart className="w-3.5 h-3.5 sm:mr-1" /> <span className="hidden sm:inline">Add to Cart</span>
+                </Button>
+              )}
+            </div>
+          </div>
       </div>
     </div>
   );
