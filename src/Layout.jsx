@@ -379,6 +379,7 @@ export default function Layout({ children, currentPageName }) {
       </main>
       <BottomNav />
 
+      {currentPageName === "Home" && (
       <footer
         role="contentinfo"
         className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20"
@@ -424,6 +425,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
       </footer>
+      )}
     </div>
   );
 }
