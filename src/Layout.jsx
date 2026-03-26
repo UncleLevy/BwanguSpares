@@ -364,11 +364,12 @@ export default function Layout({ children, currentPageName }) {
           </header>
 
       <main
-        className="w-full md:pb-0"
+        className="w-full"
         style={{
           paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 3.5rem)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
+          "@media (min-width: 768px)": { paddingBottom: 0 }
         }}
       >
         <AnimatePresence mode="wait">
@@ -377,7 +378,7 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </main>
-      <BottomNav className="md:hidden" />
+      <BottomNav />
 
       {currentPageName === "Home" && (
       <footer
