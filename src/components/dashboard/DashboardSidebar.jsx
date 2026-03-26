@@ -71,7 +71,7 @@ export default function DashboardSidebar({ items, active, title }) {
     <>
       {/* Mobile top bar — safe-area aware */}
       <div
-        className="lg:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700"
+        className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center gap-2 px-3" style={{ minHeight: 56 }}>
@@ -114,7 +114,7 @@ export default function DashboardSidebar({ items, active, title }) {
       {/* Mobile overlay */}
       {mobileOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-50 bg-black/40"
+          className="md:hidden fixed inset-0 z-50 bg-black/40"
           onClick={() => setMobileOpen(false)}
         >
           <aside
@@ -140,7 +140,7 @@ export default function DashboardSidebar({ items, active, title }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden lg:flex w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 flex-col sticky top-0 h-screen shrink-0">
+      <aside className="hidden md:flex w-56 lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 flex-col sticky top-0 h-screen shrink-0">
         <SidebarContent items={items} active={active} title={title} />
       </aside>
     </>
