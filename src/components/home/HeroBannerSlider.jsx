@@ -52,9 +52,9 @@ export default function HeroBannerSlider() {
   };
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl bg-slate-900 group">
+    <div className="relative w-full overflow-hidden bg-slate-900 group -mx-4 md:-mx-6 lg:-mx-8 md:rounded-2xl">
       {/* Slide */}
-      <div className="relative w-full h-96 sm:h-[500px] lg:h-[600px]">
+      <div className="relative w-full h-96 sm:h-[500px] lg:h-[600px]" style={{ marginTop: "calc(-1 * env(safe-area-inset-top))" }}>
         <img
           src={imageUrl}
           alt={currentBanner.name}
