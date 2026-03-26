@@ -144,7 +144,7 @@ export default function Layout({ children, currentPageName }) {
       <Toaster position="top-right" richColors closeButton />
       <header
         role="banner"
-        className={`sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm ${hasAppHeader ? "hidden md:block" : ""}`}
+        className={`sticky top-0 z-50 bg-transparent md:bg-white/80 dark:md:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm md:shadow-sm ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
