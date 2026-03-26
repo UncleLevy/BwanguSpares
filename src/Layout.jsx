@@ -378,7 +378,7 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </main>
-      <BottomNav />
+      {["BrowseProducts", "FindNearby", "Cart", "BuyerDashboard"].includes(currentPageName) && <BottomNav />}
 
       {currentPageName === "Home" && (
       <footer
