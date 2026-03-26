@@ -377,7 +377,7 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </main>
-      <BottomNav />
+      <BottomNav className="md:hidden" />
 
       {currentPageName === "Home" && (
       <footer
