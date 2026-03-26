@@ -174,16 +174,16 @@ export default function UsersPanel({ adminUser }) {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-3 mb-6 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">User Management</h1>
           <Badge className="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">{users.length} accounts</Badge>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={openBanBlank} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
+          <Button variant="outline" onClick={openBanBlank} className="gap-2 text-red-600 border-red-200 hover:bg-red-50 flex-1 sm:flex-none">
             <Ban className="w-4 h-4" /> Ban User
           </Button>
-          <Button onClick={() => setInviteDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-2">
+          <Button onClick={() => setInviteDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-2 flex-1 sm:flex-none">
             <UserPlus className="w-4 h-4" /> Invite User
           </Button>
         </div>
@@ -348,50 +348,78 @@ export default function UsersPanel({ adminUser }) {
               <p>No banned or suspended users</p>
             </div>
           ) : (
-            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
-                    <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
-                    <SortableTableHead field="ban_type" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Type</SortableTableHead>
-                    <TableHead>Reason</TableHead>
-                    <SortableTableHead field="ban_expires" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Expires</SortableTableHead>
-                    <TableHead>Banned By</TableHead>
-                    <TableHead>Action</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {bannedPagination.paginatedItems.map(b => (
-                    <TableRow key={b.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                      <TableCell className="font-medium text-sm text-slate-900 dark:text-slate-100">{b.full_name || "—"}</TableCell>
-                      <TableCell className="text-sm text-slate-700 dark:text-slate-300">{b.email}</TableCell>
-                      <TableCell>
-                        <Badge className={b.ban_type === "banned" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"}>
+            <>
+              {/* Mobile cards */}
+              <div className="md:hidden space-y-3">
+                {bannedPagination.paginatedItems.map(b => (
+                  <Card key={b.id} className="border-slate-100 dark:border-slate-700 dark:bg-slate-900">
+                    <CardContent className="p-4">
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-slate-900 dark:text-slate-100 text-sm truncate">{b.full_name || "—"}</p>
+                          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{b.email}</p>
+                        </div>
+                        <Badge className={b.ban_type === "banned" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 text-[10px] shrink-0" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px] shrink-0"}>
                           {b.ban_type}
                         </Badge>
-                      </TableCell>
-                      <TableCell className="text-sm text-slate-600 dark:text-slate-400 max-w-[180px] truncate">{b.reason}</TableCell>
-                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.ban_expires ? new Date(b.ban_expires).toLocaleDateString() : "Permanent"}</TableCell>
-                      <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.banned_by}</TableCell>
-                      <TableCell>
-                        <Button size="sm" variant="ghost" className="h-8 text-emerald-600 hover:bg-emerald-50" onClick={() => removeBan(b.id, b.email)}>
-                          <RotateCcw className="w-3.5 h-3.5 mr-1" /> Unblock
-                        </Button>
-                      </TableCell>
+                      </div>
+                      <p className="text-xs text-slate-600 dark:text-slate-400 mb-1 line-clamp-2"><span className="font-medium">Reason:</span> {b.reason}</p>
+                      <p className="text-xs text-slate-400 mb-3">
+                        Expires: {b.ban_expires ? new Date(b.ban_expires).toLocaleDateString() : "Permanent"}
+                        {b.banned_by && <> · By: {b.banned_by}</>}
+                      </p>
+                      <Button size="sm" variant="ghost" className="w-full h-8 text-xs text-emerald-600 hover:bg-emerald-50" onClick={() => removeBan(b.id, b.email)}>
+                        <RotateCcw className="w-3 h-3 mr-1" /> Unblock
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+                {bannedUsers.length > 15 && (
+                  <TablePagination currentPage={bannedPagination.currentPage} totalItems={bannedPagination.totalItems} itemsPerPage={bannedPagination.itemsPerPage} onPageChange={bannedPagination.setCurrentPage} />
+                )}
+              </div>
+
+              {/* Desktop table */}
+              <div className="hidden md:block bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50 dark:bg-slate-800">
+                      <SortableTableHead field="full_name" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Name</SortableTableHead>
+                      <SortableTableHead field="email" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Email</SortableTableHead>
+                      <SortableTableHead field="ban_type" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Type</SortableTableHead>
+                      <TableHead>Reason</TableHead>
+                      <SortableTableHead field="ban_expires" sort={sort} onSort={f => setSort(prev => toggleSort(prev, f))}>Expires</SortableTableHead>
+                      <TableHead>Banned By</TableHead>
+                      <TableHead>Action</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              {bannedUsers.length > 15 && (
-                <TablePagination
-                  currentPage={bannedPagination.currentPage}
-                  totalItems={bannedPagination.totalItems}
-                  itemsPerPage={bannedPagination.itemsPerPage}
-                  onPageChange={bannedPagination.setCurrentPage}
-                />
-              )}
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {bannedPagination.paginatedItems.map(b => (
+                      <TableRow key={b.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                        <TableCell className="font-medium text-sm text-slate-900 dark:text-slate-100">{b.full_name || "—"}</TableCell>
+                        <TableCell className="text-sm text-slate-700 dark:text-slate-300">{b.email}</TableCell>
+                        <TableCell>
+                          <Badge className={b.ban_type === "banned" ? "bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400"}>
+                            {b.ban_type}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="text-sm text-slate-600 dark:text-slate-400 max-w-[180px] truncate">{b.reason}</TableCell>
+                        <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.ban_expires ? new Date(b.ban_expires).toLocaleDateString() : "Permanent"}</TableCell>
+                        <TableCell className="text-xs text-slate-400 dark:text-slate-500">{b.banned_by}</TableCell>
+                        <TableCell>
+                          <Button size="sm" variant="ghost" className="h-8 text-emerald-600 hover:bg-emerald-50" onClick={() => removeBan(b.id, b.email)}>
+                            <RotateCcw className="w-3.5 h-3.5 mr-1" /> Unblock
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                {bannedUsers.length > 15 && (
+                  <TablePagination currentPage={bannedPagination.currentPage} totalItems={bannedPagination.totalItems} itemsPerPage={bannedPagination.itemsPerPage} onPageChange={bannedPagination.setCurrentPage} />
+                )}
+              </div>
+            </>
           )}
         </TabsContent>
       </Tabs>
