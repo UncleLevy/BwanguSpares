@@ -439,12 +439,13 @@ export default function ShopDashboard() {
       return;
     }
     const tierLimits = { free: 1, standard: 3, premium: 5 };
-    const maxShops = tierLimits[subscription?.tier || "free"];
+    const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
+    const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
     if (shops.length >= maxShops) {
       if (maxShops < 5) {
-        toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Contact us for an Enterprise plan with more branch slots.`);
+        toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to Premium to add up to 5 branches.`);
       } else {
-        toast.error("You've reached the maximum number of shops. Contact us for an Enterprise plan.");
+        toast.error("You've reached the maximum of 5 shops on the Premium plan. Contact us for an Enterprise plan.");
       }
       return;
     }
@@ -724,9 +725,10 @@ export default function ShopDashboard() {
                <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">My Shops</h1>
                <Button onClick={() => {
                  const tierLimits = { free: 1, standard: 3, premium: 5 };
-                 const maxShops = tierLimits[subscription?.tier || "free"];
+                 const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
                  if (shops.length >= maxShops) {
-                   toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to add more branches.`);
+                   const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
+                   toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to add more branches.`);
                  } else {
                    setShowNewShopDialog(true);
                  }
@@ -807,12 +809,13 @@ export default function ShopDashboard() {
                 )}
                 <Button onClick={() => {
                   const tierLimits = { free: 1, standard: 3, premium: 5 };
-                  const maxShops = tierLimits[subscription?.tier || "free"];
+                  const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
+                  const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
                   if (shops.length >= maxShops) {
                     if (maxShops < 5) {
-                      toast.error(`${subscription?.tier || "Free"} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Contact us for an Enterprise plan with more branch slots.`);
+                      toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to Premium to add up to 5 branches.`);
                     } else {
-                      toast.error("You've reached the maximum number of shops. Contact us for an Enterprise plan.");
+                      toast.error("You've reached the maximum of 5 shops on the Premium plan. Contact us for an Enterprise plan.");
                     }
                   } else {
                     setShowNewShopDialog(true);
