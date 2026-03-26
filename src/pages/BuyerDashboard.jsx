@@ -290,13 +290,27 @@ export default function BuyerDashboard() {
         <DashboardSidebar items={sidebarItems} active={view} title="My Dashboard" />
 
         <main
-          className="flex-1 pt-16 md:pt-8 p-4 md:p-6 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100"
+          className="flex-1 pt-16 md:pt-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100"
           style={{
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4rem)",
             paddingLeft: "max(1rem, env(safe-area-inset-left, 0px))",
             paddingRight: "max(1rem, env(safe-area-inset-right, 0px))",
           }}
         >
+        <PullToRefresh onRefresh={async () => {
+          setLoading(true);
+          const u = await base44.auth.me();
+          const [o, wallets, txns] = await Promise.all([
+            base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50),
+            base44.entities.BuyerWallet.filter({ buyer_email: u.email }),
+            base44.entities.WalletTransaction.filter({ buyer_email: u.email }, "-created_date", 20),
+          ]);
+          setOrders(o);
+          setWallet(wallets[0] || null);
+          setWalletTxns(txns);
+          setLoading(false);
+        }}>
+          <div className="p-4 md:p-6 lg:p-8">
         {view === "orders" && (
           <PullToRefresh onRefresh={async () => {
             const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
@@ -652,6 +666,8 @@ export default function BuyerDashboard() {
             </Card>
           </div>
         )}
+          </div>
+        </PullToRefresh>
       </main>
 
       <PartsRequestForm open={partsRequestOpen} onClose={() => setPartsRequestOpen(false)} />

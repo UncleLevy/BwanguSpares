@@ -9,9 +9,7 @@ import {
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
-import {
-  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
-} from "@/components/ui/select";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { toast } from "sonner";
 import { Eye, Flag } from "lucide-react";
 import { logAudit } from "@/components/shared/auditLog";
@@ -152,17 +150,17 @@ export default function ReportsPanel({ adminUser }) {
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-700 mb-1 block">Update Status</label>
-                <Select value={newStatus} onValueChange={setNewStatus}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="reviewed">Reviewed</SelectItem>
-                    <SelectItem value="resolved">Resolved</SelectItem>
-                    <SelectItem value="dismissed">Dismissed</SelectItem>
-                  </SelectContent>
-                </Select>
+                <MobileSelect 
+                  value={newStatus} 
+                  onValueChange={setNewStatus}
+                  placeholder="Select status"
+                  options={[
+                    {value:"pending",label:"Pending"},
+                    {value:"reviewed",label:"Reviewed"},
+                    {value:"resolved",label:"Resolved"},
+                    {value:"dismissed",label:"Dismissed"}
+                  ]}
+                />
               </div>
               <div>
                 <label className="text-sm font-medium text-slate-700 mb-1 block">Admin Note</label>

@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { Calendar, Download, BarChart3, TrendingUp, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -144,42 +145,42 @@ export default function ReportingPanel({ orders, products, shops }) {
             </div>
             <div>
               <Label className="text-sm">Shop</Label>
-              <Select value={selectedShop} onValueChange={setSelectedShop}>
-                <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Shops</SelectItem>
-                  {shops.filter(s => s.status === "approved").map(s => (
-                    <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="mt-1">
+                <MobileSelect 
+                  value={selectedShop} 
+                  onValueChange={setSelectedShop}
+                  placeholder="All Shops"
+                  triggerClassName="h-9"
+                  options={[{value:"all",label:"All Shops"}, ...shops.filter(s => s.status === "approved").map(s => ({value:s.id,label:s.name}))]}
+                />
+              </div>
             </div>
             <div>
               <Label className="text-sm">Category</Label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {CATEGORIES.map(c => (
-                    <SelectItem key={c} value={c}>{c.replace(/_/g, " ")}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="mt-1">
+                <MobileSelect 
+                  value={selectedCategory} 
+                  onValueChange={setSelectedCategory}
+                  placeholder="All Categories"
+                  triggerClassName="h-9"
+                  options={[{value:"all",label:"All Categories"}, ...CATEGORIES.map(c => ({value:c,label:c.replace(/_/g, " ")}))]}
+                />
+              </div>
             </div>
             <div>
               <Label className="text-sm">Product</Label>
-              <Select value={selectedProduct} onValueChange={setSelectedProduct}>
-                <SelectTrigger className="mt-1 h-9"><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Products</SelectItem>
-                  {products
+              <div className="mt-1">
+                <MobileSelect 
+                  value={selectedProduct} 
+                  onValueChange={setSelectedProduct}
+                  placeholder="All Products"
+                  triggerClassName="h-9"
+                  options={[{value:"all",label:"All Products"}, ...products
                     .filter(p => selectedCategory === "all" || p.category === selectedCategory)
                     .sort((a, b) => a.name.localeCompare(b.name))
-                    .map(p => (
-                      <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
+                    .map(p => ({value:p.id,label:p.name}))]}
+                />
+              </div>
             </div>
           </div>
           <Button onClick={handleExport} disabled={reportData.length === 0} className="bg-emerald-600 hover:bg-emerald-700 gap-2 w-full sm:w-auto">

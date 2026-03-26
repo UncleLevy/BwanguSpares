@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import AdminNavbar from "@/components/dashboard/AdminNavbar";
 import { createPageUrl } from "@/utils";
+import PullToRefresh from "@/components/shared/PullToRefresh";
 import { RefreshCcw } from "lucide-react";
 import {
   LayoutDashboard, Store, Package, Users, MapPin, Wrench,
@@ -445,7 +446,13 @@ export default function AdminDashboard() {
       <div className="flex">
         <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
 
-        <main className="flex-1 pt-16 md:pt-8 p-4 md:p-6 lg:p-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
+        <main className="flex-1 pt-16 md:pt-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
+        <PullToRefresh onRefresh={async () => {
+          setLoadError(false);
+          setLoading(true);
+          await loadData().catch(() => { setLoading(false); setLoadError(true); });
+        }}>
+          <div className="p-4 md:p-6 lg:p-8">
         {view === "overview" && (
           <div>
             <div className="flex items-center justify-between mb-6">
@@ -905,6 +912,8 @@ export default function AdminDashboard() {
             </Dialog>
           </div>
         )}
+          </div>
+        </PullToRefresh>
       </main>
 
       {/* Delete Shop Confirmation Dialog */}

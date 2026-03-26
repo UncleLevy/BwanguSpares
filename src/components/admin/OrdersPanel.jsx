@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Pencil, Truck, Calendar, Package, RefreshCcw } from "lucide-react";
 import SortableTableHead, { toggleSort, sortData } from "@/components/shared/SortableTableHead";
@@ -7,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import MobileSelect from "@/components/shared/MobileSelect";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -249,16 +250,14 @@ export default function OrdersPanel({ orders: initialOrders, onOrderUpdate }) {
           <div className="space-y-4">
             <div>
               <Label>Order Status *</Label>
-              <Select value={formData.status} onValueChange={v => setFormData({...formData, status: v})}>
-                <SelectTrigger className="mt-1">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {statusOptions.map(opt => (
-                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="mt-1">
+                <MobileSelect 
+                  value={formData.status} 
+                  onValueChange={v => setFormData({...formData, status: v})}
+                  placeholder="Select status"
+                  options={statusOptions}
+                />
+              </div>
             </div>
 
             {formData.status === "shipped" && (
