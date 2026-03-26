@@ -3,28 +3,33 @@ import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false);
+  const [isDark, setIsDark] = useState(() => {
+    // Try localStorage first, fallback to sessionStorage for APK
+    try {
+      const saved = localStorage.getItem("darkMode") || sessionStorage.getItem("darkMode");
+      if (saved !== null) return saved === "true";
+    } catch (e) {}
+    // Fallback to system preference
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
 
   useEffect(() => {
-    const saved = localStorage.getItem("darkMode");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const shouldBeDark = saved ? saved === "true" : prefersDark;
-    
-    setIsDark(shouldBeDark);
-    if (shouldBeDark) {
+    // Apply dark mode on mount
+    if (isDark) {
       document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
     }
-  }, []);
+  }, [isDark]);
 
   const toggleDarkMode = () => {
     const newMode = !isDark;
     setIsDark(newMode);
-    localStorage.setItem("darkMode", String(newMode));
-    
-    if (newMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
+    // Try localStorage, fallback to sessionStorage for APK
+    try {
+      localStorage.setItem("darkMode", String(newMode));
+    } catch (e) {
+      sessionStorage.setItem("darkMode", String(newMode));
     }
   };
 
