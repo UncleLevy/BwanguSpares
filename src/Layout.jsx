@@ -309,10 +309,12 @@ export default function Layout({ children, currentPageName }) {
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex items-center gap-2">
-                          <DarkModeToggle />
-                          <span className="text-sm">Dark Mode</span>
-                        </DropdownMenuItem>
+                        <div className="px-2 py-1.5">
+                          <div className="flex items-center gap-2 text-sm">
+                            <DarkModeToggle />
+                            <span className="text-sm">Dark Mode</span>
+                          </div>
+                        </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
                           <LogOut className="w-4 h-4" /> Sign Out
@@ -344,10 +346,12 @@ export default function Layout({ children, currentPageName }) {
                           </DropdownMenuItem>
                         ))}
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem className="flex items-center gap-2">
-                          <DarkModeToggle />
-                          <span className="text-sm">Dark Mode</span>
-                        </DropdownMenuItem>
+                        <div className="px-2 py-1.5">
+                          <button className="w-full flex items-center gap-2 text-sm">
+                            <DarkModeToggle />
+                            <span className="text-sm">Dark Mode</span>
+                          </button>
+                        </div>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => base44.auth.redirectToLogin()} className="text-blue-600 font-medium flex items-center gap-2">
                           <User className="w-4 h-4" /> Sign In
