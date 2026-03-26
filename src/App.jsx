@@ -29,27 +29,26 @@ const PageFallback = () => (
   </div>
 );
 
-// ─── iOS-style spring transitions ────────────────────────────────────────────
+// ─── Smooth page transitions ────────────────────────────────────────────
 // direction: "forward" = push right-to-left; "back" = pop left-to-right
-const iosSpring = { type: "spring", stiffness: 380, damping: 36, mass: 1 };
-const iosExit   = { type: "spring", stiffness: 380, damping: 36, mass: 1 };
+const pageTransition = { type: "spring", stiffness: 300, damping: 30, mass: 1 };
 
 function makeVariants(direction) {
   const forward = direction !== "back";
   return {
     initial: {
-      x: forward ? "100%" : "-30%",
-      opacity: forward ? 1 : 0.6,
+      x: forward ? "100%" : "-25%",
+      opacity: forward ? 1 : 0.5,
     },
     animate: {
       x: 0,
       opacity: 1,
-      transition: { ...iosSpring },
+      transition: { ...pageTransition },
     },
     exit: {
-      x: forward ? "-30%" : "100%",
-      opacity: forward ? 0.6 : 1,
-      transition: { ...iosExit },
+      x: forward ? "-25%" : "100%",
+      opacity: forward ? 0.5 : 1,
+      transition: { ...pageTransition },
     },
   };
 }
@@ -63,7 +62,12 @@ const AnimatedPage = ({ children, direction }) => {
       initial="initial"
       animate="animate"
       exit="exit"
-      style={{ minHeight: "100%", willChange: "transform, opacity", overflow: "hidden" }}
+      style={{ 
+        minHeight: "100%", 
+        willChange: "transform, opacity",
+        overflow: "hidden",
+        transform: "translate3d(0, 0, 0)"
+      }}
     >
       {children}
     </motion.div>
@@ -79,6 +83,8 @@ function RouteRecorder() {
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
     recordNavigation(location.pathname, location.search);
+    // Scroll to top on navigation for smooth experience
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, [location.pathname, location.search]);
 
   return null;
