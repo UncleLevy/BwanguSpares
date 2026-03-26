@@ -165,12 +165,12 @@ export default function UsersPanel({ adminUser }) {
     toast.success(`${email} has been unblocked`);
   };
 
-  if (loading) return <div className="animate-pulse h-40 bg-slate-100 rounded-xl" />;
-
   const sortedFiltered = sortData(filtered, sort);
   const pagination = usePagination(sortedFiltered, 15);
   const sortedBanned = sortData(bannedUsers, sort);
   const bannedPagination = usePagination(sortedBanned, 15);
+
+  if (loading) return <div className="animate-pulse h-40 bg-slate-100 rounded-xl" />;
 
   return (
     <div>
