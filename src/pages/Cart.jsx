@@ -64,9 +64,8 @@ export default function Cart() {
   };
 
   const handleRegionChange = (regionId) => {
-    const region = regions.find(r => r.id === regionId);
     setForm(f => ({ ...f, region: regionId, town: "" }));
-    setFilteredTowns(towns.filter(t => t.region_id === regionId || t.region === regionId || t.region === region?.name));
+    setFilteredTowns(towns.filter(t => t.region_id === regionId));
     setDynamicShippingCost(0); // Reset shipping cost when region changes
   };
 
