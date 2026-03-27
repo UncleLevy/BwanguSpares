@@ -106,9 +106,6 @@
     "region"
   ],
   "rls": {
-    "read": {
-      "formula": "record.status == 'approved' || record.owner_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.status == 'approved' || record.owner_email == user.email || user.role == 'admin'"
     },
@@ -120,6 +117,9 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
     },
     "public_read": true
   }
