@@ -6,15 +6,15 @@ import { createPageUrl } from "@/utils";
 import PullToRefresh from "@/components/shared/PullToRefresh";
 import CustomCursor from "@/components/shared/CustomCursor";
 import {
-  ShoppingCart, Menu, X, Home, Search, Store, User, 
-  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock
-} from "lucide-react";
+  ShoppingCart, Menu, X, Home, Search, Store, User,
+  ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock } from
+"lucide-react";
 import BottomNav from "@/components/shared/BottomNav.jsx";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
-  DropdownMenuTrigger, DropdownMenuSeparator
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger, DropdownMenuSeparator } from
+"@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import DarkModeToggle from "@/components/shared/DarkModeToggle";
@@ -24,7 +24,7 @@ import { Toaster } from "sonner";
 const pageVariants = {
   initial: { opacity: 0, x: 24 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } },
-  exit:    { opacity: 0, x: -16, transition: { duration: 0.15 } },
+  exit: { opacity: 0, x: -16, transition: { duration: 0.15 } }
 };
 
 function playTone() {
@@ -77,7 +77,7 @@ export default function Layout({ children, currentPageName }) {
         const isShopOwner = u.role === "shop_owner";
         const convFilter = isShopOwner ? { shop_owner_email: u.email } : { buyer_email: u.email };
         const convs = await base44.entities.Conversation.filter(convFilter, "-last_message_date", 50);
-        const unread = convs.reduce((sum, c) => sum + (isShopOwner ? (c.shop_unread || 0) : (c.buyer_unread || 0)), 0);
+        const unread = convs.reduce((sum, c) => sum + (isShopOwner ? c.shop_unread || 0 : c.buyer_unread || 0), 0);
         setUnreadMessages(unread);
       }
     })();
@@ -97,7 +97,7 @@ export default function Layout({ children, currentPageName }) {
           isShopOwner ? { shop_owner_email: user.email } : { buyer_email: user.email },
           "-last_message_date", 50
         ).then((convs) => {
-          const unread = convs.reduce((sum, c) => sum + (isShopOwner ? (c.shop_unread || 0) : (c.buyer_unread || 0)), 0);
+          const unread = convs.reduce((sum, c) => sum + (isShopOwner ? c.shop_unread || 0 : c.buyer_unread || 0), 0);
           setUnreadMessages((prev) => {
             if (unread > prev) playTone();
             return unread;
@@ -120,9 +120,9 @@ export default function Layout({ children, currentPageName }) {
       <div
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)",
-        }}
-      >
+          paddingRight: "env(safe-area-inset-right, 0px)"
+        }}>
+        
         <CustomCursor />
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
@@ -130,16 +130,16 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
         <BottomNav />
-      </div>
-    );
+      </div>);
+
   }
 
   const navLinks = [
-    { label: "Home", href: createPageUrl("Home"), icon: Home },
-    { label: "Browse Parts", href: createPageUrl("BrowseProducts"), icon: Search },
-    { label: "Shops", href: createPageUrl("BrowseShops"), icon: Store },
-    { label: "Find Nearby", href: createPageUrl("FindNearby"), icon: Navigation },
-  ];
+  { label: "Home", href: createPageUrl("Home"), icon: Home },
+  { label: "Browse Parts", href: createPageUrl("BrowseProducts"), icon: Search },
+  { label: "Shops", href: createPageUrl("BrowseShops"), icon: Store },
+  { label: "Find Nearby", href: createPageUrl("FindNearby"), icon: Navigation }];
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
@@ -152,66 +152,66 @@ export default function Layout({ children, currentPageName }) {
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)",
-        }}
-      >
+          paddingRight: "env(safe-area-inset-right, 0px)"
+        }}>
+        
         <div className="md:bg-white/80 md:dark:bg-slate-900/80 md:backdrop-blur-xl md:border-b md:border-slate-200/60 md:dark:border-slate-700/60 md:shadow-sm" style={{ background: "transparent" }}>
-          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-transparent mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M7 9L8.5 10.5L12 7L17 12" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <circle cx="8" cy="8" r="1" fill="white"/>
+                  <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M7 9L8.5 10.5L12 7L17 12" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="8" cy="8" r="1" fill="white" />
                 </svg>
               </div>
               <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1" aria-label="Site navigation">
-              {navLinks.map(l => (
+              {navLinks.map((l) =>
                 <Link key={l.label} to={l.href}
-                  aria-label={l.label}
-                  className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-cyan-600 rounded-xl hover:bg-cyan-50/80 transition-all duration-200">
+                aria-label={l.label}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-cyan-600 rounded-xl hover:bg-cyan-50/80 transition-all duration-200">
                   {l.label}
                 </Link>
-              ))}
+                )}
             </nav>
 
             <div className="flex items-center gap-2">
               {/* Desktop icons */}
               <div className="hidden md:flex items-center gap-2 [&>*]:!min-h-0">
                 <DarkModeToggle />
-                {isAuthenticated && (
-                   <>
+                {isAuthenticated &&
+                  <>
                      {user?.role !== 'admin' && <NotificationBell userEmail={user?.email} />}
                      <Link to={createPageUrl(user?.role === 'shop_owner' ? "ShopDashboard" : "BuyerDashboard") + "?view=messages"} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors">
                        <MessageSquare className="w-5 h-5" />
-                       {unreadMessages > 0 && (
-                         <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900 pointer-events-none" />
-                       )}
+                       {unreadMessages > 0 &&
+                      <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900 pointer-events-none" />
+                      }
                      </Link>
-                     {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
-                       <>
+                     {user?.role !== 'shop_owner' && user?.role !== 'admin' &&
+                    <>
                          <Link to={createPageUrl("Wishlist")} className="p-2 text-slate-600 dark:text-slate-400 hover:text-red-500 transition-colors">
                            <Heart className="w-5 h-5" />
                          </Link>
                          <Link to={createPageUrl("Cart")} className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 transition-colors z-10">
                            <ShoppingCart className="w-5 h-5" />
-                           {cartCount > 0 && (
-                             <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 pointer-events-none">
+                           {cartCount > 0 &&
+                        <Badge className="absolute -top-0.5 -right-0.5 h-5 w-5 flex items-center justify-center p-0 text-[10px] bg-blue-600 pointer-events-none">
                                {cartCount}
                              </Badge>
-                           )}
+                        }
                          </Link>
                        </>
-                     )}
+                    }
                    </>
-                 )}
+                  }
               </div>
 
-              {isAuthenticated ? (
+              {isAuthenticated ?
                 <>
                   {/* Desktop: full user dropdown */}
                   <div className="hidden md:block">
@@ -219,11 +219,11 @@ export default function Layout({ children, currentPageName }) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700">
                           <div className="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden">
-                            {user?.profile_picture_url ? (
-                              <img src={user.profile_picture_url} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <User className="w-3.5 h-3.5 text-blue-600" />
-                            )}
+                            {user?.profile_picture_url ?
+                            <img src={user.profile_picture_url} alt="" className="w-full h-full object-cover" /> :
+
+                            <User className="w-3.5 h-3.5 text-blue-600" />
+                            }
                           </div>
                           <span>{user?.full_name?.split(' ')[0]}</span>
                           <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -235,13 +235,13 @@ export default function Layout({ children, currentPageName }) {
                             <LayoutDashboard className="w-4 h-4" /> My Dashboard
                           </Link>
                         </DropdownMenuItem>
-                        {isAdmin && (
-                          <DropdownMenuItem asChild>
+                        {isAdmin &&
+                        <DropdownMenuItem asChild>
                             <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
                               <ShieldCheck className="w-4 h-4" /> Admin Panel
                             </Link>
                           </DropdownMenuItem>
-                        )}
+                        }
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 flex items-center gap-2">
                           <LogOut className="w-4 h-4" /> Sign Out
@@ -256,22 +256,22 @@ export default function Layout({ children, currentPageName }) {
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="relative">
                           <Menu className="w-5 h-5" />
-                          {cartCount > 0 && (
-                            <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-blue-600 rounded-full text-[9px] text-white flex items-center justify-center font-bold">
+                          {cartCount > 0 &&
+                          <span className="absolute -top-0.5 -right-0.5 h-4 w-4 bg-blue-600 rounded-full text-[9px] text-white flex items-center justify-center font-bold">
                               {cartCount}
                             </span>
-                          )}
+                          }
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-56">
                         <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Navigation</div>
-                        {navLinks.map(l => (
-                          <DropdownMenuItem key={l.label} asChild>
+                        {navLinks.map((l) =>
+                        <DropdownMenuItem key={l.label} asChild>
                             <Link to={l.href} className="flex items-center gap-2">
                               <l.icon className="w-4 h-4" /> {l.label}
                             </Link>
                           </DropdownMenuItem>
-                        ))}
+                        )}
                         <DropdownMenuSeparator />
                         <div className="px-2 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wide">Account</div>
                         <DropdownMenuItem asChild>
@@ -284,8 +284,8 @@ export default function Layout({ children, currentPageName }) {
                             {unreadMessages > 0 && <Badge className="ml-auto h-5 min-w-[20px] flex items-center justify-center p-0 px-1 text-[10px] bg-red-500">{unreadMessages}</Badge>}
                           </Link>
                         </DropdownMenuItem>
-                        {user?.role !== 'shop_owner' && user?.role !== 'admin' && (
-                          <>
+                        {user?.role !== 'shop_owner' && user?.role !== 'admin' &&
+                        <>
                             <DropdownMenuItem asChild>
                               <Link to={createPageUrl("Wishlist")} className="flex items-center gap-2">
                                 <Heart className="w-4 h-4" /> Wishlist
@@ -298,19 +298,19 @@ export default function Layout({ children, currentPageName }) {
                               </Link>
                             </DropdownMenuItem>
                           </>
-                        )}
+                        }
                         <DropdownMenuItem asChild>
                           <Link to={createPageUrl(isShopOwner ? "ShopDashboard" : isAdmin ? "AdminDashboard" : "BuyerDashboard")} className="flex items-center gap-2">
                             <LayoutDashboard className="w-4 h-4" /> My Dashboard
                           </Link>
                         </DropdownMenuItem>
-                        {isAdmin && (
-                          <DropdownMenuItem asChild>
+                        {isAdmin &&
+                        <DropdownMenuItem asChild>
                             <Link to={createPageUrl("AdminDashboard")} className="flex items-center gap-2">
                               <ShieldCheck className="w-4 h-4" /> Admin Panel
                             </Link>
                           </DropdownMenuItem>
-                        )}
+                        }
                         <DropdownMenuSeparator />
                         <div className="px-2 py-1.5">
                           <div className="flex items-center gap-2 text-sm">
@@ -325,8 +325,8 @@ export default function Layout({ children, currentPageName }) {
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
-                </>
-              ) : (
+                </> :
+
                 <>
                   <div className="hidden md:block">
                     <DarkModeToggle />
@@ -341,13 +341,13 @@ export default function Layout({ children, currentPageName }) {
                         <Button variant="ghost" size="icon"><Menu className="w-5 h-5" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
-                        {navLinks.map(l => (
-                          <DropdownMenuItem key={l.label} asChild>
+                        {navLinks.map((l) =>
+                        <DropdownMenuItem key={l.label} asChild>
                             <Link to={l.href} className="flex items-center gap-2">
                               <l.icon className="w-4 h-4" /> {l.label}
                             </Link>
                           </DropdownMenuItem>
-                        ))}
+                        )}
                         <DropdownMenuSeparator />
                         <div className="px-2 py-1.5">
                           <button className="w-full flex items-center gap-2 text-sm">
@@ -363,7 +363,7 @@ export default function Layout({ children, currentPageName }) {
                     </DropdownMenu>
                   </div>
                 </>
-              )}
+                }
             </div>
           </div>
           </div>
@@ -374,9 +374,9 @@ export default function Layout({ children, currentPageName }) {
         className="w-full safe-pb"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)",
-        }}
-      >
+          paddingRight: "env(safe-area-inset-right, 0px)"
+        }}>
+        
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
@@ -385,16 +385,16 @@ export default function Layout({ children, currentPageName }) {
       </main>
       {["BrowseProducts", "FindNearby", "Cart", "BuyerDashboard"].includes(currentPageName) && <BottomNav />}
 
-      {currentPageName === "Home" && (
+      {currentPageName === "Home" &&
       <footer
         role="contentinfo"
         className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
-          paddingBottom: "env(safe-area-inset-bottom, 0px)",
-        }}
-      >
+          paddingBottom: "env(safe-area-inset-bottom, 0px)"
+        }}>
+        
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
@@ -431,7 +431,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
       </footer>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }
