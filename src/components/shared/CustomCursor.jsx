@@ -1,113 +1,132 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function CustomCursor() {
-  const cursorRef = useRef(null);
+  const ringRef = useRef(null);
   const dotRef = useRef(null);
-  const pos = useRef({ x: 0, y: 0 });
-  const dot = useRef({ x: 0, y: 0 });
-  const [clicking, setClicking] = useState(false);
-  const [hovering, setHovering] = useState(false);
-  const [isTouch, setIsTouch] = useState(true);
-  const [visible, setVisible] = useState(false);
+  const state = useRef({
+    x: 0,
+    y: 0,
+    ringX: 0,
+    ringY: 0,
+    isHovering: false,
+    isClicking: false,
+    isVisible: true,
+  });
   const raf = useRef(null);
 
   useEffect(() => {
-    // Only on desktop pointer devices
-    const touch = window.matchMedia("(pointer: coarse)").matches;
-    setIsTouch(touch);
-    if (touch) return;
+    // Skip on touch devices
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
-    const move = (e) => {
-      pos.current = { x: e.clientX, y: e.clientY };
-      if (!visible) setVisible(true);
+    const handleMouseMove = (e) => {
+      state.current.x = e.clientX;
+      state.current.y = e.clientY;
+      state.current.isVisible = true;
     };
 
-    const onMouseDown = () => setClicking(true);
-    const onMouseUp = () => setClicking(false);
-
-    const onMouseOver = (e) => {
-      const el = e.target.closest("a, button, [role='button'], [role='tab'], input, textarea, select");
-      setHovering(!!el);
+    const handleMouseDown = () => {
+      state.current.isClicking = true;
     };
 
-    const onMouseLeave = () => setVisible(false);
+    const handleMouseUp = () => {
+      state.current.isClicking = false;
+    };
+
+    const handleMouseEnter = (e) => {
+      const target = e.target.closest(
+        "a, button, [role='button'], [role='tab'], input, textarea, select"
+      );
+      state.current.isHovering = !!target;
+    };
+
+    const handleMouseLeave = () => {
+      state.current.isHovering = false;
+      state.current.isVisible = false;
+    };
 
     const animate = () => {
-      // Faster, more responsive easing (was 0.12, now 0.2)
-      dot.current.x += (pos.current.x - dot.current.x) * 0.2;
-      dot.current.y += (pos.current.y - dot.current.y) * 0.2;
+      // Smooth ring following with easing
+      const dx = state.current.x - state.current.ringX;
+      const dy = state.current.y - state.current.ringY;
+      state.current.ringX += dx * 0.25;
+      state.current.ringY += dy * 0.25;
 
-      if (visible && cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${dot.current.x - 20}px, ${dot.current.y - 20}px)`;
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translate(${state.current.ringX - 20}px, ${state.current.ringY - 20}px)`;
+        ringRef.current.style.opacity = state.current.isVisible ? "1" : "0";
       }
-      if (visible && dotRef.current) {
-        dotRef.current.style.transform = `translate(${pos.current.x - 4}px, ${pos.current.y - 4}px)`;
+
+      if (dotRef.current) {
+        dotRef.current.style.transform = `translate(${state.current.x - 5}px, ${state.current.y - 5}px)`;
+        dotRef.current.style.opacity = state.current.isVisible ? "1" : "0";
       }
+
       raf.current = requestAnimationFrame(animate);
     };
 
-    document.addEventListener("mousemove", move);
-    document.addEventListener("mousedown", onMouseDown);
-    document.addEventListener("mouseup", onMouseUp);
-    document.addEventListener("mouseover", onMouseOver);
-    document.addEventListener("mouseleave", onMouseLeave);
+    document.addEventListener("mousemove", handleMouseMove, { passive: true });
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mouseover", handleMouseEnter, true);
+    document.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("blur", () => {
+      state.current.isVisible = false;
+    });
+
     raf.current = requestAnimationFrame(animate);
 
     return () => {
-      document.removeEventListener("mousemove", move);
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mouseup", onMouseUp);
-      document.removeEventListener("mouseover", onMouseOver);
-      document.removeEventListener("mouseleave", onMouseLeave);
+      document.removeEventListener("mousemove", handleMouseMove);
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mouseover", handleMouseEnter, true);
+      document.removeEventListener("mouseleave", handleMouseLeave);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, [visible]);
-
-  if (isTouch) return null;
+  }, []);
 
   return (
     <>
-      {/* Outer ring */}
+      {/* Outer ring - sleeker minimalist design */}
       <div
-        ref={cursorRef}
-        className={`fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block ${visible ? "opacity-100" : "opacity-0"}`}
-        style={{ willChange: "transform", transition: "opacity 0.15s ease-out" }}
+        ref={ringRef}
+        className="fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block transition-opacity duration-200"
+        style={{
+          willChange: "transform, opacity",
+          width: 40,
+          height: 40,
+          marginLeft: -20,
+          marginTop: -20,
+        }}
       >
         <div
-          className="transition-all duration-100"
           style={{
-            width: hovering ? 48 : clicking ? 28 : 40,
-            height: hovering ? 48 : clicking ? 28 : 40,
+            width: "100%",
+            height: "100%",
             borderRadius: "50%",
-            border: `2px solid ${hovering ? "rgba(6,182,212,0.8)" : "rgba(6,182,212,0.5)"}`,
-            background: hovering ? "rgba(6,182,212,0.08)" : "transparent",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backdropFilter: hovering ? "blur(2px)" : "none",
+            border: "1.5px solid rgba(6, 182, 212, 0.6)",
+            background: "rgba(6, 182, 212, 0.02)",
+            boxShadow: "inset 0 0 12px rgba(6, 182, 212, 0.08)",
+            transition: "all 0.2s ease-out",
+            transform: state.current?.isHovering ? "scale(1.3)" : state.current?.isClicking ? "scale(0.85)" : "scale(1)",
           }}
-        >
-          {hovering && (
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(6,182,212,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <circle cx="12" cy="12" r="3"/>
-              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-            </svg>
-          )}
-        </div>
+        />
       </div>
 
-      {/* Inner dot */}
+      {/* Inner dot - sharp and responsive */}
       <div
         ref={dotRef}
-        className={`fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block ${visible ? "opacity-100" : "opacity-0"}`}
+        className="fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block transition-opacity duration-150"
         style={{
-          width: 8,
-          height: 8,
+          willChange: "transform, opacity",
+          width: 10,
+          height: 10,
           borderRadius: "50%",
-          background: clicking ? "rgba(6,182,212,1)" : "rgba(6,182,212,0.9)",
-          boxShadow: "0 0 6px rgba(6,182,212,0.6)",
-          willChange: "transform",
-          transition: "opacity 0.15s ease-out, width 0.1s, height 0.1s, background 0.1s",
+          marginLeft: -5,
+          marginTop: -5,
+          background: "rgba(6, 182, 212, 1)",
+          boxShadow:
+            "0 0 8px rgba(6, 182, 212, 0.8), 0 0 16px rgba(6, 182, 212, 0.4)",
         }}
       />
     </>
