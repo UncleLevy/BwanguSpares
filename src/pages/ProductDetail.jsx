@@ -133,7 +133,12 @@ export default function ProductDetail() {
 
             <div className="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-400">
               {product.brand && <p><span className="text-slate-400">Brand:</span> {product.brand}</p>}
-              {product.compatible_vehicles && <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles}</p>}
+              {product.compatible_vehicles && Array.isArray(product.compatible_vehicles) && product.compatible_vehicles.length > 0 && (
+                <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles.map(v => [v.brand, v.model, v.years?.join('/')].filter(Boolean).join(' ')).join(', ')}</p>
+              )}
+              {product.compatible_vehicles && typeof product.compatible_vehicles === 'string' && product.compatible_vehicles && (
+                <p><span className="text-slate-400">Fits:</span> {product.compatible_vehicles}</p>
+              )}
               <p className="flex items-center gap-1.5">
                 <span className="text-slate-400">Stock:</span>
                 {product.stock_quantity > 0 ? (
