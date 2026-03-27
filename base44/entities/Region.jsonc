@@ -13,9 +13,6 @@
     "name"
   ],
   "rls": {
-    "read": {
-      "formula": "true"
-    },
     "select": {
       "formula": "true"
     },
@@ -30,6 +27,9 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
     }
   }
 }
