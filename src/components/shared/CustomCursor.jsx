@@ -3,11 +3,12 @@ import React, { useEffect, useRef, useState } from "react";
 export default function CustomCursor() {
   const cursorRef = useRef(null);
   const dotRef = useRef(null);
-  const pos = useRef({ x: -100, y: -100 });
-  const dot = useRef({ x: -100, y: -100 });
+  const pos = useRef({ x: 0, y: 0 });
+  const dot = useRef({ x: 0, y: 0 });
   const [clicking, setClicking] = useState(false);
   const [hovering, setHovering] = useState(false);
-  const [isTouch, setIsTouch] = useState(true); // default true until checked
+  const [isTouch, setIsTouch] = useState(true);
+  const [visible, setVisible] = useState(false);
   const raf = useRef(null);
 
   useEffect(() => {
@@ -18,6 +19,7 @@ export default function CustomCursor() {
 
     const move = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
+      if (!visible) setVisible(true);
     };
 
     const onMouseDown = () => setClicking(true);
@@ -28,15 +30,17 @@ export default function CustomCursor() {
       setHovering(!!el);
     };
 
-    const animate = () => {
-      // Smooth outer ring lags behind
-      dot.current.x += (pos.current.x - dot.current.x) * 0.12;
-      dot.current.y += (pos.current.y - dot.current.y) * 0.12;
+    const onMouseLeave = () => setVisible(false);
 
-      if (cursorRef.current) {
+    const animate = () => {
+      // Faster, more responsive easing (was 0.12, now 0.2)
+      dot.current.x += (pos.current.x - dot.current.x) * 0.2;
+      dot.current.y += (pos.current.y - dot.current.y) * 0.2;
+
+      if (visible && cursorRef.current) {
         cursorRef.current.style.transform = `translate(${dot.current.x - 20}px, ${dot.current.y - 20}px)`;
       }
-      if (dotRef.current) {
+      if (visible && dotRef.current) {
         dotRef.current.style.transform = `translate(${pos.current.x - 4}px, ${pos.current.y - 4}px)`;
       }
       raf.current = requestAnimationFrame(animate);
@@ -46,6 +50,7 @@ export default function CustomCursor() {
     document.addEventListener("mousedown", onMouseDown);
     document.addEventListener("mouseup", onMouseUp);
     document.addEventListener("mouseover", onMouseOver);
+    document.addEventListener("mouseleave", onMouseLeave);
     raf.current = requestAnimationFrame(animate);
 
     return () => {
@@ -53,9 +58,10 @@ export default function CustomCursor() {
       document.removeEventListener("mousedown", onMouseDown);
       document.removeEventListener("mouseup", onMouseUp);
       document.removeEventListener("mouseover", onMouseOver);
+      document.removeEventListener("mouseleave", onMouseLeave);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [visible]);
 
   if (isTouch) return null;
 
@@ -64,11 +70,11 @@ export default function CustomCursor() {
       {/* Outer ring */}
       <div
         ref={cursorRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block"
-        style={{ willChange: "transform" }}
+        className={`fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block ${visible ? "opacity-100" : "opacity-0"}`}
+        style={{ willChange: "transform", transition: "opacity 0.15s ease-out" }}
       >
         <div
-          className="transition-all duration-150"
+          className="transition-all duration-100"
           style={{
             width: hovering ? 48 : clicking ? 28 : 40,
             height: hovering ? 48 : clicking ? 28 : 40,
@@ -81,7 +87,6 @@ export default function CustomCursor() {
             backdropFilter: hovering ? "blur(2px)" : "none",
           }}
         >
-          {/* Gear icon inside cursor when hovering */}
           {hovering && (
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="rgba(6,182,212,0.9)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="3"/>
@@ -94,7 +99,7 @@ export default function CustomCursor() {
       {/* Inner dot */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block"
+        className={`fixed top-0 left-0 z-[9999] pointer-events-none hidden md:block ${visible ? "opacity-100" : "opacity-0"}`}
         style={{
           width: 8,
           height: 8,
@@ -102,10 +107,9 @@ export default function CustomCursor() {
           background: clicking ? "rgba(6,182,212,1)" : "rgba(6,182,212,0.9)",
           boxShadow: "0 0 6px rgba(6,182,212,0.6)",
           willChange: "transform",
-          transition: "width 0.1s, height 0.1s, background 0.1s",
+          transition: "opacity 0.15s ease-out, width 0.1s, height 0.1s, background 0.1s",
         }}
       />
-
     </>
   );
 }
