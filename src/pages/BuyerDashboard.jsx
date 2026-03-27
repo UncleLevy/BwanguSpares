@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
@@ -22,7 +23,6 @@ import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import BuyerMessages from "@/components/messaging/BuyerMessages";
 import PullToRefresh from "@/components/shared/PullToRefresh";
-import ReportButton from "@/components/reports/ReportButton";
 import DashboardCartPreview from "@/components/dashboard/DashboardCartPreview";
 import BuyerTechnicianRequests from "@/components/technicians/BuyerTechnicianRequests";
 import BuyerAppointments from "@/components/technicians/BuyerAppointments";
@@ -33,7 +33,7 @@ import LoyaltyPanel from "@/components/loyalty/LoyaltyPanel";
 import WalletTransactionDetail from "@/components/wallet/WalletTransactionDetail";
 import ReturnRequestDialog from "@/components/returns/ReturnRequestDialog";
 import SupportTicketForm from "@/components/support/SupportTicketForm";
-import { emailNewReviewToShop, emailNewOrderToShop } from "@/components/lib/emailNotifications";
+import { emailNewReviewToShop } from "@/components/lib/emailNotifications";
 import DeleteAccountFlow from "@/components/profile/DeleteAccountFlow";
 import BuyerNavbar from "@/components/dashboard/BuyerNavbar";
 import { OrderSkeleton, RowSkeleton, Skeleton } from "@/components/shared/SkeletonCard";
@@ -57,9 +57,7 @@ export default function BuyerDashboard() {
   const [passwordResetSent, setPasswordResetSent] = useState(false);
   const [receiptDialog, setReceiptDialog] = useState(false);
   const [receiptOrder, setReceiptOrder] = useState(null);
-  const [stripeRefundDialog, setStripeRefundDialog] = useState(false);
   const [selectedTxn, setSelectedTxn] = useState(null);
-  const [stripeRefundSubmitting, setStripeRefundSubmitting] = useState(false);
   const [retryPaymentOrder, setRetryPaymentOrder] = useState(null);
   const [retryPaymentSubmitting, setRetryPaymentSubmitting] = useState(false);
   const [returnDialog, setReturnDialog] = useState(false);
@@ -341,19 +339,12 @@ export default function BuyerDashboard() {
             </Card>
 
             {(wallet?.balance || 0) > 0 && (
-              <div className="grid grid-cols-2 gap-3 mb-6">
+              <div className="mb-6">
                 <Button
                   className="bg-emerald-600 hover:bg-emerald-700 text-white"
                   onClick={() => { window.location.href = createPageUrl("BrowseProducts"); }}
                 >
                   <ShoppingCart className="w-4 h-4 mr-2" /> Use on Next Order
-                </Button>
-                <Button
-                  variant="outline"
-                  className="border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                  onClick={() => setStripeRefundDialog(true)}
-                >
-                  <Wallet className="w-4 h-4 mr-2" /> Refund to Card
                 </Button>
               </div>
             )}
@@ -556,47 +547,6 @@ export default function BuyerDashboard() {
              submitting={submitting}
              type="shop"
            />
-         </DialogContent>
-       </Dialog>
-
-       <Dialog open={stripeRefundDialog} onOpenChange={setStripeRefundDialog}>
-         <DialogContent>
-           <DialogHeader>
-             <DialogTitle>Refund Wallet Balance to Card</DialogTitle>
-             <DialogDescription>
-               Your full wallet balance of <strong>K{(wallet?.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</strong> will be refunded back to your original payment card via Stripe. This may take 5–10 business days to appear.
-             </DialogDescription>
-           </DialogHeader>
-           <DialogFooter className="gap-2">
-             <Button variant="outline" onClick={() => setStripeRefundDialog(false)}>Cancel</Button>
-             <Button
-               className="bg-blue-600 hover:bg-blue-700 gap-2"
-               disabled={stripeRefundSubmitting || (wallet?.balance || 0) === 0}
-               onClick={async () => {
-                 setStripeRefundSubmitting(true);
-                 try {
-                   const res = await base44.functions.invoke('walletStripeRefund', { amount: wallet.balance });
-                   if (res.data?.success) {
-                     toast.success("Refund initiated! It will appear on your card in 5–10 business days.");
-                     setStripeRefundDialog(false);
-                     const [wallets, txns] = await Promise.all([
-                       base44.entities.BuyerWallet.filter({ buyer_email: user.email }),
-                       base44.entities.WalletTransaction.filter({ buyer_email: user.email }, "-created_date", 20),
-                     ]);
-                     setWallet(wallets[0] || null);
-                     setWalletTxns(txns);
-                   } else {
-                     toast.error(res.data?.error || "Refund failed. Please contact support.");
-                   }
-                 } catch (e) {
-                   toast.error("Refund failed. Please contact support.");
-                 }
-                 setStripeRefundSubmitting(false);
-               }}
-             >
-               {stripeRefundSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{stripeRefundSubmitting ? "Processing..." : "Confirm Refund"}
-             </Button>
-           </DialogFooter>
          </DialogContent>
        </Dialog>
 
