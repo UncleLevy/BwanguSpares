@@ -121,12 +121,6 @@
     "delete": {
       "formula": "user.role == 'admin'"
     },
-    "create": {
-      "created_by": "{{user.email}}"
-    },
-    "write": {
-      "formula": "record.owner_email == user.email || user.role == 'admin'"
-    },
     "public_read": true
   }
 }
