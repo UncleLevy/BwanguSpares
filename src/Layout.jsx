@@ -155,8 +155,8 @@ export default function Layout({ children, currentPageName }) {
           paddingRight: "env(safe-area-inset-right, 0px)"
         }}>
         
-        <div className="md:bg-white/80 md:dark:bg-slate-900/80 md:backdrop-blur-xl md:border-b md:border-slate-200/60 md:dark:border-slate-700/60 md:shadow-sm" style={{ background: "transparent" }}>
-          <div className="bg-transparent mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
+        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/40 dark:border-slate-700/40 shadow-sm">
+          <div className="mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
