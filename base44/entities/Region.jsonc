@@ -28,9 +28,6 @@
     "write": {
       "formula": "user.role == 'admin'"
     },
-    "create": {
-      "created_by": "{{user.email}}"
-    },
     "public_read": true
   }
 }
