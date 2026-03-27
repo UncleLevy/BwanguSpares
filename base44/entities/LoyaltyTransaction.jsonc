@@ -3,32 +3,26 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email address"
+      "type": "string"
     },
     "type": {
       "type": "string",
       "enum": [
         "earn",
         "redeem"
-      ],
-      "description": "Transaction type"
+      ]
     },
     "points": {
-      "type": "number",
-      "description": "Points earned or redeemed"
+      "type": "number"
     },
     "reason": {
-      "type": "string",
-      "description": "Reason for transaction (e.g. Order #xxx, Redeemed for discount)"
+      "type": "string"
     },
     "order_id": {
-      "type": "string",
-      "description": "Related order ID if applicable"
+      "type": "string"
     },
     "discount_amount": {
-      "type": "number",
-      "description": "ZMW value of redemption if applicable"
+      "type": "number"
     }
   },
   "required": [
@@ -48,6 +42,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

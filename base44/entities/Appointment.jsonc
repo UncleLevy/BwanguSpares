@@ -3,36 +3,28 @@
   "type": "object",
   "properties": {
     "technician_id": {
-      "type": "string",
-      "description": "Technician ID"
+      "type": "string"
     },
     "technician_name": {
-      "type": "string",
-      "description": "Technician name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "shop_owner_email": {
-      "type": "string",
-      "description": "Shop owner email"
+      "type": "string"
     },
     "buyer_email": {
-      "type": "string",
-      "description": "Customer email"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Customer name"
+      "type": "string"
     },
     "buyer_phone": {
-      "type": "string",
-      "description": "Customer phone"
+      "type": "string"
     },
     "problem_type": {
       "type": "string",
@@ -46,25 +38,20 @@
         "ac_heating",
         "tyres",
         "general"
-      ],
-      "description": "Type of problem"
+      ]
     },
     "description": {
-      "type": "string",
-      "description": "Problem description"
+      "type": "string"
     },
     "appointment_date": {
       "type": "string",
-      "format": "date",
-      "description": "Scheduled date"
+      "format": "date"
     },
     "time_slot": {
-      "type": "string",
-      "description": "Selected time slot e.g. 09:00 - 10:00"
+      "type": "string"
     },
     "location": {
-      "type": "string",
-      "description": "Service location"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -74,16 +61,13 @@
         "completed",
         "cancelled"
       ],
-      "default": "pending",
-      "description": "Appointment status"
+      "default": "pending"
     },
     "hire_request_id": {
-      "type": "string",
-      "description": "Linked TechnicianHireRequest ID"
+      "type": "string"
     },
     "shop_notes": {
-      "type": "string",
-      "description": "Internal notes from the shop"
+      "type": "string"
     }
   },
   "required": [
@@ -105,6 +89,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
     }
   }
 }

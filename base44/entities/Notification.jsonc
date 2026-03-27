@@ -16,29 +16,23 @@
         "shop_registration",
         "review_reminder",
         "system_alert"
-      ],
-      "description": "Type of notification"
+      ]
     },
     "title": {
-      "type": "string",
-      "description": "Notification title"
+      "type": "string"
     },
     "message": {
-      "type": "string",
-      "description": "Notification message"
+      "type": "string"
     },
     "read": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether notification has been read"
+      "default": false
     },
     "related_id": {
-      "type": "string",
-      "description": "ID of related entity (order, shop, etc.)"
+      "type": "string"
     },
     "action_url": {
-      "type": "string",
-      "description": "URL to navigate to when clicked"
+      "type": "string"
     }
   },
   "required": [
@@ -59,6 +53,12 @@
     },
     "delete": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "user.role == 'admin' || user.role == 'shop_owner'"
     }
   }
 }

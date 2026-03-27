@@ -3,56 +3,44 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Buyer's name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "shop_owner_email": {
-      "type": "string",
-      "description": "Shop owner email"
+      "type": "string"
     },
     "subject": {
-      "type": "string",
-      "description": "Conversation subject/topic"
+      "type": "string"
     },
     "last_message": {
-      "type": "string",
-      "description": "Preview of the last message"
+      "type": "string"
     },
     "last_message_date": {
-      "type": "string",
-      "description": "Date of last message"
+      "type": "string"
     },
     "buyer_unread": {
       "type": "number",
-      "default": 0,
-      "description": "Unread count for buyer"
+      "default": 0
     },
     "shop_unread": {
       "type": "number",
-      "default": 0,
-      "description": "Unread count for shop"
+      "default": 0
     },
     "archived_by_buyer": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether buyer has archived this conversation"
+      "default": false
     },
     "archived_by_shop": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether shop owner has archived this conversation"
+      "default": false
     }
   },
   "required": [
@@ -71,6 +59,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
     }
   }
 }

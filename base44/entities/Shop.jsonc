@@ -3,68 +3,52 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "description": {
-      "type": "string",
-      "description": "Shop description"
+      "type": "string"
     },
     "owner_email": {
-      "type": "string",
-      "description": "Email of the shop owner"
+      "type": "string"
     },
     "owner_name": {
-      "type": "string",
-      "description": "Name of the shop owner"
+      "type": "string"
     },
     "phone": {
-      "type": "string",
-      "description": "Contact phone number"
+      "type": "string"
     },
     "address": {
-      "type": "string",
-      "description": "Physical address"
+      "type": "string"
     },
     "region": {
-      "type": "string",
-      "description": "Region ID"
+      "type": "string"
     },
     "region_name": {
-      "type": "string",
-      "description": "Region name for display"
+      "type": "string"
     },
     "town": {
-      "type": "string",
-      "description": "Town name"
+      "type": "string"
     },
     "latitude": {
-      "type": "number",
-      "description": "Latitude coordinate"
+      "type": "number"
     },
     "longitude": {
-      "type": "number",
-      "description": "Longitude coordinate"
+      "type": "number"
     },
     "logo_url": {
-      "type": "string",
-      "description": "Shop logo image URL"
+      "type": "string"
     },
     "cover_url": {
-      "type": "string",
-      "description": "Shop cover image URL"
+      "type": "string"
     },
     "business_registration_number": {
-      "type": "string",
-      "description": "Business registration number (12 digits)"
+      "type": "string"
     },
     "tax_identification_number": {
-      "type": "string",
-      "description": "Tax identification number - TPIN (10 digits)"
+      "type": "string"
     },
     "pacra_certificate_url": {
-      "type": "string",
-      "description": "PACRA certificate document URL"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -74,18 +58,15 @@
         "suspended",
         "rejected"
       ],
-      "default": "pending",
-      "description": "Shop approval status"
+      "default": "pending"
     },
     "rating": {
       "type": "number",
-      "default": 0,
-      "description": "Average rating"
+      "default": 0
     },
     "total_sales": {
       "type": "number",
-      "default": 0,
-      "description": "Total number of sales"
+      "default": 0
     },
     "slot_type": {
       "type": "string",
@@ -94,12 +75,10 @@
         "standard",
         "premium"
       ],
-      "default": "basic",
-      "description": "Rental slot tier"
+      "default": "basic"
     },
     "stripe_account_id": {
-      "type": "string",
-      "description": "Stripe Connect account ID (acct_xxx) for automated payouts"
+      "type": "string"
     },
     "stripe_account_status": {
       "type": "string",
@@ -109,18 +88,15 @@
         "active",
         "restricted"
       ],
-      "default": "not_connected",
-      "description": "Status of the Stripe Connect account"
+      "default": "not_connected"
     },
     "payout_threshold": {
       "type": "number",
-      "default": 500,
-      "description": "Auto-payout threshold in ZMW. Payout triggers when pending balance exceeds this."
+      "default": 500
     },
     "loyalty_enabled": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether this shop participates in the loyalty points programme (off by default, toggled by admin)"
+      "default": false
     }
   },
   "required": [
@@ -141,6 +117,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.owner_email == user.email || user.role == 'admin'"
     }
   }
 }

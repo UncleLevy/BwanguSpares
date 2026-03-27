@@ -3,28 +3,23 @@
   "type": "object",
   "properties": {
     "conversation_id": {
-      "type": "string",
-      "description": "Conversation ID"
+      "type": "string"
     },
     "sender_email": {
-      "type": "string",
-      "description": "Sender's email"
+      "type": "string"
     },
     "sender_name": {
-      "type": "string",
-      "description": "Sender's name"
+      "type": "string"
     },
     "sender_role": {
       "type": "string",
       "enum": [
         "buyer",
         "shop"
-      ],
-      "description": "Role of sender"
+      ]
     },
     "content": {
-      "type": "string",
-      "description": "Message text"
+      "type": "string"
     },
     "read": {
       "type": "boolean",
@@ -48,6 +43,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.sender_email == user.email || user.role == 'admin'"
     }
   }
 }

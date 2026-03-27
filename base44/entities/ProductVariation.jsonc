@@ -3,28 +3,22 @@
   "type": "object",
   "properties": {
     "product_id": {
-      "type": "string",
-      "description": "Parent product ID"
+      "type": "string"
     },
     "name": {
-      "type": "string",
-      "description": "Variation name (e.g., 'Red - Large')"
+      "type": "string"
     },
     "attributes": {
-      "type": "object",
-      "description": "Key-value pairs for variation attributes (size, color, etc.)"
+      "type": "object"
     },
     "price": {
-      "type": "number",
-      "description": "Variation-specific price (inherits parent if null)"
+      "type": "number"
     },
     "sku": {
-      "type": "string",
-      "description": "Variation-specific SKU"
+      "type": "string"
     },
     "image_url": {
-      "type": "string",
-      "description": "Variation-specific image"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -32,8 +26,7 @@
         "active",
         "inactive"
       ],
-      "default": "active",
-      "description": "Variation status"
+      "default": "active"
     }
   },
   "required": [
@@ -52,6 +45,12 @@
       "formula": "user.role == 'shop_owner' || user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'shop_owner' || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'shop_owner' || user.role == 'admin'"
     }
   }

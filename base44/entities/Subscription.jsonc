@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "user_email": {
-      "type": "string",
-      "description": "User's email"
+      "type": "string"
     },
     "tier": {
       "type": "string",
@@ -13,13 +12,11 @@
         "standard",
         "premium"
       ],
-      "default": "free",
-      "description": "Subscription tier"
+      "default": "free"
     },
     "max_shops": {
       "type": "number",
-      "default": 1,
-      "description": "Maximum number of shops allowed"
+      "default": 1
     },
     "status": {
       "type": "string",
@@ -28,18 +25,15 @@
         "cancelled",
         "expired"
       ],
-      "default": "active",
-      "description": "Subscription status"
+      "default": "active"
     },
     "created_date": {
       "type": "string",
-      "format": "date",
-      "description": "Subscription start date"
+      "format": "date"
     },
     "expires_date": {
       "type": "string",
-      "format": "date",
-      "description": "Subscription expiry date (null for active subscriptions)"
+      "format": "date"
     }
   },
   "required": [
@@ -57,6 +51,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

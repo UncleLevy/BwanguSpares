@@ -3,41 +3,33 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email"
+      "type": "string"
     },
     "type": {
       "type": "string",
       "enum": [
         "credit",
         "debit"
-      ],
-      "description": "Transaction type"
+      ]
     },
     "amount": {
-      "type": "number",
-      "description": "Amount in ZMW"
+      "type": "number"
     },
     "reason": {
-      "type": "string",
-      "description": "Reason for transaction (e.g. refund for order #xxx)"
+      "type": "string"
     },
     "order_id": {
-      "type": "string",
-      "description": "Related order ID if applicable"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name if applicable"
+      "type": "string"
     },
     "archived_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When this record was archived to R2"
+      "format": "date-time"
     },
     "r2_key": {
-      "type": "string",
-      "description": "R2 storage key for the archived file"
+      "type": "string"
     }
   },
   "required": [
@@ -57,6 +49,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

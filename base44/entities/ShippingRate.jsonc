@@ -3,28 +3,22 @@
   "type": "object",
   "properties": {
     "town_id": {
-      "type": "string",
-      "description": "Town ID"
+      "type": "string"
     },
     "town_name": {
-      "type": "string",
-      "description": "Town name"
+      "type": "string"
     },
     "region_id": {
-      "type": "string",
-      "description": "Region ID"
+      "type": "string"
     },
     "region_name": {
-      "type": "string",
-      "description": "Region name"
+      "type": "string"
     },
     "default_rate": {
-      "type": "number",
-      "description": "Default shipping rate in ZMW for this town"
+      "type": "number"
     },
     "set_by": {
-      "type": "string",
-      "description": "Email of admin who set this rate"
+      "type": "string"
     }
   },
   "required": [
@@ -43,6 +37,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

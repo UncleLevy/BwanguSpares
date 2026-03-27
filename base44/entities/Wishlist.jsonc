@@ -3,36 +3,28 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email"
+      "type": "string"
     },
     "product_id": {
-      "type": "string",
-      "description": "Product ID"
+      "type": "string"
     },
     "product_name": {
-      "type": "string",
-      "description": "Product name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "price": {
-      "type": "number",
-      "description": "Product price"
+      "type": "number"
     },
     "image_url": {
-      "type": "string",
-      "description": "Product image URL"
+      "type": "string"
     },
     "category": {
-      "type": "string",
-      "description": "Product category"
+      "type": "string"
     }
   },
   "required": [
@@ -52,6 +44,12 @@
       "formula": "record.buyer_email == user.email"
     },
     "delete": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     }
   }

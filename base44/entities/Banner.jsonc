@@ -3,46 +3,36 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "description": "Banner name/title"
+      "type": "string"
     },
     "mobile_image_url": {
-      "type": "string",
-      "description": "Banner image URL for mobile (recommended: 375x667px)"
+      "type": "string"
     },
     "tablet_image_url": {
-      "type": "string",
-      "description": "Banner image URL for tablet (recommended: 768x1024px)"
+      "type": "string"
     },
     "web_image_url": {
-      "type": "string",
-      "description": "Banner image URL for web/desktop (recommended: 1920x800px)"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID if banner is for a specific shop"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name for display"
+      "type": "string"
     },
     "offer_description": {
-      "type": "string",
-      "description": "Description of the offer"
+      "type": "string"
     },
     "action_url": {
-      "type": "string",
-      "description": "URL to navigate to when banner is clicked"
+      "type": "string"
     },
     "is_active": {
       "type": "boolean",
-      "default": true,
-      "description": "Whether banner is currently active"
+      "default": true
     },
     "display_order": {
       "type": "number",
-      "default": 0,
-      "description": "Display order in slider"
+      "default": 0
     }
   },
   "required": [
@@ -62,6 +52,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

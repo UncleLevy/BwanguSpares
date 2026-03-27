@@ -3,24 +3,19 @@
   "type": "object",
   "properties": {
     "ticket_number": {
-      "type": "number",
-      "description": "Auto-incremented ticket number for easy reference"
+      "type": "number"
     },
     "user_email": {
-      "type": "string",
-      "description": "Email of the user who submitted the ticket"
+      "type": "string"
     },
     "user_name": {
-      "type": "string",
-      "description": "Name of the user"
+      "type": "string"
     },
     "user_role": {
-      "type": "string",
-      "description": "Role of the user (buyer, shop_owner, etc.)"
+      "type": "string"
     },
     "subject": {
-      "type": "string",
-      "description": "Ticket subject"
+      "type": "string"
     },
     "category": {
       "type": "string",
@@ -32,20 +27,17 @@
         "technical",
         "other"
       ],
-      "default": "other",
-      "description": "Category of the issue"
+      "default": "other"
     },
     "message": {
-      "type": "string",
-      "description": "Full message from the user"
+      "type": "string"
     },
     "photo_urls": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "Attached photo URLs"
+      "default": []
     },
     "status": {
       "type": "string",
@@ -55,8 +47,7 @@
         "resolved",
         "closed"
       ],
-      "default": "open",
-      "description": "Ticket status"
+      "default": "open"
     },
     "priority": {
       "type": "string",
@@ -65,21 +56,17 @@
         "medium",
         "high"
       ],
-      "default": "medium",
-      "description": "Priority level"
+      "default": "medium"
     },
     "admin_reply": {
-      "type": "string",
-      "description": "Admin's reply to the ticket"
+      "type": "string"
     },
     "admin_email": {
-      "type": "string",
-      "description": "Admin who handled the ticket"
+      "type": "string"
     },
     "resolved_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When the ticket was resolved"
+      "format": "date-time"
     }
   },
   "required": [
@@ -98,6 +85,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

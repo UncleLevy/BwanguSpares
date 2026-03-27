@@ -68,47 +68,37 @@
       "type": "string"
     },
     "tracking_number": {
-      "type": "string",
-      "description": "Shipment tracking number"
+      "type": "string"
     },
     "current_location": {
-      "type": "string",
-      "description": "Current location of shipment"
+      "type": "string"
     },
     "estimated_delivery": {
       "type": "string",
-      "format": "date",
-      "description": "Estimated delivery date"
+      "format": "date"
     },
     "payment_method": {
-      "type": "string",
-      "description": "Payment method used (e.g. stripe, cash)"
+      "type": "string"
     },
     "stripe_session_id": {
-      "type": "string",
-      "description": "Stripe checkout session ID for payment tracking"
+      "type": "string"
     },
     "coupon_code": {
-      "type": "string",
-      "description": "Applied coupon/discount code"
+      "type": "string"
     },
     "discount_amount": {
       "type": "number",
-      "default": 0,
-      "description": "Discount amount applied in ZMW"
+      "default": 0
     },
     "cancellation_reason": {
-      "type": "string",
-      "description": "Reason for cancellation"
+      "type": "string"
     },
     "refunded": {
       "type": "boolean",
-      "default": false,
-      "description": "Whether order has been refunded"
+      "default": false
     },
     "refund_id": {
-      "type": "string",
-      "description": "Stripe refund ID if applicable"
+      "type": "string"
     },
     "payout_status": {
       "type": "string",
@@ -120,22 +110,18 @@
         "payout_approved",
         "payout_completed"
       ],
-      "default": "pending",
-      "description": "Payout workflow status"
+      "default": "pending"
     },
     "delivery_confirmed_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When delivery was confirmed"
+      "format": "date-time"
     },
     "payout_request_date": {
       "type": "string",
-      "format": "date-time",
-      "description": "When shop requested payout"
+      "format": "date-time"
     },
     "payout_id": {
-      "type": "string",
-      "description": "Associated payout record ID"
+      "type": "string"
     },
     "shipping_option": {
       "type": "string",
@@ -143,13 +129,11 @@
         "collect",
         "deliver"
       ],
-      "default": "collect",
-      "description": "Shipping option: collect or deliver"
+      "default": "collect"
     },
     "shipping_cost": {
       "type": "number",
-      "default": 0,
-      "description": "Shipping cost in ZMW (0 for collect)"
+      "default": 0
     }
   },
   "required": [
@@ -170,6 +154,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }
 }

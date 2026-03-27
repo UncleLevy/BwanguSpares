@@ -3,12 +3,10 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "description": "Region name (e.g., Lusaka, Copperbelt)"
+      "type": "string"
     },
     "province": {
-      "type": "string",
-      "description": "Province in Zambia"
+      "type": "string"
     }
   },
   "required": [
@@ -25,6 +23,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

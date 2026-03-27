@@ -3,24 +3,19 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID this courier is associated with"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name for display"
+      "type": "string"
     },
     "full_name": {
-      "type": "string",
-      "description": "Courier's full name"
+      "type": "string"
     },
     "phone": {
-      "type": "string",
-      "description": "Courier contact phone number"
+      "type": "string"
     },
     "email": {
-      "type": "string",
-      "description": "Courier email address"
+      "type": "string"
     },
     "vehicle_type": {
       "type": "string",
@@ -29,20 +24,16 @@
         "car",
         "van",
         "truck"
-      ],
-      "description": "Type of vehicle used for delivery"
+      ]
     },
     "vehicle_registration": {
-      "type": "string",
-      "description": "Vehicle registration number"
+      "type": "string"
     },
     "license_number": {
-      "type": "string",
-      "description": "Driver's license number"
+      "type": "string"
     },
     "photo_url": {
-      "type": "string",
-      "description": "Courier photo URL"
+      "type": "string"
     },
     "courier_type": {
       "type": "string",
@@ -51,24 +42,21 @@
         "intercity",
         "both"
       ],
-      "default": "local",
-      "description": "Type of courier service: local (same town), intercity (between towns), or both"
+      "default": "local"
     },
     "service_regions": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "List of region IDs this courier services (for intercity couriers)"
+      "default": []
     },
     "service_towns": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "List of town names this courier services"
+      "default": []
     },
     "status": {
       "type": "string",
@@ -77,18 +65,15 @@
         "inactive",
         "suspended"
       ],
-      "default": "active",
-      "description": "Courier availability status"
+      "default": "active"
     },
     "rating": {
       "type": "number",
-      "default": 0,
-      "description": "Average courier rating"
+      "default": 0
     },
     "total_deliveries": {
       "type": "number",
-      "default": 0,
-      "description": "Total number of completed deliveries"
+      "default": 0
     }
   },
   "required": [
@@ -103,12 +88,18 @@
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

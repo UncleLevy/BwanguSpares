@@ -3,20 +3,16 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "owner_email": {
-      "type": "string",
-      "description": "Shop owner email"
+      "type": "string"
     },
     "amount": {
-      "type": "number",
-      "description": "Payout amount in ZMW"
+      "type": "number"
     },
     "method": {
       "type": "string",
@@ -25,16 +21,13 @@
         "mobile_money",
         "cash"
       ],
-      "default": "bank_transfer",
-      "description": "Payment method used"
+      "default": "bank_transfer"
     },
     "reference": {
-      "type": "string",
-      "description": "Reference/transaction number"
+      "type": "string"
     },
     "notes": {
-      "type": "string",
-      "description": "Admin notes"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -43,26 +36,21 @@
         "completed",
         "failed"
       ],
-      "default": "pending",
-      "description": "Payout status"
+      "default": "pending"
     },
     "processed_by": {
-      "type": "string",
-      "description": "Admin email who processed this payout"
+      "type": "string"
     },
     "processed_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When payout was processed"
+      "format": "date-time"
     },
     "archived_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When this record was archived to R2"
+      "format": "date-time"
     },
     "r2_key": {
-      "type": "string",
-      "description": "R2 storage key for the archived file"
+      "type": "string"
     }
   },
   "required": [
@@ -82,6 +70,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

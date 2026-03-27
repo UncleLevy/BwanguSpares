@@ -3,20 +3,16 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "description": "Product name"
+      "type": "string"
     },
     "description": {
-      "type": "string",
-      "description": "Product description"
+      "type": "string"
     },
     "price": {
-      "type": "number",
-      "description": "Price in ZMW"
+      "type": "number"
     },
     "part_number": {
-      "type": "string",
-      "description": "Part number for accurate identification and search"
+      "type": "string"
     },
     "category": {
       "type": "string",
@@ -36,20 +32,16 @@
         "filters",
         "oils_fluids",
         "other"
-      ],
-      "description": "Part category"
+      ]
     },
     "sub_category": {
-      "type": "string",
-      "description": "More granular sub-category (e.g. 'Spark Plugs' under Engine)"
+      "type": "string"
     },
     "brand": {
-      "type": "string",
-      "description": "Brand/manufacturer"
+      "type": "string"
     },
     "sku": {
-      "type": "string",
-      "description": "Stock Keeping Unit code"
+      "type": "string"
     },
     "compatible_vehicles": {
       "type": "array",
@@ -73,8 +65,7 @@
           }
         }
       },
-      "default": [],
-      "description": "List of compatible vehicles with IDs, brands, models and years"
+      "default": []
     },
     "condition": {
       "type": "string",
@@ -83,38 +74,31 @@
         "used",
         "refurbished"
       ],
-      "default": "new",
-      "description": "Part condition"
+      "default": "new"
     },
     "stock_quantity": {
       "type": "number",
-      "default": 0,
-      "description": "Available stock"
+      "default": 0
     },
     "low_stock_threshold": {
       "type": "number",
-      "default": 5,
-      "description": "Alert when stock falls at or below this number"
+      "default": 5
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID this product belongs to"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name for display"
+      "type": "string"
     },
     "image_url": {
-      "type": "string",
-      "description": "Primary product image URL"
+      "type": "string"
     },
     "image_urls": {
       "type": "array",
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "Up to 5 product photo URLs for the slideshow"
+      "default": []
     },
     "status": {
       "type": "string",
@@ -130,13 +114,11 @@
       "items": {
         "type": "string"
       },
-      "default": [],
-      "description": "Product tags/labels"
+      "default": []
     },
     "shipping_cost": {
       "type": "number",
-      "default": null,
-      "description": "Optional product-specific shipping cost in ZMW (overrides town default)"
+      "default": null
     }
   },
   "required": [
@@ -150,12 +132,18 @@
       "formula": "record.status == 'active' || record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

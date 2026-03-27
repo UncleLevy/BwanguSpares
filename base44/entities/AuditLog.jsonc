@@ -3,16 +3,13 @@
   "type": "object",
   "properties": {
     "actor_email": {
-      "type": "string",
-      "description": "Email of the user who performed the action"
+      "type": "string"
     },
     "actor_name": {
-      "type": "string",
-      "description": "Full name of the actor"
+      "type": "string"
     },
     "actor_role": {
-      "type": "string",
-      "description": "Role of the actor at time of action"
+      "type": "string"
     },
     "action": {
       "type": "string",
@@ -36,28 +33,22 @@
         "delete_region",
         "submit_report",
         "leave_review"
-      ],
-      "description": "Type of action performed"
+      ]
     },
     "entity_type": {
-      "type": "string",
-      "description": "The entity type affected (Shop, Order, User, etc.)"
+      "type": "string"
     },
     "entity_id": {
-      "type": "string",
-      "description": "ID of the affected record"
+      "type": "string"
     },
     "entity_label": {
-      "type": "string",
-      "description": "Human-readable label for the affected record (e.g. shop name, order #)"
+      "type": "string"
     },
     "details": {
-      "type": "string",
-      "description": "Additional context or notes about the action"
+      "type": "string"
     },
     "ip_hint": {
-      "type": "string",
-      "description": "Optional metadata"
+      "type": "string"
     }
   },
   "required": [
@@ -75,6 +66,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

@@ -3,20 +3,16 @@
   "type": "object",
   "properties": {
     "reporter_email": {
-      "type": "string",
-      "description": "Email of the person filing the report"
+      "type": "string"
     },
     "reporter_name": {
-      "type": "string",
-      "description": "Name of the reporter"
+      "type": "string"
     },
     "reported_email": {
-      "type": "string",
-      "description": "Email of the reported user/shop"
+      "type": "string"
     },
     "reported_name": {
-      "type": "string",
-      "description": "Name of the reported user or shop"
+      "type": "string"
     },
     "reported_type": {
       "type": "string",
@@ -24,12 +20,10 @@
         "shop",
         "buyer",
         "product"
-      ],
-      "description": "Who/what is being reported"
+      ]
     },
     "reported_id": {
-      "type": "string",
-      "description": "ID of reported entity (shop_id, etc)"
+      "type": "string"
     },
     "reason": {
       "type": "string",
@@ -42,20 +36,17 @@
         "non_delivery",
         "poor_quality",
         "other"
-      ],
-      "description": "Reason for report"
+      ]
     },
     "description": {
       "type": "string",
-      "maxLength": 400,
-      "description": "Detailed description of the complaint (max 400 characters)"
+      "maxLength": 400
     },
     "attachments": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "URLs of attached photos and documents"
+      }
     },
     "status": {
       "type": "string",
@@ -65,12 +56,10 @@
         "resolved",
         "dismissed"
       ],
-      "default": "pending",
-      "description": "Admin review status"
+      "default": "pending"
     },
     "admin_note": {
-      "type": "string",
-      "description": "Admin notes/action taken"
+      "type": "string"
     }
   },
   "required": [
@@ -89,6 +78,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

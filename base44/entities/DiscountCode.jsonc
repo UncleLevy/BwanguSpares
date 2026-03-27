@@ -3,59 +3,47 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID this code belongs to"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name for display"
+      "type": "string"
     },
     "code": {
-      "type": "string",
-      "description": "The discount code (e.g., SAVE20, SUMMER2026)"
+      "type": "string"
     },
     "discount_type": {
       "type": "string",
       "enum": [
         "percentage",
         "fixed_amount"
-      ],
-      "description": "Type of discount"
+      ]
     },
     "discount_value": {
-      "type": "number",
-      "description": "Discount amount (percentage or fixed)"
+      "type": "number"
     },
     "max_discount_amount": {
-      "type": "number",
-      "description": "Maximum discount in ZMW (for percentage discounts)"
+      "type": "number"
     },
     "min_purchase_amount": {
-      "type": "number",
-      "description": "Minimum purchase required to use code"
+      "type": "number"
     },
     "usage_limit": {
-      "type": "number",
-      "description": "Total number of times code can be used"
+      "type": "number"
     },
     "usage_count": {
       "type": "number",
-      "default": 0,
-      "description": "Number of times code has been used"
+      "default": 0
     },
     "valid_from": {
       "type": "string",
-      "format": "date-time",
-      "description": "Start date for code validity"
+      "format": "date-time"
     },
     "valid_until": {
       "type": "string",
-      "format": "date-time",
-      "description": "End date for code validity"
+      "format": "date-time"
     },
     "description": {
-      "type": "string",
-      "description": "Description of the offer"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -64,8 +52,7 @@
         "inactive",
         "expired"
       ],
-      "default": "active",
-      "description": "Code status"
+      "default": "active"
     }
   },
   "required": [
@@ -79,12 +66,18 @@
       "formula": "record.shop_id == user.shop_id || user.role == 'admin' || record.status == 'active'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

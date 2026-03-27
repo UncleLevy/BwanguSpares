@@ -3,28 +3,22 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer email"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Buyer name"
+      "type": "string"
     },
     "buyer_phone": {
-      "type": "string",
-      "description": "Buyer contact phone"
+      "type": "string"
     },
     "buyer_region": {
-      "type": "string",
-      "description": "Town or region of the buyer"
+      "type": "string"
     },
     "part_name": {
-      "type": "string",
-      "description": "Name of the part needed"
+      "type": "string"
     },
     "description": {
-      "type": "string",
-      "description": "Additional details"
+      "type": "string"
     },
     "category": {
       "type": "string",
@@ -44,16 +38,13 @@
         "filters",
         "oils_fluids",
         "other"
-      ],
-      "description": "Part category"
+      ]
     },
     "compatible_vehicles": {
-      "type": "string",
-      "description": "Vehicle make/model/year"
+      "type": "string"
     },
     "budget": {
-      "type": "number",
-      "description": "Max budget in ZMW"
+      "type": "number"
     },
     "status": {
       "type": "string",
@@ -64,8 +55,7 @@
         "fulfilled",
         "cancelled"
       ],
-      "default": "open",
-      "description": "Request status"
+      "default": "open"
     },
     "accepted_by_shop_id": {
       "type": "string"
@@ -80,28 +70,22 @@
       "type": "string"
     },
     "shop_counter_budget": {
-      "type": "number",
-      "description": "Shop's counter-offer budget in ZMW"
+      "type": "number"
     },
     "shop_counter_message": {
-      "type": "string",
-      "description": "Shop's message with the counter offer"
+      "type": "string"
     },
     "counter_by_shop_id": {
-      "type": "string",
-      "description": "Shop ID that sent the counter offer"
+      "type": "string"
     },
     "counter_by_shop_name": {
-      "type": "string",
-      "description": "Shop name that sent the counter offer"
+      "type": "string"
     },
     "counter_by_shop_phone": {
-      "type": "string",
-      "description": "Shop phone for the counter offer"
+      "type": "string"
     },
     "buyer_response": {
-      "type": "string",
-      "description": "Buyer response to counter offer: agreed or declined"
+      "type": "string"
     }
   },
   "required": [
@@ -120,6 +104,12 @@
     },
     "delete": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || user.role == 'shop_owner' || user.role == 'admin'"
     }
   }
 }

@@ -3,24 +3,19 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID this campaign belongs to"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name for display"
+      "type": "string"
     },
     "name": {
-      "type": "string",
-      "description": "Campaign name"
+      "type": "string"
     },
     "subject": {
-      "type": "string",
-      "description": "Email subject line"
+      "type": "string"
     },
     "content": {
-      "type": "string",
-      "description": "Email content/body"
+      "type": "string"
     },
     "target_segment": {
       "type": "string",
@@ -31,8 +26,7 @@
         "low_spenders",
         "recent_customers",
         "by_location"
-      ],
-      "description": "Which customers to target"
+      ]
     },
     "location_filter": {
       "type": "object",
@@ -43,33 +37,27 @@
         "town": {
           "type": "string"
         }
-      },
-      "description": "Location filter if targeting by location"
+      }
     },
     "recipient_count": {
       "type": "number",
-      "default": 0,
-      "description": "Number of customers this will be sent to"
+      "default": 0
     },
     "estimated_open_rate": {
       "type": "number",
-      "default": 0,
-      "description": "Estimated open rate percentage (0-100)"
+      "default": 0
     },
     "estimated_click_rate": {
       "type": "number",
-      "default": 0,
-      "description": "Estimated click-through rate percentage (0-100)"
+      "default": 0
     },
     "estimated_opens": {
       "type": "number",
-      "default": 0,
-      "description": "Estimated number of opens"
+      "default": 0
     },
     "estimated_clicks": {
       "type": "number",
-      "default": 0,
-      "description": "Estimated number of clicks"
+      "default": 0
     },
     "status": {
       "type": "string",
@@ -79,22 +67,18 @@
         "sent",
         "cancelled"
       ],
-      "default": "draft",
-      "description": "Campaign status"
+      "default": "draft"
     },
     "sent_at": {
       "type": "string",
-      "format": "date-time",
-      "description": "When campaign was sent"
+      "format": "date-time"
     },
     "scheduled_for": {
       "type": "string",
-      "format": "date-time",
-      "description": "When to send this campaign"
+      "format": "date-time"
     },
     "promo_code": {
-      "type": "string",
-      "description": "Optional discount code to include in campaign"
+      "type": "string"
     }
   },
   "required": [
@@ -109,12 +93,18 @@
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

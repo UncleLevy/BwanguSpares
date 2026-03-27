@@ -3,32 +3,25 @@
   "type": "object",
   "properties": {
     "name": {
-      "type": "string",
-      "description": "Town/city name"
+      "type": "string"
     },
     "region_id": {
-      "type": "string",
-      "description": "Associated region ID"
+      "type": "string"
     },
     "region_name": {
-      "type": "string",
-      "description": "Region name"
+      "type": "string"
     },
     "postal_code": {
-      "type": "string",
-      "description": "Postal/zip code"
+      "type": "string"
     },
     "latitude": {
-      "type": "number",
-      "description": "Latitude coordinate"
+      "type": "number"
     },
     "longitude": {
-      "type": "number",
-      "description": "Longitude coordinate"
+      "type": "number"
     },
     "description": {
-      "type": "string",
-      "description": "Brief description of the town/city"
+      "type": "string"
     }
   },
   "required": [
@@ -46,6 +39,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

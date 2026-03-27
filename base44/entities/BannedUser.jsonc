@@ -3,16 +3,13 @@
   "type": "object",
   "properties": {
     "email": {
-      "type": "string",
-      "description": "Banned email address"
+      "type": "string"
     },
     "phone": {
-      "type": "string",
-      "description": "Banned phone number"
+      "type": "string"
     },
     "full_name": {
-      "type": "string",
-      "description": "User's full name at time of ban"
+      "type": "string"
     },
     "ban_type": {
       "type": "string",
@@ -20,21 +17,17 @@
         "suspended",
         "banned"
       ],
-      "default": "suspended",
-      "description": "Type of restriction"
+      "default": "suspended"
     },
     "reason": {
-      "type": "string",
-      "description": "Reason for ban"
+      "type": "string"
     },
     "ban_expires": {
       "type": "string",
-      "format": "date",
-      "description": "Expiry date for suspension (empty = permanent)"
+      "format": "date"
     },
     "banned_by": {
-      "type": "string",
-      "description": "Admin email who issued the ban"
+      "type": "string"
     }
   },
   "required": [
@@ -53,6 +46,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

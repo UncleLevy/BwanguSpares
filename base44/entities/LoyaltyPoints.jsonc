@@ -3,27 +3,22 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email address"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Buyer's full name"
+      "type": "string"
     },
     "points_balance": {
       "type": "number",
-      "default": 0,
-      "description": "Current redeemable points balance"
+      "default": 0
     },
     "total_earned": {
       "type": "number",
-      "default": 0,
-      "description": "Total points ever earned"
+      "default": 0
     },
     "total_redeemed": {
       "type": "number",
-      "default": 0,
-      "description": "Total points ever redeemed"
+      "default": 0
     },
     "tier": {
       "type": "string",
@@ -33,8 +28,7 @@
         "gold",
         "platinum"
       ],
-      "default": "bronze",
-      "description": "Loyalty tier based on total earned points"
+      "default": "bronze"
     }
   },
   "required": [
@@ -51,6 +45,12 @@
       "formula": "user.role == 'admin'"
     },
     "delete": {
+      "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "user.role == 'admin'"
     }
   }

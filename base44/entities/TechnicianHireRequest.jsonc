@@ -3,36 +3,28 @@
   "type": "object",
   "properties": {
     "technician_id": {
-      "type": "string",
-      "description": "Technician ID"
+      "type": "string"
     },
     "technician_name": {
-      "type": "string",
-      "description": "Technician name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "shop_owner_email": {
-      "type": "string",
-      "description": "Shop owner email"
+      "type": "string"
     },
     "buyer_email": {
-      "type": "string",
-      "description": "Customer email"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Customer name"
+      "type": "string"
     },
     "buyer_phone": {
-      "type": "string",
-      "description": "Customer phone"
+      "type": "string"
     },
     "problem_type": {
       "type": "string",
@@ -46,29 +38,23 @@
         "ac_heating",
         "tyres",
         "general"
-      ],
-      "description": "Type of problem"
+      ]
     },
     "description": {
-      "type": "string",
-      "description": "Problem description"
+      "type": "string"
     },
     "preferred_date": {
       "type": "string",
-      "format": "date",
-      "description": "Preferred service date"
+      "format": "date"
     },
     "location": {
-      "type": "string",
-      "description": "Service location"
+      "type": "string"
     },
     "buyer_budget": {
-      "type": "number",
-      "description": "Buyer's proposed budget in ZMW"
+      "type": "number"
     },
     "shop_counter_budget": {
-      "type": "number",
-      "description": "Shop's counter-offer budget in ZMW"
+      "type": "number"
     },
     "status": {
       "type": "string",
@@ -79,16 +65,13 @@
         "rejected",
         "completed"
       ],
-      "default": "pending",
-      "description": "Request status"
+      "default": "pending"
     },
     "shop_response": {
-      "type": "string",
-      "description": "Shop's response message"
+      "type": "string"
     },
     "buyer_response": {
-      "type": "string",
-      "description": "Buyer's response to counter-offer"
+      "type": "string"
     }
   },
   "required": [
@@ -109,6 +92,12 @@
     },
     "delete": {
       "formula": "user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
     }
   }
 }

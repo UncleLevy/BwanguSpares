@@ -47,6 +47,12 @@
     },
     "delete": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
     }
   }
 }

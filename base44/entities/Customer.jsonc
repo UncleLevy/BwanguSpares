@@ -3,46 +3,36 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID this customer belongs to"
+      "type": "string"
     },
     "email": {
-      "type": "string",
-      "description": "Customer email address"
+      "type": "string"
     },
     "phone": {
-      "type": "string",
-      "description": "Customer phone number"
+      "type": "string"
     },
     "full_name": {
-      "type": "string",
-      "description": "Customer full name"
+      "type": "string"
     },
     "address": {
-      "type": "string",
-      "description": "Customer address"
+      "type": "string"
     },
     "town": {
-      "type": "string",
-      "description": "Town/city"
+      "type": "string"
     },
     "region": {
-      "type": "string",
-      "description": "Region/province"
+      "type": "string"
     },
     "notes": {
-      "type": "string",
-      "description": "Internal notes about customer"
+      "type": "string"
     },
     "total_spent": {
       "type": "number",
-      "default": 0,
-      "description": "Total amount spent by customer in ZMW"
+      "default": 0
     },
     "total_orders": {
       "type": "number",
-      "default": 0,
-      "description": "Total number of orders"
+      "default": 0
     },
     "status": {
       "type": "string",
@@ -50,8 +40,7 @@
         "active",
         "inactive"
       ],
-      "default": "active",
-      "description": "Customer status"
+      "default": "active"
     }
   },
   "required": [
@@ -64,12 +53,18 @@
       "formula": "record.shop_id == user.shop_id || record.email == user.email || user.role == 'admin'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

@@ -3,27 +3,22 @@
   "type": "object",
   "properties": {
     "order_id": {
-      "type": "string",
-      "description": "Associated order ID"
+      "type": "string"
     },
     "reviewer_email": {
-      "type": "string",
-      "description": "Email of the reviewer"
+      "type": "string"
     },
     "reviewer_name": {
-      "type": "string",
-      "description": "Name of the reviewer"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop being reviewed"
+      "type": "string"
     },
     "shop_name": {
       "type": "string"
     },
     "technician_id": {
-      "type": "string",
-      "description": "Technician being reviewed (optional)"
+      "type": "string"
     },
     "technician_name": {
       "type": "string"
@@ -31,20 +26,17 @@
     "rating": {
       "type": "number",
       "minimum": 1,
-      "maximum": 5,
-      "description": "Rating from 1 to 5 stars"
+      "maximum": 5
     },
     "comment": {
-      "type": "string",
-      "description": "Review text"
+      "type": "string"
     },
     "type": {
       "type": "string",
       "enum": [
         "shop",
         "technician"
-      ],
-      "description": "Type of review"
+      ]
     }
   },
   "required": [
@@ -63,6 +55,12 @@
       "formula": "record.reviewer_email == user.email || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.reviewer_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.reviewer_email == user.email || user.role == 'admin'"
     }
   }

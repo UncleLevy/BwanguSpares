@@ -3,52 +3,40 @@
   "type": "object",
   "properties": {
     "shop_id": {
-      "type": "string",
-      "description": "Parent shop ID"
+      "type": "string"
     },
     "name": {
-      "type": "string",
-      "description": "Branch name"
+      "type": "string"
     },
     "address": {
-      "type": "string",
-      "description": "Physical address"
+      "type": "string"
     },
     "town": {
-      "type": "string",
-      "description": "Town name"
+      "type": "string"
     },
     "region": {
-      "type": "string",
-      "description": "Region name"
+      "type": "string"
     },
     "latitude": {
-      "type": "number",
-      "description": "Latitude coordinate"
+      "type": "number"
     },
     "longitude": {
-      "type": "number",
-      "description": "Longitude coordinate"
+      "type": "number"
     },
     "phone": {
-      "type": "string",
-      "description": "Branch contact phone"
+      "type": "string"
     },
     "primary_contact_name": {
-      "type": "string",
-      "description": "Name of primary contact person"
+      "type": "string"
     },
     "primary_contact_phone": {
-      "type": "string",
-      "description": "Phone of primary contact person"
+      "type": "string"
     },
     "primary_contact_email": {
-      "type": "string",
-      "description": "Email of primary contact person"
+      "type": "string"
     },
     "operational_hours": {
-      "type": "string",
-      "description": "Operational hours (e.g., 9AM-5PM Monday-Friday)"
+      "type": "string"
     },
     "status": {
       "type": "string",
@@ -57,8 +45,7 @@
         "approved",
         "suspended"
       ],
-      "default": "pending",
-      "description": "Branch approval status"
+      "default": "pending"
     }
   },
   "required": [
@@ -73,12 +60,18 @@
       "formula": "record.status == 'approved' || record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "insert": {
-      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     }
   }

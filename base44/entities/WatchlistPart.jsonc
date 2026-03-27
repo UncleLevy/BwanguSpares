@@ -3,55 +3,44 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Email of the user following the part"
+      "type": "string"
     },
     "product_id": {
-      "type": "string",
-      "description": "Product ID being followed"
+      "type": "string"
     },
     "product_name": {
-      "type": "string",
-      "description": "Product name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "current_price": {
-      "type": "number",
-      "description": "Price when added to watchlist"
+      "type": "number"
     },
     "last_notified_price": {
-      "type": "number",
-      "description": "Last price user was notified about"
+      "type": "number"
     },
     "last_stock_status": {
       "type": "string",
       "enum": [
         "in_stock",
         "out_of_stock"
-      ],
-      "description": "Last stock status user was notified about"
+      ]
     },
     "notify_price_drop": {
       "type": "boolean",
-      "default": true,
-      "description": "Notify on price drops"
+      "default": true
     },
     "notify_stock": {
       "type": "boolean",
-      "default": true,
-      "description": "Notify when back in stock"
+      "default": true
     },
     "price_drop_threshold": {
       "type": "number",
-      "default": 5,
-      "description": "Minimum price drop % to trigger notification"
+      "default": 5
     }
   },
   "required": [
@@ -70,6 +59,12 @@
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
     "delete": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "write": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     }
   }
