@@ -45,9 +45,6 @@
     "type"
   ],
   "rls": {
-    "read": {
-      "formula": "true"
-    },
     "select": {
       "formula": "true"
     },
@@ -65,6 +62,7 @@
     },
     "write": {
       "formula": "record.reviewer_email == user.email || user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

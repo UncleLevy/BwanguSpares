@@ -39,9 +39,6 @@
     "reason"
   ],
   "rls": {
-    "read": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
@@ -59,6 +56,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

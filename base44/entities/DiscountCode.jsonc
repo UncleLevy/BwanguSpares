@@ -62,9 +62,6 @@
     "discount_value"
   ],
   "rls": {
-    "read": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin' || record.status == 'active'"
-    },
     "select": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin' || record.status == 'active'"
     },
@@ -82,6 +79,7 @@
     },
     "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

@@ -56,9 +56,6 @@
     "action"
   ],
   "rls": {
-    "read": {
-      "formula": "user.role == 'admin'"
-    },
     "select": {
       "formula": "user.role == 'admin'"
     },
@@ -76,6 +73,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

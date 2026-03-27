@@ -27,9 +27,6 @@
     "default_rate"
   ],
   "rls": {
-    "read": {
-      "formula": "true"
-    },
     "select": {
       "formula": "true"
     },
@@ -47,6 +44,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

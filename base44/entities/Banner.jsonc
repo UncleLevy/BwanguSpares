@@ -42,9 +42,6 @@
     "web_image_url"
   ],
   "rls": {
-    "read": {
-      "formula": "record.is_active == true || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.is_active == true || user.role == 'admin'"
     },
@@ -62,6 +59,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

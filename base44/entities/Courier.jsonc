@@ -101,6 +101,7 @@
     },
     "write": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

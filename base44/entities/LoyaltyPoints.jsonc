@@ -52,6 +52,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

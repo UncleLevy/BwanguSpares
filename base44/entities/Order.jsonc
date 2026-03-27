@@ -151,6 +151,7 @@
     },
     "create": {
       "created_by": "{{user.email}}"
-    }
+    },
+    "public_read": true
   }
 }

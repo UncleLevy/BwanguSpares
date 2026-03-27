@@ -60,9 +60,6 @@
     "amount"
   ],
   "rls": {
-    "read": {
-      "formula": "record.owner_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.owner_email == user.email || user.role == 'admin'"
     },
@@ -80,6 +77,7 @@
     },
     "write": {
       "formula": "user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }

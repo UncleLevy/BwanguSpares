@@ -55,6 +55,7 @@
     },
     "write": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
-    }
+    },
+    "public_read": true
   }
 }
