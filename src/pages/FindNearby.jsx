@@ -275,22 +275,22 @@ export default function FindNearby() {
               <Marker key={shop.id} position={[shop.latitude, shop.longitude]} icon={shopIcon}
                 eventHandlers={{ click: () => setSelected(shop) }}>
                 <Popup>
-                  <div className="min-w-[180px]">
-                    <p className="font-semibold text-slate-900 text-sm">{shop.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{shop.address}</p>
-                    {shop.distance !== null && (
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className="text-xs text-blue-600 font-medium">{shop.distance.toFixed(1)} km</span>
-                        <span className="text-xs text-slate-500">{travelTime(shop.distance)}</span>
-                      </div>
-                    )}
-                    {shop.rating > 0 && <p className="text-xs text-amber-600 mt-1">⭐ {shop.rating.toFixed(1)}</p>}
-                    <a href={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-                      className="mt-2 block text-center text-xs bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700">
-                      View Shop →
-                    </a>
-                  </div>
-                </Popup>
+                   <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
+                     <p className="font-semibold text-sm">{shop.name}</p>
+                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{shop.address}</p>
+                     {shop.distance !== null && (
+                       <div className="flex items-center gap-2 mt-1.5">
+                         <span className="text-xs text-blue-600 font-medium">{shop.distance.toFixed(1)} km</span>
+                         <span className="text-xs text-slate-600 dark:text-slate-400">{travelTime(shop.distance)}</span>
+                       </div>
+                     )}
+                     {shop.rating > 0 && <p className="text-xs text-amber-600 mt-1">⭐ {shop.rating.toFixed(1)}</p>}
+                     <a href={createPageUrl("ShopProfile") + `?id=${shop.id}`}
+                       className="mt-2 block text-center text-xs bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700">
+                       View Shop →
+                     </a>
+                   </div>
+                 </Popup>
               </Marker>
             ))}
 
@@ -299,23 +299,23 @@ export default function FindNearby() {
               <Marker key={tech.id} position={[tech.lat, tech.lng]} icon={techIcon}
                 eventHandlers={{ click: () => setSelected(tech) }}>
                 <Popup>
-                  <div className="min-w-[180px]">
-                    <p className="font-semibold text-slate-900 text-sm">{tech.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{SPECIALIZATION_LABELS[tech.specialization] || tech.specialization}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">@ {tech.shopData?.name}</p>
-                    {tech.distance !== null && (
-                      <div className="flex items-center gap-2 mt-1.5">
-                        <span className="text-xs text-emerald-600 font-medium">{tech.distance.toFixed(1)} km</span>
-                        <span className="text-xs text-slate-500">{travelTime(tech.distance)}</span>
-                      </div>
-                    )}
-                    {tech.hourly_rate > 0 && <p className="text-xs text-blue-600 mt-1">K{tech.hourly_rate}/hr</p>}
-                    <a href={createPageUrl("ShopProfile") + `?id=${tech.shop_id}`}
-                      className="mt-2 block text-center text-xs bg-emerald-600 text-white py-1 px-3 rounded-lg hover:bg-emerald-700">
-                      Visit Shop →
-                    </a>
-                  </div>
-                </Popup>
+                   <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
+                     <p className="font-semibold text-sm">{tech.name}</p>
+                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{SPECIALIZATION_LABELS[tech.specialization] || tech.specialization}</p>
+                     <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">@ {tech.shopData?.name}</p>
+                     {tech.distance !== null && (
+                       <div className="flex items-center gap-2 mt-1.5">
+                         <span className="text-xs text-emerald-600 font-medium">{tech.distance.toFixed(1)} km</span>
+                         <span className="text-xs text-slate-600 dark:text-slate-400">{travelTime(tech.distance)}</span>
+                       </div>
+                     )}
+                     {tech.hourly_rate > 0 && <p className="text-xs text-blue-600 mt-1">K{tech.hourly_rate}/hr</p>}
+                     <a href={createPageUrl("ShopProfile") + `?id=${tech.shop_id}`}
+                       className="mt-2 block text-center text-xs bg-emerald-600 text-white py-1 px-3 rounded-lg hover:bg-emerald-700">
+                       Visit Shop →
+                     </a>
+                   </div>
+                 </Popup>
               </Marker>
             ))}
           </MapContainer>
