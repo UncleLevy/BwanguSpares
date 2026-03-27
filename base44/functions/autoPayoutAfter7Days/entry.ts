@@ -4,17 +4,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // Allow scheduled automations (no user session) OR admin-triggered
-    // Only block if there's a real non-admin user making a manual call
-    try {
-      const user = await base44.auth.me();
-      if (user?.email && user.role !== 'admin') {
-        return Response.json({ error: 'Forbidden' }, { status: 403 });
-      }
-    } catch {
-      // No session = scheduled automation, allow through
-    }
-
     // Find all orders with delivery_confirmed status
     const orders = await base44.asServiceRole.entities.Order.filter(
       { payout_status: 'delivery_confirmed' },

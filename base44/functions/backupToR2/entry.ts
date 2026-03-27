@@ -83,17 +83,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow scheduled automations (no user session) OR admin-triggered
-    // Only block if there's a real non-admin user making a manual call
-    try {
-      const user = await base44.auth.me();
-      if (user?.email && user.role !== "admin") {
-        return Response.json({ error: "Forbidden" }, { status: 403 });
-      }
-    } catch {
-      // No session = scheduled automation, allow through
-    }
-
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const results = { success: [], failed: [] };
 

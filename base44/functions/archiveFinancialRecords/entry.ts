@@ -55,18 +55,6 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
 
-    // Allow scheduled automations (no user session) OR admin-triggered
-    // For scheduled calls, auth.me() may return null, throw, or return a system user — all are allowed
-    try {
-      const user = await base44.auth.me();
-      // Only block if there's a real non-admin user making a manual call
-      if (user?.email && user.role !== 'admin') {
-        return Response.json({ error: 'Forbidden: Admin only' }, { status: 403 });
-      }
-    } catch (_) {
-      // No session = scheduled automation, allow through
-    }
-
     const cutoff = new Date(Date.now() - THIRTY_DAYS_MS).toISOString();
     const s3 = getS3();
 
