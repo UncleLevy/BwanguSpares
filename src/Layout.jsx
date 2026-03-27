@@ -123,6 +123,7 @@ export default function Layout({ children, currentPageName }) {
           paddingRight: "env(safe-area-inset-right, 0px)",
         }}
       >
+        <CustomCursor />
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
