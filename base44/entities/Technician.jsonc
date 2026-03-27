@@ -1,0 +1,77 @@
+{
+  "name": "Technician",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Technician full name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone"
+    },
+    "specialization": {
+      "type": "string",
+      "enum": [
+        "engine",
+        "electrical",
+        "body_work",
+        "transmission",
+        "brakes",
+        "general",
+        "diagnostics",
+        "ac_heating",
+        "tyres"
+      ],
+      "description": "Area of expertise"
+    },
+    "experience_years": {
+      "type": "number",
+      "description": "Years of experience"
+    },
+    "hourly_rate": {
+      "type": "number",
+      "description": "Hourly rate in ZMW"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name for display"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "Technician photo"
+    },
+    "available": {
+      "type": "boolean",
+      "default": true,
+      "description": "Currently available"
+    },
+    "rating": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "name",
+    "specialization",
+    "shop_id"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    }
+  }
+}

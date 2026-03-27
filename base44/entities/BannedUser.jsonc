@@ -1,0 +1,59 @@
+{
+  "name": "BannedUser",
+  "type": "object",
+  "properties": {
+    "email": {
+      "type": "string",
+      "description": "Banned email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Banned phone number"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "User's full name at time of ban"
+    },
+    "ban_type": {
+      "type": "string",
+      "enum": [
+        "suspended",
+        "banned"
+      ],
+      "default": "suspended",
+      "description": "Type of restriction"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for ban"
+    },
+    "ban_expires": {
+      "type": "string",
+      "format": "date",
+      "description": "Expiry date for suspension (empty = permanent)"
+    },
+    "banned_by": {
+      "type": "string",
+      "description": "Admin email who issued the ban"
+    }
+  },
+  "required": [
+    "email",
+    "ban_type",
+    "reason"
+  ],
+  "rls": {
+    "select": {
+      "formula": "user.role == 'admin' || record.email == user.email"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

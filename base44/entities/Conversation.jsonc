@@ -1,0 +1,76 @@
+{
+  "name": "Conversation",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's name"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "shop_owner_email": {
+      "type": "string",
+      "description": "Shop owner email"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Conversation subject/topic"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "Preview of the last message"
+    },
+    "last_message_date": {
+      "type": "string",
+      "description": "Date of last message"
+    },
+    "buyer_unread": {
+      "type": "number",
+      "default": 0,
+      "description": "Unread count for buyer"
+    },
+    "shop_unread": {
+      "type": "number",
+      "default": 0,
+      "description": "Unread count for shop"
+    },
+    "archived_by_buyer": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether buyer has archived this conversation"
+    },
+    "archived_by_shop": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether shop owner has archived this conversation"
+    }
+  },
+  "required": [
+    "buyer_email",
+    "shop_id"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.buyer_email == user.email || user.role == 'shop_owner'"
+    },
+    "update": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

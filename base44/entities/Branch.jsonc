@@ -1,0 +1,85 @@
+{
+  "name": "Branch",
+  "type": "object",
+  "properties": {
+    "shop_id": {
+      "type": "string",
+      "description": "Parent shop ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Branch name"
+    },
+    "address": {
+      "type": "string",
+      "description": "Physical address"
+    },
+    "town": {
+      "type": "string",
+      "description": "Town name"
+    },
+    "region": {
+      "type": "string",
+      "description": "Region name"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Latitude coordinate"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Longitude coordinate"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Branch contact phone"
+    },
+    "primary_contact_name": {
+      "type": "string",
+      "description": "Name of primary contact person"
+    },
+    "primary_contact_phone": {
+      "type": "string",
+      "description": "Phone of primary contact person"
+    },
+    "primary_contact_email": {
+      "type": "string",
+      "description": "Email of primary contact person"
+    },
+    "operational_hours": {
+      "type": "string",
+      "description": "Operational hours (e.g., 9AM-5PM Monday-Friday)"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "suspended"
+      ],
+      "default": "pending",
+      "description": "Branch approval status"
+    }
+  },
+  "required": [
+    "shop_id",
+    "name",
+    "address",
+    "town",
+    "region"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.status == 'approved' || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    }
+  }
+}

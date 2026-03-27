@@ -1,0 +1,58 @@
+{
+  "name": "ProductVariation",
+  "type": "object",
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "description": "Parent product ID"
+    },
+    "name": {
+      "type": "string",
+      "description": "Variation name (e.g., 'Red - Large')"
+    },
+    "attributes": {
+      "type": "object",
+      "description": "Key-value pairs for variation attributes (size, color, etc.)"
+    },
+    "price": {
+      "type": "number",
+      "description": "Variation-specific price (inherits parent if null)"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Variation-specific SKU"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Variation-specific image"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Variation status"
+    }
+  },
+  "required": [
+    "product_id",
+    "name",
+    "attributes"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'shop_owner' || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'shop_owner' || user.role == 'admin'"
+    }
+  }
+}

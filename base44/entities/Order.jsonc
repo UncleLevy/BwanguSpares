@@ -1,0 +1,175 @@
+{
+  "name": "Order",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's name"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "items": {
+      "type": "array",
+      "description": "Order items",
+      "items": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "image_url": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "total_amount": {
+      "type": "number",
+      "description": "Total order amount in ZMW"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "processing",
+        "shipped",
+        "delivered",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "delivery_address": {
+      "type": "string"
+    },
+    "delivery_phone": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "tracking_number": {
+      "type": "string",
+      "description": "Shipment tracking number"
+    },
+    "current_location": {
+      "type": "string",
+      "description": "Current location of shipment"
+    },
+    "estimated_delivery": {
+      "type": "string",
+      "format": "date",
+      "description": "Estimated delivery date"
+    },
+    "payment_method": {
+      "type": "string",
+      "description": "Payment method used (e.g. stripe, cash)"
+    },
+    "stripe_session_id": {
+      "type": "string",
+      "description": "Stripe checkout session ID for payment tracking"
+    },
+    "coupon_code": {
+      "type": "string",
+      "description": "Applied coupon/discount code"
+    },
+    "discount_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "Discount amount applied in ZMW"
+    },
+    "cancellation_reason": {
+      "type": "string",
+      "description": "Reason for cancellation"
+    },
+    "refunded": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether order has been refunded"
+    },
+    "refund_id": {
+      "type": "string",
+      "description": "Stripe refund ID if applicable"
+    },
+    "payout_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "awaiting_delivery",
+        "delivery_confirmed",
+        "payout_requested",
+        "payout_approved",
+        "payout_completed"
+      ],
+      "default": "pending",
+      "description": "Payout workflow status"
+    },
+    "delivery_confirmed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When delivery was confirmed"
+    },
+    "payout_request_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When shop requested payout"
+    },
+    "payout_id": {
+      "type": "string",
+      "description": "Associated payout record ID"
+    },
+    "shipping_option": {
+      "type": "string",
+      "enum": [
+        "collect",
+        "deliver"
+      ],
+      "default": "collect",
+      "description": "Shipping option: collect or deliver"
+    },
+    "shipping_cost": {
+      "type": "number",
+      "default": 0,
+      "description": "Shipping cost in ZMW (0 for collect)"
+    }
+  },
+  "required": [
+    "buyer_email",
+    "shop_id",
+    "items",
+    "total_amount"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'user' && request.buyer_email == user.email"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

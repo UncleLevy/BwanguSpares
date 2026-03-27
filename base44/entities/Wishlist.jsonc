@@ -1,0 +1,58 @@
+{
+  "name": "Wishlist",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product ID"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "price": {
+      "type": "number",
+      "description": "Product price"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Product image URL"
+    },
+    "category": {
+      "type": "string",
+      "description": "Product category"
+    }
+  },
+  "required": [
+    "buyer_email",
+    "product_id",
+    "shop_id",
+    "price"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.buyer_email == user.email"
+    },
+    "update": {
+      "formula": "record.buyer_email == user.email"
+    },
+    "delete": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    }
+  }
+}

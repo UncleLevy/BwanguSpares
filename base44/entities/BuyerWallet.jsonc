@@ -1,0 +1,46 @@
+{
+  "name": "BuyerWallet",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email address"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's full name"
+    },
+    "balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Current wallet balance in ZMW"
+    },
+    "total_credited": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount ever credited (refunds, etc.)"
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount spent from wallet"
+    }
+  },
+  "required": [
+    "buyer_email"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

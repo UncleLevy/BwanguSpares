@@ -1,0 +1,68 @@
+{
+  "name": "Banner",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Banner name/title"
+    },
+    "mobile_image_url": {
+      "type": "string",
+      "description": "Banner image URL for mobile (recommended: 375x667px)"
+    },
+    "tablet_image_url": {
+      "type": "string",
+      "description": "Banner image URL for tablet (recommended: 768x1024px)"
+    },
+    "web_image_url": {
+      "type": "string",
+      "description": "Banner image URL for web/desktop (recommended: 1920x800px)"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID if banner is for a specific shop"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name for display"
+    },
+    "offer_description": {
+      "type": "string",
+      "description": "Description of the offer"
+    },
+    "action_url": {
+      "type": "string",
+      "description": "URL to navigate to when banner is clicked"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether banner is currently active"
+    },
+    "display_order": {
+      "type": "number",
+      "default": 0,
+      "description": "Display order in slider"
+    }
+  },
+  "required": [
+    "name",
+    "mobile_image_url",
+    "tablet_image_url",
+    "web_image_url"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.is_active == true || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

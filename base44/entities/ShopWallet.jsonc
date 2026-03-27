@@ -1,0 +1,62 @@
+{
+  "name": "ShopWallet",
+  "type": "object",
+  "properties": {
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Shop owner email"
+    },
+    "total_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Total earnings from delivered orders (ZMW)"
+    },
+    "total_paid_out": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount paid out to the shop (ZMW)"
+    },
+    "pending_balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Earnings pending payout (ZMW)"
+    },
+    "platform_fee_rate": {
+      "type": "number",
+      "default": 5,
+      "description": "Platform commission % deducted"
+    },
+    "total_fees_deducted": {
+      "type": "number",
+      "default": 0,
+      "description": "Total platform fees collected (ZMW)"
+    }
+  },
+  "required": [
+    "shop_id",
+    "shop_name",
+    "owner_email"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.owner_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

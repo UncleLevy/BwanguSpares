@@ -1,0 +1,53 @@
+{
+  "name": "Message",
+  "type": "object",
+  "properties": {
+    "conversation_id": {
+      "type": "string",
+      "description": "Conversation ID"
+    },
+    "sender_email": {
+      "type": "string",
+      "description": "Sender's email"
+    },
+    "sender_name": {
+      "type": "string",
+      "description": "Sender's name"
+    },
+    "sender_role": {
+      "type": "string",
+      "enum": [
+        "buyer",
+        "shop"
+      ],
+      "description": "Role of sender"
+    },
+    "content": {
+      "type": "string",
+      "description": "Message text"
+    },
+    "read": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "conversation_id",
+    "sender_email",
+    "content"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.sender_email == user.email || user.role == 'admin' || user.role == 'shop_owner'"
+    },
+    "insert": {
+      "formula": "request.sender_email == user.email"
+    },
+    "update": {
+      "formula": "record.sender_email == user.email || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

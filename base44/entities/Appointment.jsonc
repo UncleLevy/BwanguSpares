@@ -1,0 +1,110 @@
+{
+  "name": "Appointment",
+  "type": "object",
+  "properties": {
+    "technician_id": {
+      "type": "string",
+      "description": "Technician ID"
+    },
+    "technician_name": {
+      "type": "string",
+      "description": "Technician name"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "shop_owner_email": {
+      "type": "string",
+      "description": "Shop owner email"
+    },
+    "buyer_email": {
+      "type": "string",
+      "description": "Customer email"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Customer name"
+    },
+    "buyer_phone": {
+      "type": "string",
+      "description": "Customer phone"
+    },
+    "problem_type": {
+      "type": "string",
+      "enum": [
+        "engine",
+        "electrical",
+        "body_work",
+        "transmission",
+        "brakes",
+        "diagnostics",
+        "ac_heating",
+        "tyres",
+        "general"
+      ],
+      "description": "Type of problem"
+    },
+    "description": {
+      "type": "string",
+      "description": "Problem description"
+    },
+    "appointment_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Scheduled date"
+    },
+    "time_slot": {
+      "type": "string",
+      "description": "Selected time slot e.g. 09:00 - 10:00"
+    },
+    "location": {
+      "type": "string",
+      "description": "Service location"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending",
+      "description": "Appointment status"
+    },
+    "hire_request_id": {
+      "type": "string",
+      "description": "Linked TechnicianHireRequest ID"
+    },
+    "shop_notes": {
+      "type": "string",
+      "description": "Internal notes from the shop"
+    }
+  },
+  "required": [
+    "technician_id",
+    "shop_id",
+    "buyer_email",
+    "appointment_date",
+    "time_slot"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.buyer_email == user.email || user.role == 'shop_owner'"
+    },
+    "update": {
+      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

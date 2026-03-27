@@ -1,0 +1,91 @@
+{
+  "name": "DiscountCode",
+  "type": "object",
+  "properties": {
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID this code belongs to"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name for display"
+    },
+    "code": {
+      "type": "string",
+      "description": "The discount code (e.g., SAVE20, SUMMER2026)"
+    },
+    "discount_type": {
+      "type": "string",
+      "enum": [
+        "percentage",
+        "fixed_amount"
+      ],
+      "description": "Type of discount"
+    },
+    "discount_value": {
+      "type": "number",
+      "description": "Discount amount (percentage or fixed)"
+    },
+    "max_discount_amount": {
+      "type": "number",
+      "description": "Maximum discount in ZMW (for percentage discounts)"
+    },
+    "min_purchase_amount": {
+      "type": "number",
+      "description": "Minimum purchase required to use code"
+    },
+    "usage_limit": {
+      "type": "number",
+      "description": "Total number of times code can be used"
+    },
+    "usage_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times code has been used"
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start date for code validity"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End date for code validity"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the offer"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "expired"
+      ],
+      "default": "active",
+      "description": "Code status"
+    }
+  },
+  "required": [
+    "shop_id",
+    "code",
+    "discount_type",
+    "discount_value"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin' || record.status == 'active'"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    }
+  }
+}

@@ -1,0 +1,88 @@
+{
+  "name": "Payout",
+  "type": "object",
+  "properties": {
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "owner_email": {
+      "type": "string",
+      "description": "Shop owner email"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Payout amount in ZMW"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "bank_transfer",
+        "mobile_money",
+        "cash"
+      ],
+      "default": "bank_transfer",
+      "description": "Payment method used"
+    },
+    "reference": {
+      "type": "string",
+      "description": "Reference/transaction number"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Admin notes"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "completed",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Payout status"
+    },
+    "processed_by": {
+      "type": "string",
+      "description": "Admin email who processed this payout"
+    },
+    "processed_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When payout was processed"
+    },
+    "archived_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this record was archived to R2"
+    },
+    "r2_key": {
+      "type": "string",
+      "description": "R2 storage key for the archived file"
+    }
+  },
+  "required": [
+    "shop_id",
+    "shop_name",
+    "owner_email",
+    "amount"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.owner_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin' || (user.role == 'shop_owner' && request.owner_email == user.email)"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

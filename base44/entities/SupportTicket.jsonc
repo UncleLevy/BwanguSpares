@@ -1,0 +1,104 @@
+{
+  "name": "SupportTicket",
+  "type": "object",
+  "properties": {
+    "ticket_number": {
+      "type": "number",
+      "description": "Auto-incremented ticket number for easy reference"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who submitted the ticket"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "Name of the user"
+    },
+    "user_role": {
+      "type": "string",
+      "description": "Role of the user (buyer, shop_owner, etc.)"
+    },
+    "subject": {
+      "type": "string",
+      "description": "Ticket subject"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "order_issue",
+        "payment_issue",
+        "account_issue",
+        "shop_issue",
+        "technical",
+        "other"
+      ],
+      "default": "other",
+      "description": "Category of the issue"
+    },
+    "message": {
+      "type": "string",
+      "description": "Full message from the user"
+    },
+    "photo_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Attached photo URLs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "resolved",
+        "closed"
+      ],
+      "default": "open",
+      "description": "Ticket status"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "default": "medium",
+      "description": "Priority level"
+    },
+    "admin_reply": {
+      "type": "string",
+      "description": "Admin's reply to the ticket"
+    },
+    "admin_email": {
+      "type": "string",
+      "description": "Admin who handled the ticket"
+    },
+    "resolved_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the ticket was resolved"
+    }
+  },
+  "required": [
+    "user_email",
+    "subject",
+    "message"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.user_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.user_email == user.email"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

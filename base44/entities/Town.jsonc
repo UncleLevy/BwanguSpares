@@ -1,0 +1,52 @@
+{
+  "name": "Town",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Town/city name"
+    },
+    "region_id": {
+      "type": "string",
+      "description": "Associated region ID"
+    },
+    "region_name": {
+      "type": "string",
+      "description": "Region name"
+    },
+    "postal_code": {
+      "type": "string",
+      "description": "Postal/zip code"
+    },
+    "latitude": {
+      "type": "number",
+      "description": "Latitude coordinate"
+    },
+    "longitude": {
+      "type": "number",
+      "description": "Longitude coordinate"
+    },
+    "description": {
+      "type": "string",
+      "description": "Brief description of the town/city"
+    }
+  },
+  "required": [
+    "name",
+    "region_id"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

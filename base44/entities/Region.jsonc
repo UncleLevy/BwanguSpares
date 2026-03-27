@@ -1,0 +1,31 @@
+{
+  "name": "Region",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Region name (e.g., Lusaka, Copperbelt)"
+    },
+    "province": {
+      "type": "string",
+      "description": "Province in Zambia"
+    }
+  },
+  "required": [
+    "name"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

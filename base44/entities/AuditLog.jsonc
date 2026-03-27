@@ -1,0 +1,81 @@
+{
+  "name": "AuditLog",
+  "type": "object",
+  "properties": {
+    "actor_email": {
+      "type": "string",
+      "description": "Email of the user who performed the action"
+    },
+    "actor_name": {
+      "type": "string",
+      "description": "Full name of the actor"
+    },
+    "actor_role": {
+      "type": "string",
+      "description": "Role of the actor at time of action"
+    },
+    "action": {
+      "type": "string",
+      "enum": [
+        "ban_user",
+        "unban_user",
+        "suspend_user",
+        "approve_shop",
+        "reject_shop",
+        "suspend_shop",
+        "resolve_report",
+        "dismiss_report",
+        "update_order_status",
+        "delete_product",
+        "create_product",
+        "update_product",
+        "place_order",
+        "cancel_order",
+        "register_shop",
+        "add_region",
+        "delete_region",
+        "submit_report",
+        "leave_review"
+      ],
+      "description": "Type of action performed"
+    },
+    "entity_type": {
+      "type": "string",
+      "description": "The entity type affected (Shop, Order, User, etc.)"
+    },
+    "entity_id": {
+      "type": "string",
+      "description": "ID of the affected record"
+    },
+    "entity_label": {
+      "type": "string",
+      "description": "Human-readable label for the affected record (e.g. shop name, order #)"
+    },
+    "details": {
+      "type": "string",
+      "description": "Additional context or notes about the action"
+    },
+    "ip_hint": {
+      "type": "string",
+      "description": "Optional metadata"
+    }
+  },
+  "required": [
+    "actor_email",
+    "action"
+  ],
+  "rls": {
+    "select": {
+      "formula": "user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "true"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "Vehicle",
+  "type": "object",
+  "properties": {
+    "brand": {
+      "type": "string",
+      "description": "Vehicle brand/manufacturer (e.g. Toyota, Ford, Nissan)"
+    },
+    "model": {
+      "type": "string",
+      "description": "Vehicle model (e.g. Corolla, Ranger, Altima)"
+    },
+    "years": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "default": [],
+      "description": "Compatible years (e.g. [2015, 2016, 2017, 2018, 2019, 2020])"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Whether this vehicle is available for selection"
+    }
+  },
+  "required": [
+    "brand",
+    "model"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

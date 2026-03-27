@@ -1,0 +1,76 @@
+{
+  "name": "Customer",
+  "type": "object",
+  "properties": {
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID this customer belongs to"
+    },
+    "email": {
+      "type": "string",
+      "description": "Customer email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Customer phone number"
+    },
+    "full_name": {
+      "type": "string",
+      "description": "Customer full name"
+    },
+    "address": {
+      "type": "string",
+      "description": "Customer address"
+    },
+    "town": {
+      "type": "string",
+      "description": "Town/city"
+    },
+    "region": {
+      "type": "string",
+      "description": "Region/province"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Internal notes about customer"
+    },
+    "total_spent": {
+      "type": "number",
+      "default": 0,
+      "description": "Total amount spent by customer in ZMW"
+    },
+    "total_orders": {
+      "type": "number",
+      "default": 0,
+      "description": "Total number of orders"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive"
+      ],
+      "default": "active",
+      "description": "Customer status"
+    }
+  },
+  "required": [
+    "shop_id",
+    "email",
+    "full_name"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.shop_id == user.shop_id || record.email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    }
+  }
+}

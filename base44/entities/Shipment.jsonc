@@ -1,0 +1,210 @@
+{
+  "name": "Shipment",
+  "type": "object",
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Associated order ID"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "shop_town": {
+      "type": "string",
+      "description": "Shop's town/city"
+    },
+    "shop_region": {
+      "type": "string",
+      "description": "Shop's region"
+    },
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's name"
+    },
+    "buyer_phone": {
+      "type": "string",
+      "description": "Buyer's phone"
+    },
+    "delivery_address": {
+      "type": "string",
+      "description": "Full delivery address"
+    },
+    "delivery_town": {
+      "type": "string",
+      "description": "Delivery town/city"
+    },
+    "delivery_region": {
+      "type": "string",
+      "description": "Delivery region"
+    },
+    "is_intercity": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this shipment requires intercity transport"
+    },
+    "requires_handoff": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether this shipment requires courier handoff"
+    },
+    "intercity_courier_id": {
+      "type": "string",
+      "description": "Intercity courier ID (first leg)"
+    },
+    "intercity_courier_name": {
+      "type": "string",
+      "description": "Intercity courier name"
+    },
+    "intercity_courier_phone": {
+      "type": "string",
+      "description": "Intercity courier phone"
+    },
+    "local_courier_id": {
+      "type": "string",
+      "description": "Local courier ID (final delivery)"
+    },
+    "local_courier_name": {
+      "type": "string",
+      "description": "Local courier name"
+    },
+    "local_courier_phone": {
+      "type": "string",
+      "description": "Local courier phone"
+    },
+    "handoff_location": {
+      "type": "string",
+      "description": "Location where intercity courier hands off to local courier"
+    },
+    "handoff_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When handoff occurred"
+    },
+    "handoff_notes": {
+      "type": "string",
+      "description": "Notes about the handoff"
+    },
+    "current_courier_id": {
+      "type": "string",
+      "description": "Currently active courier ID"
+    },
+    "current_courier_name": {
+      "type": "string",
+      "description": "Currently active courier name"
+    },
+    "tracking_number": {
+      "type": "string",
+      "description": "Unique tracking number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "assigned",
+        "picked_up",
+        "in_transit",
+        "awaiting_handoff",
+        "handoff_complete",
+        "out_for_delivery",
+        "delivered",
+        "failed"
+      ],
+      "default": "pending",
+      "description": "Shipment status"
+    },
+    "shipping_cost": {
+      "type": "number",
+      "description": "Calculated shipping cost in ZMW"
+    },
+    "intercity_cost": {
+      "type": "number",
+      "description": "Cost for intercity leg"
+    },
+    "local_delivery_cost": {
+      "type": "number",
+      "description": "Cost for local delivery leg"
+    },
+    "distance_km": {
+      "type": "number",
+      "description": "Estimated distance in kilometers"
+    },
+    "estimated_delivery_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Estimated delivery date"
+    },
+    "actual_delivery_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Actual delivery timestamp"
+    },
+    "pickup_time": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When courier picked up the package"
+    },
+    "delivery_notes": {
+      "type": "string",
+      "description": "Special delivery instructions"
+    },
+    "proof_of_delivery_url": {
+      "type": "string",
+      "description": "Photo proof of delivery"
+    },
+    "tracking_updates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "courier_name": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "default": [],
+      "description": "Array of tracking status updates"
+    }
+  },
+  "required": [
+    "order_id",
+    "shop_id",
+    "buyer_email",
+    "delivery_address",
+    "tracking_number"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "name": "LoyaltyPoints",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email address"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's full name"
+    },
+    "points_balance": {
+      "type": "number",
+      "default": 0,
+      "description": "Current redeemable points balance"
+    },
+    "total_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Total points ever earned"
+    },
+    "total_redeemed": {
+      "type": "number",
+      "default": 0,
+      "description": "Total points ever redeemed"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "bronze",
+        "silver",
+        "gold",
+        "platinum"
+      ],
+      "default": "bronze",
+      "description": "Loyalty tier based on total earned points"
+    }
+  },
+  "required": [
+    "buyer_email"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

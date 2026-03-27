@@ -1,0 +1,63 @@
+{
+  "name": "Subscription",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "User's email"
+    },
+    "tier": {
+      "type": "string",
+      "enum": [
+        "free",
+        "standard",
+        "premium"
+      ],
+      "default": "free",
+      "description": "Subscription tier"
+    },
+    "max_shops": {
+      "type": "number",
+      "default": 1,
+      "description": "Maximum number of shops allowed"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "cancelled",
+        "expired"
+      ],
+      "default": "active",
+      "description": "Subscription status"
+    },
+    "created_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Subscription start date"
+    },
+    "expires_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Subscription expiry date (null for active subscriptions)"
+    }
+  },
+  "required": [
+    "user_email",
+    "tier"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.user_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

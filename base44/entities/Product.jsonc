@@ -1,0 +1,162 @@
+{
+  "name": "Product",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Product description"
+    },
+    "price": {
+      "type": "number",
+      "description": "Price in ZMW"
+    },
+    "part_number": {
+      "type": "string",
+      "description": "Part number for accurate identification and search"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "engine",
+        "brakes",
+        "suspension",
+        "electrical",
+        "body",
+        "transmission",
+        "exhaust",
+        "cooling",
+        "steering",
+        "interior",
+        "accessories",
+        "tyres",
+        "filters",
+        "oils_fluids",
+        "other"
+      ],
+      "description": "Part category"
+    },
+    "sub_category": {
+      "type": "string",
+      "description": "More granular sub-category (e.g. 'Spark Plugs' under Engine)"
+    },
+    "brand": {
+      "type": "string",
+      "description": "Brand/manufacturer"
+    },
+    "sku": {
+      "type": "string",
+      "description": "Stock Keeping Unit code"
+    },
+    "compatible_vehicles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "vehicle_id": {
+            "type": "string"
+          },
+          "brand": {
+            "type": "string"
+          },
+          "model": {
+            "type": "string"
+          },
+          "years": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "default": [],
+      "description": "List of compatible vehicles with IDs, brands, models and years"
+    },
+    "condition": {
+      "type": "string",
+      "enum": [
+        "new",
+        "used",
+        "refurbished"
+      ],
+      "default": "new",
+      "description": "Part condition"
+    },
+    "stock_quantity": {
+      "type": "number",
+      "default": 0,
+      "description": "Available stock"
+    },
+    "low_stock_threshold": {
+      "type": "number",
+      "default": 5,
+      "description": "Alert when stock falls at or below this number"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID this product belongs to"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name for display"
+    },
+    "image_url": {
+      "type": "string",
+      "description": "Primary product image URL"
+    },
+    "image_urls": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Up to 5 product photo URLs for the slideshow"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "inactive",
+        "out_of_stock"
+      ],
+      "default": "active"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [],
+      "description": "Product tags/labels"
+    },
+    "shipping_cost": {
+      "type": "number",
+      "default": null,
+      "description": "Optional product-specific shipping cost in ZMW (overrides town default)"
+    }
+  },
+  "required": [
+    "name",
+    "price",
+    "category",
+    "shop_id"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.status == 'active' || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'shop_owner' && request.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    }
+  }
+}

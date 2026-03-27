@@ -1,0 +1,54 @@
+{
+  "name": "LoyaltyTransaction",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email address"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "earn",
+        "redeem"
+      ],
+      "description": "Transaction type"
+    },
+    "points": {
+      "type": "number",
+      "description": "Points earned or redeemed"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for transaction (e.g. Order #xxx, Redeemed for discount)"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Related order ID if applicable"
+    },
+    "discount_amount": {
+      "type": "number",
+      "description": "ZMW value of redemption if applicable"
+    }
+  },
+  "required": [
+    "buyer_email",
+    "type",
+    "points",
+    "reason"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

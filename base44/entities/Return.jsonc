@@ -1,0 +1,119 @@
+{
+  "name": "Return",
+  "type": "object",
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Associated order ID"
+    },
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "buyer_name": {
+      "type": "string",
+      "description": "Buyer's name"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop ID"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Product being returned"
+    },
+    "product_name": {
+      "type": "string",
+      "description": "Product name"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "defective",
+        "not_as_described",
+        "damaged",
+        "incorrect_item",
+        "unsatisfied",
+        "other"
+      ],
+      "description": "Return reason"
+    },
+    "description": {
+      "type": "string",
+      "description": "Detailed explanation"
+    },
+    "quantity": {
+      "type": "number",
+      "description": "Quantity being returned"
+    },
+    "refund_amount": {
+      "type": "number",
+      "description": "Amount to be refunded in ZMW"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "return_received",
+        "refunded",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Return status"
+    },
+    "approval_notes": {
+      "type": "string",
+      "description": "Shop notes on approval or rejection"
+    },
+    "received_notes": {
+      "type": "string",
+      "description": "Notes when item is confirmed received back"
+    },
+    "received_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When item was confirmed received"
+    },
+    "refund_released_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When admin released the refund"
+    },
+    "refund_released_by": {
+      "type": "string",
+      "description": "Admin email who released the refund"
+    },
+    "refund_id": {
+      "type": "string",
+      "description": "Wallet transaction ID for the refund"
+    }
+  },
+  "required": [
+    "order_id",
+    "buyer_email",
+    "shop_id",
+    "product_id",
+    "reason",
+    "quantity",
+    "refund_amount"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.buyer_email == user.email"
+    },
+    "update": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

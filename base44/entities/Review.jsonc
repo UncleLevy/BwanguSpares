@@ -1,0 +1,69 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "order_id": {
+      "type": "string",
+      "description": "Associated order ID"
+    },
+    "reviewer_email": {
+      "type": "string",
+      "description": "Email of the reviewer"
+    },
+    "reviewer_name": {
+      "type": "string",
+      "description": "Name of the reviewer"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Shop being reviewed"
+    },
+    "shop_name": {
+      "type": "string"
+    },
+    "technician_id": {
+      "type": "string",
+      "description": "Technician being reviewed (optional)"
+    },
+    "technician_name": {
+      "type": "string"
+    },
+    "rating": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 5,
+      "description": "Rating from 1 to 5 stars"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Review text"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "shop",
+        "technician"
+      ],
+      "description": "Type of review"
+    }
+  },
+  "required": [
+    "reviewer_email",
+    "rating",
+    "type"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'user' && request.reviewer_email == user.email"
+    },
+    "update": {
+      "formula": "record.reviewer_email == user.email || user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "record.reviewer_email == user.email || user.role == 'admin'"
+    }
+  }
+}

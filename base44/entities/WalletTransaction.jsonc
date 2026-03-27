@@ -1,0 +1,63 @@
+{
+  "name": "WalletTransaction",
+  "type": "object",
+  "properties": {
+    "buyer_email": {
+      "type": "string",
+      "description": "Buyer's email"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "credit",
+        "debit"
+      ],
+      "description": "Transaction type"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Amount in ZMW"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Reason for transaction (e.g. refund for order #xxx)"
+    },
+    "order_id": {
+      "type": "string",
+      "description": "Related order ID if applicable"
+    },
+    "shop_name": {
+      "type": "string",
+      "description": "Shop name if applicable"
+    },
+    "archived_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this record was archived to R2"
+    },
+    "r2_key": {
+      "type": "string",
+      "description": "R2 storage key for the archived file"
+    }
+  },
+  "required": [
+    "buyer_email",
+    "type",
+    "amount",
+    "reason"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Report",
+  "type": "object",
+  "properties": {
+    "reporter_email": {
+      "type": "string",
+      "description": "Email of the person filing the report"
+    },
+    "reporter_name": {
+      "type": "string",
+      "description": "Name of the reporter"
+    },
+    "reported_email": {
+      "type": "string",
+      "description": "Email of the reported user/shop"
+    },
+    "reported_name": {
+      "type": "string",
+      "description": "Name of the reported user or shop"
+    },
+    "reported_type": {
+      "type": "string",
+      "enum": [
+        "shop",
+        "buyer",
+        "product"
+      ],
+      "description": "Who/what is being reported"
+    },
+    "reported_id": {
+      "type": "string",
+      "description": "ID of reported entity (shop_id, etc)"
+    },
+    "reason": {
+      "type": "string",
+      "enum": [
+        "fraud",
+        "fake_listing",
+        "harassment",
+        "spam",
+        "counterfeit_parts",
+        "non_delivery",
+        "poor_quality",
+        "other"
+      ],
+      "description": "Reason for report"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 400,
+      "description": "Detailed description of the complaint (max 400 characters)"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "URLs of attached photos and documents"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "reviewed",
+        "resolved",
+        "dismissed"
+      ],
+      "default": "pending",
+      "description": "Admin review status"
+    },
+    "admin_note": {
+      "type": "string",
+      "description": "Admin notes/action taken"
+    }
+  },
+  "required": [
+    "reporter_email",
+    "reported_email",
+    "reason"
+  ],
+  "rls": {
+    "select": {
+      "formula": "record.reporter_email == user.email || user.role == 'admin'"
+    },
+    "insert": {
+      "formula": "request.reporter_email == user.email"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "name": "ShippingRate",
+  "type": "object",
+  "properties": {
+    "town_id": {
+      "type": "string",
+      "description": "Town ID"
+    },
+    "town_name": {
+      "type": "string",
+      "description": "Town name"
+    },
+    "region_id": {
+      "type": "string",
+      "description": "Region ID"
+    },
+    "region_name": {
+      "type": "string",
+      "description": "Region name"
+    },
+    "default_rate": {
+      "type": "number",
+      "description": "Default shipping rate in ZMW for this town"
+    },
+    "set_by": {
+      "type": "string",
+      "description": "Email of admin who set this rate"
+    }
+  },
+  "required": [
+    "town_id",
+    "town_name",
+    "default_rate"
+  ],
+  "rls": {
+    "select": {
+      "formula": "true"
+    },
+    "insert": {
+      "formula": "user.role == 'admin'"
+    },
+    "update": {
+      "formula": "user.role == 'admin'"
+    },
+    "delete": {
+      "formula": "user.role == 'admin'"
+    }
+  }
+}
