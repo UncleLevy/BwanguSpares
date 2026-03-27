@@ -41,9 +41,6 @@
     "delete": {
       "formula": "user.role == 'admin'"
     },
-    "create": {
-      "created_by": "{{user.email}}"
-    },
     "write": {
       "formula": "user.role == 'admin'"
     },
