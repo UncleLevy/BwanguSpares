@@ -7,11 +7,14 @@ export default function CustomCursor() {
   const dot = useRef({ x: -100, y: -100 });
   const [clicking, setClicking] = useState(false);
   const [hovering, setHovering] = useState(false);
+  const [isTouch, setIsTouch] = useState(true); // default true until checked
   const raf = useRef(null);
 
   useEffect(() => {
-    // Only on desktop
-    if (window.matchMedia("(pointer: coarse)").matches) return;
+    // Only on desktop pointer devices
+    const touch = window.matchMedia("(pointer: coarse)").matches;
+    setIsTouch(touch);
+    if (touch) return;
 
     const move = (e) => {
       pos.current = { x: e.clientX, y: e.clientY };
@@ -54,8 +57,7 @@ export default function CustomCursor() {
     };
   }, []);
 
-  // Don't render on touch devices
-  if (typeof window !== "undefined" && window.matchMedia("(pointer: coarse)").matches) return null;
+  if (isTouch) return null;
 
   return (
     <>
@@ -104,12 +106,6 @@ export default function CustomCursor() {
         }}
       />
 
-      {/* Hide native cursor on desktop */}
-      <style>{`
-        @media (pointer: fine) {
-          * { cursor: none !important; }
-        }
-      `}</style>
     </>
   );
 }
