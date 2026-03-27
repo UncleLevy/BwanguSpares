@@ -33,21 +33,17 @@ const PageFallback = () => (
 const pageTransition = { type: "spring", stiffness: 300, damping: 30, mass: 1 };
 
 function makeVariants(direction) {
-  const forward = direction !== "back";
   return {
     initial: {
-      x: forward ? "100%" : "-25%",
-      opacity: forward ? 1 : 0.5,
+      opacity: 0,
     },
     animate: {
-      x: 0,
       opacity: 1,
-      transition: { ...pageTransition },
+      transition: { duration: 0.3, ease: "easeInOut" },
     },
     exit: {
-      x: forward ? "-25%" : "100%",
-      opacity: forward ? 0.5 : 1,
-      transition: { ...pageTransition },
+      opacity: 0,
+      transition: { duration: 0.2, ease: "easeInOut" },
     },
   };
 }
