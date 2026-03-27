@@ -41,9 +41,6 @@
     "message"
   ],
   "rls": {
-    "read": {
-      "formula": "record.user_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
     },
@@ -56,11 +53,8 @@
     "delete": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
     },
-    "create": {
-      "created_by": "{{user.email}}"
-    },
     "write": {
-      "formula": "user.role == 'admin' || user.role == 'shop_owner'"
+      "formula": "record.user_email == user.email || user.role == 'admin'"
     }
   }
 }
