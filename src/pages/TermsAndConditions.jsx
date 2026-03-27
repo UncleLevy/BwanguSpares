@@ -52,7 +52,7 @@ export default function TermsAndConditions() {
             <strong>BwanguSpares</strong> · Effective Date: {effectiveDate}
           </p>
           <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
-            Operated by Ikhumbi-Tech Center · Flat 15C Kalewa Complex, Ndola, Zambia
+            BwanguSpares is a product of <strong className="text-slate-500 dark:text-slate-400">Ikhumbi App Limited</strong>, owned by <strong className="text-slate-500 dark:text-slate-400">Ikhumbi-Tech Center</strong> · Flat 15C Kalewa Complex, Ndola, Zambia
           </p>
         </div>
 
@@ -67,7 +67,7 @@ export default function TermsAndConditions() {
         {/* Section 1 */}
         <Section icon={FileText} title="1. Definitions & Interpretation" defaultOpen={true}>
           <Clause number="1.1" title="Platform">
-            "BwanguSpares" refers to the online marketplace accessible at bwangu.com and its associated mobile applications, operated by Ikhumbi-Tech Center, a company registered in Zambia.
+            "BwanguSpares" refers to the online marketplace accessible at bwangu.com and its associated mobile applications. BwanguSpares is a product of <strong>Ikhumbi App Limited</strong>, a company registered in Zambia, which is owned by <strong>Ikhumbi-Tech Center</strong>.
           </Clause>
           <Clause number="1.2" title="Users">
             "User" means any person who accesses the Platform, including Buyers, Shop Owners, Technicians, and Administrators.
