@@ -35,9 +35,6 @@
     "price"
   ],
   "rls": {
-    "read": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
@@ -52,9 +49,6 @@
     },
     "create": {
       "created_by": "{{user.email}}"
-    },
-    "write": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
     }
   }
 }
