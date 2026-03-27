@@ -34,7 +34,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative overflow-hidden -mt-16 md:mt-0">
       {/* Background with parallax */}
       <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ top: "-20%", bottom: "-20%" }}>
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920&q=80')] bg-cover bg-center" />
@@ -43,8 +43,7 @@ export default function HeroSection() {
       </div>
 
       <div
-        className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-36"
-        style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
+        className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-36 pt-16 md:pt-[calc(env(safe-area-inset-top,0px)+3.5rem)]"
       >
         <div ref={textRef} className="max-w-2xl will-change-transform">
           {/* Badge */}
