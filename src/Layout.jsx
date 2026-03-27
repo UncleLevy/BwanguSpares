@@ -178,7 +178,7 @@ export default function Layout({ children, currentPageName }) {
 
             <div className="flex items-center gap-2">
               {/* Desktop icons */}
-              <div className="hidden md:flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2 [&>*]:!min-h-0">
                 <DarkModeToggle />
                 {isAuthenticated && (
                    <>
