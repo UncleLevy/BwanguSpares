@@ -41,9 +41,6 @@
     "tier"
   ],
   "rls": {
-    "read": {
-      "formula": "record.user_email == user.email || user.role == 'admin'"
-    },
     "select": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
     },
