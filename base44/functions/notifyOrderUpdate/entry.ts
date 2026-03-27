@@ -6,25 +6,32 @@ Deno.serve(async (req) => {
     const { event, data, old_data } = await req.json();
 
     if (event.type === 'create') {
-      // Deduct stock for each ordered item
+      // Deduct stock for each ordered item — wrapped in try/catch so bad product IDs don't crash the function
       const items = data.items || [];
       for (const item of items) {
         if (item.product_id) {
-          const products = await base44.asServiceRole.entities.Product.filter({ id: item.product_id });
-          if (products.length > 0) {
-            const product = products[0];
-            const newQty = Math.max(0, (product.stock_quantity || 0) - (item.quantity || 1));
-            await base44.asServiceRole.entities.Product.update(product.id, {
-              stock_quantity: newQty,
-              status: newQty === 0 ? 'out_of_stock' : product.status === 'out_of_stock' ? 'active' : product.status,
-            });
+          try {
+            const product = await base44.asServiceRole.entities.Product.get(item.product_id);
+            if (product) {
+              const newQty = Math.max(0, (product.stock_quantity || 0) - (item.quantity || 1));
+              await base44.asServiceRole.entities.Product.update(product.id, {
+                stock_quantity: newQty,
+                status: newQty === 0 ? 'out_of_stock' : product.status === 'out_of_stock' ? 'active' : product.status,
+              });
+            }
+          } catch (err) {
+            console.warn(`Stock deduction skipped for product ${item.product_id}:`, err.message);
           }
         }
       }
 
-      // Notify shop owner about new order
-      const shops = await base44.asServiceRole.entities.Shop.filter({ id: data.shop_id });
-      const shop = shops[0];
+      // Notify shop owner about new order — wrapped so bad shop_id doesn't crash
+      let shop = null;
+      try {
+        shop = await base44.asServiceRole.entities.Shop.get(data.shop_id);
+      } catch (err) {
+        console.warn(`Shop lookup skipped for ${data.shop_id}:`, err.message);
+      }
       if (shop) {
         await base44.asServiceRole.entities.Notification.create({
           user_email: shop.owner_email,
