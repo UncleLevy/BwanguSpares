@@ -97,7 +97,7 @@
   }
 }
 
-/* Branded 44 mobile standards: 44px min tap targets */
+/* ── Mobile tap-target standards (44px minimum) ──────────────────────────── */
 @layer utilities {
   button,
   a,
@@ -110,8 +110,7 @@
     min-height: 44px;
   }
 
-  /* Exception: icon-only action buttons inside table rows (edit/delete icons) */
-  /* and compact toolbar buttons that are intentionally smaller */
+  /* Exception: icon-only buttons inside table rows and compact toolbars */
   .tap-compact button,
   .tap-compact [role="button"],
   td button,
@@ -119,9 +118,34 @@
     min-height: unset;
   }
 
-  /* Ensure table cell action buttons still have adequate touch area via padding */
   td button {
     min-height: 36px;
     min-width: 36px;
+  }
+
+  /* Smooth momentum scrolling on iOS */
+  .scroll-smooth-ios {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide scrollbar but keep scroll */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Safe bottom content padding — accounts for bottom nav + home-indicator */
+  .safe-pb {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+  }
+
+  @media (min-width: 768px) {
+    .safe-pb {
+      padding-bottom: 2rem;
+    }
   }
 }

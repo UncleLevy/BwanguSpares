@@ -447,7 +447,7 @@ export default function Cart() {
     <PullToRefresh onRefresh={loadCart}>
     <div>
       <AppHeader title="Shopping Cart" backTo="BrowseProducts" />
-      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 py-4 sm:py-6 safe-pb">
       <Breadcrumbs items={[{ label: "Cart" }]} />
       <h1 className="hidden md:block text-2xl font-bold text-slate-900 dark:text-slate-100 mb-6">Shopping Cart</h1>
 

@@ -170,26 +170,29 @@ export default function BrowseProducts() {
 
   return (
     <PullToRefresh onRefresh={loadProducts}>
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 2rem)" }}>
-      <Breadcrumbs items={[{ label: "Browse Parts" }]} />
-      <div className="mb-5 md:mb-8">
-        <h1 className="text-xl md:text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight">Browse Auto Parts</h1>
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 md:py-8 safe-pb">
+      <div className="hidden md:block mb-6">
+        <Breadcrumbs items={[{ label: "Browse Parts" }]} />
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight mt-2">Browse Auto Parts</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">Find the spares you need from verified shops across Zambia</p>
       </div>
 
-      <div className="flex flex-col gap-3 mb-6">
+      {/* Sticky search + filters on mobile */}
+      <div className="sticky top-[52px] z-30 md:static bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl
+                      -mx-4 px-4 pb-3 pt-3 md:mx-0 md:px-0 md:py-0 md:bg-transparent md:dark:bg-transparent
+                      border-b border-slate-100 dark:border-slate-800 md:border-0 mb-4 md:mb-6 flex flex-col gap-2.5">
          <div className="relative flex-1">
-           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
            <Input value={search} onChange={e => handleSearchChange(e.target.value)}
              placeholder="Search parts, brands..."
              className="pl-10 h-11 rounded-xl text-base" />
            {search && (
-             <button onClick={() => handleSearchChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2">
+             <button onClick={() => handleSearchChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 p-1">
                <X className="w-4 h-4 text-slate-400" aria-hidden="true" />
              </button>
            )}
          </div>
-         <div className="flex gap-2 overflow-x-auto pb-1 md:pb-0 md:flex-wrap scrollbar-hide" style={{ scrollbarWidth: "none" }}>
+         <div className="flex gap-2 overflow-x-auto pb-0.5 md:pb-0 md:flex-wrap scrollbar-hide">
            <MobileSelect
             value={category}
             onValueChange={handleFilterChange(setCategory)}
@@ -237,7 +240,7 @@ export default function BrowseProducts() {
         </div>
       </div>
 
-      {(category !== "all" || condition !== "all" || priceRange !== "all" || vehicleFilter.make) && (
+      {(category !== "all" || condition !== "all" || priceRange !== "all" || vehicleFilter.vehicle_brand) && (
         <div className="flex flex-wrap gap-2 mb-4">
           {category !== "all" && (
             <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCategory("all")}>
