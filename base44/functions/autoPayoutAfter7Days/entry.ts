@@ -4,10 +4,15 @@ Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
     
-    // This is a scheduled/admin function
-    const authHeader = req.headers.get('authorization');
-    if (!authHeader?.includes(Deno.env.get('BASE44_APP_ID'))) {
-      return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    // Allow scheduled automations (no user session) OR admin-triggered
+    // Only block if there's a real non-admin user making a manual call
+    try {
+      const user = await base44.auth.me();
+      if (user?.email && user.role !== 'admin') {
+        return Response.json({ error: 'Forbidden' }, { status: 403 });
+      }
+    } catch {
+      // No session = scheduled automation, allow through
     }
 
     // Find all orders with delivery_confirmed status
