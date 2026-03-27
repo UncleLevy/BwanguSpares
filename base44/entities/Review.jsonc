@@ -45,6 +45,9 @@
     "type"
   ],
   "rls": {
+    "read": {
+      "formula": "true"
+    },
     "select": {
       "formula": "true"
     },

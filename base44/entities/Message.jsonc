@@ -32,6 +32,9 @@
     "content"
   ],
   "rls": {
+    "read": {
+      "formula": "record.sender_email == user.email || user.role == 'admin' || user.role == 'shop_owner'"
+    },
     "select": {
       "formula": "record.sender_email == user.email || user.role == 'admin' || user.role == 'shop_owner'"
     },

@@ -52,6 +52,9 @@
     "shop_id"
   ],
   "rls": {
+    "read": {
+      "formula": "true"
+    },
     "select": {
       "formula": "true"
     },

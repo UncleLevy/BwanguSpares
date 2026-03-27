@@ -27,6 +27,9 @@
     "default_rate"
   ],
   "rls": {
+    "read": {
+      "formula": "true"
+    },
     "select": {
       "formula": "true"
     },

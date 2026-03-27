@@ -84,6 +84,9 @@
     "courier_type"
   ],
   "rls": {
+    "read": {
+      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },

@@ -36,6 +36,9 @@
     "reason"
   ],
   "rls": {
+    "read": {
+      "formula": "user.role == 'admin' || record.email == user.email"
+    },
     "select": {
       "formula": "user.role == 'admin' || record.email == user.email"
     },

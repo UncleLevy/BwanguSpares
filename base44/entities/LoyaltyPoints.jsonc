@@ -35,6 +35,9 @@
     "buyer_email"
   ],
   "rls": {
+    "read": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },

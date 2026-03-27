@@ -3,24 +3,19 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email"
+      "type": "string"
     },
     "buyer_name": {
-      "type": "string",
-      "description": "Buyer's name"
+      "type": "string"
     },
     "shop_id": {
-      "type": "string",
-      "description": "Shop ID"
+      "type": "string"
     },
     "shop_name": {
-      "type": "string",
-      "description": "Shop name"
+      "type": "string"
     },
     "items": {
       "type": "array",
-      "description": "Order items",
       "items": {
         "type": "object",
         "properties": {
@@ -43,8 +38,7 @@
       }
     },
     "total_amount": {
-      "type": "number",
-      "description": "Total order amount in ZMW"
+      "type": "number"
     },
     "status": {
       "type": "string",
@@ -143,6 +137,9 @@
     "total_amount"
   ],
   "rls": {
+    "read": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
     },

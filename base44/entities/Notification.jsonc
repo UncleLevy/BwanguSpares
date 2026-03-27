@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "user_email": {
-      "type": "string",
-      "description": "Email of the user to notify"
+      "type": "string"
     },
     "type": {
       "type": "string",
@@ -42,6 +41,9 @@
     "message"
   ],
   "rls": {
+    "read": {
+      "formula": "record.user_email == user.email || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.user_email == user.email || user.role == 'admin'"
     },

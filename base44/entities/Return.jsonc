@@ -85,6 +85,9 @@
     "refund_amount"
   ],
   "rls": {
+    "read": {
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
     },

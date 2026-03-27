@@ -3,8 +3,7 @@
   "type": "object",
   "properties": {
     "buyer_email": {
-      "type": "string",
-      "description": "Buyer's email"
+      "type": "string"
     },
     "product_id": {
       "type": "string"
@@ -36,6 +35,9 @@
     "price"
   ],
   "rls": {
+    "read": {
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },

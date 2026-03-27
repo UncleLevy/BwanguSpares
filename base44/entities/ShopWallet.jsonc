@@ -46,6 +46,9 @@
     "owner_email"
   ],
   "rls": {
+    "read": {
+      "formula": "record.owner_email == user.email || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.owner_email == user.email || user.role == 'admin'"
     },

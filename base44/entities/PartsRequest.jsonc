@@ -93,6 +93,9 @@
     "part_name"
   ],
   "rls": {
+    "read": {
+      "formula": "record.buyer_email == user.email || user.role == 'shop_owner' || user.role == 'admin'"
+    },
     "select": {
       "formula": "record.buyer_email == user.email || user.role == 'shop_owner' || user.role == 'admin'"
     },
