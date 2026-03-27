@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Wrench, Shield, Truck, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 import HeroSection from "@/components/home/HeroSection";
 import BannerAdsSection from "@/components/home/HeroBannerSlider";
@@ -119,17 +120,34 @@ export default function Home() {
     { icon: Truck, title: "Fast Delivery", desc: "Get parts delivered to your door" },
   ];
 
+  const [featuresRef, featuresVisible] = useScrollReveal();
+  const [productsRef, productsVisible] = useScrollReveal();
+  const [discountsRef, discountsVisible] = useScrollReveal();
+  const [shopsRef, shopsVisible] = useScrollReveal();
+  const [partnersRef, partnersVisible] = useScrollReveal();
+
   return (
     <div className="bg-white dark:bg-slate-950">
       <HeroSection />
       <BannerAdsSection />
 
       {/* Features Section */}
-      <section className="py-10 md:py-14 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 border-b border-slate-100 dark:border-slate-800">
+      <section
+        ref={featuresRef}
+        className="py-10 md:py-14 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/50 dark:to-slate-950 border-b border-slate-100 dark:border-slate-800"
+      >
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
             {features.map((f, i) => (
-              <div key={i} className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-4 md:p-5 rounded-xl bg-gradient-to-br from-blue-50/50 to-cyan-50/50 md:bg-transparent dark:from-blue-900/20 dark:to-cyan-900/20 md:dark:from-transparent md:dark:to-transparent hover:shadow-md transition-shadow duration-300">
+              <div
+                key={i}
+                className="flex items-center gap-3 md:flex-col md:items-center md:text-center p-4 md:p-5 rounded-xl bg-gradient-to-br from-blue-50/50 to-cyan-50/50 md:bg-transparent dark:from-blue-900/20 dark:to-cyan-900/20 md:dark:from-transparent md:dark:to-transparent hover:shadow-md transition-all duration-500"
+                style={{
+                  opacity: featuresVisible ? 1 : 0,
+                  transform: featuresVisible ? "translateY(0)" : "translateY(32px)",
+                  transitionDelay: `${i * 100}ms`,
+                }}
+              >
                 <div className="w-12 h-12 md:w-14 md:h-14 shrink-0 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center md:mb-3 shadow-lg shadow-cyan-500/20">
                   <f.icon className="w-6 h-6 text-white" />
                 </div>
@@ -144,21 +162,53 @@ export default function Home() {
       </section>
 
       {/* Featured Products Section */}
-      <div className="bg-white dark:bg-slate-950">
+      <div
+        ref={productsRef}
+        className="bg-white dark:bg-slate-950 transition-all duration-700"
+        style={{
+          opacity: productsVisible ? 1 : 0,
+          transform: productsVisible ? "translateY(0)" : "translateY(40px)",
+        }}
+      >
         <FeaturedProducts products={products} onAddToCart={handleAddToCart} loading={loading} user={user} />
       </div>
 
       {/* Mega Discounts Section */}
-      <MegaDiscounts onAddToCart={handleAddToCart} user={user} />
+      <div
+        ref={discountsRef}
+        className="transition-all duration-700"
+        style={{
+          opacity: discountsVisible ? 1 : 0,
+          transform: discountsVisible ? "translateX(0)" : "translateX(-40px)",
+        }}
+      >
+        <MegaDiscounts onAddToCart={handleAddToCart} user={user} />
+      </div>
 
       {/* Nearby Shops Section */}
-      <div className="bg-white dark:bg-slate-950">
+      <div
+        ref={shopsRef}
+        className="bg-white dark:bg-slate-950 transition-all duration-700"
+        style={{
+          opacity: shopsVisible ? 1 : 0,
+          transform: shopsVisible ? "translateX(0)" : "translateX(40px)",
+        }}
+      >
         <NearbyShops shops={shops} loading={loading} />
       </div>
 
       {/* Partners Sections */}
-      <TechPartnersSection />
-      <PartnersSection />
+      <div
+        ref={partnersRef}
+        className="transition-all duration-700"
+        style={{
+          opacity: partnersVisible ? 1 : 0,
+          transform: partnersVisible ? "translateY(0)" : "translateY(32px)",
+        }}
+      >
+        <TechPartnersSection />
+        <PartnersSection />
+      </div>
     </div>
   );
 }

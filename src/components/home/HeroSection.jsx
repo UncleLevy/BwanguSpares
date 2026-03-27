@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Search, MapPin, ArrowRight } from "lucide-react";
@@ -9,6 +9,20 @@ export default function HeroSection() {
   const [query, setQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const navigate = useNavigate();
+  const bgRef = useRef(null);
+  const textRef = useRef(null);
+
+  // Parallax on desktop only
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.innerWidth < 768) return;
+      const y = window.scrollY;
+      if (bgRef.current) bgRef.current.style.transform = `translateY(${y * 0.35}px)`;
+      if (textRef.current) textRef.current.style.transform = `translateY(${y * 0.12}px)`;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -21,16 +35,18 @@ export default function HeroSection() {
 
   return (
     <section className="relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920&q=80')] bg-cover bg-center" />
-      <div className="absolute inset-0 gradient-blue opacity-90" />
-      <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-transparent to-transparent" />
+      {/* Background with parallax */}
+      <div ref={bgRef} className="absolute inset-0 will-change-transform" style={{ top: "-20%", bottom: "-20%" }}>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=1920&q=80')] bg-cover bg-center" />
+        <div className="absolute inset-0 gradient-blue opacity-90" />
+        <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-transparent to-transparent" />
+      </div>
 
       <div
         className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-36"
         style={{ paddingTop: "calc(env(safe-area-inset-top, 0px) + 3.5rem)" }}
       >
-        <div className="max-w-2xl">
+        <div ref={textRef} className="max-w-2xl will-change-transform">
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-4 md:mb-6 border border-white/10">
             <MapPin className="w-3 h-3" />
