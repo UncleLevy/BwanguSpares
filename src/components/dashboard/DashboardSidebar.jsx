@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 
 function SidebarContent({ items, active, title, onItemClick }) {
   return (
-    <>
+    <div className="flex flex-col h-full">
       <nav className="flex-1 p-3 space-y-0.5 overflow-y-auto" aria-label={`${title} navigation`}>
          {items.map(item => 
            item.href ? (
@@ -47,7 +47,7 @@ function SidebarContent({ items, active, title, onItemClick }) {
            )
          )}
        </nav>
-      <div className="p-3 border-t border-slate-100 dark:border-slate-700 space-y-1">
+      <div className="p-3 border-t border-slate-100 dark:border-slate-700 space-y-1 shrink-0">
         <Link to={createPageUrl("Home")} onClick={onItemClick}
           aria-label="Back to main site"
           className="flex items-center gap-3 px-3 min-h-[44px] rounded-xl text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
@@ -59,7 +59,7 @@ function SidebarContent({ items, active, title, onItemClick }) {
           <LogOut className="w-4 h-4" /> Sign Out
         </button>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -140,8 +140,8 @@ export default function DashboardSidebar({ items, active, title }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-56 lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 flex-col sticky top-0 h-screen shrink-0">
-        <SidebarContent items={items} active={active} title={title} />
+      <aside className="hidden md:flex w-56 lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shrink-0 h-screen overflow-hidden">
+       <SidebarContent items={items} active={active} title={title} />
       </aside>
     </>
   );
