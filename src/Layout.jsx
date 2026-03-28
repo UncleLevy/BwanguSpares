@@ -145,11 +145,12 @@ export default function Layout({ children, currentPageName }) {
       <Toaster position="top-right" richColors closeButton />
       <header
         role="banner"
-        className={`sticky top-0 z-[60] ${hasAppHeader ? "hidden md:block" : ""}`}
+        className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)"
+          paddingRight: "env(safe-area-inset-right, 0px)",
+          transform: "translateZ(0)"
         }}>
         
         <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/40 dark:border-slate-700/40 shadow-sm">
