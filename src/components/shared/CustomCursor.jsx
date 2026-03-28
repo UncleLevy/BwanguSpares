@@ -15,8 +15,10 @@ export default function CustomCursor() {
   const raf = useRef(null);
 
   useEffect(() => {
-    // Skip on touch devices
+    // Skip on touch devices or inside dashboards
     if (window.matchMedia("(pointer: coarse)").matches) return;
+    // Hide native cursor everywhere on desktop
+    document.documentElement.style.cursor = "none";
 
     const handleMouseMove = (e) => {
       state.current.x = e.clientX;
@@ -52,7 +54,8 @@ export default function CustomCursor() {
       state.current.ringY += dy * 0.25;
 
       if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${state.current.ringX - 20}px, ${state.current.ringY - 20}px)`;
+        const scale = state.current.isClicking ? 0.85 : state.current.isHovering ? 1.3 : 1;
+        ringRef.current.style.transform = `translate(${state.current.ringX - 20}px, ${state.current.ringY - 20}px) scale(${scale})`;
         ringRef.current.style.opacity = state.current.isVisible ? "1" : "0";
       }
 
@@ -107,8 +110,7 @@ export default function CustomCursor() {
             border: "1.5px solid rgba(6, 182, 212, 0.6)",
             background: "rgba(6, 182, 212, 0.02)",
             boxShadow: "inset 0 0 12px rgba(6, 182, 212, 0.08)",
-            transition: "all 0.2s ease-out",
-            transform: state.current?.isHovering ? "scale(1.3)" : state.current?.isClicking ? "scale(0.85)" : "scale(1)",
+            transition: "border-color 0.2s ease-out, box-shadow 0.2s ease-out",
           }}
         />
       </div>

@@ -61,6 +61,13 @@ export default function Cart() {
     setRegions(r || []);
     setTowns(t || []);
     setShippingRates(sr || []);
+    // If a region is already pre-filled (from saved address), populate filteredTowns
+    setForm(f => {
+      if (f.region) {
+        setFilteredTowns((t || []).filter(town => town.region_id === f.region));
+      }
+      return f;
+    });
   };
 
   const handleRegionChange = (regionId) => {
