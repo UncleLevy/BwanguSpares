@@ -155,7 +155,7 @@ export default function Layout({ children, currentPageName }) {
         <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/40 dark:border-slate-700/40 shadow-sm">
           <div className="mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
-            <Link to={createPageUrl("Home")} className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
                 <svg viewBox="0 0 24 24" className="w-6 h-6" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 7C3 5.89543 3.89543 5 5 5H19C20.1046 5 21 5.89543 21 7V17C21 18.1046 20.1046 19 19 19H5C3.89543 19 3 18.1046 3 17V7Z" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
