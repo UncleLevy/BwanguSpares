@@ -105,21 +105,26 @@ export default function BuyerOrdersView({ orders, setOrders, user, onReview, onR
                         size="sm"
                       />
                     </div>
-                    <div className="mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-                      <OrderTrackingBar status={order.status} />
+                    {/* Tracking Bar */}
+                    <div className="mb-3 pb-3 border-b border-slate-100 dark:border-slate-700 overflow-x-auto -mx-4 sm:-mx-5 px-4 sm:px-5">
+                      <div className="min-w-max">
+                        <OrderTrackingBar status={order.status} />
+                      </div>
                     </div>
-                    <div className="space-y-2">
+
+                    {/* Items List */}
+                    <div className="space-y-2 text-sm">
                       {order.items?.map((item, i) => (
-                        <div key={i} className="flex items-center gap-3 py-2 border-t border-slate-50 dark:border-slate-700/50 first:border-0">
-                          <div className="w-10 h-10 rounded-lg bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        <div key={i} className="flex items-center gap-2 py-1.5 border-t border-slate-50 dark:border-slate-700/50 first:border-0">
+                          <div className="w-9 h-9 rounded bg-slate-50 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
                             {item.image_url
-                              ? <img src={item.image_url} alt="" className="w-full h-full object-cover" />
-                              : <Package className="w-4 h-4 text-slate-300 dark:text-slate-600" />}
+                              ? <img src={item.image_url} alt="" className="w-full h-full object-cover rounded" />
+                              : <Package className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600" />}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
-                              Qty: {item.quantity} × K{item.price?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                            <p className="text-xs font-medium text-slate-900 dark:text-slate-100 line-clamp-2">{item.product_name}</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                              ×{item.quantity} · K{(item.price || 0).toLocaleString('en-US', { maximumFractionDigits: 0 })}
                             </p>
                           </div>
                         </div>
