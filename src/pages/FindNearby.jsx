@@ -286,20 +286,20 @@ export default function FindNearby() {
                      )}
                      {shop.rating > 0 && <p className="text-xs text-amber-600 mt-1">⭐ {shop.rating.toFixed(1)}</p>}
                      <a href={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-                       className="mt-2 block text-center text-xs font-bold bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700">
+                       className="mt-2 block text-center text-xs font-bold bg-blue-600 text-white py-1 px-3 rounded-lg hover:bg-blue-700 shadow-md">
                        View Shop →
                      </a>
-                   </div>
-                 </Popup>
-              </Marker>
-            ))}
+                     </div>
+                     </Popup>
+                     </Marker>
+                     ))}
 
-            {/* Technician markers */}
-            {tab === "technicians" && enrichTechs.map(tech => (
-              <Marker key={tech.id} position={[tech.lat, tech.lng]} icon={techIcon}
-                eventHandlers={{ click: () => setSelected(tech) }}>
-                <Popup>
-                   <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
+                     {/* Technician markers */}
+                     {tab === "technicians" && enrichTechs.map(tech => (
+                     <Marker key={tech.id} position={[tech.lat, tech.lng]} icon={techIcon}
+                     eventHandlers={{ click: () => setSelected(tech) }}>
+                     <Popup>
+                     <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
                      <p className="font-semibold text-sm">{tech.name}</p>
                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">{SPECIALIZATION_LABELS[tech.specialization] || tech.specialization}</p>
                      <p className="text-xs text-slate-600 dark:text-slate-400 mt-0.5">@ {tech.shopData?.name}</p>
@@ -311,7 +311,7 @@ export default function FindNearby() {
                      )}
                      {tech.hourly_rate > 0 && <p className="text-xs text-blue-600 mt-1">K{tech.hourly_rate}/hr</p>}
                      <a href={createPageUrl("ShopProfile") + `?id=${tech.shop_id}`}
-                       className="mt-2 block text-center text-xs font-bold bg-emerald-600 text-white py-1 px-3 rounded-lg hover:bg-emerald-700">
+                       className="mt-2 block text-center text-xs font-bold bg-emerald-600 text-white py-1 px-3 rounded-lg hover:bg-emerald-700 shadow-md">
                        Visit Shop →
                      </a>
                    </div>
