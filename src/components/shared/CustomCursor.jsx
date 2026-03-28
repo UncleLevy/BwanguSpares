@@ -36,14 +36,17 @@ export default function CustomCursor() {
 
     const handleMouseEnter = (e) => {
       const target = e.target.closest(
-        "a, button, [role='button'], [role='tab'], input, textarea, select"
+        "a, button, [role='button'], [role='tab'], [role='option'], [role='menuitem'], [role='combobox'], input, textarea, select, label"
       );
       state.current.isHovering = !!target;
     };
 
-    const handleMouseLeave = () => {
-      state.current.isHovering = false;
-      state.current.isVisible = false;
+    const handleMouseLeave = (e) => {
+      // Only hide cursor when leaving the window entirely, not when entering portals
+      if (!e.relatedTarget) {
+        state.current.isHovering = false;
+        state.current.isVisible = false;
+      }
     };
 
     const animate = () => {
@@ -67,14 +70,14 @@ export default function CustomCursor() {
       raf.current = requestAnimationFrame(animate);
     };
 
+    const handleBlur = () => { state.current.isVisible = false; };
+
     document.addEventListener("mousemove", handleMouseMove, { passive: true });
     document.addEventListener("mousedown", handleMouseDown);
     document.addEventListener("mouseup", handleMouseUp);
     document.addEventListener("mouseover", handleMouseEnter, true);
-    document.addEventListener("mouseleave", handleMouseLeave);
-    window.addEventListener("blur", () => {
-      state.current.isVisible = false;
-    });
+    document.documentElement.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("blur", handleBlur);
 
     raf.current = requestAnimationFrame(animate);
 
@@ -83,7 +86,8 @@ export default function CustomCursor() {
       document.removeEventListener("mousedown", handleMouseDown);
       document.removeEventListener("mouseup", handleMouseUp);
       document.removeEventListener("mouseover", handleMouseEnter, true);
-      document.removeEventListener("mouseleave", handleMouseLeave);
+      document.documentElement.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("blur", handleBlur);
       if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, []);
