@@ -47,7 +47,7 @@ function SidebarContent({ items, active, title, onItemClick }) {
            )
          )}
        </nav>
-      <div className="p-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
+      <div className="mt-auto p-3 border-t border-slate-100 dark:border-slate-700">
         <Link to={createPageUrl("Home")} onClick={onItemClick}
           aria-label="Back to main site"
           className="flex items-center gap-3 px-3 min-h-[44px] rounded-xl text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
