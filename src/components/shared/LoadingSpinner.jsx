@@ -1,13 +1,12 @@
 import React from "react";
+import { Package } from "lucide-react";
 
 export default function LoadingSpinner({ size = "md", className = "" }) {
-  const sizeClasses = {
-    sm: "w-3 h-3 border-1.5",
-    md: "w-4 h-4 border-2",
-    lg: "w-6 h-6 border-2",
-  };
+  const sizeMap = { sm: "w-4 h-4", md: "w-5 h-5", lg: "w-8 h-8" };
 
   return (
-    <div className={`${sizeClasses[size]} border-white border-t-transparent rounded-full animate-spin ${className}`} />
+    <div className={`relative flex items-center justify-center ${className}`}>
+      <Package className={`${sizeMap[size]} text-blue-600 animate-spin`} />
+    </div>
   );
 }
