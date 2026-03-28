@@ -47,17 +47,12 @@ function SidebarContent({ items, active, title, onItemClick }) {
            )
          )}
        </nav>
-      <div className="p-3 border-t border-slate-100 dark:border-slate-700 space-y-1 shrink-0">
+      <div className="p-3 border-t border-slate-100 dark:border-slate-700 shrink-0">
         <Link to={createPageUrl("Home")} onClick={onItemClick}
           aria-label="Back to main site"
           className="flex items-center gap-3 px-3 min-h-[44px] rounded-xl text-sm text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800">
           <ChevronLeft className="w-4 h-4" /> Back to Site
         </Link>
-        <button onClick={() => base44.auth.logout()}
-          aria-label="Sign out"
-          className="w-full flex items-center gap-3 px-3 min-h-[44px] rounded-xl text-sm text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20">
-          <LogOut className="w-4 h-4" /> Sign Out
-        </button>
       </div>
     </div>
   );
