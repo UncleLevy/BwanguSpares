@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+# Disallow admin and dashboard areas from indexing
+Disallow: /AdminDashboard
+Disallow: /ShopDashboard
+Disallow: /BuyerDashboard
+Disallow: /Cart
+Disallow: /ProfileCompletion
+
+# Sitemap location
+Sitemap: https://bwangu.com/sitemap.xml
