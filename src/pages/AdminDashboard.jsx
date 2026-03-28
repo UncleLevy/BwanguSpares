@@ -443,8 +443,10 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <AdminNavbar user={user} />
-      <div className="flex">
-        <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
+      <div className="flex h-screen">
+        <div className="overflow-y-auto overflow-x-hidden">
+          <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
+        </div>
 
         <main className="flex-1 pt-16 md:pt-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
         <PullToRefresh onRefresh={async () => {
