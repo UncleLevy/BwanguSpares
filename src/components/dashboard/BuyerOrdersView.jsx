@@ -46,58 +46,64 @@ export default function BuyerOrdersView({ orders, setOrders, user, onReview, onR
             {orders.map(order => {
               const sc = orderStatusConfig[order.status] || orderStatusConfig.pending;
               return (
-                <Card key={order.id} className={`border ${sc.border} bg-white dark:bg-slate-900`}>
-                  <CardContent className="p-5">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-xs text-slate-400 dark:text-slate-500">#{order.id?.slice(0, 8)}</span>
-                          <Badge className={`${sc.bg} ${sc.color}`}>
-                            <sc.icon className="w-3 h-3 mr-1" /> {order.status}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-                          From: <span className="font-medium text-slate-700 dark:text-slate-300">{order.shop_name}</span>
-                          <span className="mx-2">•</span>
-                          {new Date(order.created_date).toLocaleDateString()}
-                        </p>
+                <Card key={order.id} className={`border ${sc.border} bg-white dark:bg-slate-900 overflow-hidden`}>
+                  <CardContent className="p-4 sm:p-5">
+                    {/* Header: Order ID & Status */}
+                    <div className="flex items-center gap-2 mb-3 min-w-0">
+                      <span className="font-mono text-xs text-slate-400 dark:text-slate-500 shrink-0">#{order.id?.slice(0, 8)}</span>
+                      <Badge className={`${sc.bg} ${sc.color} shrink-0`}>
+                        <sc.icon className="w-3 h-3 mr-1" /> {order.status}
+                      </Badge>
+                    </div>
+                    
+                    {/* Info & Amount Grid */}
+                    <div className="grid grid-cols-2 gap-3 mb-3">
+                      <div className="min-w-0">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Shop</p>
+                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300 truncate">{order.shop_name}</p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">{new Date(order.created_date).toLocaleDateString()}</p>
                       </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                      <div className="text-right">
+                        <p className="text-xs text-slate-500 dark:text-slate-400">Total</p>
+                        <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           K{order.total_amount?.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
-                        {order.status === "confirmed" && (
-                          <Button size="sm" variant="outline" onClick={() => onReceipt(order)}
-                            className="gap-1.5 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30">
-                            <Eye className="w-3.5 h-3.5" /> Receipt
-                          </Button>
-                        )}
-                        {order.status === "pending" && (
-                          <Button size="sm" variant="outline" onClick={() => onRetryPayment(order)}
-                            className="gap-1.5 text-xs border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30">
-                            💳 Complete Payment
-                          </Button>
-                        )}
-                        {order.status === "delivered" && (
-                          <div className="flex flex-col gap-1.5">
-                            <Button size="sm" variant="outline" onClick={() => onReview(order)}
-                              className="gap-1.5 text-xs border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30">
-                              <Star className="w-3.5 h-3.5" /> Leave Review
-                            </Button>
-                            <Button size="sm" variant="outline" onClick={() => onReturn(order)}
-                              className="gap-1.5 text-xs border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30">
-                              <RotateCcw className="w-3.5 h-3.5" /> Request Return
-                            </Button>
-                          </div>
-                        )}
-                        <ReportButton
-                          reportedEmail={order.shop_name}
-                          reportedName={order.shop_name}
-                          reportedType="shop"
-                          reportedId={order.shop_id}
-                          size="sm"
-                        />
                       </div>
+                    </div>
+
+                    {/* Action Buttons */}
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {order.status === "confirmed" && (
+                        <Button size="sm" variant="outline" onClick={() => onReceipt(order)}
+                          className="gap-1 text-xs px-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 whitespace-nowrap">
+                          <Eye className="w-3 h-3" /> Receipt
+                        </Button>
+                      )}
+                      {order.status === "pending" && (
+                        <Button size="sm" variant="outline" onClick={() => onRetryPayment(order)}
+                          className="gap-1 text-xs px-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 whitespace-nowrap">
+                          💳 Pay
+                        </Button>
+                      )}
+                      {order.status === "delivered" && (
+                        <>
+                          <Button size="sm" variant="outline" onClick={() => onReview(order)}
+                            className="gap-1 text-xs px-2 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/30 whitespace-nowrap">
+                            <Star className="w-3 h-3" /> Review
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => onReturn(order)}
+                            className="gap-1 text-xs px-2 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-400 hover:bg-orange-50 dark:hover:bg-orange-950/30 whitespace-nowrap">
+                            <RotateCcw className="w-3 h-3" /> Return
+                          </Button>
+                        </>
+                      )}
+                      <ReportButton
+                        reportedEmail={order.shop_name}
+                        reportedName={order.shop_name}
+                        reportedType="shop"
+                        reportedId={order.shop_id}
+                        size="sm"
+                      />
                     </div>
                     <div className="mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
                       <OrderTrackingBar status={order.status} />
