@@ -86,15 +86,7 @@
     @apply bg-background text-foreground;
   }
 
-  /* Custom cursor — hide native cursor on desktop (pointer: fine = mouse) */
-  @media (pointer: fine) {
-    *, *::before, *::after,
-    [data-radix-popper-content-wrapper],
-    [data-radix-select-viewport],
-    [data-radix-dropdown-menu-content] {
-      cursor: none !important;
-    }
-  }
+
 
   :root {
     --nav-bg: rgba(255, 255, 255, 0.97);

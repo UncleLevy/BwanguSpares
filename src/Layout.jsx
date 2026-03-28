@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import PullToRefresh from "@/components/shared/PullToRefresh";
-import CustomCursor from "@/components/shared/CustomCursor";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User,
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock } from
@@ -123,7 +122,6 @@ export default function Layout({ children, currentPageName }) {
           paddingRight: "env(safe-area-inset-right, 0px)"
         }}>
         
-        <CustomCursor />
         <AnimatePresence mode="wait">
           <motion.div key={location.pathname + location.search} {...pageVariants}>
             {children}
@@ -143,7 +141,6 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
-      <CustomCursor />
       <PageLoader visible={pageLoading} />
       <Toaster position="top-right" richColors closeButton />
       <header
