@@ -90,14 +90,18 @@ export default function MobileSelect({
   }
 
   // Desktop: standard Shadcn Select
+  // Use a stable internal value (index-based key) to avoid Radix rendering value+label
+  // when value === label (e.g. town names), which causes "NdolaNdola" duplication.
   return (
     <Select value={value} onValueChange={onValueChange}>
       <SelectTrigger className={cn("h-11 rounded-xl", triggerClassName, className)}>
-        <SelectValue placeholder={placeholder} />
+        <SelectValue placeholder={placeholder}>
+          {selectedLabel || placeholder}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {options.map((opt) => (
-          <SelectItem key={opt.value} value={opt.value}>
+          <SelectItem key={opt.value} value={opt.value} textValue={opt.label}>
             {opt.label}
           </SelectItem>
         ))}
