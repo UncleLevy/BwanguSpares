@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Link, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 import {
   ShoppingCart, User, Settings, Package,
   FileSearch, MessageSquare, Eye, Wallet, Wrench, Gift, Camera, MapPin, Calendar, RotateCcw
@@ -479,7 +480,7 @@ export default function BuyerDashboard() {
                     <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Pre-fill checkout form with this address</p>
                   </label>
                 </div>
-                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700 gap-2">{submitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{submitting ? "Saving..." : "Save Changes"}</Button>
+                <Button onClick={saveProfile} disabled={submitting} className="bg-blue-600 hover:bg-blue-700 gap-2">{submitting && <LoadingSpinner size="sm" />}{submitting ? "Saving..." : "Save Changes"}</Button>
               </CardContent>
             </Card>
 
@@ -617,7 +618,7 @@ export default function BuyerDashboard() {
                  setRetryPaymentSubmitting(false);
                }}
              >
-               {retryPaymentSubmitting && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
+               {retryPaymentSubmitting && <LoadingSpinner size="sm" />}{retryPaymentSubmitting ? "Processing..." : "Proceed to Checkout"}
              </Button>
            </DialogFooter>
          </DialogContent>
