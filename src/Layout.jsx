@@ -427,7 +427,7 @@ export default function Layout({ children, currentPageName }) {
           </div>
           <div className="border-t border-slate-800 mt-8 pt-8 text-center text-xs space-y-1">
             <p>© 2026 BwanguSpares. All rights reserved.</p>
-            <p className="text-slate-500">Site was Designed and Developed by Ikhumbi-Tech Center</p>
+            <p className="text-slate-500">Site was Designed and Developed by <a href="https://ikhumbitech.com" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 underline transition-colors">Ikhumbi-Tech Center</a></p>
           </div>
         </div>
       </footer>
