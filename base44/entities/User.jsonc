@@ -1,0 +1,58 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "admin",
+        "shop_owner",
+        "user"
+      ],
+      "default": "user"
+    },
+    "first_name": {
+      "type": "string",
+      "description": "User's first name"
+    },
+    "last_name": {
+      "type": "string",
+      "description": "User's last name"
+    },
+    "phone": {
+      "type": "string",
+      "description": "User phone number"
+    },
+    "region": {
+      "type": "string",
+      "description": "Region/Province"
+    },
+    "town": {
+      "type": "string",
+      "description": "Town/City"
+    },
+    "address": {
+      "type": "string",
+      "description": "Street address"
+    },
+    "profile_picture_url": {
+      "type": "string",
+      "description": "Profile picture URL"
+    },
+    "use_default_address": {
+      "type": "boolean",
+      "default": true,
+      "description": "Use this address during checkout by default"
+    },
+    "shop_id": {
+      "type": "string",
+      "description": "Associated shop ID (only for shop owners and technicians)"
+    },
+    "profile_completed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user has completed their profile"
+    }
+  },
+  "required": []
+}
