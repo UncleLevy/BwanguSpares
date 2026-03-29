@@ -441,17 +441,16 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col bg-slate-50 dark:bg-slate-950" style={{ height: "100dvh" }}>
       <AdminNavbar user={user} />
-      <div className="flex h-screen">
+      <div className="flex flex-1 overflow-hidden">
         <div className="overflow-y-auto overflow-x-hidden">
           <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
         </div>
 
         <main
-          className="flex-1 overflow-auto min-w-0 text-slate-900 dark:text-slate-100 md:pt-8"
+          className="flex-1 overflow-y-auto min-w-0 text-slate-900 dark:text-slate-100 md:pt-6"
           style={{
-            paddingTop: "calc(env(safe-area-inset-top, 0px) + 56px)",
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)",
           }}
         >

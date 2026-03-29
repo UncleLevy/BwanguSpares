@@ -120,6 +120,7 @@ export default function Layout({ children, currentPageName }) {
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
+          minHeight: "100dvh",
         }}>
         
         <AnimatePresence mode="wait">

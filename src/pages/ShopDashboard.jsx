@@ -626,14 +626,13 @@ export default function ShopDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+    <div className="flex flex-col bg-slate-50 dark:bg-slate-950" style={{ height: "100dvh" }}>
       <ShopNavbar user={user} />
-      <div className="flex">
+      <div className="flex flex-1 overflow-hidden">
         <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
         <main
-          className="flex-1 overflow-auto min-w-0 text-slate-900 dark:text-slate-100 md:pt-8 p-4 md:p-6 lg:p-8"
+          className="flex-1 overflow-y-auto min-w-0 text-slate-900 dark:text-slate-100 p-4 md:p-6 lg:p-8"
           style={{
-            paddingTop: "calc(env(safe-area-inset-top, 0px) + 56px)",
             paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)",
           }}
         >

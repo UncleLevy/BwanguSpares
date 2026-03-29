@@ -64,10 +64,10 @@ export default function DashboardSidebar({ items, active, title }) {
 
   return (
     <>
-      {/* Mobile top bar — safe-area aware */}
+      {/* Mobile top bar — sticky so it doesn't fight WebView resize/scroll */}
       <div
-        className="md:hidden fixed top-0 left-0 right-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
+        className="md:hidden sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700"
+        style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
       >
         <div className="flex items-center gap-2 px-3" style={{ minHeight: 56 }}>
           <button
@@ -135,7 +135,7 @@ export default function DashboardSidebar({ items, active, title }) {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex w-56 lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shrink-0 h-screen overflow-hidden">
+      <aside className="hidden md:flex w-56 lg:w-64 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shrink-0 overflow-y-auto">
        <SidebarContent items={items} active={active} title={title} />
       </aside>
     </>
