@@ -21,25 +21,37 @@ L.Icon.Default.mergeOptions({
   shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
 });
 
-const shopIcon = new L.DivIcon({
-  className: "",
-  html: `<div style="width:34px;height:34px;background:#2563eb;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
-    <div style="transform:rotate(45deg);font-size:14px;">🏪</div>
-  </div>`,
-  iconSize: [34, 34],
-  iconAnchor: [17, 34],
-  popupAnchor: [0, -36],
-});
+function makeShopIcon(name) {
+  const label = name ? name.substring(0, 10) + (name.length > 10 ? "…" : "") : "Shop";
+  return new L.DivIcon({
+    className: "",
+    html: `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="background:#fff;color:#1d4ed8;font-size:10px;font-weight:700;font-family:sans-serif;white-space:nowrap;padding:2px 6px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.25);max-width:100px;overflow:hidden;text-overflow:ellipsis;">${label}</div>
+      <div style="width:30px;height:30px;background:#2563eb;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+        <div style="transform:rotate(45deg);font-size:13px;">🏪</div>
+      </div>
+    </div>`,
+    iconSize: [100, 58],
+    iconAnchor: [50, 58],
+    popupAnchor: [0, -60],
+  });
+}
 
-const techIcon = new L.DivIcon({
-  className: "",
-  html: `<div style="width:34px;height:34px;background:#059669;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
-    <div style="transform:rotate(45deg);font-size:14px;">🔧</div>
-  </div>`,
-  iconSize: [34, 34],
-  iconAnchor: [17, 34],
-  popupAnchor: [0, -36],
-});
+function makeTechIcon(name) {
+  const label = name ? name.substring(0, 10) + (name.length > 10 ? "…" : "") : "Tech";
+  return new L.DivIcon({
+    className: "",
+    html: `<div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+      <div style="background:#fff;color:#065f46;font-size:10px;font-weight:700;font-family:sans-serif;white-space:nowrap;padding:2px 6px;border-radius:6px;box-shadow:0 1px 4px rgba(0,0,0,0.25);max-width:100px;overflow:hidden;text-overflow:ellipsis;">${label}</div>
+      <div style="width:30px;height:30px;background:#059669;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid white;box-shadow:0 2px 8px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;">
+        <div style="transform:rotate(45deg);font-size:13px;">🔧</div>
+      </div>
+    </div>`,
+    iconSize: [100, 58],
+    iconAnchor: [50, 58],
+    popupAnchor: [0, -60],
+  });
+}
 
 const userIcon = new L.DivIcon({
   className: "",
@@ -219,7 +231,7 @@ export default function FindNearby() {
       {/* Split view */}
       <div className="flex flex-1 overflow-hidden flex-col md:flex-row">
         {/* List panel */}
-        <div className="w-full md:w-80 lg:w-96 overflow-y-auto bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shrink-0 order-2 md:order-1" style={{ maxHeight: "40vh", minHeight: "30vh" }}>
+        <div className="w-full md:w-80 lg:w-96 overflow-y-auto bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-700 shrink-0 order-2 md:order-1" style={{ maxHeight: "60vh", minHeight: "30vh" }}>
           {loading ? (
             <div className="p-4 space-y-3">
               {[1,2,3,4].map(i => <div key={i} className="h-20 bg-slate-100 dark:bg-slate-800 rounded-xl animate-pulse" />)}
@@ -245,7 +257,7 @@ export default function FindNearby() {
         </div>
 
         {/* Map panel */}
-        <div className="flex-1 order-1 md:order-2 overflow-hidden" style={{ minHeight: "45vh" }}>
+        <div className="flex-1 order-1 md:order-2 overflow-hidden" style={{ minHeight: "35vh", maxHeight: "50vh" }} data-map-panel>
           <MapContainer
             center={mapCenter}
             zoom={userLoc ? 13 : 7}
@@ -272,7 +284,7 @@ export default function FindNearby() {
 
             {/* Shop markers */}
             {tab === "shops" && enrichShops.map(shop => (
-              <Marker key={shop.id} position={[shop.latitude, shop.longitude]} icon={shopIcon}
+              <Marker key={shop.id} position={[shop.latitude, shop.longitude]} icon={makeShopIcon(shop.name)}
                 eventHandlers={{ click: () => setSelected(shop) }}>
                 <Popup>
                    <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
@@ -296,7 +308,7 @@ export default function FindNearby() {
 
                      {/* Technician markers */}
                      {tab === "technicians" && enrichTechs.map(tech => (
-                     <Marker key={tech.id} position={[tech.lat, tech.lng]} icon={techIcon}
+                     <Marker key={tech.id} position={[tech.lat, tech.lng]} icon={makeTechIcon(tech.name)}
                      eventHandlers={{ click: () => setSelected(tech) }}>
                      <Popup>
                      <div className="min-w-[180px] text-slate-900 dark:text-slate-100 font-sans">
