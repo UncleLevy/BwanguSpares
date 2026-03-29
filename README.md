@@ -14,6 +14,6 @@ Open localhost/3000 and click on Publish.
 
 **Docs & Support**
 
-Documentation: email admin@bwangu.com
+Documentation: email admin@bwanguspares.com
 
-Support: email admin@bwangu.com
+Support: email admin@bwanguspares.com
