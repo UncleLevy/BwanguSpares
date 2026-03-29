@@ -448,7 +448,13 @@ export default function AdminDashboard() {
           <DashboardSidebar items={sidebarItems} active={view} title="Admin Panel" />
         </div>
 
-        <main className="flex-1 pt-16 md:pt-8 overflow-auto min-w-0 text-slate-900 dark:text-slate-100" style={{ paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)" }}>
+        <main
+          className="flex-1 overflow-auto min-w-0 text-slate-900 dark:text-slate-100 md:pt-8"
+          style={{
+            paddingTop: "calc(env(safe-area-inset-top, 0px) + 56px)",
+            paddingBottom: "calc(env(safe-area-inset-bottom, 0px) + 4.5rem)",
+          }}
+        >
         <PullToRefresh onRefresh={async () => {
           setLoadError(false);
           setLoading(true);

@@ -116,9 +116,11 @@ export default function BottomNav() {
         borderTop: "1px solid var(--nav-border, rgba(226,232,240,1))",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        paddingBottom: "env(safe-area-inset-bottom, 0px)",
+        paddingBottom: "max(env(safe-area-inset-bottom, 0px), 8px)",
         paddingLeft:   "env(safe-area-inset-left, 0px)",
         paddingRight:  "env(safe-area-inset-right, 0px)",
+        transform: "translateZ(0)",
+        WebkitTransform: "translateZ(0)",
       }}
     >
       {visibleItems.map((item) => {
@@ -145,7 +147,7 @@ export default function BottomNav() {
               "flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors relative",
               isActive ? "text-blue-600 dark:text-blue-400" : "text-slate-400 dark:text-slate-500"
             )}
-            style={{ minHeight: 56, paddingTop: 8, paddingBottom: 8 }}
+            style={{ minHeight: 56, paddingTop: 8, paddingBottom: 8, minWidth: 0 }}
           >
             {/* Animated pill behind active icon */}
             <div className="relative flex items-center justify-center" style={{ width: 48, height: 30 }}>

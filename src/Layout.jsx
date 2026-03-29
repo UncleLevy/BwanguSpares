@@ -119,7 +119,7 @@ export default function Layout({ children, currentPageName }) {
       <div
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)"
+          paddingRight: "env(safe-area-inset-right, 0px)",
         }}>
         
         <AnimatePresence mode="wait">
@@ -147,12 +147,13 @@ export default function Layout({ children, currentPageName }) {
         role="banner"
         className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{
+          paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
           transform: "translateZ(0)"
         }}>
         
-        <div className="bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200/40 dark:border-slate-700/40 shadow-sm">
+        <div className="bg-white dark:bg-slate-900 md:bg-white/70 md:dark:bg-slate-900/70 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm">
           <div className="mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2.5">
@@ -371,7 +372,8 @@ export default function Layout({ children, currentPageName }) {
         className="w-full safe-pb"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
-          paddingRight: "env(safe-area-inset-right, 0px)"
+          paddingRight: "env(safe-area-inset-right, 0px)",
+          overscrollBehavior: "none",
         }}>
         
         <AnimatePresence mode="wait">
@@ -380,7 +382,7 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </main>
-      {["BrowseProducts", "FindNearby", "Cart", "BuyerDashboard"].includes(currentPageName) && <div className="md:hidden"><BottomNav /></div>}
+      <div className="md:hidden"><BottomNav /></div>
 
       {currentPageName === "Home" &&
       <footer

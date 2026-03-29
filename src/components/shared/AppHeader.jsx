@@ -31,7 +31,7 @@ export default function AppHeader({ title, backTo, actions, className }) {
         className
       )}
       style={{
-        paddingTop: "calc(env(safe-area-inset-top, 0px) + 6px)",
+        paddingTop: "6px",
         paddingBottom: "6px",
         paddingLeft: "max(8px, env(safe-area-inset-left, 0px))",
         paddingRight: "max(8px, env(safe-area-inset-right, 0px))",

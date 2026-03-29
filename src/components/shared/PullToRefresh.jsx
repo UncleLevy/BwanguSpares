@@ -41,7 +41,7 @@ export default function PullToRefresh({ onRefresh, children }) {
   return (
     <div
       ref={containerRef}
-      className="relative overflow-y-auto h-full"
+      className="relative"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}

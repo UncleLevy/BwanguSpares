@@ -83,11 +83,14 @@
   }
 
   html {
-    scrollbar-gutter: stable;
+    /* scrollbar-gutter causes layout issues in WebView on Android — disable */
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground;
+    /* Prevent overscroll bounce on Android WebView */
+    overscroll-behavior: none;
   }
 
 
@@ -105,28 +108,11 @@
 
 /* ── Mobile tap-target standards (44px minimum) ──────────────────────────── */
 @layer utilities {
-  button,
-  a,
-  [role="button"],
-  [role="tab"],
-  [role="menuitem"],
-  [role="option"],
-  input[type="checkbox"],
-  input[type="radio"] {
+  /* Only apply min-height to interactive elements that are direct nav/action targets */
+  nav button,
+  nav a,
+  .tap-target {
     min-height: 44px;
-  }
-
-  /* Exception: icon-only buttons inside table rows and compact toolbars */
-  .tap-compact button,
-  .tap-compact [role="button"],
-  td button,
-  td [role="button"] {
-    min-height: unset;
-  }
-
-  td button {
-    min-height: 36px;
-    min-width: 36px;
   }
 
   /* Smooth momentum scrolling on iOS */
@@ -146,7 +132,7 @@
 
   /* Safe bottom content padding — accounts for bottom nav + home-indicator */
   .safe-pb {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 4.5rem);
+    padding-bottom: max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4.5rem));
   }
 
   @media (min-width: 768px) {
