@@ -47,7 +47,7 @@ export default function ShopNavbar({ user }) {
 
   return (
     <header
-      className="hidden md:block sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
+      className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
 
