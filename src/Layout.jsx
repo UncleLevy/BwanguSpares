@@ -151,7 +151,8 @@ export default function Layout({ children, currentPageName }) {
           paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
-          transform: "translateZ(0)"
+          transform: "translateZ(0)",
+          background: "inherit"
         }}>
         
         <div className="bg-white dark:bg-slate-900 md:bg-white/70 md:dark:bg-slate-900/70 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm">
