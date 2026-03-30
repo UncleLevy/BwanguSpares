@@ -9,6 +9,7 @@ import {
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock } from
 "lucide-react";
 import BottomNav from "@/components/shared/BottomNav.jsx";
+import AppLogo from "@/components/shared/AppLogo";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -157,7 +158,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="mx-auto px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="https://media.base44.com/images/public/699f775333a30acfe3b73c4e/a189521e3_DynamicBlueSwooshwithCohesiveTypography9.jpg" alt="BwanguSpares Logo" className="w-10 h-10 rounded-xl object-cover" />
+              <AppLogo size={40} />
               <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
             </Link>
 
@@ -392,7 +393,7 @@ export default function Layout({ children, currentPageName }) {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="https://media.base44.com/images/public/699f775333a30acfe3b73c4e/a189521e3_DynamicBlueSwooshwithCohesiveTypography9.jpg" alt="BwanguSpares Logo" className="w-8 h-8 rounded-xl object-cover" />
+                <AppLogo size={32} />
                 <span className="text-white font-bold">BwanguSpares</span>
               </div>
               <p className="text-sm leading-relaxed">Zambia's premier virtual marketplace for auto spare parts. Connecting shops, mechanics and buyers.</p>

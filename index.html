@@ -118,6 +118,18 @@
         box-shadow: 0 20px 40px rgba(8, 145, 178, 0.35);
         margin-bottom: 24px;
         overflow: hidden;
+        animation: splash-pulse 1.8s ease-in-out infinite;
+        mix-blend-mode: multiply;
+      }
+      @media (prefers-color-scheme: dark) {
+        .splash-logo {
+          filter: invert(1);
+          mix-blend-mode: normal;
+        }
+      }
+      @keyframes splash-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50%       { transform: scale(1.1); opacity: 0.85; }
       }
       .splash-brand {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
