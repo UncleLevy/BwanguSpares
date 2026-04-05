@@ -20,6 +20,9 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import PageLoader from "@/components/shared/PageLoader";
 import { Toaster } from "sonner";
 
+// NEW: Platform detection for web vs native
+import { Platform } from 'react-native';
+
 const pageVariants = {
   initial: { opacity: 0, x: 24 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: [0.25, 0.46, 0.45, 0.94] } },
@@ -51,6 +54,10 @@ export default function Layout({ children, currentPageName }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [pageLoading, setPageLoading] = useState(false);
   const prevPage = React.useRef(currentPageName);
+
+  // NEW: Detect desktop web to hide BottomNav
+  const isWeb = Platform.OS === 'web';
+  const isDesktopWeb = isWeb && typeof window !== 'undefined' && window.innerWidth >= 768;
 
   // Show loader on page transitions
   useEffect(() => {
@@ -128,9 +135,11 @@ export default function Layout({ children, currentPageName }) {
             {children}
           </motion.div>
         </AnimatePresence>
-        <BottomNav />
-      </div>);
 
+        {/* BottomNav hidden on desktop web */}
+        {!isDesktopWeb && <BottomNav />}
+      </div>
+    );
   }
 
   const navLinks = [
@@ -138,7 +147,6 @@ export default function Layout({ children, currentPageName }) {
   { label: "Browse Parts", href: createPageUrl("BrowseProducts"), icon: Search },
   { label: "Shops", href: createPageUrl("BrowseShops"), icon: Store },
   { label: "Find Nearby", href: createPageUrl("FindNearby"), icon: Navigation }];
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
@@ -382,7 +390,9 @@ export default function Layout({ children, currentPageName }) {
           </motion.div>
         </AnimatePresence>
       </main>
-      <div className="md:hidden"><BottomNav /></div>
+
+      {/* Bottom navigation - hidden on desktop web */}
+      {!isDesktopWeb && <div className="md:hidden"><BottomNav /></div>}
 
       {currentPageName === "Home" &&
       <footer
@@ -432,5 +442,4 @@ export default function Layout({ children, currentPageName }) {
       </footer>
       }
     </div>);
-
 }
