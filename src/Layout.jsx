@@ -57,7 +57,7 @@ export default function Layout({ children, currentPageName }) {
 
   // NEW: Detect desktop web to hide BottomNav
   const isWeb = Platform.OS === 'web';
-  const isDesktopWeb = isWeb && typeof window !== 'undefined' && window.innerWidth >= 768;
+  const isDesktopWeb = isWeb && typeof window !== 'undefined' && window.innerWidth >= 765;
 
   // Show loader on page transitions
   useEffect(() => {
