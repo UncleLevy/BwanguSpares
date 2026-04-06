@@ -1,8 +1,8 @@
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClientInstance } from '@/lib/query-client';
-import { pagesConfig } from './pages.config';
+import { QueryClientProvider } from '@tanstack/react-query'
+import { queryClientInstance } from '@/lib/query-client'
+import { pagesConfig } from './pages.config'
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
@@ -10,18 +10,31 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { base44 } from '@/api/base44Client';
 import { useEffect, useState, Suspense, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { NavProvider, useNav, ownerTabFor } from '@/lib/navigationContext';
+import { NavProvider, useNav } from '@/lib/navigationContext';
 import { createPageUrl } from '@/utils';
 
-// Important: Import for platform detection and StatusBar
-import { Platform, StatusBar } from 'react-native';
+// Safe React Native imports (works on both Web and Native)
+let Platform;
+let StatusBar;
+
+try {
+  // This will only succeed on React Native / Android builds
+  const RN = require('react-native');
+  Platform = RN.Platform;
+  StatusBar = RN.StatusBar;
+} catch (e) {
+  // Web fallback - Vite will not crash
+  Platform = { OS: 'web' };
+  StatusBar = null;
+}
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 const MainPage = mainPageKey ? Pages[mainPageKey] : () => null;
 
-const LayoutWrapper = ({ children, currentPageName }) => 
-  Layout ? <Layout currentPageName={currentPageName}>{children}</Layout> : <>{children}</>;
+const LayoutWrapper = ({ children, currentPageName }) => Layout
+  ? <Layout currentPageName={currentPageName}>{children}</Layout>
+  : <>{children}</>;
 
 // ─── Loading fallback ────────────────────────────────────────────────────────
 const PageFallback = () => (
@@ -31,13 +44,22 @@ const PageFallback = () => (
 );
 
 // ─── Smooth page transitions ────────────────────────────────────────────
+// direction: "forward" = push right-to-left; "back" = pop left-to-right
 const pageTransition = { type: "spring", stiffness: 300, damping: 30, mass: 1 };
 
 function makeVariants(direction) {
   return {
-    initial: { opacity: 0 },
-    animate: { opacity: 1, transition: { duration: 0.3, ease: "easeInOut" } },
-    exit: { opacity: 0, transition: { duration: 0.2, ease: "easeInOut" } },
+    initial: {
+      opacity: 0,
+    },
+    animate: {
+      opacity: 1,
+      transition: { duration: 0.3, ease: "easeInOut" },
+    },
+    exit: {
+      opacity: 0,
+      transition: { duration: 0.2, ease: "easeInOut" },
+    },
   };
 }
 
@@ -62,7 +84,7 @@ const AnimatedPage = ({ children, direction }) => {
   );
 };
 
-// ─── Route recorder ──────────────────────────────────────────────────────────
+// ─── Route recorder — sync browser navigations into the nav context ──────────
 function RouteRecorder() {
   const location = useLocation();
   const { recordNavigation } = useNav();
@@ -71,6 +93,7 @@ function RouteRecorder() {
   useEffect(() => {
     if (isFirst.current) { isFirst.current = false; return; }
     recordNavigation(location.pathname, location.search);
+    // Scroll to top on navigation for smooth experience
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [location.pathname, location.search]);
 
@@ -179,17 +202,13 @@ const AuthenticatedApp = () => {
 // ─── App root ────────────────────────────────────────────────────────────────
 function App() {
   const isAndroid = Platform.OS === 'android';
-  const isWeb = Platform.OS === 'web';
-
-  // Hide BottomNav on desktop web (screen width >= 768px)
-  const hideBottomNavOnDesktop = isWeb && typeof window !== 'undefined' && window.innerWidth >= 768;
 
   return (
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          {/* StatusBar ONLY on Android (fixes white status bar in APK) */}
-          {isAndroid && (
+          {/* StatusBar ONLY on Android - fixes white status bar in APK */}
+          {isAndroid && StatusBar && (
             <StatusBar
               translucent={true}
               backgroundColor="transparent"
@@ -198,8 +217,6 @@ function App() {
           )}
 
           <AuthenticatedApp />
-
-          {/* BottomNav is rendered in Layout.jsx — we control visibility there */}
         </Router>
       </QueryClientProvider>
     </AuthProvider>
