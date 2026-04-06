@@ -1,54 +1,54 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import path from 'path'
-import { fileURLToPath } from 'url'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-import base44 from '@base44/vite-plugin'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  plugins: [react(), base44()],
+  plugins: [react()],
+
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      'react-native': 'react-native-web',
+      // Optional helpful aliases for React Native Web
+      'react-native/Libraries/Animated': 'react-native-web/dist/Animated',
     },
+    extensions: [
+      '.web.js',
+      '.web.jsx',
+      '.web.ts',
+      '.web.tsx',
+      '.js',
+      '.jsx',
+      '.ts',
+      '.tsx',
+    ],
   },
+
+  // FIX FOR MODAL HOST BLOCKED REQUEST
+  server: {
+    allowedHosts: [
+      'ta-01kngqtec45ezzk1znt6dd1s73-5173-xldm7uvlgcr3wt4c8s0px9go8.w.modal.host', // your current host
+      '.modal.host',        // allows all *.modal.host subdomains (recommended)
+      // You can add more if needed, e.g. '.localhost', 'localhost'
+    ],
+    // Alternative (less secure but simpler):
+    // allowedHosts: true,   // allows ALL hosts (use only for development)
+  },
+
+  define: {
+    __DEV__: process.env.NODE_ENV !== 'production',
+    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+  },
+
+  optimizeDeps: {
+    include: [
+      'react-native-web',
+      'react-native-web/dist/exports/Platform',
+      'react-native-web/dist/exports/StatusBar',
+    ],
+  },
+
   build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // Heavy map library — only used in FindNearby
-          if (id.includes('leaflet') || id.includes('react-leaflet')) {
-            return 'vendor-maps';
-          }
-          // Charts — only used in analytics views
-          if (id.includes('recharts') || id.includes('d3-')) {
-            return 'vendor-charts';
-          }
-          // 3D library — only used if three.js pages exist
-          if (id.includes('three')) {
-            return 'vendor-three';
-          }
-          // Rich text editor
-          if (id.includes('react-quill') || id.includes('quill')) {
-            return 'vendor-quill';
-          }
-          // Animation library
-          if (id.includes('framer-motion')) {
-            return 'vendor-motion';
-          }
-          // Stripe
-          if (id.includes('@stripe')) {
-            return 'vendor-stripe';
-          }
-          // General React ecosystem vendors
-          if (id.includes('node_modules')) {
-            return 'vendor';
-          }
-        },
-      },
+    commonjsOptions: {
+      transformMixedEsModules: true,
     },
-    // Increase chunk size warning limit slightly since we're intentionally splitting
-    chunkSizeWarningLimit: 600,
   },
-})
+});
