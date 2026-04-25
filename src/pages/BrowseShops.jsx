@@ -119,7 +119,7 @@ export default function BrowseShops() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {filteredShops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift">
+              className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
               <div className="relative h-36 bg-gradient-to-br from-blue-500 to-blue-700">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt="" className="w-full h-full object-cover opacity-80" />

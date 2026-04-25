@@ -78,7 +78,7 @@ export default function FeaturedProducts({ products, onAddToCart, loading }) {
 
         <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {products.map(product => (
-            <div key={product.id} className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift snap-start shrink-0 w-[200px] sm:w-[260px]">
+            <div key={product.id} className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 snap-start shrink-0 w-[200px] sm:w-[260px]">
               <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`}>
                 <div className="relative h-36 sm:h-48 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
                   {product.image_url ? (

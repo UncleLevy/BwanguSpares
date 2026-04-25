@@ -70,7 +70,7 @@ export default function NearbyShops({ shops, loading }) {
         <div ref={scrollRef} className="flex gap-4 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory" style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}>
           {shops.map(shop => (
             <Link key={shop.id} to={createPageUrl("ShopProfile") + `?id=${shop.id}`}
-              className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 overflow-hidden hover-lift snap-start shrink-0 w-[240px] sm:w-[300px]">
+              className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 snap-start shrink-0 w-[240px] sm:w-[300px]">
               <div className="relative h-24 sm:h-32 bg-gradient-to-br from-blue-500 to-blue-700 overflow-hidden">
                 {shop.cover_url ? (
                   <img src={shop.cover_url} alt={shop.name} className="w-full h-full object-cover opacity-80" />

@@ -18,7 +18,7 @@ export default function ProductCard({ product, onAddToCart, user }) {
   const isOutOfStock = (product.stock_quantity || 0) === 0;
 
   return (
-    <div className="group bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden active:scale-[0.97] transition-transform duration-150 flex flex-col">
+    <div className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] flex flex-col">
       {/* Image */}
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="relative block">
         <div className="relative h-40 sm:h-44 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
