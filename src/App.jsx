@@ -13,20 +13,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { NavProvider, useNav } from '@/lib/navigationContext';
 import { createPageUrl } from '@/utils';
 
-// Safe React Native imports (works on both Web and Native)
-let Platform;
-let StatusBar;
-
-try {
-  // This will only succeed on React Native / Android builds
-  const RN = require('react-native');
-  Platform = RN.Platform;
-  StatusBar = RN.StatusBar;
-} catch (e) {
-  // Web fallback - Vite will not crash
-  Platform = { OS: 'web' };
-  StatusBar = null;
-}
+// Safe React Native imports — resolved to react-native-web on web builds
+import { Platform, StatusBar } from 'react-native';
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];

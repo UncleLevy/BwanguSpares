@@ -1,13 +1,17 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   plugins: [react()],
 
   resolve: {
     alias: {
+      '@': path.resolve(__dirname, './src'),
       'react-native': 'react-native-web',
-      // Optional helpful aliases for React Native Web
       'react-native/Libraries/Animated': 'react-native-web/dist/Animated',
     },
     extensions: [
@@ -34,8 +38,8 @@ export default defineConfig({
   },
 
   define: {
-    __DEV__: process.env.NODE_ENV !== 'production',
-    'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
+    __DEV__: JSON.stringify(false),
+    'process.env.NODE_ENV': JSON.stringify('production'),
   },
 
   optimizeDeps: {
