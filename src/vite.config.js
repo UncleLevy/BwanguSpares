@@ -10,7 +10,7 @@ export default defineConfig({
 
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, '.'),
+      '@': path.resolve(__dirname, './src'),
       'react-native': 'react-native-web',
     },
     extensions: ['.web.js', '.web.jsx', '.js', '.jsx', '.ts', '.tsx'],

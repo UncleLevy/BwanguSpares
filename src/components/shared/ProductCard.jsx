@@ -57,25 +57,25 @@ export default function ProductCard({ product, onAddToCart, user }) {
       </Link>
 
       {/* Body */}
-      <div className="p-3 flex flex-col flex-1">
+      <div className="p-4 flex flex-col flex-1 gap-2">
         <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="flex-1">
-          <h3 className="font-semibold text-[13px] text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+          <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex items-center gap-1 mt-1.5">
+        <div className="flex items-center gap-1">
           <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
         </div>
 
         {/* Price */}
-        <div className="mt-2.5 flex items-baseline gap-1.5 flex-wrap">
+        <div className="flex items-baseline gap-2 flex-wrap">
           <span className="text-base font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
           {product.original_price && product.original_price > product.price && (
             <>
-              <span className="text-[11px] text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
-              <span className="text-[9px] font-bold px-1 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded">
+              <span className="text-xs text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded">
                 -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
               </span>
             </>
@@ -83,19 +83,19 @@ export default function ProductCard({ product, onAddToCart, user }) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-1.5 mt-2.5 pt-2.5 border-t border-slate-100 dark:border-slate-700">
+        <div className="flex gap-2 mt-1 pt-3 border-t border-slate-100 dark:border-slate-700">
           <WatchlistPartButton product={product} userEmail={user?.email} disabled={!canAddToCart} />
           {canAddToCart && (
             <Button
               size="sm"
               variant="outline"
               disabled={isOutOfStock}
-              className="flex-1 h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
+              className="flex-1 h-10 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
                          hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform"
               onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}
             >
-              <ShoppingCart className="w-3.5 h-3.5 mr-1" />
-              <span>{isOutOfStock ? "Out of stock" : "Add"}</span>
+              <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
+              <span>{isOutOfStock ? "Out of stock" : "Add to Cart"}</span>
             </Button>
           )}
         </div>
