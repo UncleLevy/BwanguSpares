@@ -143,13 +143,17 @@ export default function Cart() {
     );
   };
 
-  const removeItem = (item) => {
-    removeItemOptimistic(
-      item.id,
-      () => base44.entities.CartItem.delete(item.id),
-      () => toast.error("Failed to remove item")
-    );
-    toast.success("Item removed");
+  const removeItem = async (item) => {
+    // Optimistically remove from UI immediately
+    setItems(prev => prev.filter(i => i.id !== item.id));
+    try {
+      await base44.entities.CartItem.delete(item.id);
+      toast.success("Item removed");
+    } catch (e) {
+      // Restore item on failure
+      setItems(prev => [...prev, item]);
+      toast.error("Failed to remove item");
+    }
   };
 
   const subtotal = items.reduce((sum, i) => sum + (i.price || 0) * (i.quantity || 1), 0);
