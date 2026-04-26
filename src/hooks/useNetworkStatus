@@ -1,0 +1,67 @@
+import { useState, useEffect } from 'react';
+
+export function useNetworkStatus() {
+  const [isOnline, setIsOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  return isOnline;
+}
+
+// Store payment state for recovery
+export function savePaymentState(data) {
+  try {
+    sessionStorage.setItem('bwangu_payment_state', JSON.stringify({
+      ...data,
+      savedAt: new Date().toISOString(),
+    }));
+  } catch (e) {
+    console.warn('Failed to save payment state:', e);
+  }
+}
+
+export function getPaymentState() {
+  try {
+    const stored = sessionStorage.getItem('bwangu_payment_state');
+    return stored ? JSON.parse(stored) : null;
+  } catch (e) {
+    console.warn('Failed to retrieve payment state:', e);
+    return null;
+  }
+}
+
+export function clearPaymentState() {
+  try {
+    sessionStorage.removeItem('bwangu_payment_state');
+  } catch (e) {
+    console.warn('Failed to clear payment state:', e);
+  }
+}
+
+// Auto-retry with exponential backoff
+export async function retryWithBackoff(fn, maxAttempts = 3, initialDelay = 1000) {
+  let lastError;
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (attempt < maxAttempts - 1) {
+        const delay = initialDelay * Math.pow(2, attempt);
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+  }
+  throw lastError;
+}

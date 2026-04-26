@@ -15,6 +15,7 @@ import { useEffect, useState, Suspense, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { NavProvider, useNav } from '@/lib/navigationContext';
 import { createPageUrl } from '@/utils';
+import NetworkBanner from '@/components/shared/NetworkBanner';
 
 // Platform detection for web
 const Platform = { OS: 'web' };
@@ -237,7 +238,8 @@ function App() {
               barStyle="dark-content"   // Change to "light-content" if your header is dark
             />
           )}
-
+          
+          <NetworkBanner />
           <AuthenticatedApp />
         </Router>
       </QueryClientProvider>

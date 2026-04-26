@@ -15,9 +15,11 @@ import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
 import MobileSelect from "@/components/shared/MobileSelect";
 import PullToRefresh from "@/components/shared/PullToRefresh";
+import { useNetworkStatus, savePaymentState, getPaymentState, clearPaymentState } from "@/hooks/useNetworkStatus";
 
 export default function Cart() {
   const { isZambia, loading: geoLoading } = useGeoLock();
+  const isOnline = useNetworkStatus();
   const [items, setItems, updateItemOptimistic, removeItemOptimistic] = useOptimisticList([]);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -320,6 +322,8 @@ export default function Cart() {
         }
 
         const { reference } = response.data;
+        // Save payment state for recovery
+        savePaymentState({ reference, type: 'momo', items, total });
         setMomoStatus("pay-offline");
         notifyInfo("Payment Pending", "Approval required on your phone");
 
@@ -339,9 +343,10 @@ export default function Cart() {
              }
              // Delete cart items
              for (const item of items) await base44.entities.CartItem.delete(item.id);
+             clearPaymentState();
              notifyPaymentSuccess(reference);
              setMomoPolling(false);
-             // Redirect to order success page instead of reloading
+             // Redirect to order success page with smooth transition
              setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
              break;
           } else if (txStatus === "failed") {
@@ -370,19 +375,20 @@ export default function Cart() {
         });
 
         if (response.data.success) {
-          // Clear cart
-          if (appliedCoupon) {
-            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-          }
-          for (const item of items) {
-            await base44.entities.CartItem.delete(item.id);
-          }
-          notifyPaymentSuccess();
-          setSubmitting(false);
-          // Redirect to order success page instead of reloading
-          setTimeout(() => {
-            navigate(createPageUrl("OrderSuccess"));
-          }, 1500);
+           // Clear cart
+           if (appliedCoupon) {
+             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+           }
+           for (const item of items) {
+             await base44.entities.CartItem.delete(item.id);
+           }
+           clearPaymentState();
+           notifyPaymentSuccess();
+           setSubmitting(false);
+           // Redirect to order success page with smooth transition
+           setTimeout(() => {
+             navigate(createPageUrl("OrderSuccess"));
+           }, 1500);
         } else {
           notifyError("Payment Failed", response.data.error || "Wallet payment could not be processed");
           setSubmitting(false);
@@ -426,7 +432,16 @@ export default function Cart() {
           setCardStatus("failed");
           notifyError("Card Error", result.error);
           setSubmitting(false);
+          if (!isOnline) {
+            savePaymentState({ ...result, type: 'card', items, total });
+            notifyInfo("Offline Mode", "Payment state saved. Retry when online.");
+          }
           return;
+        }
+
+        // Save payment state for recovery
+        if (result.reference) {
+          savePaymentState({ ...result, type: 'card', items, total });
         }
 
         // 3DS redirect
@@ -449,9 +464,10 @@ export default function Cart() {
             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
           }
           for (const item of items) await base44.entities.CartItem.delete(item.id);
+          clearPaymentState();
           notifyPaymentSuccess();
           setSubmitting(false);
-          // Redirect to order success page instead of reloading
+          // Redirect to order success page with smooth transition
           setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${result.reference}`); }, 1500);
           return;
         } else if (result.status === "failed") {
@@ -510,11 +526,11 @@ export default function Cart() {
                         <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{item.product_name}</h4>
                         <p className="text-sm font-semibold text-blue-600 mt-0.5">K{item.price?.toLocaleString()}</p>
                       </div>
-                      <div className="flex items-center gap-0.5">
-                        <button onClick={() => updateQty(item, -1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"><Minus className="w-3 h-3" /></button>
-                        <span className="w-8 text-center text-sm font-medium dark:text-slate-200">{item.quantity || 1}</span>
-                        <button onClick={() => updateQty(item, 1)} className="w-7 h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"><Plus className="w-3 h-3" /></button>
-                      </div>
+                      <div className="flex items-center gap-1">
+                         <button onClick={() => updateQty(item, -1)} className="w-9 h-9 md:w-7 md:h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors active:scale-95"><Minus className="w-4 md:w-3 h-4 md:h-3" /></button>
+                         <span className="w-10 md:w-8 text-center text-sm font-medium dark:text-slate-200">{item.quantity || 1}</span>
+                         <button onClick={() => updateQty(item, 1)} className="w-9 h-9 md:w-7 md:h-7 rounded-lg border border-slate-200 dark:border-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors active:scale-95"><Plus className="w-4 md:w-3 h-4 md:h-3" /></button>
+                       </div>
                       <span className="text-sm font-semibold text-slate-900 dark:text-slate-100 ml-2 text-right min-w-max">K{((item.price||0)*(item.quantity||1)).toLocaleString()}</span>
                       <button onClick={() => removeItem(item)} className="ml-1 text-slate-400 dark:text-slate-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"><Trash2 className="w-4 h-4" /></button>
                     </div>
@@ -789,15 +805,32 @@ export default function Cart() {
 
                  <Button
                    onClick={handleCheckout}
-                   disabled={submitting || momoPolling || (paymentMethod === "wallet" && !useWallet)}
-                   className={`w-full h-12 rounded-xl text-sm gap-2 ${
+                   disabled={submitting || momoPolling || (paymentMethod === "wallet" && !useWallet) || !isOnline}
+                   className={`w-full h-12 md:h-10 rounded-xl text-sm md:text-base gap-2 font-semibold transition-all active:scale-95 ${
+                     !isOnline ? "bg-slate-400 cursor-not-allowed opacity-60" :
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
                      paymentMethod === "mobile_money" ? "bg-green-600 hover:bg-green-700" :
                      "bg-purple-600 hover:bg-purple-700"
                    }`}
                  >
-                   {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-4 h-4" /> : <span>📱</span>}
-                   {submitting || momoPolling ? "Processing…" : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "mobile_money" ? `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via Mobile Money` : "Complete Payment"}
+                   {submitting || momoPolling ? (
+                     <>
+                       <span className="inline-block animate-spin">⏳</span>
+                       <span className="hidden sm:inline">Processing…</span>
+                     </>
+                   ) : !isOnline ? (
+                     "Offline - No connection"
+                   ) : (
+                     <>
+                       {paymentMethod === "card" ? <CreditCard className="w-5 h-5 md:w-4 md:h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-5 h-5 md:w-4 md:h-4" /> : <span>📱</span>}
+                       <span className="hidden sm:inline">
+                         {paymentMethod === "card" ? "Pay with Card" : paymentMethod === "mobile_money" ? `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}` : "Complete Payment"}
+                       </span>
+                       <span className="sm:hidden">
+                         {paymentMethod === "card" ? "Card" : paymentMethod === "mobile_money" ? "MoMo" : "Pay"}
+                       </span>
+                     </>
+                   )}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
                    Powered by Lenco · Secure payment
