@@ -26,7 +26,7 @@ const infoBox = (rows, borderColor = BRAND.primary) => `
 const alertBox = (message, color = BRAND.primary) => `
   <div style="background:${color}12;border-radius:10px;border:1px solid ${color}30;padding:14px 18px;margin:16px 0;color:${color};font-size:13px;font-weight:600;">${message}</div>`;
 
-const emailTemplate = ({ title, badgeText, badgeColor = BRAND.primary, content, cta }) => `
+const emailTemplate = ({ title, badgeText, badgeColor = BRAND.primary, content, cta, shopLogo = null, shopName = null }) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,6 +50,20 @@ const emailTemplate = ({ title, badgeText, badgeColor = BRAND.primary, content, 
             </table>
           </td>
         </tr>
+        ${shopLogo ? `
+        <tr>
+          <td style="background:#f8fafc;padding:16px 32px;border-bottom:1px solid #e2e8f0;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td><img src="${shopLogo}" alt="Shop Logo" style="width:48px;height:48px;border-radius:8px;object-fit:cover;display:block;" /></td>
+                <td style="padding-left:16px;">
+                  <p style="margin:0;font-size:13px;color:#64748b;">Sold by</p>
+                  <p style="margin:4px 0 0;font-size:15px;font-weight:700;color:#0f172a;">${shopName}</p>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>` : ''}
         <tr>
           <td style="background:${badgeColor}18;border-bottom:3px solid ${badgeColor};padding:20px 32px 16px;">
             <span style="display:inline-block;background:${badgeColor};color:#fff;font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:4px 12px;border-radius:20px;">${badgeText}</span>
@@ -108,16 +122,20 @@ Deno.serve(async (req) => {
 
     const cfg = statusConfig[order.status] || { color: BRAND.primary, msg: `Status updated to ${order.status}.`, badge: order.status };
     
-    // Fetch shop address for context
+    // Fetch shop details including logo
     let shopAddress = "—";
+    let shopLogo = null;
+    let shopPhone = null;
     try {
       const shops = await base44.asServiceRole.entities.Shop.filter({ id: order.shop_id });
       if (shops.length > 0) {
         const shop = shops[0];
         shopAddress = [shop.address, shop.town, shop.region_name].filter(Boolean).join(", ");
+        shopLogo = shop.logo_url;
+        shopPhone = shop.phone;
       }
     } catch (e) {
-      console.warn("Failed to fetch shop address:", e?.message);
+      console.warn("Failed to fetch shop details:", e?.message);
     }
 
     const content = `
@@ -126,6 +144,7 @@ Deno.serve(async (req) => {
       ${infoBox([
         ["Shop", order.shop_name || "—"],
         ["Shop Address", shopAddress],
+        ...(shopPhone ? [["Shop Phone", shopPhone]] : []),
         ["Total", `K${(order.total_amount || 0).toLocaleString()}`],
         ...(order.tracking_number ? [["Tracking #", order.tracking_number]] : []),
       ], cfg.color)}
@@ -138,6 +157,8 @@ Deno.serve(async (req) => {
       badgeColor: cfg.color,
       content,
       cta: { text: "Track My Order", url: BRAND.appUrl },
+      shopLogo,
+      shopName: order.shop_name,
     });
 
     // Send email
