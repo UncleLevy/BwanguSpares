@@ -84,7 +84,9 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
     setForm({
       name: p.name || "", description: p.description || "", price: p.price ?? "",
       category: p.category || "", sub_category: p.sub_category || "", brand: p.brand || "",
-      sku: p.sku || "", compatible_vehicles: p.compatible_vehicles || "",
+      sku: p.sku || "", compatible_vehicles: Array.isArray(p.compatible_vehicles)
+        ? p.compatible_vehicles.map(v => [v.brand, v.model].filter(Boolean).join(" ")).join(", ")
+        : (p.compatible_vehicles || ""),
       condition: p.condition || "new", stock_quantity: p.stock_quantity ?? "0",
       status: p.status || "active", shop_id: p.shop_id || "", shop_name: p.shop_name || "",
       image_url: p.image_url || "",
@@ -104,7 +106,16 @@ export default function AdminProductsPanel({ products: initialProducts, shops, r
     if (!form.category) { toast.error("Category is required"); return; }
     if (!form.shop_id) { toast.error("Please assign this product to a shop"); return; }
     setSaving(true);
-    const payload = { ...form, price: parseFloat(form.price), stock_quantity: parseInt(form.stock_quantity) || 0 };
+    // compatible_vehicles is stored as array in schema; admin enters a plain string description
+    // so we store it as a single-element array of string objects, or empty array
+    const cvRaw = form.compatible_vehicles?.trim();
+    const compatibleVehicles = cvRaw ? [{ brand: cvRaw, model: "", years: [] }] : [];
+    const payload = {
+      ...form,
+      price: parseFloat(form.price),
+      stock_quantity: parseInt(form.stock_quantity) || 0,
+      compatible_vehicles: compatibleVehicles,
+    };
     try {
       if (editProduct) {
         await base44.entities.Product.update(editProduct.id, payload);

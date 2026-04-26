@@ -49,7 +49,9 @@ export default function Cart() {
     loadCart();
     loadRegionsAndTowns();
     const unsubscribe = base44.entities.CartItem.subscribe((event) => {
-      loadCart();
+      // Only reload on create events (e.g. item added from another tab).
+      // Delete and update are handled optimistically to avoid race conditions.
+      if (event.type === "create") loadCart();
     });
     return unsubscribe;
   }, []);
