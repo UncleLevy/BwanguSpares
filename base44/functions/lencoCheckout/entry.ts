@@ -44,23 +44,23 @@ Deno.serve(async (req) => {
     const reference = crypto.randomUUID();
 
     // Build Lenco payload — channels controls card vs mobile money
-    // Log key prefix for debugging (never log full key)
-    console.log("Lenco API key prefix:", LENCO_API_KEY ? LENCO_API_KEY.substring(0, 8) + "..." : "NOT SET");
-
     const lencoPayload = {
       amount: cardAmount,
       reference,
       country: "zm",
       currency: "ZMW",
       email: user.email,
+      name: user.full_name,
       callback_url: `${appUrl}/BuyerDashboard?payment=success`,
+      cancel_url: `${appUrl}/Cart?payment=cancelled`,
       metadata: {
         buyer_email: user.email,
         buyer_name: user.full_name,
       },
     };
 
-    const paymentRes = await fetch(`${LENCO_BASE_URL}/collections/card`, {
+    // Use Lenco hosted checkout (works on all plans)
+    const paymentRes = await fetch(`${LENCO_BASE_URL}/checkout`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LENCO_API_KEY}`,
@@ -71,15 +71,15 @@ Deno.serve(async (req) => {
     });
 
     const paymentData = await paymentRes.json();
-    console.log("Lenco card response:", JSON.stringify(paymentData));
+    console.log("Lenco checkout response:", JSON.stringify(paymentData));
 
     if (!paymentRes.ok || !paymentData.status) {
       const errMsg = paymentData?.message || "Failed to initialize Lenco payment";
-      console.error("Lenco card error:", errMsg);
+      console.error("Lenco checkout error:", errMsg);
       throw new Error(errMsg);
     }
 
-    const paymentUrl = paymentData?.data?.url || paymentData?.data?.authorization_url || paymentData?.data?.checkout_url;
+    const paymentUrl = paymentData?.data?.url || paymentData?.data?.authorization_url || paymentData?.data?.checkout_url || paymentData?.data?.link;
 
     if (!paymentUrl) {
       console.error("No payment URL in Lenco response:", JSON.stringify(paymentData));
