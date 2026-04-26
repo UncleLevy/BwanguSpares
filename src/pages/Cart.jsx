@@ -333,18 +333,19 @@ export default function Cart() {
           setMomoStatus(txStatus);
 
           if (txStatus === "successful") {
-            if (appliedCoupon) {
-              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-            }
-            // Update the order status to confirmed
-            const pendingOrders = await base44.entities.Order.filter({ stripe_session_id: reference });
-            if (pendingOrders.length > 0) {
-              await base44.entities.Order.update(pendingOrders[0].id, { status: "confirmed" });
-            }
-            for (const item of items) await base44.entities.CartItem.delete(item.id);
-            toast.success("Payment successful! Redirecting…");
-            setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
-            break;
+             if (appliedCoupon) {
+               await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+             }
+             // Update the order status to confirmed
+             const pendingOrders = await base44.entities.Order.filter({ stripe_session_id: reference });
+             if (pendingOrders.length > 0) {
+               await base44.entities.Order.update(pendingOrders[0].id, { status: "confirmed" });
+             }
+             for (const item of items) await base44.entities.CartItem.delete(item.id);
+             toast.success("Payment successful! Redirecting…");
+             setMomoPolling(false);
+             setTimeout(() => { window.location.replace(createPageUrl("BuyerDashboard")); }, 1500);
+             break;
           } else if (txStatus === "failed") {
             toast.error("Mobile money payment failed or was declined.");
             break;
@@ -382,7 +383,7 @@ export default function Cart() {
           // Redirect to order success or home
           setSubmitting(false);
           setTimeout(() => {
-            window.location.href = createPageUrl("BuyerDashboard");
+            window.location.replace(createPageUrl("BuyerDashboard"));
           }, 1500);
         } else {
           toast.error(response.data.error || "Payment failed");
@@ -430,17 +431,18 @@ export default function Cart() {
         }
 
         // 3DS redirect
-        if (result.status === "3ds-auth-required" && result.redirectUrl) {
-          setCardStatus("3ds");
-          // Clear coupon & cart optimistically, redirect to 3DS page
-          if (appliedCoupon) {
-            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-          }
-          for (const item of items) await base44.entities.CartItem.delete(item.id);
-          toast.info("Redirecting to 3D Secure verification…");
-          setTimeout(() => { window.location.href = result.redirectUrl; }, 1000);
-          return;
-        }
+         if (result.status === "3ds-auth-required" && result.redirectUrl) {
+           setCardStatus("3ds");
+           // Clear coupon & cart optimistically, redirect to 3DS page
+           if (appliedCoupon) {
+             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+           }
+           for (const item of items) await base44.entities.CartItem.delete(item.id);
+           toast.info("Redirecting to 3D Secure verification…");
+           setSubmitting(false);
+           setTimeout(() => { window.location.replace(result.redirectUrl); }, 1000);
+           return;
+         }
 
         if (result.status === "successful") {
           setCardStatus("successful");
@@ -450,7 +452,7 @@ export default function Cart() {
           for (const item of items) await base44.entities.CartItem.delete(item.id);
           toast.success("Payment successful! Your order is confirmed.");
           setSubmitting(false);
-          setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
+          setTimeout(() => { window.location.replace(createPageUrl("BuyerDashboard")); }, 1500);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");
