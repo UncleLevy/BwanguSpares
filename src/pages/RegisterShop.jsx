@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import TermsAndConditionsModal from "@/components/shop/TermsAndConditionsModal";
 import AddressInput from "@/components/shared/AddressInput";
 import SubscriptionTierSelector from "@/components/shop/SubscriptionTierSelector";
+import SubscriptionPreview from "@/components/shop/SubscriptionPreview";
 import { emailShopRegistrationReceived } from "@/components/lib/emailNotifications";
 
 export default function RegisterShop() {
@@ -270,13 +271,16 @@ export default function RegisterShop() {
       )}
 
       <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 space-y-5">
-        {/* Step 1: Basic Info */}
-        {step === 1 && (
-          <>
-            <div>
-              <Label className="dark:text-slate-300">Shop Name *</Label>
-              <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your shop name" className="mt-1 rounded-xl dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-500" />
-            </div>
+         {/* Step 3 Preview: Show subscription summary */}
+         {step === 3 && <SubscriptionPreview selectedTier={form.slot_type} shopName={form.name || "Your Shop"} />}
+
+         {/* Step 1: Basic Info */}
+         {step === 1 && (
+           <>
+             <div>
+               <Label className="dark:text-slate-300">Shop Name *</Label>
+               <Input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Your shop name" className="mt-1 rounded-xl dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-500" />
+             </div>
             <div>
               <Label className="dark:text-slate-300">Description</Label>
               <Textarea value={form.description} onChange={e => setForm({...form, description: e.target.value})} placeholder="Tell customers about your shop" className="mt-1 rounded-xl dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder-slate-500" rows={3} />
