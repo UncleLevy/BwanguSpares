@@ -10,6 +10,7 @@ import { toast } from "sonner";
 export default function DashboardCartPreview({ userEmail }) {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -20,9 +21,16 @@ export default function DashboardCartPreview({ userEmail }) {
   }, [userEmail]);
 
   const removeItem = async (cartItemId) => {
-    await base44.entities.CartItem.delete(cartItemId);
-    setCartItems(cartItems.filter(item => item.id !== cartItemId));
-    toast.success("Item removed from cart");
+    setDeleting(cartItemId);
+    try {
+      await base44.entities.CartItem.delete(cartItemId);
+      setCartItems(cartItems.filter(item => item.id !== cartItemId));
+      toast.success("Item removed from cart");
+    } catch (error) {
+      toast.error("Failed to remove item from cart");
+    } finally {
+      setDeleting(null);
+    }
   };
 
   const total = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -60,6 +68,7 @@ export default function DashboardCartPreview({ userEmail }) {
                 variant="ghost"
                 className="text-red-500 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 h-8 w-8 p-0"
                 onClick={() => removeItem(item.id)}
+                disabled={deleting === item.id}
               >
                 <Trash2 className="w-4 h-4" />
               </Button>
