@@ -24,12 +24,7 @@ export default function Cart() {
   const [form, setForm] = useState({ address: "", phone: "", notes: "", coupon: "", region: "", town: "" });
   const [usingDefaultAddress, setUsingDefaultAddress] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money"
-  const [mobileNetwork, setMobileNetwork] = useState("MTN");
-  const [mobileNumber, setMobileNumber] = useState("");
-  const [momoReferenceId, setMomoReferenceId] = useState(null);
-  const [momoStatus, setMomoStatus] = useState(null); // null | "PENDING" | "SUCCESSFUL" | "FAILED"
-  const [momoPolling, setMomoPolling] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money" | "wallet"
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [regions, setRegions] = useState([]);
@@ -227,102 +222,6 @@ export default function Cart() {
     }
   };
 
-  const handleMomoPayment = async () => {
-    if (!form.region) { toast.error("Please select your region"); return; }
-    if (!form.address.trim()) { toast.error("Please enter your address"); return; }
-    if (!mobileNumber.trim()) { toast.error("Please enter your MTN MoMo number"); return; }
-
-    if (window.self !== window.top) {
-      window.open(window.location.href, "_blank");
-      toast.info("Opening the app in a new tab — please complete your checkout there.");
-      return;
-    }
-
-    setSubmitting(true);
-    setMomoStatus(null);
-    try {
-      const response = await base44.functions.invoke('mtnMomoCollect', {
-        phone: mobileNumber,
-        amount: total,
-        externalId: crypto.randomUUID(),
-      });
-
-      if (!response.data.success) {
-        toast.error(response.data.error || "Failed to initiate MTN MoMo payment");
-        return;
-      }
-
-      const { referenceId } = response.data;
-      setMomoReferenceId(referenceId);
-      setMomoStatus("PENDING");
-      toast.success("Payment prompt sent! Please approve on your phone.");
-
-      // Poll for status every 5s for up to 2 minutes
-      setMomoPolling(true);
-      const maxAttempts = 24;
-      for (let i = 0; i < maxAttempts; i++) {
-        await new Promise(r => setTimeout(r, 5000));
-        const statusRes = await base44.functions.invoke('mtnMomoStatus', { referenceId });
-        const txStatus = statusRes.data?.status;
-        setMomoStatus(txStatus);
-
-        if (txStatus === "SUCCESSFUL") {
-          // Create the order
-          const allItems = items.map(i => ({
-            product_id: i.product_id, product_name: i.product_name,
-            shop_id: i.shop_id, shop_name: i.shop_name,
-            price: i.price || 0, quantity: i.quantity || 1, image_url: i.image_url || '',
-          }));
-          const deliveryAddress = `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`;
-          
-          // Group items by shop and create orders
-          const byShop = allItems.reduce((acc, item) => {
-            if (!acc[item.shop_id]) acc[item.shop_id] = { shop_name: item.shop_name, items: [] };
-            acc[item.shop_id].items.push(item);
-            return acc;
-          }, {});
-          
-          for (const [shopId, group] of Object.entries(byShop)) {
-            const shopTotal = group.items.reduce((s, i) => s + i.price * i.quantity, 0);
-            await base44.entities.Order.create({
-              buyer_email: user.email, buyer_name: user.full_name,
-              shop_id: shopId, shop_name: group.shop_name,
-              items: group.items, total_amount: shopTotal,
-              delivery_address: deliveryAddress, delivery_phone: form.phone || mobileNumber,
-              notes: form.notes, payment_method: "mtn_momo",
-              status: "confirmed",
-              shipping_option: shippingOption, shipping_cost: shippingCost,
-            });
-          }
-
-          if (appliedCoupon) {
-            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-          }
-          for (const item of items) await base44.entities.CartItem.delete(item.id);
-
-          toast.success("Order placed successfully!");
-          setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
-          break;
-        } else if (txStatus === "FAILED") {
-          toast.error("MTN MoMo payment was declined or failed.");
-          break;
-        }
-        // still PENDING — keep polling
-      }
-
-      if (momoStatus === "PENDING") {
-        setMomoStatus("FAILED");
-        toast.error("Payment timed out. Please try again.");
-      }
-    } catch (error) {
-      toast.error("MTN MoMo payment error. Please try again.");
-      console.error(error);
-    } finally {
-      setSubmitting(false);
-      setMomoPolling(false);
-    }
-  };
-
   const handleCheckout = async () => {
     if (!form.region) { 
       toast.error("Please select your region"); 
@@ -375,7 +274,7 @@ export default function Cart() {
       }));
 
       // Handle wallet-only payment
-      if (paymentMethod === "wallet" && useWallet && walletAmount === total) {
+      if (paymentMethod === "wallet" && useWallet && walletAmount >= total) {
         const response = await base44.functions.invoke('walletPaymentCheckout', {
           items: allItems,
           deliveryAddress: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
@@ -405,7 +304,7 @@ export default function Cart() {
           toast.error(response.data.error || "Payment failed");
         }
       } else {
-        // Card payment
+        // Card or Mobile Money payment via Lenco
         const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
 
         const response = await base44.functions.invoke('lencoCheckout', {
@@ -421,6 +320,7 @@ export default function Cart() {
           cardAmount: amountToChargeCard,
           shippingOption: shippingOption,
           shippingCost: shippingCost,
+          payment_method: paymentMethod === "mobile_money" ? "mobile_money" : "card",
         });
 
         if (response.data.url) {
@@ -658,71 +558,15 @@ export default function Cart() {
                        </button>
                      )}
                    </div>
-                 </div>
-
-                 {paymentMethod === "mobile_money" && (
-                   <div className={`space-y-3 p-4 rounded-xl border transition-all ${
-                     mobileNetwork === "MTN" ? "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 dark:border-yellow-700" :
-                     mobileNetwork === "Airtel" ? "bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700" :
-                     "bg-green-50 dark:bg-green-900/20 border-green-300 dark:border-green-700"
-                   }`}>
-                     <div>
-                       <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Network</Label>
-                       <div className="grid grid-cols-3 gap-2 mt-2">
-                         {[
-                           { name: "MTN", active: "bg-yellow-400 border-yellow-400 text-black", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
-                           { name: "Airtel", active: "bg-red-600 border-red-600 text-white", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
-                           { name: "Zamtel", active: "bg-green-600 border-green-600 text-white", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800" },
-                         ].map(n => (
-                           <button key={n.name} type="button" onClick={() => setMobileNetwork(n.name)}
-                             className={`p-2 rounded-lg border text-sm font-medium transition-all ${mobileNetwork === n.name ? n.active : n.inactive}`}>
-                             {n.name}
-                           </button>
-                         ))}
-                       </div>
+                   {paymentMethod === "mobile_money" && (
+                     <div className="mt-3 flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                       <span className="text-lg">📲</span>
+                       <p className="text-xs text-green-800 dark:text-green-300">
+                         You'll be redirected to Lenco's secure page to complete your mobile money payment (MTN, Airtel, or Zamtel).
+                       </p>
                      </div>
-                     {mobileNetwork === "MTN" ? (
-                       <>
-                         <div>
-                           <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">MTN MoMo Number</Label>
-                           <Input
-                             type="tel"
-                             value={mobileNumber}
-                             onChange={e => setMobileNumber(e.target.value)}
-                             placeholder="e.g. 0976 000 000"
-                             className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
-                           />
-                         </div>
-                         <div className="flex items-start gap-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-                           <span className="text-lg">📲</span>
-                           <p className="text-xs text-yellow-800 dark:text-yellow-300">
-                             <strong>MTN MoMo Direct</strong> — A payment prompt of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be sent to your MTN number. Approve it on your phone to complete the order.
-                           </p>
-                         </div>
-                       </>
-                     ) : (
-                       <div className="flex items-start gap-2 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-600">
-                         <span className="text-lg">🚧</span>
-                         <p className="text-xs text-slate-600 dark:text-slate-400">
-                           <strong>{mobileNetwork} Money</strong> integration is coming soon. Please use MTN MoMo or Card payment for now.
-                         </p>
-                       </div>
-                     )}
-
-                     {/* MoMo status modal */}
-                     {momoStatus && (
-                       <div className={`p-4 rounded-xl border text-center ${
-                         momoStatus === "SUCCESSFUL" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300" :
-                         momoStatus === "FAILED" ? "bg-red-50 dark:bg-red-900/20 border-red-300" :
-                         "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300"
-                       }`}>
-                         {momoStatus === "PENDING" && <p className="text-sm font-medium text-yellow-700 dark:text-yellow-300 animate-pulse">⏳ Waiting for approval on your phone…</p>}
-                         {momoStatus === "SUCCESSFUL" && <p className="text-sm font-medium text-emerald-700 dark:text-emerald-300">✅ Payment successful! Redirecting…</p>}
-                         {momoStatus === "FAILED" && <p className="text-sm font-medium text-red-700 dark:text-red-400">❌ Payment failed or was declined. Please try again.</p>}
-                       </div>
-                     )}
-                   </div>
-                 )}
+                   )}
+                 </div>
 
                  {paymentMethod === "wallet" && (
                    <div className="space-y-3 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-300 dark:border-purple-700">
@@ -765,25 +609,19 @@ export default function Cart() {
                  )}
 
                  <Button
-                   onClick={
-                     paymentMethod === "mobile_money"
-                       ? handleMomoPayment
-                       : paymentMethod === "card" || paymentMethod === "wallet" ? handleCheckout : undefined
-                   }
-                   disabled={submitting || momoPolling || (paymentMethod === "wallet" && !useWallet) || (paymentMethod === "mobile_money" && mobileNetwork !== "MTN")}
+                   onClick={handleCheckout}
+                   disabled={submitting || (paymentMethod === "wallet" && !useWallet)}
                    className={`w-full h-12 rounded-xl text-sm gap-2 ${
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
-                     paymentMethod === "wallet" ? "bg-purple-600 hover:bg-purple-700" :
-                     mobileNetwork === "MTN" ? "bg-yellow-400 hover:bg-yellow-500 text-black" :
-                     mobileNetwork === "Airtel" ? "bg-red-600 hover:bg-red-700 opacity-50 cursor-not-allowed" :
-                     "bg-green-600 hover:bg-green-700 opacity-50 cursor-not-allowed"
+                     paymentMethod === "mobile_money" ? "bg-green-600 hover:bg-green-700" :
+                     "bg-purple-600 hover:bg-purple-700"
                    }`}
                  >
                    {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-4 h-4" /> : <span>📱</span>}
-                   {submitting || momoPolling ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "wallet" ? "Complete Payment" : `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via MTN MoMo`}
+                   {submitting ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "mobile_money" ? `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via Mobile Money` : "Complete Payment"}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
-                   {paymentMethod === "card" ? "Powered by Lenco · Secure payment" : paymentMethod === "wallet" ? "Pay using your wallet credit" : "MTN MoMo Direct · Secure payment"}
+                   Powered by Lenco · Secure payment
                  </p>
               </div>
             )}

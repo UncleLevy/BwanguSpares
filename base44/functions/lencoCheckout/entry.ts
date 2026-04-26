@@ -25,6 +25,7 @@ Deno.serve(async (req) => {
       cardAmount = 0,
       shippingOption = "collect",
       shippingCost = 0,
+      payment_method = "card", // "card" or "mobile_money"
     } = await req.json();
 
     if (!items || items.length === 0) {
@@ -42,25 +43,35 @@ Deno.serve(async (req) => {
 
     const reference = crypto.randomUUID();
 
-    // Create Lenco payment link
+    // Build Lenco payload — channels controls card vs mobile money
+    const lencoPayload = {
+      amount: cardAmount,
+      currency: "ZMW",
+      reference,
+      email: user.email,
+      callback_url: `${appUrl}/BuyerDashboard?payment=success`,
+      cancel_url: `${appUrl}/Cart?payment=cancelled`,
+      metadata: {
+        buyer_email: user.email,
+        buyer_name: user.full_name,
+        payment_method,
+      },
+    };
+
+    // Restrict channels based on payment method
+    if (payment_method === "mobile_money") {
+      lencoPayload.channels = ["mobile_money"];
+    } else {
+      lencoPayload.channels = ["card"];
+    }
+
     const paymentRes = await fetch(`${LENCO_BASE_URL}/transaction/initialize`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LENCO_API_KEY}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        amount: cardAmount,
-        currency: "ZMW",
-        reference,
-        email: user.email,
-        callback_url: `${appUrl}/BuyerDashboard?payment=success`,
-        cancel_url: `${appUrl}/Cart?payment=cancelled`,
-        metadata: {
-          buyer_email: user.email,
-          buyer_name: user.full_name,
-        },
-      }),
+      body: JSON.stringify(lencoPayload),
     });
 
     if (!paymentRes.ok) {
@@ -110,7 +121,7 @@ Deno.serve(async (req) => {
       delivery_address,
       delivery_phone,
       notes: notes || "",
-      payment_method: "card",
+      payment_method,
       stripe_session_id: reference,
       coupon_code: coupon_code || "",
       discount_amount: discount_amount || 0,
@@ -119,7 +130,7 @@ Deno.serve(async (req) => {
       payout_status: "pending",
     });
 
-    console.log(`Lenco payment initialized: ${reference} for ${user.email}`);
+    console.log(`Lenco payment initialized (${payment_method}): ${reference} for ${user.email}`);
     return Response.json({ url: paymentUrl, reference });
   } catch (error) {
     console.error("Lenco checkout error:", error.message);
