@@ -11,6 +11,13 @@ const BRAND = {
   gradient: "linear-gradient(135deg, #1a3fa8 0%, #0891b2 100%)",
   logo: "https://media.base44.com/images/public/699f775333a30acfe3b73c4e/097f0a26f_DynamicBlueSwooshwithCohesiveTypography9.jpg",
   appUrl: "https://bwanguspares.com",
+  // Theme colors for different email types
+  success: "#059669",
+  warning: "#d97706",
+  danger: "#dc2626",
+  info: "#0891b2",
+  light: "#f8fafc",
+  dark: "#0f172a",
 };
 
 const send = async ({ to, subject, htmlBody, body }) => {
@@ -109,6 +116,15 @@ const infoBox = (rows, borderColor = BRAND.primary) => `
 
 const alertBox = (message, color = BRAND.primary) => `
   <div style="background:${color}12;border-radius:10px;border:1px solid ${color}30;padding:14px 18px;margin:16px 0;color:${color};font-size:13px;font-weight:600;">${message}</div>`;
+
+const themeBadge = (text, bgColor, textColor = "#fff") => `
+  <span style="display:inline-block;background:${bgColor};color:${textColor};font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;padding:5px 14px;border-radius:20px;margin-right:6px;">${text}</span>`;
+
+const themeSection = (title, content, bgColor = BRAND.light) => `
+  <div style="background:${bgColor};border-radius:12px;padding:18px;margin:16px 0;border-left:4px solid ${BRAND.primary};">
+    <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:${BRAND.dark};text-transform:uppercase;letter-spacing:0.5px;">${title}</p>
+    <div style="color:#374151;font-size:13px;line-height:1.6;">${content}</div>
+  </div>`;
 
 // ─── Orders ──────────────────────────────────────────────────────────────────
 
@@ -277,120 +293,123 @@ export const emailNewOrderToShop = async (shopOwnerEmail, shopName, order) => {
 export const emailWalletCredited = (buyerEmail, buyerName, amount, reason, newBalance) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
-    <p style="margin:0 0 16px;">Your BwanguSpares wallet has been credited.</p>
-    <div style="background:${BRAND.gradient};border-radius:12px;padding:24px;text-align:center;margin:20px 0;">
-      <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Amount Credited</p>
-      <p style="margin:8px 0;color:#fff;font-size:36px;font-weight:800;">+K${amount.toLocaleString()}</p>
-      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px;">${reason}</p>
-    </div>
+    <p style="margin:0 0 16px;">Your BwanguSpares wallet has been credited! 🎉</p>
+    ${themeSection("✓ Credit Applied", `
+      <div style="text-align:center;margin:8px 0;">
+        <p style="font-size:24px;font-weight:800;color:${BRAND.success};margin:0;">+K${amount.toLocaleString()}</p>
+        <p style="font-size:13px;color:#64748b;margin:6px 0 0;">${reason}</p>
+      </div>
+    `, BRAND.success + "15")}
     ${infoBox([
-      ["Transaction Type", "Wallet Credit"],
+      ["Transaction", "Wallet Credit"],
       ["Amount", `+K${amount.toLocaleString()}`],
       ["New Balance", `K${(newBalance || 0).toLocaleString()}`],
       ["Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
-    ])}
-    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">You can use your wallet balance on your next order at checkout.</p>
+    ], BRAND.success)}
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Use your wallet balance for instant checkout on your next order.</p>
   `;
   return send({
     to: buyerEmail,
-    subject: `💰 Wallet Credited – K${amount.toLocaleString()} – BwanguSpares`,
-    htmlBody: template({ title: "Wallet Credited", badgeText: "Wallet", badgeColor: BRAND.primary, content, cta: { text: "Shop Now", url: BRAND.appUrl } }),
+    subject: `✓ Wallet Credited – K${amount.toLocaleString()} – BwanguSpares`,
+    htmlBody: template({ title: "Wallet Credited", badgeText: "Wallet Credit", badgeColor: BRAND.success, content, cta: { text: "Shop Now", url: BRAND.appUrl } }),
   });
 };
 
 export const emailWalletDebited = (buyerEmail, buyerName, amount, reason, newBalance) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
-    <p style="margin:0 0 16px;">A debit has been made from your BwanguSpares wallet.</p>
-    <div style="background:#f8fafc;border-radius:12px;border:2px solid #e2e8f0;padding:24px;text-align:center;margin:20px 0;">
-      <p style="margin:0;color:#64748b;font-size:13px;text-transform:uppercase;letter-spacing:1px;">Amount Debited</p>
-      <p style="margin:8px 0;color:#dc2626;font-size:36px;font-weight:800;">-K${amount.toLocaleString()}</p>
-      <p style="margin:0;color:#64748b;font-size:13px;">${reason}</p>
-    </div>
+    <p style="margin:0 0 16px;">A debit has been made from your wallet.</p>
+    ${themeSection("Debit Applied", `
+      <div style="text-align:center;margin:8px 0;">
+        <p style="font-size:24px;font-weight:800;color:${BRAND.danger};margin:0;">-K${amount.toLocaleString()}</p>
+        <p style="font-size:13px;color:#64748b;margin:6px 0 0;">${reason}</p>
+      </div>
+    `, BRAND.danger + "15")}
     ${infoBox([
-      ["Transaction Type", "Wallet Debit"],
-      ["Amount", `-K${amount.toLocaleString()}`],
+      ["Debit Amount", `-K${amount.toLocaleString()}`],
       ["Remaining Balance", `K${(newBalance || 0).toLocaleString()}`],
       ["Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
-    ], "#dc2626")}
-    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">If you didn't authorise this transaction, please contact our support team immediately.</p>
+    ], BRAND.danger)}
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Contact support immediately if this transaction was unauthorized.</p>
   `;
   return send({
     to: buyerEmail,
-    subject: `🔔 Wallet Debit – K${amount.toLocaleString()} – BwanguSpares`,
-    htmlBody: template({ title: "Wallet Debited", badgeText: "Wallet", badgeColor: "#dc2626", content, cta: { text: "View Wallet", url: BRAND.appUrl } }),
+    subject: `⚠️ Wallet Debit – K${amount.toLocaleString()} – BwanguSpares`,
+    htmlBody: template({ title: "Wallet Debited", badgeText: "Wallet Debit", badgeColor: BRAND.danger, content, cta: { text: "View Wallet", url: BRAND.appUrl } }),
   });
 };
 
 export const emailPayoutRequested = (shopOwnerEmail, shopName, amount) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
-    <p style="margin:0 0 16px;">Your payout request has been received and is now pending admin approval.</p>
-    <div style="background:${BRAND.gradient};border-radius:12px;padding:24px;text-align:center;margin:20px 0;">
-      <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Payout Requested</p>
-      <p style="margin:8px 0;color:#fff;font-size:36px;font-weight:800;">K${amount.toLocaleString()}</p>
-    </div>
+    <p style="margin:0 0 16px;">Your payout request has been received and is awaiting approval.</p>
+    ${themeSection("Pending Approval", `
+      <div style="text-align:center;">
+        <p style="font-size:28px;font-weight:800;color:${BRAND.primary};margin:0;">K${amount.toLocaleString()}</p>
+        <p style="font-size:12px;color:#64748b;margin:8px 0 0;text-transform:uppercase;letter-spacing:0.5px;">Processing within 1–3 business days</p>
+      </div>
+    `, BRAND.primary + "10")}
     ${infoBox([
-      ["Status", "Pending Approval"],
-      ["Amount", `K${amount.toLocaleString()}`],
-      ["Date Requested", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
+      ["Request Amount", `K${amount.toLocaleString()}`],
+      ["Status", "Pending Admin Approval"],
+      ["Requested Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
     ])}
-    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Payouts are typically processed within 1–3 business days. You'll receive another email once it's approved and sent.</p>
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">You'll receive a confirmation email once the payout is approved and processed.</p>
   `;
   return send({
     to: shopOwnerEmail,
-    subject: `⏳ Payout Request Received – K${amount.toLocaleString()} – BwanguSpares`,
-    htmlBody: template({ title: "Payout Requested", badgeText: "Payout", badgeColor: BRAND.primary, content, cta: { text: "View Shop Wallet", url: BRAND.appUrl } }),
+    subject: `⏳ Payout Request Pending – K${amount.toLocaleString()} – BwanguSpares`,
+    htmlBody: template({ title: "Payout Requested", badgeText: "Pending", badgeColor: BRAND.warning, content, cta: { text: "View Wallet", url: BRAND.appUrl } }),
   });
 };
 
 export const emailPayoutCompleted = (shopOwnerEmail, shopName, amount, method, reference) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
-    <p style="margin:0 0 16px;">Great news — your payout has been approved and processed! 🎉</p>
-    <div style="background:linear-gradient(135deg,#059669 0%,#0891b2 100%);border-radius:12px;padding:24px;text-align:center;margin:20px 0;">
-      <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Amount Paid Out</p>
-      <p style="margin:8px 0;color:#fff;font-size:36px;font-weight:800;">K${amount.toLocaleString()}</p>
-      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px;">via ${method || "bank transfer"}</p>
-    </div>
+    <p style="margin:0 0 16px;">Excellent! Your payout has been approved and processed. 🎉</p>
+    ${themeSection("✓ Payout Completed", `
+      <div style="text-align:center;">
+        <p style="font-size:28px;font-weight:800;color:${BRAND.success};margin:0;">K${amount.toLocaleString()}</p>
+        <p style="font-size:12px;color:#64748b;margin:8px 0 0;">via ${method || "Bank Transfer"}</p>
+      </div>
+    `, BRAND.success + "15")}
     ${infoBox([
-      ["Status", "Completed ✓"],
       ["Amount", `K${amount.toLocaleString()}`],
       ["Method", method || "Bank Transfer"],
       ...(reference ? [["Reference", reference]] : []),
-      ["Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
-    ], "#059669")}
-    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Funds should reflect in your account within 1 business day depending on your bank.</p>
+      ["Processed Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
+    ], BRAND.success)}
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Funds should appear in your account within 1 business day. Check your bank statement to confirm.</p>
   `;
   return send({
     to: shopOwnerEmail,
     subject: `✓ Payout Completed – K${amount.toLocaleString()} – BwanguSpares`,
-    htmlBody: template({ title: "Payout Completed!", badgeText: "Payout", badgeColor: "#059669", content, cta: { text: "View Financials", url: BRAND.appUrl } }),
+    htmlBody: template({ title: "Payout Completed!", badgeText: "Success", badgeColor: BRAND.success, content, cta: { text: "View Financials", url: BRAND.appUrl } }),
   });
 };
 
 export const emailPaymentReceived = (buyerEmail, buyerName, amount, method, orderId) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
-    <p style="margin:0 0 16px;">We've received your payment. Your order is now being processed.</p>
-    <div style="background:${BRAND.gradient};border-radius:12px;padding:24px;text-align:center;margin:20px 0;">
-      <p style="margin:0;color:rgba(255,255,255,0.8);font-size:13px;text-transform:uppercase;letter-spacing:1px;">Payment Received</p>
-      <p style="margin:8px 0;color:#fff;font-size:36px;font-weight:800;">K${amount.toLocaleString()}</p>
-      <p style="margin:0;color:rgba(255,255,255,0.7);font-size:13px;">via ${method || "online payment"}</p>
-    </div>
+    <p style="margin:0 0 16px;">Your payment has been received and your order is being processed.</p>
+    ${themeSection("✓ Payment Confirmed", `
+      <div style="text-align:center;">
+        <p style="font-size:28px;font-weight:800;color:${BRAND.success};margin:0;">K${amount.toLocaleString()}</p>
+        <p style="font-size:12px;color:#64748b;margin:8px 0 0;">via ${method || "Online Payment"}</p>
+      </div>
+    `, BRAND.success + "15")}
     ${infoBox([
-      ["Status", "Payment Confirmed ✓"],
       ["Amount", `K${amount.toLocaleString()}`],
       ["Method", method || "Online Payment"],
       ...(orderId ? [["Order Reference", orderId]] : []),
       ["Date", new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
-    ])}
-    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Keep this email as your payment receipt. Track your order from the Buyer Dashboard.</p>
+    ], BRAND.success)}
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Keep this email as your receipt. Track your order in real-time from your Buyer Dashboard.</p>
   `;
   return send({
     to: buyerEmail,
     subject: `✓ Payment Confirmed – K${amount.toLocaleString()} – BwanguSpares`,
-    htmlBody: template({ title: "Payment Confirmed!", badgeText: "Payment", badgeColor: "#059669", content, cta: { text: "Track My Order", url: BRAND.appUrl } }),
+    htmlBody: template({ title: "Payment Confirmed!", badgeText: "Success", badgeColor: BRAND.success, content, cta: { text: "Track Order", url: BRAND.appUrl } }),
   });
 };
 
