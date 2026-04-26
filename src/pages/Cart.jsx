@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { notifySuccess, notifyError, notifyInfo, notifyPaymentProcessing, notifyPaymentSuccess } from "@/components/shared/NotificationToast";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { useGeoLock } from "@/components/shared/useGeoLock";
 import MobileSelect from "@/components/shared/MobileSelect";
@@ -127,7 +127,7 @@ export default function Cart() {
         setWalletBalance(wallets[0].balance || 0);
       }
     } catch (error) {
-      toast.error("Failed to load cart");
+      notifyError("Cart Error", "Failed to load cart");
     } finally {
       setLoading(false);
     }
@@ -142,7 +142,7 @@ export default function Cart() {
     } catch (e) {
       // Rollback on failure
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: item.quantity || 1 } : i));
-      toast.error("Failed to update quantity");
+      notifyError("Update Failed", "Could not update item quantity");
     }
   };
 
@@ -151,11 +151,11 @@ export default function Cart() {
     setItems(prev => prev.filter(i => i.id !== item.id));
     try {
       await base44.entities.CartItem.delete(item.id);
-      toast.success("Item removed");
+      notifySuccess("Item Removed", "Product removed from cart");
     } catch (e) {
       // Restore item on failure
       setItems(prev => [...prev, item]);
-      toast.error("Failed to remove item");
+      notifyError("Removal Failed", "Could not remove item from cart");
     }
   };
 
@@ -184,6 +184,7 @@ export default function Cart() {
 
   const applyCoupon = async () => {
     if (!form.coupon.trim()) {
+      notifyError("Invalid Coupon", "Please enter a coupon code");
       setCouponError("Please enter a coupon code");
       return;
     }
@@ -231,7 +232,7 @@ export default function Cart() {
 
       setAppliedCoupon(coupon);
       setCouponError("");
-      toast.success("Coupon applied successfully!");
+      notifySuccess("Coupon Applied", `${coupon.code} - ${coupon.discount_type === "percentage" ? coupon.discount_value + "% off" : "K" + coupon.discount_value + " off"}`);
     } catch (error) {
       setCouponError("Failed to apply coupon");
       setAppliedCoupon(null);
@@ -240,44 +241,44 @@ export default function Cart() {
 
   const handleCheckout = async () => {
     if (!form.region) { 
-      toast.error("Please select your region"); 
+      notifyError("Region Required", "Please select your region");
       return; 
     }
     if (!form.address.trim()) { 
-      toast.error("Please enter your billing address"); 
+      notifyError("Address Required", "Please enter your delivery address");
       return; 
     }
     if (!form.phone.trim()) { 
-      toast.error("Please enter your phone number"); 
+      notifyError("Phone Required", "Please enter your phone number");
       return; 
     }
     if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { 
-      toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); 
+      notifyError("Invalid Phone", "Enter a valid phone number (e.g. +260 7XX XXX XXX)");
       return; 
     }
     if (paymentMethod === "mobile_money" && !momoPhone.trim()) {
-      toast.error("Please enter your mobile money number");
+      notifyError("Mobile Money Required", "Please enter your mobile money number");
       return;
     }
     if (useWallet && walletAmount <= 0) {
-      toast.error("Please enter a valid wallet amount");
+      notifyError("Invalid Amount", "Please enter a valid wallet amount");
       return;
     }
     if (useWallet && walletAmount > walletBalance) {
-      toast.error("Insufficient wallet balance");
+      notifyError("Insufficient Balance", "Your wallet doesn't have enough balance");
       return;
     }
 
     // Block non-Zambian users
     if (isZambia === false) {
-      toast.error("Orders are only available within Zambia.");
+      notifyError("Orders Unavailable", "Orders are only available within Zambia.");
       return;
     }
 
     // Block checkout inside iframe (preview) - open in new tab instead
     if (window.self !== window.top) {
       window.open(window.location.href, "_blank");
-      toast.info("Opening the app in a new tab — please complete your checkout there.");
+      notifyInfo("Opening New Tab", "Please complete your checkout in the new tab");
       return;
     }
     
@@ -313,14 +314,14 @@ export default function Cart() {
         });
 
         if (!response.data.success) {
-          toast.error(response.data.error || "Failed to initiate mobile money payment");
+          notifyError("Payment Failed", response.data.error || "Failed to initiate mobile money payment");
           setSubmitting(false);
           return;
         }
 
         const { reference } = response.data;
         setMomoStatus("pay-offline");
-        toast.success("Payment request sent! Please approve on your phone.");
+        notifyInfo("Payment Pending", "Approval required on your phone");
 
         // Poll for status every 5s for up to 2 minutes
         setMomoPolling(true);
@@ -342,12 +343,12 @@ export default function Cart() {
                await base44.entities.Order.update(pendingOrders[0].id, { status: "confirmed" });
              }
              for (const item of items) await base44.entities.CartItem.delete(item.id);
-             toast.success("Payment successful! Redirecting…");
+             notifyPaymentSuccess(reference);
              setMomoPolling(false);
              setTimeout(() => { window.location.reload(); }, 1500);
              break;
           } else if (txStatus === "failed") {
-            toast.error("Mobile money payment failed or was declined.");
+            notifyError("Payment Declined", "Mobile money payment was declined. Please try again.");
             break;
           }
           // "pending" or "pay-offline" — keep polling
@@ -379,25 +380,26 @@ export default function Cart() {
           for (const item of items) {
             await base44.entities.CartItem.delete(item.id);
           }
-          toast.success("Payment successful!");
+          notifyPaymentSuccess();
           setSubmitting(false);
           setTimeout(() => {
             window.location.reload();
           }, 1500);
         } else {
-          toast.error(response.data.error || "Payment failed");
+          notifyError("Payment Failed", response.data.error || "Wallet payment could not be processed");
           setSubmitting(false);
         }
       } else {
         // Card payment via Lenco card collection (JWE encrypted)
         if (!cardDetails.cardNumber || !cardDetails.cardExpiryMonth || !cardDetails.cardExpiryYear || !cardDetails.cardCvv) {
-          toast.error("Please enter your full card details");
+          notifyError("Card Details Missing", "Please enter your full card details");
           setSubmitting(false);
           return;
         }
 
         const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
 
+        notifyPaymentProcessing();
         setCardStatus("pending");
         const response = await base44.functions.invoke('lencoCardCollect', {
           cardNumber: cardDetails.cardNumber,
@@ -424,7 +426,7 @@ export default function Cart() {
 
         if (result.error) {
           setCardStatus("failed");
-          toast.error(result.error);
+          notifyError("Card Error", result.error);
           setSubmitting(false);
           return;
         }
@@ -437,7 +439,7 @@ export default function Cart() {
              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
            }
            for (const item of items) await base44.entities.CartItem.delete(item.id);
-           toast.info("Redirecting to 3D Secure verification…");
+           notifyInfo("Verifying Payment", "Redirecting to 3D Secure verification…");
            setSubmitting(false);
            setTimeout(() => { window.location.replace(result.redirectUrl); }, 1000);
            return;
@@ -449,21 +451,21 @@ export default function Cart() {
             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
           }
           for (const item of items) await base44.entities.CartItem.delete(item.id);
-          toast.success("Payment successful! Your order is confirmed.");
+          notifyPaymentSuccess();
           setSubmitting(false);
           setTimeout(() => { window.location.reload(); }, 1500);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");
-          toast.error("Card payment was declined. Please try again.");
+          notifyError("Payment Declined", "Your card was declined. Please try again.");
         } else {
           // pending — poll for status
           setCardStatus("pending");
-          toast.info("Payment is processing…");
+          notifyInfo("Processing", "Payment is being processed…");
         }
       }
     } catch (error) {
-      toast.error("Payment failed. Please try again.");
+      notifyError("Checkout Error", "Payment failed. Please try again.");
       setSubmitting(false);
     }
   };

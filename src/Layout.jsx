@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import NotificationBell from "@/components/notifications/NotificationBell";
 import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import PageLoader from "@/components/shared/PageLoader";
-import { Toaster } from "sonner";
+import { CustomToaster } from "@/components/shared/NotificationToast";
 
 // Platform detection (web only)
 const Platform = { OS: 'web' };
@@ -151,7 +151,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
       <PageLoader visible={pageLoading} />
-      <Toaster position="top-right" richColors closeButton />
+      <CustomToaster />
       <header
         role="banner"
         className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
