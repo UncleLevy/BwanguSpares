@@ -1,5 +1,6 @@
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import OrderSuccess from './pages/OrderSuccess';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
@@ -131,6 +132,16 @@ const AnimatedRoutes = () => {
               <AnimatedPage direction={direction}>
                 <LayoutWrapper currentPageName="PrivacyPolicy">
                   <PrivacyPolicy />
+                </LayoutWrapper>
+              </AnimatedPage>
+            }
+          />
+          <Route
+            path="/OrderSuccess"
+            element={
+              <AnimatedPage direction={direction}>
+                <LayoutWrapper currentPageName="OrderSuccess">
+                  <OrderSuccess />
                 </LayoutWrapper>
               </AnimatedPage>
             }
