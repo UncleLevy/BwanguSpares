@@ -45,7 +45,7 @@ Deno.serve(async (req) => {
         phone: normalizedPhone,
         operator,
         country: "zm",
-        bearer: "merchant",
+        bearer: "customer",
       }),
     });
 
