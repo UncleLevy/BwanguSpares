@@ -270,7 +270,7 @@ export default function AdminDashboard() {
       if (total_fixed === 0) {
         toast.success("No duplicates found — data is clean!");
       } else {
-        toast.success(`Removed ${total_fixed} duplicate(s): ${report.shops.removed} shops, ${report.towns.removed} towns, ${report.regions.removed} regions, ${report.stripe_accounts.removed} Stripe links.`);
+        toast.success(`Removed ${total_fixed} duplicate(s): ${report.shops.removed} shops, ${report.towns.removed} towns, ${report.regions.removed} regions.`);
       }
     } catch (e) {
       toast.error(e.message || "Deduplication failed");
@@ -939,7 +939,7 @@ export default function AdminDashboard() {
                 <li>Permanently remove the shop and all its data</li>
                 <li>Delete all associated products and listings</li>
                 <li>Remove the shop's wallet and earnings records</li>
-                <li>Disconnect any linked Stripe account</li>
+
                 <li>The shop owner will lose access to their shop dashboard</li>
               </ul>
             </div>

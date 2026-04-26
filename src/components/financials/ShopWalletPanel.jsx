@@ -4,8 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { DollarSign, TrendingUp, ArrowDownCircle, Clock, CheckCircle2 } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import StripeConnectPanel from "@/components/financials/StripeConnectPanel";
-
 export default function ShopWalletPanel({ shop: initialShop, orders }) {
   const [shop, setShop] = useState(initialShop);
   const [wallet, setWallet] = useState(null);
@@ -15,8 +13,8 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
   useEffect(() => {
     if (!shop?.id) return;
     (async () => {
-      // Sync wallet from delivered orders
-      const deliveredOrders = orders.filter(o => o.status === "delivered" && o.payment_method === "stripe");
+      // Sync wallet from all delivered orders (all payment methods)
+      const deliveredOrders = orders.filter(o => o.status === "delivered");
       const totalEarned = deliveredOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
 
       let wallets = await base44.entities.ShopWallet.filter({ shop_id: shop.id });
@@ -118,12 +116,9 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
         </Card>
       </div>
 
-      {/* Stripe Connect */}
-      <StripeConnectPanel shop={shop} onShopUpdate={setShop} />
-
       {/* Info note */}
       <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-xl p-4 text-sm text-blue-700 dark:text-blue-300">
-        💡 Earnings are calculated from <strong>delivered Stripe orders</strong>. A platform fee of <strong>{wallet?.platform_fee_rate ?? 5}%</strong> is deducted. Connect your Stripe account above to receive automated payouts.
+        💡 Earnings are calculated from all <strong>delivered orders</strong> (card, mobile money, wallet). A platform fee of <strong>{wallet?.platform_fee_rate ?? 5}%</strong> is deducted. Payouts are processed manually by the admin team via bank transfer or mobile money.
       </div>
 
       {/* Payout History */}

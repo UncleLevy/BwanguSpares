@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Zap, Link2, Eye, Archive } from "lucide-react";
+import { DollarSign, CheckCircle2, Clock, Store, Plus, Wallet, Archive } from "lucide-react";
 import { toast } from "sonner";
 import { usePagination } from "@/components/shared/usePagination";
 import TablePagination from "@/components/shared/TablePagination";
@@ -22,7 +22,6 @@ export default function PayoutsPanel({ adminUser }) {
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [form, setForm] = useState({ amount: "", method: "bank_transfer", reference: "", notes: "" });
   const [saving, setSaving] = useState(false);
-  const [autoRunning, setAutoRunning] = useState(false);
   const [viewTransaction, setViewTransaction] = useState(null);
 
   useEffect(() => {
@@ -50,49 +49,6 @@ export default function PayoutsPanel({ adminUser }) {
     setSelectedWallet(wallet);
     setForm({ amount: String(wallet.pending_balance || ""), method: "bank_transfer", reference: "", notes: "" });
     setPayoutDialog(true);
-  };
-
-  const runAutoPayout = async () => {
-    setAutoRunning(true);
-    try {
-      const res = await base44.functions.invoke("autoPayoutShops", {});
-      const { processed, results } = res.data;
-      if (processed === 0) {
-        toast.info("No shops currently meet the payout threshold or have an active Stripe account.");
-      } else {
-        const success = results.filter(r => r.status === "success").length;
-        const failed = results.filter(r => r.status === "failed").length;
-        toast.success(`Auto-payout complete: ${success} succeeded, ${failed} failed.`);
-      }
-      load();
-    } catch (e) {
-      toast.error(e.message || "Auto-payout failed");
-    }
-    setAutoRunning(false);
-  };
-
-  const submitStripePayout = async () => {
-    if (!form.amount || parseFloat(form.amount) <= 0) { toast.error("Enter a valid amount"); return; }
-    const amount = parseFloat(form.amount);
-    if (amount > selectedWallet.pending_balance) { toast.error("Amount exceeds pending balance"); return; }
-    setSaving(true);
-    try {
-      const res = await base44.functions.invoke("stripeConnect", {
-        action: "payout_shop",
-        wallet_id: selectedWallet.id,
-        amount_zmw: amount,
-      });
-      if (res.data.success) {
-        toast.success(`Stripe payout of K${amount.toLocaleString()} sent to ${selectedWallet.shop_name}`);
-        setPayoutDialog(false);
-        load();
-      } else {
-        toast.error(res.data.error || "Payout failed");
-      }
-    } catch (e) {
-      toast.error(e.message || "Stripe payout failed");
-    }
-    setSaving(false);
   };
 
   const submitPayout = async () => {
@@ -147,10 +103,6 @@ export default function PayoutsPanel({ adminUser }) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Shop Payouts</h1>
-        <Button onClick={runAutoPayout} disabled={autoRunning} className="bg-emerald-600 hover:bg-emerald-700 gap-2">
-          <Zap className="w-4 h-4" />
-          {autoRunning ? "Running..." : "Run Auto-Payout"}
-        </Button>
       </div>
 
       {/* Summary cards */}

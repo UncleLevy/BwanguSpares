@@ -366,8 +366,8 @@ export default function ShopDashboard() {
     setOrders(prev => prev.map(o => o.id === cancelOrder.id ? { ...o, status: 'cancelled', cancellation_reason: cancelReason } : o));
     await base44.entities.Order.update(cancelOrder.id, { status: 'cancelled', cancellation_reason: cancelReason });
 
-    // If paid via Stripe, credit the buyer's site wallet
-    if (cancelOrder.stripe_session_id && cancelOrder.payment_method === 'stripe') {
+    // Credit the buyer's site wallet for any paid order
+    if (cancelOrder.stripe_session_id) {
       const amount = cancelOrder.total_amount || 0;
       const buyerEmail = cancelOrder.buyer_email;
 
@@ -1311,7 +1311,7 @@ export default function ShopDashboard() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-slate-50 dark:bg-slate-800">
-                    <TableHead className="dark:text-slate-300">Order</TableHead><TableHead className="dark:text-slate-300">Buyer</TableHead><TableHead className="dark:text-slate-300">Items</TableHead><TableHead className="dark:text-slate-300">Amount</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Transaction ID</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
+                    <TableHead className="dark:text-slate-300">Order</TableHead><TableHead className="dark:text-slate-300">Buyer</TableHead><TableHead className="dark:text-slate-300">Items</TableHead><TableHead className="dark:text-slate-300">Amount</TableHead><TableHead className="dark:text-slate-300">Status</TableHead><TableHead className="dark:text-slate-300">Reference</TableHead><TableHead className="dark:text-slate-300">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -1329,9 +1329,7 @@ export default function ShopDashboard() {
                           )}
                         </div>
                       </TableCell>
-                      {o.stripe_session_id && (
-                        <TableCell className="font-mono text-[11px] text-slate-400 max-w-[120px] truncate" title={o.stripe_session_id}>{o.stripe_session_id?.slice(0, 14)}…</TableCell>
-                      )}
+                      <TableCell className="font-mono text-[11px] text-slate-400 max-w-[120px] truncate" title={o.stripe_session_id}>{o.stripe_session_id ? `${o.stripe_session_id.slice(0, 14)}…` : "—"}</TableCell>
                       <TableCell onClick={e => e.stopPropagation()}>
                         <div className="flex gap-2">
                           <MobileSelect
