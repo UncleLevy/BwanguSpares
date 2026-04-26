@@ -205,9 +205,9 @@ export const emailOrderStatusUpdate = async (buyerEmail, buyerName, order, newSt
 export const emailNewOrderToShop = async (shopOwnerEmail, shopName, order) => {
   const itemsList = (order.items || []).map(i =>
     `<tr>
-      <td style="padding:8px 12px;font-size:13px;color:#374151;">${i.product_name}</td>
-      <td style="padding:8px 12px;font-size:13px;text-align:center;color:#374151;">×${i.quantity}</td>
-      <td style="padding:8px 12px;font-size:13px;text-align:right;font-weight:600;color:#0f172a;">K${(i.price || 0).toLocaleString()}</td>
+      <td style="padding:10px 12px;font-size:13px;color:#374151;border-bottom:1px solid #f1f5f9;">${i.product_name}</td>
+      <td style="padding:10px 12px;font-size:13px;text-align:center;color:#374151;border-bottom:1px solid #f1f5f9;">×${i.quantity}</td>
+      <td style="padding:10px 12px;font-size:13px;text-align:right;font-weight:600;color:#0891b2;border-bottom:1px solid #f1f5f9;">K${(i.price || 0).toLocaleString()}</td>
     </tr>`).join('');
 
   // Fetch shop address
@@ -223,32 +223,52 @@ export const emailNewOrderToShop = async (shopOwnerEmail, shopName, order) => {
   }
 
   const content = `
-    <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
-    <p style="margin:0 0 16px;">You have received a new order. Please confirm it as soon as possible.</p>
-    <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;margin:18px 0;">
-      <tr style="background:#059669;color:#fff;">
-        <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:600;">ITEM</th>
-        <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:600;">QTY</th>
-        <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:600;">PRICE</th>
+    <p style="margin:0 0 18px;font-size:14px;color:#374151;">Hi <strong style="color:#0f172a;font-weight:700;">${shopName}</strong> team,</p>
+    <p style="margin:0 0 20px;font-size:14px;color:#374151;line-height:1.6;">You have received a new order and it's ready for immediate processing. Review the details below and confirm the order to begin fulfillment.</p>
+    
+    <div style="background:#f0f9ff;border-radius:12px;border-left:4px solid #0891b2;padding:16px;margin:20px 0;">
+      <p style="margin:0;font-size:13px;color:#0891b2;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Customer Information</p>
+      <p style="margin:8px 0 0;font-size:14px;color:#0f172a;"><strong>${order.buyer_name || "Guest Buyer"}</strong></p>
+      <p style="margin:4px 0;font-size:13px;color:#64748b;">${order.delivery_phone || "No phone provided"}</p>
+    </div>
+
+    <table width="100%" cellpadding="0" cellspacing="0" style="border-radius:10px;overflow:hidden;border:1px solid #e2e8f0;margin:20px 0;background:#fff;">
+      <tr style="background:linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);color:#fff;">
+        <th style="padding:14px 12px;text-align:left;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">ITEM</th>
+        <th style="padding:14px 12px;text-align:center;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">QTY</th>
+        <th style="padding:14px 12px;text-align:right;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;">PRICE</th>
       </tr>
       ${itemsList}
-      <tr style="background:#f0fdf4;border-top:2px solid #e2e8f0;">
-        <td colspan="2" style="padding:12px;font-size:14px;font-weight:700;color:#0f172a;">Order Total</td>
-        <td style="padding:12px;font-size:16px;font-weight:800;text-align:right;color:#059669;">K${(order.total_amount || 0).toLocaleString()}</td>
+      <tr style="background:#f8fafc;border-top:2px solid #e2e8f0;">
+        <td colspan="2" style="padding:14px 12px;font-size:14px;font-weight:700;color:#0f172a;text-align:right;">Order Total:</td>
+        <td style="padding:14px 12px;font-size:18px;font-weight:800;text-align:right;background:linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);background-clip:text;-webkit-background-clip:text;-webkit-text-fill-color:transparent;color:#0891b2;">K${(order.total_amount || 0).toLocaleString()}</td>
       </tr>
     </table>
-    ${infoBox([
-      ["Customer", order.buyer_name || "—"],
-      ["Phone", order.delivery_phone || "—"],
-      ["Shop Address", shopAddress],
-      ["Delivery", order.delivery_address || "Collect in-store"],
-      ...(order.notes ? [["Notes", order.notes]] : []),
-    ], "#059669")}
+
+    <div style="background:#f8fafc;border-radius:10px;padding:16px;margin:20px 0;border:1px solid #e2e8f0;">
+      <p style="margin:0 0 12px;font-size:13px;font-weight:700;color:#0f172a;text-transform:uppercase;letter-spacing:0.5px;">Delivery Details</p>
+      <table width="100%" cellpadding="0" cellspacing="0" style="font-size:13px;">
+        <tr><td style="padding:6px 0;color:#64748b;">Delivery Address:</td><td style="padding:6px 0;text-align:right;color:#0f172a;font-weight:600;">${order.delivery_address || "Collect in-store"}</td></tr>
+        <tr><td style="padding:6px 0;color:#64748b;">Shop Address:</td><td style="padding:6px 0;text-align:right;color:#0f172a;font-weight:600;">${shopAddress}</td></tr>
+        <tr><td style="padding:6px 0;color:#64748b;">Method:</td><td style="padding:6px 0;text-align:right;color:#0f172a;font-weight:600;">${order.shipping_option === 'deliver' ? 'Delivery' : 'Collection'}</td></tr>
+        ${order.shipping_cost ? `<tr><td style="padding:6px 0;color:#64748b;">Shipping Cost:</td><td style="padding:6px 0;text-align:right;color:#0f172a;font-weight:600;">K${order.shipping_cost.toLocaleString()}</td></tr>` : ''}
+      </table>
+    </div>
+
+    ${order.notes ? `<div style="background:#fef9c3;border-radius:10px;border:1px solid #fef08a;padding:14px;margin:20px 0;">
+      <p style="margin:0 0 8px;font-size:12px;font-weight:700;color:#b45309;text-transform:uppercase;">Customer Notes</p>
+      <p style="margin:0;font-size:13px;color:#78350f;line-height:1.5;">"${order.notes}"</p>
+    </div>` : ''}
+
+    <div style="background:#dbeafe;border-radius:10px;border:1px solid #bfdbfe;padding:16px;margin:20px 0;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#1e40af;">⚡ Quick Actions</p>
+      <p style="margin:0;font-size:13px;color:#1e3a8a;">Log in to your Shop Dashboard to confirm this order and start the fulfillment process immediately.</p>
+    </div>
   `;
   return send({
     to: shopOwnerEmail,
     subject: `🎉 New Order – K${(order.total_amount || 0).toLocaleString()} – ${shopName}`,
-    htmlBody: template({ title: "New Order Received!", badgeText: "New Order", badgeColor: "#059669", content, cta: { text: "Confirm Order Now", url: BRAND.appUrl } }),
+    htmlBody: template({ title: "New Order Received!", badgeText: "New Order", badgeColor: "#0891b2", content, cta: { text: "Confirm Order Now", url: BRAND.appUrl } }),
   });
 };
 
