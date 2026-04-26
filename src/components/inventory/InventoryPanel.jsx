@@ -103,36 +103,43 @@ export default function InventoryPanel({ products, orders, onProductsChange, sho
     const entries = Object.entries(bulkEdits).filter(([, v]) => v !== "" && !isNaN(Number(v)));
     if (!entries.length) return;
     setSavingBulk(true);
-    await Promise.all(entries.map(([id, qty]) => {
-      const q = parseInt(qty);
-      const status = q === 0 ? "out_of_stock" : "active";
-      return base44.entities.Product.update(id, { stock_quantity: q, status });
-    }));
-    onProductsChange(prev => prev.map(p => {
-      if (bulkEdits[p.id] !== undefined && bulkEdits[p.id] !== "") {
-        const q = parseInt(bulkEdits[p.id]);
-        return { ...p, stock_quantity: q, status: q === 0 ? "out_of_stock" : "active" };
-      }
-      return p;
-    }));
-    // Check for newly low/out-of-stock items and send alert
-    const updatedProducts = products.map(p => {
-      if (bulkEdits[p.id] !== undefined && bulkEdits[p.id] !== "") {
-        return { ...p, stock_quantity: parseInt(bulkEdits[p.id]) };
-      }
-      return p;
-    });
-    const alertItems = updatedProducts.filter(p => {
-      const wasUpdated = bulkEdits[p.id] !== undefined && bulkEdits[p.id] !== "";
-      return wasUpdated && p.stock_quantity <= (p.low_stock_threshold ?? 5);
-    });
-    if (alertItems.length > 0 && shopOwnerEmail) {
-      emailLowStockAlert(shopOwnerEmail, shopName || "Your Shop", alertItems);
-    }
+    
+    // Update database
+    try {
+      await Promise.all(entries.map(([id, qty]) => {
+        const q = parseInt(qty);
+        const status = q === 0 ? "out_of_stock" : "active";
+        return base44.entities.Product.update(id, { stock_quantity: q, status });
+      }));
 
-    setBulkEdits({});
-    setSavingBulk(false);
-    toast.success(`${entries.length} stock level(s) updated`);
+      // Update UI state
+      const updatedProducts = products.map(p => {
+        if (bulkEdits[p.id] !== undefined && bulkEdits[p.id] !== "") {
+          const q = parseInt(bulkEdits[p.id]);
+          return { ...p, stock_quantity: q, status: q === 0 ? "out_of_stock" : "active" };
+        }
+        return p;
+      });
+      
+      onProductsChange(updatedProducts);
+
+      // Check for low/out-of-stock items and send alert
+      const alertItems = updatedProducts.filter(p => {
+        const wasUpdated = bulkEdits[p.id] !== undefined && bulkEdits[p.id] !== "";
+        return wasUpdated && p.stock_quantity <= (p.low_stock_threshold ?? 5);
+      });
+      if (alertItems.length > 0 && shopOwnerEmail) {
+        emailLowStockAlert(shopOwnerEmail, shopName || "Your Shop", alertItems);
+      }
+
+      toast.success(`${entries.length} stock level(s) updated`);
+    } catch (error) {
+      console.error("Failed to save stock updates:", error);
+      toast.error("Failed to save stock updates");
+    } finally {
+      setBulkEdits({});
+      setSavingBulk(false);
+    }
   };
 
   const openThreshold = (p) => {
