@@ -112,13 +112,25 @@ const alertBox = (message, color = BRAND.primary) => `
 
 // ─── Orders ──────────────────────────────────────────────────────────────────
 
-export const emailOrderConfirmation = (buyerEmail, buyerName, order) => {
+export const emailOrderConfirmation = async (buyerEmail, buyerName, order) => {
   const itemsList = (order.items || []).map(i =>
     `<tr>
       <td style="padding:8px 12px;font-size:13px;color:#374151;">${i.product_name}</td>
       <td style="padding:8px 12px;font-size:13px;text-align:center;color:#374151;">×${i.quantity}</td>
       <td style="padding:8px 12px;font-size:13px;text-align:right;font-weight:600;color:#0f172a;">K${(i.price || 0).toLocaleString()}</td>
     </tr>`).join('');
+
+  // Fetch shop address
+  let shopAddress = "—";
+  try {
+    const shops = await base44.entities.Shop.filter({ id: order.shop_id });
+    if (shops.length > 0) {
+      const shop = shops[0];
+      shopAddress = [shop.address, shop.town, shop.region_name].filter(Boolean).join(", ");
+    }
+  } catch (e) {
+    console.warn("Failed to fetch shop address:", e?.message);
+  }
 
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
@@ -137,6 +149,7 @@ export const emailOrderConfirmation = (buyerEmail, buyerName, order) => {
     </table>
     ${infoBox([
       ["Shop", order.shop_name || "—"],
+      ["Shop Address", shopAddress],
       ["Delivery", order.delivery_address || "Collect in-store"],
       ["Payment", order.payment_method || "—"],
     ])}
@@ -149,7 +162,7 @@ export const emailOrderConfirmation = (buyerEmail, buyerName, order) => {
   });
 };
 
-export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) => {
+export const emailOrderStatusUpdate = async (buyerEmail, buyerName, order, newStatus) => {
   const statusConfig = {
     confirmed:  { color: "#0891b2", msg: "Your order has been confirmed by the shop and is being prepared.", badge: "Confirmed" },
     processing: { color: "#7c3aed", msg: "Your order is being packed and will ship very soon.", badge: "Processing" },
@@ -159,11 +172,24 @@ export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) 
   };
   const cfg = statusConfig[newStatus] || { color: BRAND.primary, msg: `Status updated to ${newStatus}.`, badge: newStatus };
 
+  // Fetch shop address
+  let shopAddress = "—";
+  try {
+    const shops = await base44.entities.Shop.filter({ id: order.shop_id });
+    if (shops.length > 0) {
+      const shop = shops[0];
+      shopAddress = [shop.address, shop.town, shop.region_name].filter(Boolean).join(", ");
+    }
+  } catch (e) {
+    console.warn("Failed to fetch shop address:", e?.message);
+  }
+
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
     ${alertBox(cfg.msg, cfg.color)}
     ${infoBox([
       ["Shop", order.shop_name || "—"],
+      ["Shop Address", shopAddress],
       ["Total", `K${(order.total_amount || 0).toLocaleString()}`],
       ...(order.tracking_number ? [["Tracking #", order.tracking_number]] : []),
     ], cfg.color)}
@@ -176,13 +202,25 @@ export const emailOrderStatusUpdate = (buyerEmail, buyerName, order, newStatus) 
   });
 };
 
-export const emailNewOrderToShop = (shopOwnerEmail, shopName, order) => {
+export const emailNewOrderToShop = async (shopOwnerEmail, shopName, order) => {
   const itemsList = (order.items || []).map(i =>
     `<tr>
       <td style="padding:8px 12px;font-size:13px;color:#374151;">${i.product_name}</td>
       <td style="padding:8px 12px;font-size:13px;text-align:center;color:#374151;">×${i.quantity}</td>
       <td style="padding:8px 12px;font-size:13px;text-align:right;font-weight:600;color:#0f172a;">K${(i.price || 0).toLocaleString()}</td>
     </tr>`).join('');
+
+  // Fetch shop address
+  let shopAddress = "—";
+  try {
+    const shops = await base44.entities.Shop.filter({ id: order.shop_id });
+    if (shops.length > 0) {
+      const shop = shops[0];
+      shopAddress = [shop.address, shop.town, shop.region_name].filter(Boolean).join(", ");
+    }
+  } catch (e) {
+    console.warn("Failed to fetch shop address:", e?.message);
+  }
 
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
@@ -202,6 +240,7 @@ export const emailNewOrderToShop = (shopOwnerEmail, shopName, order) => {
     ${infoBox([
       ["Customer", order.buyer_name || "—"],
       ["Phone", order.delivery_phone || "—"],
+      ["Shop Address", shopAddress],
       ["Delivery", order.delivery_address || "Collect in-store"],
       ...(order.notes ? [["Notes", order.notes]] : []),
     ], "#059669")}
