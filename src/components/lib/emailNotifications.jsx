@@ -878,3 +878,49 @@ export const emailCourierHandoff = (buyerEmail, buyerName, shipment, fromCourier
     htmlBody: template({ title: "Courier Handoff Complete", badgeText: "Shipping", badgeColor: "#d97706", content, cta: { text: "Track Package", url: BRAND.appUrl } }),
   });
 };
+
+// ─── Subscription Notifications ───────────────────────────────────────────────
+
+export const emailSubscriptionReminderToShop = (shopOwnerEmail, shopName, tier, daysRemaining, expiresDate) => {
+  const content = `
+    <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
+    <p style="margin:0 0 16px;">Your <strong>${tier.charAt(0).toUpperCase() + tier.slice(1)}</strong> subscription is expiring soon. Renew now to keep your shop active.</p>
+    ${alertBox(`Your subscription expires in <strong>${daysRemaining} day${daysRemaining > 1 ? 's' : ''}</strong>`, "#f59e0b")}
+    ${infoBox([
+      ["Current Tier", tier.charAt(0).toUpperCase() + tier.slice(1)],
+      ["Expires On", new Date(expiresDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })],
+      ["Action Required", "Renew subscription"],
+    ], "#f59e0b")}
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Once your subscription expires, your shop will be temporarily unavailable until renewal. Renew immediately to avoid disruptions.</p>
+  `;
+  return send({
+    to: shopOwnerEmail,
+    subject: `⏰ Subscription Expiring Soon – ${daysRemaining} days left`,
+    htmlBody: template({ title: "Renew Your Subscription", badgeText: "Subscription", badgeColor: "#f59e0b", content, cta: { text: "Renew Now", url: BRAND.appUrl } }),
+  });
+};
+
+export const emailSubscriptionFailureToShop = (shopOwnerEmail, shopName, tier, failureReason) => {
+  const content = `
+    <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
+    <p style="margin:0 0 16px;">We attempted to renew your <strong>${tier.charAt(0).toUpperCase() + tier.slice(1)}</strong> subscription but the payment failed.</p>
+    ${alertBox(failureReason, "#dc2626")}
+    ${infoBox([
+      ["Subscription Tier", tier.charAt(0).toUpperCase() + tier.slice(1)],
+      ["Status", "Payment Failed"],
+      ["Action Required", "Retry payment or update payment method"],
+    ], "#dc2626")}
+    <div style="background:#fef2f2;border-radius:10px;padding:16px;margin:16px 0;border-left:4px solid #dc2626;">
+      <p style="margin:0 0 8px;font-size:13px;font-weight:700;color:#dc2626;">Next Steps:</p>
+      <p style="margin:4px 0;font-size:13px;color:#374151;">1. Log in to your Shop Dashboard</p>
+      <p style="margin:4px 0;font-size:13px;color:#374151;">2. Go to Billing → Subscription</p>
+      <p style="margin:4px 0;font-size:13px;color:#374151;">3. Retry the payment or update your payment method</p>
+    </div>
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">If the issue persists, please contact our support team at admin@bwangu.com for assistance.</p>
+  `;
+  return send({
+    to: shopOwnerEmail,
+    subject: `❌ Subscription Renewal Failed – Action Required`,
+    htmlBody: template({ title: "Payment Failed", badgeText: "Subscription", badgeColor: "#dc2626", content, cta: { text: "Retry Payment", url: BRAND.appUrl } }),
+  });
+};
