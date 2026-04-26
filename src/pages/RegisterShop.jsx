@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Store, MapPin, Upload, CheckCircle2, Clock, ShieldOff, ChevronRight } from "lucide-react";
+import { Store, MapPin, Upload, CheckCircle2, Clock, ShieldOff, ChevronRight, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -160,7 +160,12 @@ export default function RegisterShop() {
     }
   };
 
-  if (loading) return <div className="max-w-2xl mx-auto px-4 py-12"><div className="h-96 bg-slate-100 dark:bg-slate-800 rounded-2xl animate-pulse" /></div>;
+  if (loading) return (
+    <div className="max-w-2xl mx-auto px-4 py-24 flex flex-col items-center gap-4">
+      <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+      <p className="text-slate-500 dark:text-slate-400 text-sm">Loading registration form…</p>
+    </div>
+  );
 
   if (banRecord) {
     return (
@@ -219,6 +224,14 @@ export default function RegisterShop() {
         ))}
       </div>
 
+      {/* Uploading banner */}
+      {uploading && (
+        <div className="flex items-center gap-3 px-4 py-3 mb-4 bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-700 rounded-xl text-blue-700 dark:text-blue-300 text-sm font-medium">
+          <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+          Uploading file, please wait…
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-700 p-6 space-y-5">
         {/* Step 1: Basic Info */}
         {step === 1 && (
@@ -268,12 +281,18 @@ export default function RegisterShop() {
           <>
             <div>
               <Label className="dark:text-slate-300">Shop Logo *</Label>
-              <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "logo_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300" />
+              <div className="relative mt-1">
+                <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "logo_url")} disabled={uploading} className="rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" />
+                {uploading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-blue-500 pointer-events-none" />}
+              </div>
               {form.logo_url && <img src={form.logo_url} alt="Logo" className="mt-2 w-20 h-20 object-cover rounded-lg border dark:border-slate-600" />}
             </div>
             <div>
               <Label className="dark:text-slate-300">Cover Image</Label>
-              <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "cover_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300" />
+              <div className="relative mt-1">
+                <Input type="file" accept="image/*" onChange={e => handleFileUpload(e, "cover_url")} disabled={uploading} className="rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" />
+                {uploading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-blue-500 pointer-events-none" />}
+              </div>
               {form.cover_url && <img src={form.cover_url} alt="Cover" className="mt-2 w-full h-20 object-cover rounded-lg border dark:border-slate-600" />}
             </div>
           </>
@@ -312,7 +331,10 @@ export default function RegisterShop() {
             </div>
             <div>
               <Label className="dark:text-slate-300">PACRA Certificate *</Label>
-              <Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={e => handleFileUpload(e, "pacra_certificate_url")} disabled={uploading} className="mt-1 rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300" />
+              <div className="relative mt-1">
+                <Input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={e => handleFileUpload(e, "pacra_certificate_url")} disabled={uploading} className="rounded-xl cursor-pointer dark:bg-slate-800 dark:border-slate-600 dark:text-slate-300 file:dark:text-slate-300 disabled:opacity-50 disabled:cursor-not-allowed" />
+                {uploading && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-blue-500 pointer-events-none" />}
+              </div>
               {form.pacra_certificate_url && (
                 <div className="mt-2 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
                   <CheckCircle2 className="w-4 h-4" />
@@ -351,12 +373,12 @@ export default function RegisterShop() {
             </Button>
           )}
           {step < 4 ? (
-            <Button type="button" onClick={handleNext} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center gap-2">
-              Next <ChevronRight className="w-4 h-4" />
+            <Button type="button" onClick={handleNext} disabled={uploading} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">
+              {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading…</> : <>Next <ChevronRight className="w-4 h-4" /></>}
             </Button>
           ) : (
-            <Button type="submit" disabled={submitting || uploading} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl">
-              {submitting ? "Submitting..." : "Submit Registration"}
+            <Button type="submit" disabled={submitting || uploading} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">
+              {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting…</> : "Submit Registration"}
             </Button>
           )}
         </div>
