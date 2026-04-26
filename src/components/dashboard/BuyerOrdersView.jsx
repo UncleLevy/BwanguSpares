@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import {
   LayoutDashboard, ShoppingCart, Package,
-  Clock, CheckCircle2, Truck, XCircle, Star, Eye, RotateCcw
+  Clock, CheckCircle2, Truck, XCircle, Star, Eye, RotateCcw, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,10 @@ import PullToRefresh from "@/components/shared/PullToRefresh";
 import ReportButton from "@/components/reports/ReportButton";
 import TrackingInfo from "@/components/orders/TrackingInfo";
 import OrderTrackingBar from "@/components/orders/OrderTrackingBar";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from "@/components/ui/dialog";
 
 const orderStatusConfig = {
   pending: { icon: Clock, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800" },
@@ -25,6 +29,26 @@ const orderStatusConfig = {
 };
 
 export default function BuyerOrdersView({ orders, setOrders, user, onReview, onReceipt, onReturn, onRetryPayment }) {
+  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [orderToDelete, setOrderToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
+  const handleDeletePending = async () => {
+    if (!orderToDelete) return;
+    setDeleting(true);
+    try {
+      await base44.entities.Order.delete(orderToDelete.id);
+      setOrders(prev => prev.filter(o => o.id !== orderToDelete.id));
+      toast.success("Order deleted successfully");
+      setDeleteDialog(false);
+      setOrderToDelete(null);
+    } catch (error) {
+      toast.error("Failed to delete order");
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <PullToRefresh onRefresh={async () => {
       const o = await base44.entities.Order.filter({ buyer_email: user.email }, "-created_date", 50);
@@ -80,10 +104,16 @@ export default function BuyerOrdersView({ orders, setOrders, user, onReview, onR
                         </Button>
                       )}
                       {order.status === "pending" && (
-                        <Button size="sm" variant="outline" onClick={() => onRetryPayment(order)}
-                          className="gap-1 text-xs px-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 whitespace-nowrap">
-                          💳 Pay
-                        </Button>
+                        <>
+                          <Button size="sm" variant="outline" onClick={() => onRetryPayment(order)}
+                            className="gap-1 text-xs px-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-950/30 whitespace-nowrap">
+                            💳 Pay
+                          </Button>
+                          <Button size="sm" variant="outline" onClick={() => { setOrderToDelete(order); setDeleteDialog(true); }}
+                            className="gap-1 text-xs px-2 border-red-200 dark:border-red-800 text-red-700 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 whitespace-nowrap">
+                            <Trash2 className="w-3 h-3" /> Delete
+                          </Button>
+                        </>
                       )}
                       {order.status === "delivered" && (
                         <>
@@ -146,6 +176,29 @@ export default function BuyerOrdersView({ orders, setOrders, user, onReview, onR
             })}
           </div>
         )}
+
+        <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete Pending Order?</DialogTitle>
+              <DialogDescription>
+                This will permanently delete your pending order #{orderToDelete?.id?.slice(0, 8)}. This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="gap-2">
+              <Button variant="outline" onClick={() => setDeleteDialog(false)} disabled={deleting}>Cancel</Button>
+              <Button
+                variant="destructive"
+                onClick={handleDeletePending}
+                disabled={deleting}
+                className="gap-2"
+              >
+                {deleting && <LoadingSpinner size="sm" />}
+                {deleting ? "Deleting..." : "Delete Order"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </PullToRefresh>
   );
