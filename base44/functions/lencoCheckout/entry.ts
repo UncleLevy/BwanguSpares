@@ -1,7 +1,7 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const LENCO_API_KEY = Deno.env.get("LENCO_API_KEY");
-const LENCO_BASE_URL = "https://api.lenco.co/access/v1";
+const LENCO_BASE_URL = "https://api.lenco.co/access/v2";
 
 Deno.serve(async (req) => {
   try {
@@ -44,44 +44,42 @@ Deno.serve(async (req) => {
     const reference = crypto.randomUUID();
 
     // Build Lenco payload — channels controls card vs mobile money
+    // Log key prefix for debugging (never log full key)
+    console.log("Lenco API key prefix:", LENCO_API_KEY ? LENCO_API_KEY.substring(0, 8) + "..." : "NOT SET");
+
     const lencoPayload = {
       amount: cardAmount,
-      currency: "ZMW",
       reference,
+      country: "zm",
+      currency: "ZMW",
       email: user.email,
       callback_url: `${appUrl}/BuyerDashboard?payment=success`,
-      cancel_url: `${appUrl}/Cart?payment=cancelled`,
       metadata: {
         buyer_email: user.email,
         buyer_name: user.full_name,
-        payment_method,
       },
     };
 
-    // Restrict channels based on payment method
-    if (payment_method === "mobile_money") {
-      lencoPayload.channels = ["mobile_money"];
-    } else {
-      lencoPayload.channels = ["card"];
-    }
-
-    const paymentRes = await fetch(`${LENCO_BASE_URL}/transaction/initialize`, {
+    const paymentRes = await fetch(`${LENCO_BASE_URL}/collections/card`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${LENCO_API_KEY}`,
         "Content-Type": "application/json",
+        "accept": "application/json",
       },
       body: JSON.stringify(lencoPayload),
     });
 
-    if (!paymentRes.ok) {
-      const err = await paymentRes.text();
-      console.error("Lenco initialize error:", err);
-      throw new Error("Failed to initialize Lenco payment");
+    const paymentData = await paymentRes.json();
+    console.log("Lenco card response:", JSON.stringify(paymentData));
+
+    if (!paymentRes.ok || !paymentData.status) {
+      const errMsg = paymentData?.message || "Failed to initialize Lenco payment";
+      console.error("Lenco card error:", errMsg);
+      throw new Error(errMsg);
     }
 
-    const paymentData = await paymentRes.json();
-    const paymentUrl = paymentData?.data?.authorization_url || paymentData?.data?.url || paymentData?.authorization_url;
+    const paymentUrl = paymentData?.data?.url || paymentData?.data?.authorization_url || paymentData?.data?.checkout_url;
 
     if (!paymentUrl) {
       console.error("No payment URL in Lenco response:", JSON.stringify(paymentData));
