@@ -20,7 +20,7 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import PageLoader from "@/components/shared/PageLoader";
 import { Toaster } from "sonner";
 
-// Platform detection for web
+// Platform detection (web only)
 const Platform = { OS: 'web' };
 
 const pageVariants = {
