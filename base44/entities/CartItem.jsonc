@@ -42,7 +42,7 @@
       "formula": "request.buyer_email == user.email"
     },
     "update": {
-      "formula": "record.buyer_email == user.email"
+      "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
     "delete": {
       "formula": "record.buyer_email == user.email || user.role == 'admin'"

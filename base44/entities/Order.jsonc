@@ -144,7 +144,7 @@
       "formula": "user.role == 'user' && request.buyer_email == user.email"
     },
     "update": {
-      "formula": "true"
+      "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
       "formula": "user.role == 'admin'"
