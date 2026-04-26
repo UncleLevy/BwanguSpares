@@ -53,7 +53,7 @@ export default function SubscriptionCheckout() {
     setCardStatus("pending");
 
     try {
-      const response = await base44.functions.invoke('lencoCardCollect', {
+      const response = await base44.functions.invoke('lencoSubscriptionCardCollect', {
         cardNumber: cardDetails.cardNumber,
         cardExpiryMonth: cardDetails.cardExpiryMonth,
         cardExpiryYear: cardDetails.cardExpiryYear,
@@ -61,15 +61,7 @@ export default function SubscriptionCheckout() {
         billingCity: cardDetails.billingCity,
         amount: PLAN_AMOUNT,
         currency: "ZMW",
-        items: [{ product_id: "premium_sub", product_name: "Premium Subscription (1 Month)", price: PLAN_AMOUNT, quantity: 1 }],
-        delivery_address: "Digital",
-        delivery_phone: user?.phone || "",
-        notes: "Premium subscription upgrade",
-        coupon_code: "",
-        discount_amount: 0,
-        total: PLAN_AMOUNT,
-        shippingOption: "digital",
-        shippingCost: 0,
+        tier: "premium",
       });
 
       const result = response.data;
@@ -137,19 +129,11 @@ export default function SubscriptionCheckout() {
     setMomoStatus("pay-offline");
 
     try {
-      const response = await base44.functions.invoke('lencoMomoCollect', {
+      const response = await base44.functions.invoke('lencoSubscriptionMomoCollect', {
         phone: momoPhone,
         operator: momoOperator,
         amount: PLAN_AMOUNT,
-        items: [{ product_id: "premium_sub", product_name: "Premium Subscription (1 Month)", price: PLAN_AMOUNT, quantity: 1 }],
-        delivery_address: "Digital",
-        delivery_phone: momoPhone,
-        notes: "Premium subscription upgrade",
-        coupon_code: "",
-        discount_amount: 0,
-        total: PLAN_AMOUNT,
-        shippingOption: "digital",
-        shippingCost: 0,
+        tier: "premium",
       });
 
       if (!response.data.success) {
@@ -166,7 +150,7 @@ export default function SubscriptionCheckout() {
       const maxAttempts = 24;
       for (let i = 0; i < maxAttempts; i++) {
         await new Promise(r => setTimeout(r, 5000));
-        const statusRes = await base44.functions.invoke('lencoMomoStatus', { reference });
+        const statusRes = await base44.functions.invoke('lencoSubscriptionMomoStatus', { reference, tier: "premium" });
         const txStatus = statusRes.data?.status;
         setMomoStatus(txStatus);
 
