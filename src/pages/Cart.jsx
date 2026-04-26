@@ -336,6 +336,11 @@ export default function Cart() {
             if (appliedCoupon) {
               await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
             }
+            // Update the order status to confirmed
+            const pendingOrders = await base44.entities.Order.filter({ stripe_session_id: reference });
+            if (pendingOrders.length > 0) {
+              await base44.entities.Order.update(pendingOrders[0].id, { status: "confirmed" });
+            }
             for (const item of items) await base44.entities.CartItem.delete(item.id);
             toast.success("Payment successful! Redirecting…");
             setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);

@@ -69,12 +69,16 @@ Deno.serve(async (req) => {
     const collectionId = momoData?.data?.id;
     const status = momoData?.data?.status;
 
+    // Derive shop from items (all items in one checkout are from one shop)
+    const shopId = items?.[0]?.shop_id || "PENDING_PAYMENT";
+    const shopName = items?.[0]?.shop_name || "Payment Pending";
+
     // Create pending order record
     await base44.asServiceRole.entities.Order.create({
       buyer_email: user.email,
       buyer_name: user.full_name,
-      shop_id: "PENDING_PAYMENT",
-      shop_name: "Payment Pending",
+      shop_id: shopId,
+      shop_name: shopName,
       items,
       total_amount: total,
       status: "pending",
