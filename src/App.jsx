@@ -2,6 +2,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import OrderSuccess from './pages/OrderSuccess';
 import BuyerSettings from './pages/BuyerSettings';
+import SubscriptionCheckout from './pages/SubscriptionCheckout';
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
 import { pagesConfig } from './pages.config'
@@ -153,6 +154,16 @@ const AnimatedRoutes = () => {
               <AnimatedPage direction={direction}>
                 <LayoutWrapper currentPageName="BuyerSettings">
                   <BuyerSettings />
+                </LayoutWrapper>
+              </AnimatedPage>
+            }
+          />
+          <Route
+            path="/SubscriptionCheckout"
+            element={
+              <AnimatedPage direction={direction}>
+                <LayoutWrapper currentPageName="SubscriptionCheckout">
+                  <SubscriptionCheckout />
                 </LayoutWrapper>
               </AnimatedPage>
             }

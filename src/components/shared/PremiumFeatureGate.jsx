@@ -21,7 +21,7 @@ export default function PremiumFeatureGate({ isUnlocked, children, featureName =
 
   const handleUpgrade = () => {
     setShowDialog(false);
-    navigate(createPageUrl("ShopDashboard") + "?view=shop_info&upgrade=true");
+    navigate(createPageUrl("SubscriptionCheckout"));
   };
 
   return (
