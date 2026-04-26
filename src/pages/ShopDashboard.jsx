@@ -525,7 +525,6 @@ export default function ShopDashboard() {
   const sidebarItems = [
    { id: "overview", label: "Overview", icon: LayoutDashboard, onClick: () => switchView("overview") },
    { id: "shop_info", label: "Shop Info", icon: Store, onClick: () => switchView("shop_info") },
-   { id: "shops", label: "My Shops", icon: Store, onClick: () => switchView("shops") },
    { id: "branches", label: "Branches", icon: MapPin, onClick: () => switchView("branches") },
    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => switchView("analytics") },
     { id: "customers", label: "Customers", icon: User, onClick: () => switchView("customers") },
@@ -766,71 +765,7 @@ export default function ShopDashboard() {
           </div>
         )}
 
-        {view === "shops" && (
-           <div>
-             <div className="flex items-center justify-between mb-6">
-               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">My Shops</h1>
 
-             </div>
-
-             {shops.length === 0 ? (
-               <Card className="border-amber-200 dark:border-amber-800/50 bg-amber-50/30 dark:bg-amber-950/10">
-                 <CardContent className="p-8 text-center">
-                   <Store className="w-12 h-12 mx-auto mb-3 text-amber-600 dark:text-amber-400" />
-                   <h3 className="text-lg font-semibold text-amber-900 dark:text-amber-300 mb-2">No Shops Yet</h3>
-                   <p className="text-sm text-amber-800 dark:text-amber-400 mb-4">Create your first shop to get started.</p>
-                   <Button onClick={() => setShowNewShopDialog(true)} className="bg-blue-600 hover:bg-blue-700 gap-1.5">
-                     <Plus className="w-4 h-4" /> Create Shop
-                   </Button>
-                 </CardContent>
-               </Card>
-             ) : (
-               <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-                 {shops.map(s => {
-                   const shopProducts = products.filter(p => p.shop_id === s.id);
-                   const shopOrders = orders.filter(o => o.shop_id === s.id);
-                   const shopRevenue = shopOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
-                   return (
-                     <Card key={s.id} className={`border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover-lift cursor-pointer transition-all ${shop?.id === s.id ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-950' : ''}`} onClick={() => { handleSwitchShop(s.id); setView("overview"); }}>
-                       <CardContent className="p-6">
-                         <div className="flex items-start justify-between mb-4">
-                             <div className="flex items-center gap-3 flex-1">
-                               <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 flex items-center justify-center overflow-hidden flex-shrink-0">
-                                 {s.logo_url ? <img src={s.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-6 h-6 text-blue-500 dark:text-blue-400" />}
-                               </div>
-                               <div>
-                                 <h3 className="font-semibold text-lg text-slate-900 dark:text-slate-100">{s.name}</h3>
-                                 <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 mt-1" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 mt-1"}>{s.status}</Badge>
-                               </div>
-                             </div>
-                         </div>
-                         <div className="space-y-2 text-sm text-slate-600 dark:text-slate-400 mb-4 pb-4 border-b border-slate-100 dark:border-slate-700">
-                           {s.phone && <p className="flex items-center gap-2"><Phone className="w-4 h-4 flex-shrink-0" /> {s.phone}</p>}
-                           {s.address && <p className="flex items-start gap-2"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" /> <span>{s.address}</span></p>}
-                           {s.town && <p className="flex items-center gap-2"><MapPin className="w-4 h-4 flex-shrink-0" /> {s.town}{s.region_name ? `, ${s.region_name}` : ''}</p>}
-                         </div>
-                         <div className="grid grid-cols-3 gap-3">
-                           <div className="bg-blue-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
-                             <p className="text-lg font-bold text-blue-600 dark:text-blue-400">{shopProducts.length}</p>
-                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Products</p>
-                           </div>
-                           <div className="bg-purple-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
-                             <p className="text-lg font-bold text-purple-600 dark:text-purple-400">{shopOrders.length}</p>
-                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Orders</p>
-                           </div>
-                           <div className="bg-emerald-50 dark:bg-slate-700/40 rounded-lg p-3 text-center">
-                             <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">K{shopRevenue.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</p>
-                             <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">Revenue</p>
-                           </div>
-                         </div>
-                       </CardContent>
-                     </Card>
-                   );
-                 })}
-               </div>
-             )}
-           </div>
-         )}
 
         {view === "overview" && (
            <div>
@@ -841,25 +776,9 @@ export default function ShopDashboard() {
                   Status: <Badge className={shop?.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400" : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400"}>{shop?.status}</Badge>
                 </p>
               </div>
-              <div className="flex items-center gap-3">
-                {shops.length > 1 && (
-                  <MobileSelect value={shop?.id} onValueChange={handleSwitchShop} placeholder="Select shop" triggerClassName="w-40" options={shops.map(s => ({ value: s.id, label: s.name }))} />
-                )}
-                <Button onClick={() => {
-                  const tierLimits = { free: 1, standard: 3, premium: 5 };
-                  const maxShops = tierLimits[subscription?.tier || "free"] ?? 1;
-                  const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
-                  if (shops.length >= maxShops) {
-                    if (maxShops < 5) {
-                      toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to Premium to add up to 5 branches.`);
-                    } else {
-                      toast.error("You've reached the maximum of 5 shops on the Premium plan. Contact us for an Enterprise plan.");
-                    }
-                  } else {
-                    setShowNewShopDialog(true);
-                  }
-                }} className="bg-blue-600 hover:bg-blue-700 gap-1.5"><Plus className="w-4 h-4" /> Add Branch</Button>
-              </div>
+              {shops.length > 1 && (
+                <MobileSelect value={shop?.id} onValueChange={handleSwitchShop} placeholder="Select shop" triggerClassName="w-40" options={shops.map(s => ({ value: s.id, label: s.name }))} />
+              )}
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {[
@@ -880,59 +799,16 @@ export default function ShopDashboard() {
               ))}
             </div>
 
-            {/* Branch Cards - only shown when there are multiple branches */}
-            {shops.length > 1 && (
-              <div className="mt-8">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200 mb-4">Your Branches</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {shops.map(s => {
-                    const isActive = shop?.id === s.id;
-                    const branchOrders = orders.filter(o => o.shop_id === s.id);
-                    const branchRevenue = branchOrders.filter(o => o.status !== "cancelled").reduce((sum, o) => sum + (o.total_amount || 0), 0);
-                    const branchProducts = products.filter(p => p.shop_id === s.id);
-                    return (
-                      <Card
-                        key={s.id}
-                        onClick={() => handleSwitchShop(s.id)}
-                        className={`cursor-pointer transition-all border-slate-100 dark:border-slate-700 dark:bg-slate-900 hover:shadow-md ${isActive ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-slate-950' : ''}`}
-                      >
-                        <CardContent className="p-4">
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 flex items-center justify-center overflow-hidden shrink-0">
-                              {s.logo_url ? <img src={s.logo_url} alt="" className="w-full h-full object-cover" /> : <Store className="w-5 h-5 text-blue-500 dark:text-blue-400" />}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{s.name}</p>
-                              <Badge className={s.status === "approved" ? "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 text-[10px]" : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 text-[10px]"}>{s.status}</Badge>
-                            </div>
-                            {isActive && <span className="text-[10px] font-bold text-blue-600 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded-full shrink-0">Active</span>}
-                          </div>
-                          {(s.town || s.address) && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-3 truncate">
-                              <MapPin className="w-3 h-3 shrink-0" /> {s.town || s.address}
-                            </p>
-                          )}
-                          <div className="grid grid-cols-3 gap-2 text-center">
-                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
-                              <p className="text-sm font-bold text-blue-600 dark:text-blue-400">{branchProducts.length}</p>
-                              <p className="text-[10px] text-slate-500">Products</p>
-                            </div>
-                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
-                              <p className="text-sm font-bold text-purple-600 dark:text-purple-400">{branchOrders.length}</p>
-                              <p className="text-[10px] text-slate-500">Orders</p>
-                            </div>
-                            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-2">
-                              <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">K{branchRevenue.toLocaleString('en-US', { maximumFractionDigits: 0 })}</p>
-                              <p className="text-[10px] text-slate-500">Revenue</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
+            {/* Branches section - uses the Branch entity via BranchManager inline preview */}
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-200">Branches</h2>
+                <Button size="sm" variant="outline" onClick={() => switchView("branches")} className="gap-1.5 text-sm">
+                  <MapPin className="w-4 h-4" /> Manage Branches
+                </Button>
               </div>
-            )}
+              <BranchManager shopId={shop?.id} compact />
+            </div>
           </div>
         )}
 
@@ -1482,20 +1358,7 @@ export default function ShopDashboard() {
           </div>
         )}
 
-        <Dialog open={showNewShopDialog} onOpenChange={setShowNewShopDialog}>
-           <DialogContent>
-             <DialogHeader><DialogTitle>Add New Branch</DialogTitle></DialogHeader>
-             <div className="space-y-4">
-               <div><Label>Branch Name *</Label><Input value={newShopForm.name} onChange={e => setNewShopForm({...newShopForm, name: e.target.value})} placeholder="e.g. Main Branch, Lusaka Outlet" className="mt-1" /></div>
-               <div><Label>Phone</Label><Input value={newShopForm.phone} onChange={e => setNewShopForm({...newShopForm, phone: e.target.value})} className="mt-1" /></div>
-               <AddressInput 
-                 value={{ region: newShopForm.region, town: newShopForm.town, address: newShopForm.address }}
-                 onChange={(newAddr) => setNewShopForm({...newShopForm, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
-               />
-             </div>
-             <DialogFooter><Button onClick={handleAddShop} disabled={savingBranch} className="bg-blue-600 hover:bg-blue-700 gap-2">{savingBranch && <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />}{savingBranch ? "Adding..." : "Add Branch"}</Button></DialogFooter>
-           </DialogContent>
-         </Dialog>
+
 
         {selectedProductForVariations && (
            <Dialog open={!!selectedProductForVariations} onOpenChange={() => setSelectedProductForVariations(null)}>
