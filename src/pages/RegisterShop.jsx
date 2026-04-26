@@ -12,6 +12,7 @@ import MobileSelect from "@/components/shared/MobileSelect";
 import { toast } from "sonner";
 import TermsAndConditionsModal from "@/components/shop/TermsAndConditionsModal";
 import AddressInput from "@/components/shared/AddressInput";
+import SubscriptionTierSelector from "@/components/shop/SubscriptionTierSelector";
 import { emailShopRegistrationReceived } from "@/components/lib/emailNotifications";
 
 export default function RegisterShop() {
@@ -87,10 +88,13 @@ export default function RegisterShop() {
        return true;
     }
     if (currentStep === 3) {
+      return true; // Plan selection always valid
+    }
+    if (currentStep === 4) {
       if (!form.logo_url) { toast.error("Shop logo is required"); return false; }
       return true;
     }
-    if (currentStep === 4) {
+    if (currentStep === 5) {
       if (!form.business_registration_number.trim()) { toast.error("Business registration number is required"); return false; }
       if (!/^\d{12}$/.test(form.business_registration_number)) { toast.error("Business registration number must be exactly 12 digits"); return false; }
       if (!form.tax_identification_number.trim()) { toast.error("Tax identification number is required"); return false; }
@@ -112,12 +116,12 @@ export default function RegisterShop() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateStep(4)) return;
+    if (!validateStep(5)) return;
     setSubmitting(true);
 
     const regionObj = regions.find(r => r.id === form.region);
     let lat = null, lng = null;
-    
+
     const geoRes = await base44.integrations.Core.InvokeLLM({
       prompt: `Return approximate GPS coordinates for this address in Zambia: "${form.address}". Return only the coordinates.`,
       response_json_schema: {
@@ -149,11 +153,44 @@ export default function RegisterShop() {
         status: "pending",
       });
 
+      // Create subscription record based on tier selected
+      const tierPricing = { basic: 0, standard: 100, premium: 250 };
+      const tierListings = { basic: 10, standard: 500, premium: -1 }; // -1 for unlimited
+
+      const startDate = new Date();
+      const renewalDate = new Date();
+      renewalDate.setMonth(renewalDate.getMonth() + 1);
+
+      await base44.entities.Subscription.create({
+        shop_id: shop.id,
+        shop_name: form.name,
+        owner_email: user.email,
+        tier: form.slot_type,
+        status: form.slot_type === "basic" ? "active" : "pending_payment",
+        monthly_price: tierPricing[form.slot_type],
+        max_listings: tierListings[form.slot_type],
+        current_listings: 0,
+        start_date: startDate.toISOString(),
+        renewal_date: renewalDate.toISOString(),
+        auto_renew: true,
+      });
+
       await base44.auth.updateMe({ role: "shop_owner", shop_id: shop.id });
       emailShopRegistrationReceived(user.email, user.full_name, form.name);
-      toast.success("✓ Shop registered successfully! Awaiting admin approval.");
-      navigate(createPageUrl("ShopDashboard"));
+
+      // Redirect to payment if not basic tier
+      if (form.slot_type !== "basic") {
+        const tierName = form.slot_type.charAt(0).toUpperCase() + form.slot_type.slice(1);
+        const tierPrice = tierPricing[form.slot_type];
+        toast.success(`✓ Shop registered! Redirecting to payment for ${tierName} plan (K${tierPrice}/month)...`);
+        // TODO: Redirect to payment page with subscription details
+        setTimeout(() => navigate(createPageUrl("ShopDashboard")), 2000);
+      } else {
+        toast.success("✓ Shop registered successfully! Welcome to BwanguSpares.");
+        navigate(createPageUrl("ShopDashboard"));
+      }
     } catch (error) {
+      console.error("Registration error:", error);
       toast.error("✗ Failed to register shop. Please try again.");
     } finally {
       setSubmitting(false);
@@ -214,12 +251,12 @@ export default function RegisterShop() {
           <Store className="w-7 h-7 text-blue-600 dark:text-blue-400" />
         </div>
         <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Register Your Shop</h1>
-        <p className="text-slate-500 dark:text-slate-400 mt-1">Step {step} of 4: {["Basic Info", "Location", "Images", "Compliance"][step - 1]}</p>
+        <p className="text-slate-500 dark:text-slate-400 mt-1">Step {step} of 5: {["Basic Info", "Location", "Choose Plan", "Images", "Compliance"][step - 1]}</p>
       </div>
 
       {/* Progress bar */}
       <div className="flex gap-2 mb-8">
-        {[1, 2, 3, 4].map(s => (
+        {[1, 2, 3, 4, 5].map(s => (
           <div key={s} className={`flex-1 h-1 rounded-full transition-colors ${s <= step ? "bg-blue-600" : "bg-slate-200 dark:bg-slate-700"}`} />
         ))}
       </div>
@@ -258,26 +295,19 @@ export default function RegisterShop() {
                value={{ region: form.region, town: form.town, address: form.address }}
                onChange={(newAddr) => setForm({...form, region: newAddr.region, town: newAddr.town, address: newAddr.address})}
              />
-             <div>
-               <Label className="dark:text-slate-300">Slot Plan</Label>
-               <div className="mt-1">
-                 <MobileSelect
-                   value={form.slot_type}
-                   onValueChange={v => setForm({...form, slot_type: v})}
-                   placeholder="Select plan"
-                   options={[
-                     { value: "basic", label: "Basic – Free" },
-                     { value: "standard", label: "Standard" },
-                     { value: "premium", label: "Premium" },
-                   ]}
-                 />
-               </div>
-             </div>
            </>
          )}
 
-        {/* Step 3: Images */}
-        {step === 3 && (
+         {/* Step 3: Choose Plan */}
+         {step === 3 && (
+           <SubscriptionTierSelector
+             selected={form.slot_type}
+             onChange={v => setForm({...form, slot_type: v})}
+           />
+         )}
+
+        {/* Step 4: Images */}
+        {step === 4 && (
           <>
             <div>
               <Label className="dark:text-slate-300">Shop Logo *</Label>
@@ -298,8 +328,8 @@ export default function RegisterShop() {
           </>
         )}
 
-        {/* Step 4: Compliance */}
-        {step === 4 && (
+        {/* Step 5: Compliance */}
+        {step === 5 && (
           <>
             <div>
               <Label className="dark:text-slate-300">Business Registration Number (12 digits) *</Label>
@@ -372,7 +402,7 @@ export default function RegisterShop() {
               Previous
             </Button>
           )}
-          {step < 4 ? (
+          {step < 5 ? (
             <Button type="button" onClick={handleNext} disabled={uploading} className="flex-1 h-11 bg-blue-600 hover:bg-blue-700 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">
               {uploading ? <><Loader2 className="w-4 h-4 animate-spin" /> Uploading…</> : <>Next <ChevronRight className="w-4 h-4" /></>}
             </Button>
