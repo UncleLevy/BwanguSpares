@@ -133,14 +133,17 @@ export default function Cart() {
     }
   };
 
-  const updateQty = (item, delta) => {
+  const updateQty = async (item, delta) => {
     const newQty = Math.max(1, (item.quantity || 1) + delta);
-    updateItemOptimistic(
-      item.id,
-      { quantity: newQty },
-      () => base44.entities.CartItem.update(item.id, { quantity: newQty }),
-      () => toast.error("Failed to update quantity")
-    );
+    // Optimistically update UI immediately
+    setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: newQty } : i));
+    try {
+      await base44.entities.CartItem.update(item.id, { quantity: newQty });
+    } catch (e) {
+      // Rollback on failure
+      setItems(prev => prev.map(i => i.id === item.id ? { ...i, quantity: item.quantity || 1 } : i));
+      toast.error("Failed to update quantity");
+    }
   };
 
   const removeItem = async (item) => {
