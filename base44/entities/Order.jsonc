@@ -147,7 +147,7 @@
       "formula": "record.buyer_email == user.email || record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "delete": {
-      "formula": "user.role == 'admin'"
+      "formula": "(record.buyer_email == user.email && record.status == 'pending') || user.role == 'admin'"
     },
     "create": {
       "created_by": "{{user.email}}"
