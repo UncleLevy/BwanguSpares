@@ -4,6 +4,7 @@ import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet, Truck, MapPin } from "lucide-react";
+import CardPaymentForm from "@/components/checkout/CardPaymentForm";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +28,8 @@ export default function Cart() {
   const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money" | "wallet"
   const [momoOperator, setMomoOperator] = useState("mtn"); // "mtn" | "airtel"
   const [momoPhone, setMomoPhone] = useState("");
+  const [cardDetails, setCardDetails] = useState({ cardNumber: "", expiry: "", cardExpiryMonth: "", cardExpiryYear: "", cardCvv: "", billingCity: "" });
+  const [cardStatus, setCardStatus] = useState(null); // null | "pending" | "3ds" | "successful" | "failed"
   const [momoStatus, setMomoStatus] = useState(null); // null | "pending" | "pay-offline" | "successful" | "failed"
   const [momoPolling, setMomoPolling] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
@@ -370,36 +373,74 @@ export default function Cart() {
           toast.error(response.data.error || "Payment failed");
         }
       } else {
-        // Card payment via Lenco redirect
+        // Card payment via Lenco card collection (JWE encrypted)
+        if (!cardDetails.cardNumber || !cardDetails.cardExpiryMonth || !cardDetails.cardExpiryYear || !cardDetails.cardCvv) {
+          toast.error("Please enter your full card details");
+          setSubmitting(false);
+          return;
+        }
+
         const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
 
-        const response = await base44.functions.invoke('lencoCheckout', {
+        setCardStatus("pending");
+        const response = await base44.functions.invoke('lencoCardCollect', {
+          cardNumber: cardDetails.cardNumber,
+          cardExpiryMonth: cardDetails.cardExpiryMonth,
+          cardExpiryYear: cardDetails.cardExpiryYear,
+          cardCvv: cardDetails.cardCvv,
+          billingCity: cardDetails.billingCity,
+          amount: amountToChargeCard,
+          currency: "ZMW",
           items: allItems,
           delivery_address: deliveryAddress,
           delivery_phone: form.phone,
           notes: form.notes,
           coupon_code: appliedCoupon?.code || "",
           discount_amount: discountAmount,
-          total: amountToChargeCard,
-          useWallet: useWallet,
+          total,
+          shippingOption,
+          shippingCost,
+          useWallet,
           walletAmount: useWallet ? walletAmount : 0,
-          cardAmount: amountToChargeCard,
-          shippingOption: shippingOption,
-          shippingCost: shippingCost,
-          payment_method: paymentMethod === "mobile_money" ? "mobile_money" : "card",
         });
 
-        if (response.data.url) {
-          // Clear cart before redirecting
+        const result = response.data;
+
+        if (result.error) {
+          setCardStatus("failed");
+          toast.error(result.error);
+          setSubmitting(false);
+          return;
+        }
+
+        // 3DS redirect
+        if (result.status === "3ds-auth-required" && result.redirectUrl) {
+          setCardStatus("3ds");
+          // Clear coupon & cart optimistically, redirect to 3DS page
           if (appliedCoupon) {
             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
           }
-          for (const item of items) {
-            await base44.entities.CartItem.delete(item.id);
+          for (const item of items) await base44.entities.CartItem.delete(item.id);
+          toast.info("Redirecting to 3D Secure verification…");
+          setTimeout(() => { window.location.href = result.redirectUrl; }, 1000);
+          return;
+        }
+
+        if (result.status === "successful") {
+          setCardStatus("successful");
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
           }
-          window.location.href = response.data.url;
+          for (const item of items) await base44.entities.CartItem.delete(item.id);
+          toast.success("Payment successful! Your order is confirmed.");
+          setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
+        } else if (result.status === "failed") {
+          setCardStatus("failed");
+          toast.error("Card payment was declined. Please try again.");
         } else {
-          toast.error(response.data.error || "Failed to initiate payment");
+          // pending — poll for status
+          setCardStatus("pending");
+          toast.info("Payment is processing…");
         }
       }
     } catch (error) {
@@ -667,6 +708,25 @@ export default function Cart() {
                      </div>
                    )}
                  </div>
+
+                 {/* Card payment form */}
+                 {paymentMethod === "card" && (
+                   <div className="space-y-2">
+                     <CardPaymentForm value={cardDetails} onChange={setCardDetails} />
+                     {cardStatus && (
+                       <div className={`p-3 rounded-lg border text-center text-sm font-medium ${
+                         cardStatus === "successful" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 text-emerald-700 dark:text-emerald-300" :
+                         cardStatus === "failed" ? "bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-400" :
+                         "bg-blue-50 dark:bg-blue-900/20 border-blue-300 text-blue-700 dark:text-blue-300 animate-pulse"
+                       }`}>
+                         {cardStatus === "successful" && "✅ Payment successful! Redirecting…"}
+                         {cardStatus === "failed" && "❌ Card was declined. Please try again."}
+                         {cardStatus === "3ds" && "🔐 Redirecting to 3D Secure verification…"}
+                         {cardStatus === "pending" && "⏳ Processing payment…"}
+                       </div>
+                     )}
+                   </div>
+                 )}
 
                  {paymentMethod === "wallet" && (
                    <div className="space-y-3 p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20 border border-purple-300 dark:border-purple-700">
