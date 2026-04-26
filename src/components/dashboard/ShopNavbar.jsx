@@ -47,16 +47,19 @@ export default function ShopNavbar({ user }) {
 
   return (
     <header
-      className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
+      className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
+      style={{
+        paddingTop: "env(safe-area-inset-top, 0px)"
+      }}
     >
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 lg:h-16 pl-10 md:pl-0">
+        <div className="flex items-center justify-between h-14 lg:h-16">
           <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Store className="w-5 h-5 text-white" />
             </div>
-            <div>
+            <div className="hidden sm:block">
               <span className="text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">
                 Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span>
               </span>
