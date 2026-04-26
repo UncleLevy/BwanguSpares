@@ -380,11 +380,13 @@ export default function Cart() {
           }
           toast.success("Payment successful!");
           // Redirect to order success or home
+          setSubmitting(false);
           setTimeout(() => {
             window.location.href = createPageUrl("BuyerDashboard");
           }, 1500);
         } else {
           toast.error(response.data.error || "Payment failed");
+          setSubmitting(false);
         }
       } else {
         // Card payment via Lenco card collection (JWE encrypted)
@@ -447,7 +449,9 @@ export default function Cart() {
           }
           for (const item of items) await base44.entities.CartItem.delete(item.id);
           toast.success("Payment successful! Your order is confirmed.");
+          setSubmitting(false);
           setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
+          return;
         } else if (result.status === "failed") {
           setCardStatus("failed");
           toast.error("Card payment was declined. Please try again.");
@@ -459,7 +463,6 @@ export default function Cart() {
       }
     } catch (error) {
       toast.error("Payment failed. Please try again.");
-    } finally {
       setSubmitting(false);
     }
   };
