@@ -344,7 +344,7 @@ export default function Cart() {
              for (const item of items) await base44.entities.CartItem.delete(item.id);
              toast.success("Payment successful! Redirecting…");
              setMomoPolling(false);
-             setTimeout(() => { window.location.replace(createPageUrl("BuyerDashboard")); }, 1500);
+             setTimeout(() => { window.location.reload(); }, 1500);
              break;
           } else if (txStatus === "failed") {
             toast.error("Mobile money payment failed or was declined.");
@@ -380,10 +380,9 @@ export default function Cart() {
             await base44.entities.CartItem.delete(item.id);
           }
           toast.success("Payment successful!");
-          // Redirect to order success or home
           setSubmitting(false);
           setTimeout(() => {
-            window.location.replace(createPageUrl("BuyerDashboard"));
+            window.location.reload();
           }, 1500);
         } else {
           toast.error(response.data.error || "Payment failed");
@@ -452,7 +451,7 @@ export default function Cart() {
           for (const item of items) await base44.entities.CartItem.delete(item.id);
           toast.success("Payment successful! Your order is confirmed.");
           setSubmitting(false);
-          setTimeout(() => { window.location.replace(createPageUrl("BuyerDashboard")); }, 1500);
+          setTimeout(() => { window.location.reload(); }, 1500);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");
