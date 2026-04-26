@@ -20,8 +20,8 @@ import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import PageLoader from "@/components/shared/PageLoader";
 import { Toaster } from "sonner";
 
-// NEW: Platform detection for web vs native
-import { Platform } from 'react-native';
+// Platform detection for web
+const Platform = { OS: 'web' };
 
 const pageVariants = {
   initial: { opacity: 0, x: 24 },

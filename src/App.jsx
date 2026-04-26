@@ -13,8 +13,9 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { NavProvider, useNav } from '@/lib/navigationContext';
 import { createPageUrl } from '@/utils';
 
-// Safe React Native imports — resolved to react-native-web on web builds
-import { Platform, StatusBar } from 'react-native';
+// Platform detection for web
+const Platform = { OS: 'web' };
+const StatusBar = null;
 
 const { Pages, Layout, mainPage } = pagesConfig;
 const mainPageKey = mainPage ?? Object.keys(Pages)[0];
