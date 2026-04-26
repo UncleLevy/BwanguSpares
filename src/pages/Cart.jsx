@@ -25,6 +25,10 @@ export default function Cart() {
   const [usingDefaultAddress, setUsingDefaultAddress] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card"); // "card" | "mobile_money" | "wallet"
+  const [momoOperator, setMomoOperator] = useState("mtn"); // "mtn" | "airtel"
+  const [momoPhone, setMomoPhone] = useState("");
+  const [momoStatus, setMomoStatus] = useState(null); // null | "pending" | "pay-offline" | "successful" | "failed"
+  const [momoPolling, setMomoPolling] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [regions, setRegions] = useState([]);
@@ -239,6 +243,10 @@ export default function Cart() {
       toast.error("Enter a valid phone number (e.g. +260 7XX XXX XXX)"); 
       return; 
     }
+    if (paymentMethod === "mobile_money" && !momoPhone.trim()) {
+      toast.error("Please enter your mobile money number");
+      return;
+    }
     if (useWallet && walletAmount <= 0) {
       toast.error("Please enter a valid wallet amount");
       return;
@@ -273,11 +281,69 @@ export default function Cart() {
         image_url: i.image_url || '',
       }));
 
+      const deliveryAddress = `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`;
+
+      // Handle mobile money via Lenco direct push
+      if (paymentMethod === "mobile_money") {
+        const response = await base44.functions.invoke('lencoMomoCollect', {
+          phone: momoPhone,
+          operator: momoOperator,
+          amount: total,
+          items: allItems,
+          delivery_address: deliveryAddress,
+          delivery_phone: form.phone,
+          notes: form.notes,
+          coupon_code: appliedCoupon?.code || "",
+          discount_amount: discountAmount,
+          total,
+          shippingOption,
+          shippingCost,
+        });
+
+        if (!response.data.success) {
+          toast.error(response.data.error || "Failed to initiate mobile money payment");
+          setSubmitting(false);
+          return;
+        }
+
+        const { reference } = response.data;
+        setMomoStatus("pay-offline");
+        toast.success("Payment request sent! Please approve on your phone.");
+
+        // Poll for status every 5s for up to 2 minutes
+        setMomoPolling(true);
+        setSubmitting(false);
+        const maxAttempts = 24;
+        for (let i = 0; i < maxAttempts; i++) {
+          await new Promise(r => setTimeout(r, 5000));
+          const statusRes = await base44.functions.invoke('lencoMomoStatus', { reference });
+          const txStatus = statusRes.data?.status;
+          setMomoStatus(txStatus);
+
+          if (txStatus === "successful") {
+            if (appliedCoupon) {
+              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+            }
+            for (const item of items) await base44.entities.CartItem.delete(item.id);
+            toast.success("Payment successful! Redirecting…");
+            setTimeout(() => { window.location.href = createPageUrl("BuyerDashboard"); }, 1500);
+            break;
+          } else if (txStatus === "failed") {
+            toast.error("Mobile money payment failed or was declined.");
+            break;
+          }
+          // "pending" or "pay-offline" — keep polling
+        }
+
+        setMomoPolling(false);
+        return;
+      }
+
       // Handle wallet-only payment
       if (paymentMethod === "wallet" && useWallet && walletAmount >= total) {
         const response = await base44.functions.invoke('walletPaymentCheckout', {
           items: allItems,
-          deliveryAddress: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
+          deliveryAddress: deliveryAddress,
           deliveryPhone: form.phone,
           notes: form.notes,
           couponCode: appliedCoupon?.code || "",
@@ -304,12 +370,12 @@ export default function Cart() {
           toast.error(response.data.error || "Payment failed");
         }
       } else {
-        // Card or Mobile Money payment via Lenco
+        // Card payment via Lenco redirect
         const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
 
         const response = await base44.functions.invoke('lencoCheckout', {
           items: allItems,
-          delivery_address: `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`,
+          delivery_address: deliveryAddress,
           delivery_phone: form.phone,
           notes: form.notes,
           coupon_code: appliedCoupon?.code || "",
@@ -559,10 +625,44 @@ export default function Cart() {
                      )}
                    </div>
                    {paymentMethod === "mobile_money" && (
-                     <div className="mt-3 flex items-start gap-2 p-3 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
-                       <span className="text-lg">📲</span>
-                       <p className="text-xs text-green-800 dark:text-green-300">
-                         You'll be redirected to Lenco's secure page to complete your mobile money payment (MTN, Airtel, or Zamtel).
+                     <div className="mt-3 space-y-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800">
+                       <div>
+                         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Network</Label>
+                         <div className="grid grid-cols-2 gap-2 mt-2">
+                           {[
+                             { id: "mtn", label: "MTN MoMo", color: "border-yellow-400 bg-yellow-400 text-black", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400" },
+                             { id: "airtel", label: "Airtel Money", color: "border-red-600 bg-red-600 text-white", inactive: "border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-400" },
+                           ].map(n => (
+                             <button key={n.id} type="button" onClick={() => setMomoOperator(n.id)}
+                               className={`p-2 rounded-lg border-2 text-sm font-medium transition-all ${momoOperator === n.id ? n.color : n.inactive + " bg-white dark:bg-slate-800"}`}>
+                               {n.label}
+                             </button>
+                           ))}
+                         </div>
+                       </div>
+                       <div>
+                         <Label className="text-sm font-medium text-slate-700 dark:text-slate-300">Mobile Money Number *</Label>
+                         <Input
+                           type="tel"
+                           value={momoPhone}
+                           onChange={e => setMomoPhone(e.target.value)}
+                           placeholder="e.g. 0976 000 000"
+                           className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
+                         />
+                       </div>
+                       {momoStatus && (
+                         <div className={`p-3 rounded-lg border text-center text-sm font-medium ${
+                           momoStatus === "successful" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 text-emerald-700 dark:text-emerald-300" :
+                           momoStatus === "failed" ? "bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-400" :
+                           "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 text-yellow-700 dark:text-yellow-300 animate-pulse"
+                         }`}>
+                           {momoStatus === "successful" && "✅ Payment successful! Redirecting…"}
+                           {momoStatus === "failed" && "❌ Payment failed or was declined. Please try again."}
+                           {(momoStatus === "pay-offline" || momoStatus === "pending") && "⏳ Waiting for approval on your phone…"}
+                         </div>
+                       )}
+                       <p className="text-xs text-green-700 dark:text-green-400">
+                         📲 A payment prompt of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be sent to your phone. Approve it to complete the order.
                        </p>
                      </div>
                    )}
@@ -610,7 +710,7 @@ export default function Cart() {
 
                  <Button
                    onClick={handleCheckout}
-                   disabled={submitting || (paymentMethod === "wallet" && !useWallet)}
+                   disabled={submitting || momoPolling || (paymentMethod === "wallet" && !useWallet)}
                    className={`w-full h-12 rounded-xl text-sm gap-2 ${
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
                      paymentMethod === "mobile_money" ? "bg-green-600 hover:bg-green-700" :
@@ -618,7 +718,7 @@ export default function Cart() {
                    }`}
                  >
                    {paymentMethod === "card" ? <CreditCard className="w-4 h-4" /> : paymentMethod === "wallet" ? <Wallet className="w-4 h-4" /> : <span>📱</span>}
-                   {submitting ? "Processing..." : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "mobile_money" ? `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via Mobile Money` : "Complete Payment"}
+                   {submitting || momoPolling ? "Processing…" : paymentMethod === "card" ? "Pay with Card" : paymentMethod === "mobile_money" ? `Pay K${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} via Mobile Money` : "Complete Payment"}
                  </Button>
                  <p className="text-center text-xs text-slate-400 mt-1">
                    Powered by Lenco · Secure payment
