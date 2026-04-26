@@ -337,15 +337,12 @@ export default function Cart() {
              if (appliedCoupon) {
                await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
              }
-             // Update the order status to confirmed
-             const pendingOrders = await base44.entities.Order.filter({ stripe_session_id: reference });
-             if (pendingOrders.length > 0) {
-               await base44.entities.Order.update(pendingOrders[0].id, { status: "confirmed" });
-             }
+             // Delete cart items
              for (const item of items) await base44.entities.CartItem.delete(item.id);
              notifyPaymentSuccess(reference);
              setMomoPolling(false);
-             setTimeout(() => { window.location.reload(); }, 1500);
+             // Redirect to order success page instead of reloading
+             setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
              break;
           } else if (txStatus === "failed") {
             notifyError("Payment Declined", "Mobile money payment was declined. Please try again.");
@@ -382,8 +379,9 @@ export default function Cart() {
           }
           notifyPaymentSuccess();
           setSubmitting(false);
+          // Redirect to order success page instead of reloading
           setTimeout(() => {
-            window.location.reload();
+            navigate(createPageUrl("OrderSuccess"));
           }, 1500);
         } else {
           notifyError("Payment Failed", response.data.error || "Wallet payment could not be processed");
@@ -453,7 +451,8 @@ export default function Cart() {
           for (const item of items) await base44.entities.CartItem.delete(item.id);
           notifyPaymentSuccess();
           setSubmitting(false);
-          setTimeout(() => { window.location.reload(); }, 1500);
+          // Redirect to order success page instead of reloading
+          setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${result.reference}`); }, 1500);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");

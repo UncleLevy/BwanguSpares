@@ -27,6 +27,17 @@ Deno.serve(async (req) => {
     console.log("Lenco MoMo status:", JSON.stringify(data));
 
     const status = data?.data?.status; // "pending" | "successful" | "failed" | "pay-offline"
+
+    // If successful, update order status
+    if (status === "successful") {
+      const orders = await base44.asServiceRole.entities.Order.filter({ stripe_session_id: reference });
+      if (orders.length > 0) {
+        const order = orders[0];
+        await base44.asServiceRole.entities.Order.update(order.id, { status: "confirmed" });
+        console.log(`Order ${order.id} confirmed for reference ${reference}`);
+      }
+    }
+
     return Response.json({ status, data: data?.data });
   } catch (error) {
     console.error("lencoMomoStatus error:", error.message);

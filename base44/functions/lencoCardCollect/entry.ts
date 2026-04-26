@@ -186,7 +186,11 @@ Deno.serve(async (req) => {
       // Update order to confirmed
       const orders = await base44.asServiceRole.entities.Order.filter({ stripe_session_id: reference });
       if (orders.length > 0) {
-        await base44.asServiceRole.entities.Order.update(orders[0].id, { status: "confirmed", shop_id: orders[0].shop_id !== "PENDING_PAYMENT" ? orders[0].shop_id : orders[0].shop_id });
+        const order = orders[0];
+        // Extract actual shop_id from items if available
+        const actualShopId = items?.[0]?.shop_id || order.shop_id;
+        await base44.asServiceRole.entities.Order.update(order.id, { status: "confirmed", shop_id: actualShopId });
+        console.log(`Order ${order.id} confirmed for reference ${reference}`);
       }
     }
 
