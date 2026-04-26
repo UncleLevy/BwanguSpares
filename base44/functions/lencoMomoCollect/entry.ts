@@ -37,7 +37,8 @@ Deno.serve(async (req) => {
     // Normalize phone to local format (Lenco expects local number for ZM)
     let normalizedPhone = phone.replace(/\s+/g, "").replace(/^\+260/, "0").replace(/^260/, "0");
 
-    const reference = `BW-${crypto.randomUUID().replace(/-/g, "").slice(0, 16)}`;
+    // Reference: only alphanumeric, dash, dot, underscore allowed by Lenco
+    const reference = `BW-${Date.now()}-${crypto.randomUUID().replace(/-/g, "").slice(0, 8)}`;
 
     const momoRes = await fetch(`${LENCO_BASE_URL}/collections/mobile-money`, {
       method: "POST",

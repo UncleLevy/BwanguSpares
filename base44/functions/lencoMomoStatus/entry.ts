@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
       return Response.json({ error: "reference is required" }, { status: 400 });
     }
 
-    const res = await fetch(`${LENCO_BASE_URL}/collections/${reference}`, {
+    const res = await fetch(`${LENCO_BASE_URL}/collections/status/${reference}`, {
       headers: {
         "Authorization": `Bearer ${LENCO_API_KEY}`,
         "accept": "application/json",
