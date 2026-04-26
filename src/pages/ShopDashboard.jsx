@@ -28,6 +28,7 @@ import PullToRefresh from "@/components/shared/PullToRefresh";
 import ShopPartsRequests from "@/components/parts/ShopPartsRequests";
 import TechnicianHireRequests from "@/components/technicians/TechnicianHireRequests";
 import MarketInsights from "@/components/analytics/MarketInsights";
+import PremiumFeatureGate from "@/components/shared/PremiumFeatureGate";
 import ShopMessages from "@/components/messaging/ShopMessages";
 import DocumentPrinter from "@/components/documents/DocumentPrinter";
 import InventoryPanel from "@/components/inventory/InventoryPanel";
@@ -527,10 +528,10 @@ export default function ShopDashboard() {
    { id: "shops", label: "My Shops", icon: Store, onClick: () => switchView("shops") },
    { id: "branches", label: "Branches", icon: MapPin, onClick: () => switchView("branches") },
    { id: "analytics", label: "Analytics", icon: BarChart3, onClick: () => switchView("analytics") },
-   { id: "customers", label: "Customers", icon: User, onClick: () => switchView("customers") },
-   { id: "marketing", label: "Marketing", icon: TrendingUp, onClick: () => switchView("marketing") },
-   { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => switchView("marketing_analytics") },
-    { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => switchView("market_insights") },
+    { id: "customers", label: "Customers", icon: User, onClick: () => switchView("customers") },
+    { id: "marketing", label: "Marketing", icon: TrendingUp, onClick: () => switchView("marketing"), premium: true },
+    { id: "marketing_analytics", label: "Marketing Analytics", icon: BarChart3, onClick: () => switchView("marketing_analytics"), premium: true },
+     { id: "market_insights", label: "Market Insights", icon: TrendingUp, onClick: () => switchView("market_insights"), premium: true },
     { id: "shipping", label: "Shipping", icon: Truck, onClick: () => switchView("shipping") },
     { id: "courier_performance", label: "Courier Performance", icon: TrendingUp, onClick: () => switchView("courier_performance") },
     { id: "products", label: "Products", icon: Package, onClick: () => switchView("products") },
@@ -629,7 +630,14 @@ export default function ShopDashboard() {
     <div className="flex flex-col bg-slate-50 dark:bg-slate-950" style={{ height: "100dvh" }}>
       <ShopNavbar user={user} />
       <div className="flex flex-1 overflow-hidden">
-        <DashboardSidebar items={sidebarItems} active={view} title="Shop Dashboard" />
+        <DashboardSidebar 
+          items={sidebarItems.map(item => ({
+            ...item,
+            disabled: item.premium && subscription?.tier !== "premium"
+          }))} 
+          active={view} 
+          title="Shop Dashboard" 
+        />
         <main
           className="flex-1 overflow-y-auto min-w-0 text-slate-900 dark:text-slate-100 p-4 md:p-6 lg:p-8"
           style={{
@@ -1410,7 +1418,9 @@ export default function ShopDashboard() {
         )}
 
         {view === "market_insights" && (
-          <MarketInsights shop={shop} />
+          <PremiumFeatureGate isUnlocked={subscription?.tier === "premium"} featureName="Market Insights">
+            <MarketInsights shop={shop} />
+          </PremiumFeatureGate>
         )}
 
         {view === "parts_requests" && (
@@ -1438,7 +1448,9 @@ export default function ShopDashboard() {
         )}
 
         {view === "marketing" && (
-          <MarketingTools shopId={shop?.id} customers={customers} />
+          <PremiumFeatureGate isUnlocked={subscription?.tier === "premium"} featureName="Marketing Tools">
+            <MarketingTools shopId={shop?.id} customers={customers} />
+          </PremiumFeatureGate>
         )}
 
         {view === "wallet" && (
@@ -1446,7 +1458,9 @@ export default function ShopDashboard() {
         )}
 
         {view === "marketing_analytics" && (
-          <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
+          <PremiumFeatureGate isUnlocked={subscription?.tier === "premium"} featureName="Marketing Analytics">
+            <MarketingAnalyticsDashboard shopId={shop?.id} campaigns={campaigns} orders={orders} customers={customers} discountCodes={discountCodes} />
+          </PremiumFeatureGate>
         )}
 
         {view === "returns" && (
