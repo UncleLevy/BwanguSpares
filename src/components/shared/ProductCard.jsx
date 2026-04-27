@@ -99,12 +99,12 @@ export default function ProductCard({ product, onAddToCart, user, listView = fal
     <div className="group bg-white dark:bg-slate-800/90 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] flex flex-col">
       {/* Image - eBay style: centered, white bg */}
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="relative block">
-        <div className="relative aspect-square bg-white dark:bg-slate-50 overflow-hidden flex items-center justify-center p-4">
+        <div className="relative aspect-square bg-white dark:bg-slate-50 overflow-hidden flex items-center justify-center">
           {product.image_url ? (
             <img
               src={product.image_url}
               alt={product.name}
-              className="h-5/6 w-5/6 object-contain group-hover:scale-110 transition-transform duration-500"
+              className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 p-4"
               loading="lazy"
             />
           ) : (
