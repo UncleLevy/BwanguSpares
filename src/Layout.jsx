@@ -373,7 +373,7 @@ export default function Layout({ children, currentPageName }) {
           </header>
 
       <main
-        className="w-full safe-pb"
+        className="w-full safe-pb pb-8 md:pb-0"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
