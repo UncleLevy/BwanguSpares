@@ -5,7 +5,7 @@ const TECH_PARTNERS = [
     name: "Lenco",
     description: "Card Payments",
     url: "https://lenco.co",
-    logo: "https://lenco.co/favicon.ico",
+    logo: "https://media.base44.com/images/public/699f775333a30acfe3b73c4e/03423413d_image.png",
     bg: "bg-white dark:bg-slate-100",
   },
   {
