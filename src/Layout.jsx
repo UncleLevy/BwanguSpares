@@ -384,11 +384,11 @@ export default function Layout({ children, currentPageName }) {
       {currentPageName === "Home" &&
       <footer
         role="contentinfo"
-        className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20"
+        className="bg-blue-900 dark:bg-blue-950 text-slate-300 dark:text-slate-400 mt-20 md:pb-0"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
-          paddingBottom: "env(safe-area-inset-bottom, 0px)"
+          paddingBottom: "calc(max(5rem, calc(env(safe-area-inset-bottom, 0px) + 4.5rem)))"
         }}>
         
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
