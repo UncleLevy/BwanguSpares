@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import PullToRefresh from "@/components/shared/PullToRefresh";
+import PartsFinderBot from "@/components/agents/PartsFinderBot";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User,
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock } from
@@ -152,6 +153,7 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
       <PageLoader visible={pageLoading} />
       <CustomToaster />
+      <PartsFinderBot />
       <header
         role="banner"
         className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
