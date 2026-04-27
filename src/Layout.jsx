@@ -156,6 +156,7 @@ export default function Layout({ children, currentPageName }) {
         role="banner"
         className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
         style={{
+          paddingTop: "env(safe-area-inset-top, 0px)",
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
           transform: "translateZ(0)"
