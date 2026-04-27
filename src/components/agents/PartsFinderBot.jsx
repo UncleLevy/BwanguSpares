@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
-import { X, Send, MessageCircle, Loader2 } from "lucide-react";
+import { X, Send, MessageCircle, Loader2, Package, Store, MapPin, DollarSign } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function PartsFinderBot() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -152,15 +156,80 @@ export default function PartsFinderBot() {
                       key={i}
                       className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                     >
-                      <div
-                        className={`max-w-xs rounded-lg p-3 text-sm ${
-                          msg.role === "user"
-                            ? "bg-blue-600 text-white rounded-br-none"
-                            : "bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-600 rounded-bl-none"
-                        }`}
-                      >
-                        {msg.content}
-                      </div>
+                      {msg.role === "user" ? (
+                        <div className="bg-blue-600 text-white rounded-lg p-3 text-sm rounded-br-none max-w-xs">
+                          {msg.content}
+                        </div>
+                      ) : (
+                        <div className="max-w-sm space-y-2">
+                          {msg.content && typeof msg.content === "string" && (
+                            <div className="bg-white dark:bg-slate-700 text-slate-900 dark:text-slate-50 border border-slate-200 dark:border-slate-600 rounded-lg p-3 text-sm rounded-bl-none">
+                              {msg.content}
+                            </div>
+                          )}
+                          {msg.items && Array.isArray(msg.items) && (
+                            <div className="space-y-2">
+                              {msg.items.map((item, idx) => (
+                                <div key={idx}>
+                                  {item.type === "product" && (
+                                    <button
+                                      onClick={() => {
+                                        navigate(createPageUrl("ProductDetail") + `?id=${item.id}`);
+                                        setOpen(false);
+                                      }}
+                                      className="w-full text-left bg-white dark:bg-slate-700 rounded-lg p-3 border border-slate-200 dark:border-slate-600 hover:shadow-md transition-all"
+                                    >
+                                      <div className="flex gap-3">
+                                        {item.image_url && (
+                                          <img src={item.image_url} alt={item.name} className="w-12 h-12 rounded object-cover flex-shrink-0" />
+                                        )}
+                                        <div className="flex-1 min-w-0">
+                                          <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{item.name}</p>
+                                          <p className="text-xs text-slate-500 dark:text-slate-400">{item.shop_name}</p>
+                                          <div className="flex items-center gap-2 mt-1">
+                                            <span className="font-bold text-blue-600 text-sm">K{item.price?.toLocaleString()}</span>
+                                            {item.stock !== undefined && (
+                                              <Badge variant="outline" className={`text-[10px] ${item.stock > 0 ? "bg-emerald-50 text-emerald-700" : "bg-red-50 text-red-700"}`}>
+                                                {item.stock > 0 ? `${item.stock} in stock` : "Out of stock"}
+                                              </Badge>
+                                            )}
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </button>
+                                  )}
+                                  {item.type === "shop" && (
+                                    <button
+                                      onClick={() => {
+                                        navigate(createPageUrl("ShopProfile") + `?id=${item.id}`);
+                                        setOpen(false);
+                                      }}
+                                      className="w-full text-left bg-white dark:bg-slate-700 rounded-lg p-3 border border-slate-200 dark:border-slate-600 hover:shadow-md transition-all"
+                                    >
+                                      <div className="flex gap-3">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center flex-shrink-0">
+                                          <Store className="w-6 h-6 text-white" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                          <p className="font-semibold text-sm text-slate-900 dark:text-slate-100 truncate">{item.name}</p>
+                                          {item.region && (
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                              <MapPin className="w-3 h-3" /> {item.region}
+                                            </p>
+                                          )}
+                                          {item.distance && (
+                                            <p className="text-xs text-blue-600 font-medium mt-1">{item.distance} away</p>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   ))
                 )}
