@@ -25,7 +25,7 @@ export default function BuyerNavbar({ user }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 lg:h-16">
           <Link to={createPageUrl("BuyerDashboard")} className="flex items-center gap-2.5">
-            <div className="w-10 h-10 mr-5 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="w-10 h-10 ml-5 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Package className="w-5 h-5 text-white" />
             </div>
             <div className="hidden sm:block">
