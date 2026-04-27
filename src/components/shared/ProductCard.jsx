@@ -96,29 +96,29 @@ export default function ProductCard({ product, onAddToCart, user, listView = fal
   }
 
   return (
-    <div className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] flex flex-col">
-      {/* Image */}
+    <div className="group bg-white dark:bg-slate-800/90 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] flex flex-col">
+      {/* Image - eBay style: centered, white bg */}
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="relative block">
-        <div className="relative h-36 sm:h-44 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
+        <div className="relative aspect-square bg-white dark:bg-slate-50 overflow-hidden flex items-center justify-center p-4">
           {product.image_url ? (
             <img
               src={product.image_url}
               alt={product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              className="h-5/6 w-5/6 object-contain group-hover:scale-110 transition-transform duration-500"
               loading="lazy"
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Package className="w-10 h-10 text-slate-200 dark:text-slate-600" />
+              <Package className="w-12 h-12 text-slate-200 dark:text-slate-400" />
             </div>
           )}
 
-          {/* Overlays */}
-          <div className="absolute top-2.5 left-2.5">
-            <Badge className={`text-[10px] border font-medium ${conditionColors[product.condition] || conditionColors.new}`}>
-              {product.condition || "new"}
-            </Badge>
-          </div>
+          {/* Discount badge */}
+          {product.original_price && product.original_price > product.price && (
+            <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+              {Math.round(((product.original_price - product.price) / product.original_price) * 100)}% OFF
+            </div>
+          )}
 
           {isOutOfStock && (
             <div className="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
@@ -134,44 +134,34 @@ export default function ProductCard({ product, onAddToCart, user, listView = fal
         </div>
       </Link>
 
-      {/* Body */}
-      <div className="p-4 flex flex-col flex-1 gap-2">
+      {/* Body - minimal */}
+      <div className="p-3 flex flex-col flex-1 gap-1">
         <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="flex-1">
-          <h3 className="font-semibold text-sm text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
+          <h3 className="font-medium text-sm text-slate-900 dark:text-slate-100 line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
             {product.name}
           </h3>
         </Link>
 
-        <div className="flex items-center gap-1">
-          <MapPin className="w-3 h-3 text-slate-400 flex-shrink-0" />
-          <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
-        </div>
+        <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{product.shop_name}</p>
 
         {/* Price */}
-        <div className="flex items-baseline gap-2 flex-wrap">
-          <span className="text-base font-bold text-blue-600">K{product.price?.toLocaleString()}</span>
+        <div className="flex items-baseline gap-2 flex-wrap mt-2">
+          <span className="text-sm font-bold text-slate-900 dark:text-slate-100">K{product.price?.toLocaleString()}</span>
           {product.original_price && product.original_price > product.price && (
-            <>
-              <span className="text-xs text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
-              <span className="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 dark:bg-red-900/40 text-red-600 dark:text-red-400 rounded">
-                -{Math.round(((product.original_price - product.price) / product.original_price) * 100)}%
-              </span>
-            </>
+            <span className="text-xs text-slate-400 line-through">K{product.original_price?.toLocaleString()}</span>
           )}
         </div>
 
         {/* Actions */}
         {canAddToCart && (
-          <div className="mt-1 pt-3 border-t border-slate-100 dark:border-slate-700">
+          <div className="mt-auto pt-2">
             <Button
               size="sm"
-              variant="outline"
               disabled={isOutOfStock}
-              className="w-full h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
-                         hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform"
+              className="w-full h-8 text-xs bg-blue-600 hover:bg-blue-700 text-white active:scale-95 transition-transform"
               onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}
             >
-              <ShoppingCart className="w-3.5 h-3.5 shrink-0 mr-1.5" />
+              <ShoppingCart className="w-3 h-3 shrink-0 mr-1" />
               {isOutOfStock ? "Out of stock" : "Add to Cart"}
             </Button>
           </div>
