@@ -451,7 +451,7 @@ export default function ShopDashboard() {
 
   const handleAddShop = async () => {
     if (!newShopForm.name || !newShopForm.address || !newShopForm.region || !newShopForm.town) {
-      toast.error("Please fill in all required fields");
+      notifyError("Please fill in all required fields");
       return;
     }
     setSavingBranch(true);
