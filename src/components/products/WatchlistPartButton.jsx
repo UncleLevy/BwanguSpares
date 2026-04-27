@@ -66,10 +66,11 @@ export default function WatchlistPartButton({ product, userEmail, disabled = fal
       size="sm"
       onClick={handleToggle}
       disabled={loading || disabled}
-      className={`gap-2 ${isWatched ? "bg-red-100 text-red-600 hover:bg-red-200" : "text-slate-500 hover:text-red-500"}`}
+      className={`gap-1.5 px-2.5 h-9 ${isWatched ? "bg-red-100 text-red-600 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400" : "text-slate-500 hover:text-red-500 dark:text-slate-400"}`}
     >
-      <Heart className={`w-4 h-4 ${isWatched ? "fill-current" : ""}`} />
-      {isWatched ? "Following" : "Follow"}
+      <Heart className={`w-4 h-4 shrink-0 ${isWatched ? "fill-current" : ""}`} />
+      <span className="hidden sm:inline text-xs">{isWatched ? "Following" : "Follow"}</span>
+      <span className="sm:hidden text-xs">{isWatched ? "★" : ""}</span>
     </Button>
   );
 }

@@ -21,7 +21,7 @@ export default function ProductCard({ product, onAddToCart, user }) {
     <div className="group bg-white dark:bg-slate-800/90 rounded-2xl border border-slate-100 dark:border-slate-700/60 overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 active:scale-[0.97] flex flex-col">
       {/* Image */}
       <Link to={createPageUrl("ProductDetail") + `?id=${product.id}`} className="relative block">
-        <div className="relative h-40 sm:h-44 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
+        <div className="relative h-36 sm:h-44 bg-slate-50 dark:bg-slate-700/50 overflow-hidden">
           {product.image_url ? (
             <img
               src={product.image_url}
@@ -90,12 +90,13 @@ export default function ProductCard({ product, onAddToCart, user }) {
               size="sm"
               variant="outline"
               disabled={isOutOfStock}
-              className="flex-1 h-10 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
-                         hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform"
+              className="flex-1 h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
+                         hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform px-2"
               onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}
             >
-              <ShoppingCart className="w-3.5 h-3.5 mr-1.5" />
-              <span>{isOutOfStock ? "Out of stock" : "Add to Cart"}</span>
+              <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden sm:inline ml-1.5">{isOutOfStock ? "Out of stock" : "Add to Cart"}</span>
+              <span className="sm:hidden ml-1">{isOutOfStock ? "Sold" : "Add"}</span>
             </Button>
           )}
         </div>
