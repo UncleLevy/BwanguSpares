@@ -12,7 +12,7 @@ const TECH_PARTNERS = [
     name: "MTN MoMo",
     description: "Mobile Money",
     url: "https://mtn.com",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/MTN_Logo.svg/320px-MTN_Logo.svg.png",
+    logo: "https://media.base44.com/images/public/699f775333a30acfe3b73c4e/f45438893_image.png",
     bg: "bg-yellow-50 dark:bg-yellow-50",
   },
   {
