@@ -4,7 +4,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { base44 } from "@/api/base44Client";
 import { createPageUrl } from "@/utils";
 import PullToRefresh from "@/components/shared/PullToRefresh";
-import PartsFinderBot from "@/components/agents/PartsFinderBot";
 import {
   ShoppingCart, Menu, X, Home, Search, Store, User,
   ShieldCheck, LayoutDashboard, Package, LogOut, ChevronDown, MapPin, Mail, Phone, ExternalLink, MessageSquare, Heart, Navigation, Scale, Lock } from
@@ -153,7 +152,6 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-50 dark:from-slate-900 dark:via-slate-900/95 dark:to-slate-900">
       <PageLoader visible={pageLoading} />
       <CustomToaster />
-      <PartsFinderBot />
       <header
         role="banner"
         className={`sticky top-0 z-[70] ${hasAppHeader ? "hidden md:block" : ""}`}
@@ -165,7 +163,7 @@ export default function Layout({ children, currentPageName }) {
         
         <div className="bg-white dark:bg-slate-900 md:bg-white/70 md:dark:bg-slate-900/70 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm h-16 md:h-auto">
           <div className="mx-auto px-3 sm:px-4 w-full max-w-7xl sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16 md:h-10 py-2 md:pb-2">
+            <div className="flex items-center justify-between h-16 md:h-auto py-3 md:py-4">
             <Link to="/" className="flex items-center gap-2">
               <img src="https://media.base44.com/images/public/699f775333a30acfe3b73c4e/097f0a26f_DynamicBlueSwooshwithCohesiveTypography9.jpg" alt="BwanguSpares Logo" className="w-9 h-9 md:w-10 md:h-10 rounded-xl object-contain flex-shrink-0" />
               <span className="hidden sm:inline text-lg md:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
@@ -373,7 +371,7 @@ export default function Layout({ children, currentPageName }) {
           </header>
 
       <main
-        className="w-full safe-pb pb-8 md:pb-0"
+        className="w-full safe-pb"
         style={{
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
