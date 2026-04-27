@@ -64,6 +64,10 @@
     "admin_email": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
     "resolved_at": {
       "type": "string",
       "format": "date-time"

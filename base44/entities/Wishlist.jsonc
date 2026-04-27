@@ -25,6 +25,10 @@
     },
     "category": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [
@@ -40,17 +44,8 @@
     "insert": {
       "formula": "request.buyer_email == user.email"
     },
-    "update": {
-      "formula": "record.buyer_email == user.email"
-    },
-    "delete": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
-    },
     "create": {
       "created_by": "{{user.email}}"
-    },
-    "write": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
     "public_read": true
   }

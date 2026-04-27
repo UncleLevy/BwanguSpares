@@ -41,6 +41,10 @@
     "price_drop_threshold": {
       "type": "number",
       "default": 5
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [

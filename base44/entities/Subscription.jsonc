@@ -34,6 +34,10 @@
     "expires_date": {
       "type": "string",
       "format": "date"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [

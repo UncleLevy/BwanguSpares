@@ -41,6 +41,10 @@
       "type": "boolean",
       "default": true
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
     "rating": {
       "type": "number",
       "default": 0

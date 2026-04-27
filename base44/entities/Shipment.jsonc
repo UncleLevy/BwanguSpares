@@ -122,6 +122,10 @@
     "delivery_notes": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
     "proof_of_delivery_url": {
       "type": "string"
     },

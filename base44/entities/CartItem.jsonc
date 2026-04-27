@@ -26,6 +26,10 @@
     },
     "image_url": {
       "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [
@@ -40,12 +44,6 @@
     },
     "insert": {
       "formula": "request.buyer_email == user.email"
-    },
-    "update": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
-    },
-    "delete": {
-      "formula": "record.buyer_email == user.email || user.role == 'admin'"
     },
     "create": {
       "created_by": "{{user.email}}"

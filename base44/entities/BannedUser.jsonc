@@ -22,6 +22,10 @@
     "reason": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
     "ban_expires": {
       "type": "string",
       "format": "date"

@@ -23,6 +23,10 @@
     "offer_description": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
+    },
     "action_url": {
       "type": "string"
     },
