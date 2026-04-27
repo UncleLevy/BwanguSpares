@@ -88,16 +88,16 @@ export const notifyLoading = (message) => {
 export const notifyCartAdded = (productName) => {
   toast.custom(
     (id) => (
-      <div className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/40 dark:to-blue-900/40 border-2 border-indigo-400 dark:border-indigo-500 rounded-xl shadow-xl shadow-indigo-500/30 p-4 max-w-sm backdrop-blur-sm">
-        <div className="flex items-start gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 shadow-lg">
+      <div className="bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border border-white/20 dark:border-slate-700/20 rounded-2xl shadow-2xl p-5 max-w-sm">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-blue-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
             <ShoppingCart className="w-6 h-6 text-white" />
           </div>
-          <div className="flex-1">
-            <p className="font-bold text-indigo-900 dark:text-indigo-100">Added to Cart</p>
-            <p className="text-sm text-indigo-700 dark:text-indigo-200 mt-1">{productName}</p>
+          <div className="flex-1 min-w-0">
+            <p className="font-bold text-slate-900 dark:text-slate-50">Added to Cart</p>
+            <p className="text-sm text-slate-600 dark:text-slate-400 mt-1 truncate">{productName}</p>
           </div>
-          <button onClick={() => toast.dismiss(id)} className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-800 dark:hover:text-indigo-200 transition-colors">
+          <button onClick={() => toast.dismiss(id)} className="text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors flex-shrink-0">
             <X className="w-5 h-5" />
           </button>
         </div>
