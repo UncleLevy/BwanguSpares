@@ -285,7 +285,7 @@ export default function BrowseProducts() {
         {/* Main content */}
         <div className="flex-1 min-w-0">
           {loading ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
+            <div className="flex flex-col gap-3">
               {[1,2,3,4,5,6].map(i => <ProductSkeleton key={i} />)}
             </div>
           ) : filteredProducts.length === 0 ? (
@@ -303,8 +303,8 @@ export default function BrowseProducts() {
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
-              {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
+            <div className="flex flex-col gap-3">
+              {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} listView />)}
             </div>
           )}
 
