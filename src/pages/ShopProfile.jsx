@@ -148,9 +148,10 @@ export default function ShopProfile() {
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{shop.name}</h1>
               <div className="flex flex-wrap items-center gap-3 mt-1.5 text-sm text-slate-500 dark:text-slate-400">
-                <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {shop.address}</span>
+                {isAuthenticated && shop.address && <span className="flex items-center gap-1"><MapPin className="w-4 h-4" /> {shop.address}</span>}
                 {shop.rating > 0 && <span className="flex items-center gap-1"><Star className="w-4 h-4 fill-amber-400 text-amber-400" /> {shop.rating.toFixed(1)}</span>}
-                {shop.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {shop.phone}</span>}
+                {isAuthenticated && shop.phone && <span className="flex items-center gap-1"><Phone className="w-4 h-4" /> {shop.phone}</span>}
+                {!isAuthenticated && !shop.address && !shop.phone && shop.rating <= 0 && <span className="text-xs">Sign in to view shop details</span>}
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -168,7 +169,8 @@ export default function ShopProfile() {
               />
             </div>
           </div>
-          {shop.description && <p className="text-slate-600 dark:text-slate-400 text-sm mt-4 leading-relaxed">{shop.description}</p>}
+          {isAuthenticated && shop.description && <p className="text-slate-600 dark:text-slate-400 text-sm mt-4 leading-relaxed">{shop.description}</p>}
+          {!isAuthenticated && <p className="text-slate-500 dark:text-slate-400 text-sm mt-4 italic"><a href="#" onClick={() => base44.auth.redirectToLogin()} className="text-blue-600 hover:underline">Sign in</a> to view shop details and description</p>}
         </div>
 
         <Tabs defaultValue="products">
