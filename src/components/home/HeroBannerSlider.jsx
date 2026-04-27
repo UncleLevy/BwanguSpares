@@ -57,21 +57,20 @@ export default function BannerAdsSection() {
 
   return (
     <section className="w-full py-6 md:py-10 bg-gradient-to-b from-transparent to-slate-50/30 dark:to-slate-900/20">
-      <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
-            Special Offers
-          </h2>
-          {banners.length > 1 && (
-            <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-              <span>{currentIndex + 1}</span>
-              <span>/</span>
-              <span>{banners.length}</span>
-            </div>
-          )}
-        </div>
+      <div className="flex items-center justify-between mb-4 max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+        <h2 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
+          Special Offers
+        </h2>
+        {banners.length > 1 && (
+          <div className="hidden sm:flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+            <span>{currentIndex + 1}</span>
+            <span>/</span>
+            <span>{banners.length}</span>
+          </div>
+        )}
+      </div>
         
-        <div className="relative w-full overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl group shadow-2xl">
+      <div className="relative w-screen -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 group shadow-2xl">
           {/* Animated slide */}
           <motion.div 
             className="relative w-full h-64 sm:h-80 lg:h-96 overflow-hidden"
@@ -171,7 +170,6 @@ export default function BannerAdsSection() {
               ))}
             </motion.div>
           )}
-        </div>
       </div>
     </section>
   );
