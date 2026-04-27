@@ -120,7 +120,7 @@ export default function PartsFinderBot() {
       {/* Floating Bot Button */}
       <motion.button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-20 right-6 z-[100] w-14 h-14 rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl hover:shadow-2xl transition-all active:scale-95 border border-slate-700 group relative overflow-hidden"
+        className="fixed bottom-32 right-6 z-[100] w-14 h-14 rounded-full bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white shadow-2xl hover:shadow-2xl transition-all active:scale-95 border border-slate-700 group relative overflow-hidden"
         whileHover={{ scale: 1.15 }}
         whileTap={{ scale: 0.92 }}
       >
