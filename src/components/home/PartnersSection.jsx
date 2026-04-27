@@ -3,7 +3,7 @@ import React from "react";
 const PARTNERS = [
   {
     name: "Toyota",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Toyota_logo_%28Red%29.svg/320px-Toyota_logo_%28Red%29.svg.png",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/Toyota_carlogo.svg/320px-Toyota_carlogo.svg.png",
     url: "https://www.toyota.com",
     type: "Brand Partner",
   },
@@ -14,9 +14,9 @@ const PARTNERS = [
     type: "Technology Partner",
   },
   {
-    name: "NGK Spark Plugs",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/NGK_Spark_Plugs_logo.svg/320px-NGK_Spark_Plugs_logo.svg.png",
-    url: "https://www.ngksparkplugs.com",
+    name: "NGK",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/NGK_logo.svg/320px-NGK_logo.svg.png",
+    url: "https://www.ngkntk.com",
     type: "Brand Partner",
   },
   {
