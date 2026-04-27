@@ -4,7 +4,7 @@ import { Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
-export default function WatchlistPartButton({ product, userEmail, disabled = false }) {
+export default function WatchlistPartButton({ product, userEmail, disabled = false, iconOnly = false }) {
   const [isWatched, setIsWatched] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -59,6 +59,19 @@ export default function WatchlistPartButton({ product, userEmail, disabled = fal
     }
     setLoading(false);
   };
+
+  if (iconOnly) {
+    return (
+      <button
+        onClick={handleToggle}
+        disabled={loading || disabled}
+        className={`w-5 h-5 flex items-center justify-center transition-colors ${isWatched ? "text-orange-500" : "text-slate-400 hover:text-orange-400"}`}
+        title={isWatched ? "Unfollow" : "Follow"}
+      >
+        <Heart className={`w-4 h-4 ${isWatched ? "fill-current" : ""}`} />
+      </button>
+    );
+  }
 
   return (
     <Button
