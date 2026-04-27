@@ -158,7 +158,10 @@ export default function ShopDashboard() {
 
   useEffect(() => {
     (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) { base44.auth.redirectToLogin(window.location.pathname); return; }
       const u = await base44.auth.me();
+      if (u.role === "admin") { navigate(createPageUrl("AdminDashboard")); return; }
       setUser(u);
       // Fetch all shops for this user
       const userShops = await base44.entities.Shop.filter({ owner_email: u.email });

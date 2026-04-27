@@ -77,6 +77,8 @@ export default function BuyerDashboard() {
 
   useEffect(() => {
     (async () => {
+      const isAuth = await base44.auth.isAuthenticated();
+      if (!isAuth) { base44.auth.redirectToLogin(window.location.pathname); return; }
       const u = await base44.auth.me();
       // Redirect shop owners and admins away from buyer dashboard
       if (u.role === "shop_owner") {

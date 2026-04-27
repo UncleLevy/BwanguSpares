@@ -88,6 +88,8 @@ export default function AdminDashboard() {
   const loadData = async () => {
     setLoadError(false);
     setLoading(true);
+    const isAuth = await base44.auth.isAuthenticated();
+    if (!isAuth) { base44.auth.redirectToLogin(window.location.pathname); return; }
     const u = await base44.auth.me();
     if (u.role !== "admin") { navigate(createPageUrl("Home")); return; }
     setUser(u);
