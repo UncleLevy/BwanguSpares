@@ -170,13 +170,21 @@ export default function Layout({ children, currentPageName }) {
             </Link>
 
             <nav className="hidden md:flex items-center gap-1" aria-label="Site navigation">
-              {navLinks.map((l) =>
-                <Link key={l.label} to={l.href}
-                aria-label={l.label}
-                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-cyan-600 rounded-xl hover:bg-cyan-50/80 transition-all duration-200">
-                  {l.label}
-                </Link>
-                )}
+              {navLinks.map((l) => {
+                const isActive = location.pathname === l.href || location.pathname.startsWith(l.href + "?");
+                return (
+                  <Link key={l.label} to={l.href}
+                    aria-label={l.label}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
+                      isActive
+                        ? "text-cyan-600 bg-cyan-50/80 dark:text-cyan-400 dark:bg-cyan-900/30 font-semibold"
+                        : "text-slate-600 dark:text-slate-400 hover:text-cyan-600 hover:bg-cyan-50/80 dark:hover:text-cyan-400 dark:hover:bg-cyan-900/20"
+                    }`}>
+                    {l.label}
+                  </Link>
+                );
+              })}
             </nav>
 
             <div className="flex items-center gap-1 md:gap-2">
