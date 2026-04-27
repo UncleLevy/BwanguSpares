@@ -16,22 +16,22 @@ import { useGeoLock } from "@/components/shared/useGeoLock";
 import VehicleFilterSidebar from "@/components/parts/VehicleFilterSidebar";
 
 const CATEGORIES = [
-{ value: "engine", label: "Engine" },
-{ value: "brakes", label: "Brakes" },
-{ value: "suspension", label: "Suspension" },
-{ value: "electrical", label: "Electrical" },
-{ value: "body", label: "Body" },
-{ value: "transmission", label: "Transmission" },
-{ value: "exhaust", label: "Exhaust" },
-{ value: "cooling", label: "Cooling" },
-{ value: "steering", label: "Steering" },
-{ value: "interior", label: "Interior" },
-{ value: "accessories", label: "Accessories" },
-{ value: "tyres", label: "Tyres" },
-{ value: "filters", label: "Filters" },
-{ value: "oils_fluids", label: "Oils & Fluids" },
-{ value: "other", label: "Other" }];
-
+  { value: "engine", label: "Engine" },
+  { value: "brakes", label: "Brakes" },
+  { value: "suspension", label: "Suspension" },
+  { value: "electrical", label: "Electrical" },
+  { value: "body", label: "Body" },
+  { value: "transmission", label: "Transmission" },
+  { value: "exhaust", label: "Exhaust" },
+  { value: "cooling", label: "Cooling" },
+  { value: "steering", label: "Steering" },
+  { value: "interior", label: "Interior" },
+  { value: "accessories", label: "Accessories" },
+  { value: "tyres", label: "Tyres" },
+  { value: "filters", label: "Filters" },
+  { value: "oils_fluids", label: "Oils & Fluids" },
+  { value: "other", label: "Other" },
+];
 
 export default function BrowseProducts() {
   const params = new URLSearchParams(window.location.search);
@@ -76,7 +76,7 @@ export default function BrowseProducts() {
     const filter = { status: "active" };
     if (category !== "all") filter.category = category;
     if (condition !== "all") filter.condition = condition;
-
+    
     const sort = sortBy === "newest" ? "-created_date" : sortBy === "price_low" ? "price" : "-price";
     const data = await base44.entities.Product.filter(filter, sort, 50);
     setProducts(data);
@@ -88,51 +88,51 @@ export default function BrowseProducts() {
     "500-2000": [500, 2000],
     "2000-5000": [2000, 5000],
     "5000-20000": [5000, 20000],
-    "20000+": [20000, Infinity]
+    "20000+": [20000, Infinity],
   };
 
-  const filteredProducts = products.filter((p) => {
+  const filteredProducts = products.filter(p => {
     const matchesSearch = !search || p.name?.toLowerCase().includes(search.toLowerCase()) ||
-    p.description?.toLowerCase().includes(search.toLowerCase()) ||
-    p.brand?.toLowerCase().includes(search.toLowerCase());
+      p.description?.toLowerCase().includes(search.toLowerCase()) ||
+      p.brand?.toLowerCase().includes(search.toLowerCase());
     const matchesPrice = priceRange === "all" || (() => {
       const [min, max] = PRICE_RANGES[priceRange];
       return (p.price || 0) >= min && (p.price || 0) <= max;
     })();
-
+    
     // Check vehicle compatibility
     let matchesVehicle = true;
     if (vehicleFilter.vehicle_brand) {
       const compatible = p.compatible_vehicles;
-      if (!compatible || Array.isArray(compatible) && compatible.length === 0) {
+      if (!compatible || (Array.isArray(compatible) && compatible.length === 0)) {
         matchesVehicle = false;
       } else if (typeof compatible === "string") {
         // String format: "Toyota Corolla, All Vehicles"
-        const entries = compatible.split(",").map((s) => s.trim().toLowerCase());
+        const entries = compatible.split(",").map(s => s.trim().toLowerCase());
         const brand = vehicleFilter.vehicle_brand.toLowerCase();
         const model = vehicleFilter.vehicle_model?.toLowerCase();
-        matchesVehicle = entries.some((e) =>
-        e === "all vehicles" ||
-        e.startsWith(brand) && (!model || e.includes(model))
+        matchesVehicle = entries.some(e =>
+          e === "all vehicles" ||
+          e.startsWith(brand) && (!model || e.includes(model))
         );
       } else if (Array.isArray(compatible)) {
         // Structured array format: [{ brand, model, years }]
-        matchesVehicle = compatible.some((v) =>
-        (v.brand?.toLowerCase() === "all vehicles" || v.brand?.toLowerCase() === vehicleFilter.vehicle_brand?.toLowerCase()) && (
-        !vehicleFilter.vehicle_model || v.model?.toLowerCase() === vehicleFilter.vehicle_model?.toLowerCase()) && (
-        !vehicleFilter.vehicle_year || v.years?.includes(vehicleFilter.vehicle_year))
+        matchesVehicle = compatible.some(v =>
+          (v.brand?.toLowerCase() === "all vehicles" || v.brand?.toLowerCase() === vehicleFilter.vehicle_brand?.toLowerCase()) &&
+          (!vehicleFilter.vehicle_model || v.model?.toLowerCase() === vehicleFilter.vehicle_model?.toLowerCase()) &&
+          (!vehicleFilter.vehicle_year || v.years?.includes(vehicleFilter.vehicle_year))
         );
       }
     }
-
+    
     return matchesSearch && matchesPrice && matchesVehicle;
   });
 
   const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
   const paginatedProducts = filteredProducts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  const handleFilterChange = (setter) => (val) => {setter(val);setPage(1);};
-  const handleSearchChange = (val) => {setSearch(val);setPage(1);};
+  const handleFilterChange = (setter) => (val) => { setter(val); setPage(1); };
+  const handleSearchChange = (val) => { setSearch(val); setPage(1); };
 
   const handleAddToCart = async (product) => {
     if (isZambia === false) {
@@ -163,7 +163,7 @@ export default function BrowseProducts() {
       await base44.entities.CartItem.create({
         buyer_email: u.email, product_id: product.id, product_name: product.name,
         shop_id: product.shop_id, shop_name: product.shop_name, price: product.price,
-        quantity: 1, image_url: product.image_url
+        quantity: 1, image_url: product.image_url,
       });
     }
   };
@@ -181,116 +181,114 @@ export default function BrowseProducts() {
       <div className="sticky top-[52px] z-30 md:static bg-white/95 dark:bg-slate-950/95 backdrop-blur-xl
                       -mx-4 px-4 pb-3 pt-3 md:mx-0 md:px-0 md:py-0 md:bg-transparent md:dark:bg-transparent
                       border-b border-slate-100 dark:border-slate-800 md:border-0 mb-4 md:mb-6 flex flex-col gap-2.5">
-
-          
          <div className="relative flex-1">
            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-           <Input value={search} onChange={(e) => handleSearchChange(e.target.value)}
-            placeholder="Search parts, brands..."
-            className="pl-10 h-11 rounded-xl text-base" />
-           {search &&
-            <button onClick={() => handleSearchChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 p-1">
+           <Input value={search} onChange={e => handleSearchChange(e.target.value)}
+             placeholder="Search parts, brands..."
+             className="pl-10 h-11 rounded-xl text-base" />
+           {search && (
+             <button onClick={() => handleSearchChange("")} aria-label="Clear search" className="absolute right-3 top-1/2 -translate-y-1/2 p-1">
                <X className="w-4 h-4 text-slate-400" aria-hidden="true" />
              </button>
-            }
+           )}
          </div>
          <div className="flex gap-2 overflow-x-auto pb-0.5 md:pb-0 md:flex-wrap scrollbar-hide">
            <MobileSelect
-              value={category}
-              onValueChange={handleFilterChange(setCategory)}
-              placeholder="Category"
-              triggerClassName="shrink-0 w-36 md:w-44"
-              options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]} />
-            
+            value={category}
+            onValueChange={handleFilterChange(setCategory)}
+            placeholder="Category"
+            triggerClassName="shrink-0 w-36 md:w-44"
+            options={[{ value: "all", label: "All Categories" }, ...CATEGORIES]}
+          />
           <MobileSelect
-              value={condition}
-              onValueChange={handleFilterChange(setCondition)}
-              placeholder="Condition"
-              triggerClassName="shrink-0 w-32 md:w-36"
-              options={[
+            value={condition}
+            onValueChange={handleFilterChange(setCondition)}
+            placeholder="Condition"
+            triggerClassName="shrink-0 w-32 md:w-36"
+            options={[
               { value: "all", label: "All Conditions" },
               { value: "new", label: "New" },
               { value: "used", label: "Used" },
-              { value: "refurbished", label: "Refurbished" }]
-              } />
-            
+              { value: "refurbished", label: "Refurbished" },
+            ]}
+          />
           <MobileSelect
-              value={priceRange}
-              onValueChange={handleFilterChange(setPriceRange)}
-              placeholder="Price"
-              triggerClassName="shrink-0 w-36 md:w-40"
-              options={[
+            value={priceRange}
+            onValueChange={handleFilterChange(setPriceRange)}
+            placeholder="Price"
+            triggerClassName="shrink-0 w-36 md:w-40"
+            options={[
               { value: "all", label: "All Prices" },
               { value: "0-500", label: "Under K500" },
               { value: "500-2000", label: "K500 – K2,000" },
               { value: "2000-5000", label: "K2,000 – K5,000" },
               { value: "5000-20000", label: "K5,000 – K20,000" },
-              { value: "20000+", label: "Above K20,000" }]
-              } />
-            
+              { value: "20000+", label: "Above K20,000" },
+            ]}
+          />
           <MobileSelect
-              value={sortBy}
-              onValueChange={handleFilterChange(setSortBy)}
-              placeholder="Sort"
-              triggerClassName="shrink-0 w-36 md:w-40"
-              options={[
+            value={sortBy}
+            onValueChange={handleFilterChange(setSortBy)}
+            placeholder="Sort"
+            triggerClassName="shrink-0 w-36 md:w-40"
+            options={[
               { value: "newest", label: "Newest First" },
               { value: "price_low", label: "Price: Low to High" },
-              { value: "price_high", label: "Price: High to Low" }]
-              } />
-            
+              { value: "price_high", label: "Price: High to Low" },
+            ]}
+          />
         </div>
       </div>
 
-      {(category !== "all" || condition !== "all" || priceRange !== "all" || vehicleFilter.vehicle_brand) &&
+      {(category !== "all" || condition !== "all" || priceRange !== "all" || vehicleFilter.vehicle_brand) && (
         <div className="flex flex-wrap gap-2 mb-4">
-          {category !== "all" &&
-          <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCategory("all")}>
-              {CATEGORIES.find((c) => c.value === category)?.label} <X className="w-3 h-3" />
+          {category !== "all" && (
+            <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCategory("all")}>
+              {CATEGORIES.find(c=>c.value===category)?.label} <X className="w-3 h-3" />
             </Badge>
-          }
-          {condition !== "all" &&
-          <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCondition("all")}>
+          )}
+          {condition !== "all" && (
+            <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setCondition("all")}>
               {condition} <X className="w-3 h-3" />
             </Badge>
-          }
-          {priceRange !== "all" &&
-          <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setPriceRange("all")}>
+          )}
+          {priceRange !== "all" && (
+            <Badge variant="secondary" className="gap-1 cursor-pointer" onClick={() => setPriceRange("all")}>
               {priceRange === "20000+" ? "Above K20,000" : `K${priceRange.replace("-", " – K")}`} <X className="w-3 h-3" />
             </Badge>
-          }
-          {vehicleFilter.vehicle_brand &&
-          <Badge className="gap-1 cursor-pointer bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60" onClick={() => {setVehicleFilter({ vehicle_brand: null, vehicle_model: null, vehicle_year: null });setPage(1);}}>
+          )}
+          {vehicleFilter.vehicle_brand && (
+            <Badge className="gap-1 cursor-pointer bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/60" onClick={() => { setVehicleFilter({ vehicle_brand: null, vehicle_model: null, vehicle_year: null }); setPage(1); }}>
               🚗 {[vehicleFilter.vehicle_brand, vehicleFilter.vehicle_model, vehicleFilter.vehicle_year].filter(Boolean).join(" ")} <X className="w-3 h-3" />
             </Badge>
-          }
+          )}
         </div>
-        }
+      )}
 
       {/* Mobile vehicle filter */}
       <div className="lg:hidden mb-4">
         <VehicleFilterSidebar
-            vehicleFilter={vehicleFilter}
-            onFilterChange={(f) => {setVehicleFilter(f);setPage(1);}} />
-          
+          vehicleFilter={vehicleFilter}
+          onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
+        />
       </div>
 
       <div className="flex gap-6 items-start">
         {/* Sidebar — hidden on mobile */}
         <aside className="hidden lg:block w-64 shrink-0 sticky top-24">
           <VehicleFilterSidebar
-              vehicleFilter={vehicleFilter}
-              onFilterChange={(f) => {setVehicleFilter(f);setPage(1);}} />
-            
+            vehicleFilter={vehicleFilter}
+            onFilterChange={(f) => { setVehicleFilter(f); setPage(1); }}
+          />
         </aside>
 
         {/* Main content */}
         <div className="flex-1 min-w-0">
-          {loading ?
-            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
-              {[1, 2, 3, 4, 5, 6].map((i) => <ProductSkeleton key={i} />)}
-            </div> :
-            filteredProducts.length === 0 ?
+          {loading ? (
+            <div className="flex flex-col gap-3">
+              {[1,2,3,4,5,6].map(i => <ProductSkeleton key={i} />)}
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20">
               <SlidersHorizontal className="w-12 h-12 text-slate-300 mx-auto mb-4" />
               <h3 className="font-semibold text-slate-700 dark:text-slate-300">No parts found</h3>
@@ -303,26 +301,26 @@ export default function BrowseProducts() {
                   <FileSearch className="w-4 h-4" /> Request this Part
                 </Button>
               </div>
-            </div> :
-
-            <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5">
-              {paginatedProducts.map((p) => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} />)}
             </div>
-            }
+          ) : (
+            <div className="flex flex-col gap-3">
+              {paginatedProducts.map(p => <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} user={user} listView />)}
+            </div>
+          )}
 
-          {totalPages > 1 &&
+          {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-10">
-              <Button variant="outline" size="sm" onClick={() => {setPage((p) => Math.max(1, p - 1));window.scrollTo({ top: 0, behavior: 'smooth' });}} disabled={page === 1} className="rounded-xl">← Prev</Button>
+              <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.max(1, p - 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === 1} className="rounded-xl">← Prev</Button>
               <div className="flex gap-1">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) =>
-                <Button key={p} size="sm" variant={p === page ? "default" : "outline"} onClick={() => {setPage(p);window.scrollTo({ top: 0, behavior: 'smooth' });}} className="bg-[hsl(var(--background))] text-white px-3 text-xs font-medium rounded-xl inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 dark:text-white shadow hover:bg-primary/90 h-8 w-9">{p}</Button>
-                )}
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(p => (
+                  <Button key={p} size="sm" variant={p === page ? "default" : "outline"} onClick={() => { setPage(p); window.scrollTo({top: 0, behavior: 'smooth'}); }} className="rounded-xl w-9">{p}</Button>
+                ))}
               </div>
-              <Button variant="outline" size="sm" onClick={() => {setPage((p) => Math.min(totalPages, p + 1));window.scrollTo({ top: 0, behavior: 'smooth' });}} disabled={page === totalPages} className="rounded-xl">Next →</Button>
+              <Button variant="outline" size="sm" onClick={() => { setPage(p => Math.min(totalPages, p + 1)); window.scrollTo({top: 0, behavior: 'smooth'}); }} disabled={page === totalPages} className="rounded-xl">Next →</Button>
             </div>
-            }
+          )}
 
-          {filteredProducts.length > 0 &&
+          {filteredProducts.length > 0 && (
             <div className="mt-12 p-6 bg-blue-50 dark:bg-blue-900/20 rounded-2xl border border-blue-100 dark:border-blue-800 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <p className="font-semibold text-slate-800 dark:text-slate-200">Can't find the exact part?</p>
@@ -332,12 +330,12 @@ export default function BrowseProducts() {
                 <FileSearch className="w-4 h-4" /> Request a Part
               </Button>
             </div>
-            }
+          )}
         </div>
       </div>
 
       <PartsRequestForm open={requestFormOpen} onClose={() => setRequestFormOpen(false)} />
     </div>
-    </PullToRefresh>);
-
+    </PullToRefresh>
+  );
 }

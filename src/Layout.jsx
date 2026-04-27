@@ -162,32 +162,21 @@ export default function Layout({ children, currentPageName }) {
         }}>
         
         <div className="bg-white dark:bg-slate-900 md:bg-white/70 md:dark:bg-slate-900/70 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm h-16 md:h-auto">
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center justify-between h-16 md:h-auto py-3 md:py-4">
+          <div className="mx-auto px-3 sm:px-4 w-full max-w-7xl sm:px-6 lg:px-8">
+            <div className="flex items-center justify-between h-16 md:h-auto py-3 md:py-0">
             <Link to="/" className="flex items-center gap-2">
               <img src="https://media.base44.com/images/public/699f775333a30acfe3b73c4e/097f0a26f_DynamicBlueSwooshwithCohesiveTypography9.jpg" alt="BwanguSpares Logo" className="w-9 h-9 md:w-10 md:h-10 rounded-xl object-contain flex-shrink-0" />
               <span className="hidden sm:inline text-lg md:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1" aria-label="Site navigation">
-              {navLinks.map((l) => {
-                const isActive = location.pathname === l.href || location.pathname.startsWith(l.href + "?");
-                return (
-                  <Link key={l.label} to={l.href}
-                    aria-label={l.label}
-                    aria-current={isActive ? "page" : undefined}
-                    className={`relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
-                      isActive
-                        ? "text-white bg-gradient-to-r from-cyan-600 to-blue-600 shadow-md shadow-cyan-500/30 font-semibold"
-                        : "text-slate-600 dark:text-slate-400 hover:text-cyan-600 hover:bg-cyan-50/80 dark:hover:text-cyan-400 dark:hover:bg-cyan-900/20"
-                    }`}>
-                    {l.label}
-                    {isActive && (
-                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-white/70 rounded-full" />
-                    )}
-                  </Link>
-                );
-              })}
+              {navLinks.map((l) =>
+                <Link key={l.label} to={l.href}
+                aria-label={l.label}
+                className="px-4 py-2 text-sm font-medium text-slate-600 hover:text-cyan-600 rounded-xl hover:bg-cyan-50/80 transition-all duration-200">
+                  {l.label}
+                </Link>
+                )}
             </nav>
 
             <div className="flex items-center gap-1 md:gap-2">
