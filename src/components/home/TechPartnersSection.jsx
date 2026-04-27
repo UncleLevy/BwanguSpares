@@ -2,46 +2,46 @@ import React from "react";
 
 const TECH_PARTNERS = [
   {
-    name: "MoneyUnify",
-    description: "Payment Gateway",
-    url: "https://moneyunify.com",
-    icon: "💳",
-    color: "from-green-500 to-emerald-600",
-  },
-  {
-    name: "Yango",
-    description: "Delivery & Logistics",
-    url: "https://yango.com",
-    icon: "🚗",
-    color: "from-yellow-400 to-orange-500",
+    name: "Lenco",
+    description: "Card Payments",
+    url: "https://lenco.co",
+    logo: "https://lenco.co/favicon.ico",
+    bg: "bg-white dark:bg-slate-100",
   },
   {
     name: "MTN MoMo",
     description: "Mobile Money",
     url: "https://mtn.com",
-    icon: "📱",
-    color: "from-yellow-400 to-yellow-600",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/MTN_Logo.svg/320px-MTN_Logo.svg.png",
+    bg: "bg-yellow-50 dark:bg-yellow-50",
   },
   {
     name: "Airtel Money",
     description: "Mobile Payments",
-    url: "https://airtel.com",
-    icon: "📲",
-    color: "from-red-500 to-red-700",
-  },
-  {
-    name: "Stripe",
-    description: "Card Payments",
-    url: "https://stripe.com",
-    icon: "🔐",
-    color: "from-indigo-500 to-purple-600",
+    url: "https://airtel.africa",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Airtel_Africa_logo.svg/320px-Airtel_Africa_logo.svg.png",
+    bg: "bg-red-50 dark:bg-red-50",
   },
   {
     name: "Zamtel",
     description: "Connectivity Partner",
     url: "https://zamtel.zm",
-    icon: "📡",
-    color: "from-blue-500 to-cyan-600",
+    logo: "https://zamtel.zm/wp-content/uploads/2020/07/zamtel-logo.png",
+    bg: "bg-blue-50 dark:bg-blue-50",
+  },
+  {
+    name: "Yango",
+    description: "Delivery & Logistics",
+    url: "https://yango.com",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Yango_logo.svg/320px-Yango_logo.svg.png",
+    bg: "bg-white dark:bg-slate-100",
+  },
+  {
+    name: "Base44",
+    description: "Platform Infrastructure",
+    url: "https://base44.com",
+    logo: "https://base44.com/favicon.ico",
+    bg: "bg-slate-50 dark:bg-slate-100",
   },
 ];
 
@@ -66,8 +66,16 @@ export default function TechPartnersSection() {
               rel="noopener noreferrer"
               className="group flex flex-col items-center gap-3 p-5 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700 hover:border-cyan-200 dark:hover:border-cyan-700 hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
             >
-              <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${partner.color} flex items-center justify-center text-2xl shadow-md`}>
-                {partner.icon}
+              <div className={`w-14 h-14 rounded-xl ${partner.bg} flex items-center justify-center overflow-hidden shadow-sm border border-slate-100`}>
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="w-12 h-12 object-contain"
+                  onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                />
+                <span style={{ display: 'none' }} className="w-12 h-12 items-center justify-center text-xl font-bold text-slate-500">
+                  {partner.name.charAt(0)}
+                </span>
               </div>
               <div className="text-center">
                 <p className="text-sm font-semibold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
