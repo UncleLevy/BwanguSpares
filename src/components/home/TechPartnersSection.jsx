@@ -26,7 +26,7 @@ const TECH_PARTNERS = [
     name: "Zamtel",
     description: "Connectivity Partner",
     url: "https://zamtel.zm",
-    logo: "https://zamtel.zm/wp-content/uploads/2020/07/zamtel-logo.png",
+    logo: "https://media.base44.com/images/public/699f775333a30acfe3b73c4e/b5d1fbd10_image.png",
     bg: "bg-blue-50 dark:bg-blue-50",
   },
   {
