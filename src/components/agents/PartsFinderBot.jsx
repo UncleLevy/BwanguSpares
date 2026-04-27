@@ -64,21 +64,44 @@ export default function PartsFinderBot() {
       });
 
       // Subscribe to real-time updates to get the bot response
+      let receivedResponse = false;
       const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
         const botMessages = data.messages.filter((m) => m.role === "assistant");
         if (botMessages.length > messages.filter((m) => m.role === "assistant").length) {
           const newBotMessage = botMessages[botMessages.length - 1];
+          const msgData = { role: "assistant", content: newBotMessage.content };
+          
+          // Parse items from bot message if present (products/shops formatted as JSON)
+          if (newBotMessage.content && typeof newBotMessage.content === "string") {
+            try {
+              const parsed = JSON.parse(newBotMessage.content);
+              if (parsed.items) msgData.items = parsed.items;
+              if (parsed.text) msgData.content = parsed.text;
+            } catch {
+              // Not JSON, treat as plain text
+            }
+          }
+          
           setMessages((prev) => [
             ...prev.filter((m) => m.role !== "assistant" || m.content !== ""),
-            { role: "assistant", content: newBotMessage.content },
+            msgData,
           ]);
+          receivedResponse = true;
+          unsubscribe();
+          setLoading(false);
         }
       });
 
-      setTimeout(() => {
-        unsubscribe();
-        setLoading(false);
-      }, 5000);
+      // Timeout fallback (10 seconds max)
+      const timeout = setTimeout(() => {
+        if (!receivedResponse) {
+          unsubscribe();
+          setLoading(false);
+        }
+      }, 10000);
+
+      // Cleanup timeout if response arrives early
+      return () => clearTimeout(timeout);
     } catch (error) {
       console.error("Failed to send message:", error);
       setLoading(false);
