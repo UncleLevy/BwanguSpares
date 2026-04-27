@@ -169,11 +169,11 @@ export default function Layout({ children, currentPageName }) {
               <span className="hidden sm:inline text-lg md:text-lg font-bold text-slate-900 dark:text-slate-100 tracking-tight">Bwangu<span className="bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">Spares</span></span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-1" aria-label="Site navigation">
+            <nav className="hidden md:flex items-center gap-1 h-10" aria-label="Site navigation">
               {navLinks.map((l) =>
                 <Link key={l.label} to={l.href}
                 aria-label={l.label}
-                className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 rounded-xl hover:bg-cyan-50/80 dark:hover:bg-cyan-900/20 transition-all duration-200">
+                className="h-10 flex items-center px-4 text-sm font-medium text-slate-600 dark:text-slate-200 hover:text-cyan-600 dark:hover:text-cyan-400 rounded-xl hover:bg-cyan-50/80 dark:hover:bg-cyan-900/20 transition-all duration-200">
                   {l.label}
                 </Link>
                 )}
@@ -181,7 +181,7 @@ export default function Layout({ children, currentPageName }) {
 
             <div className="flex items-center gap-1 md:gap-2">
               {/* Desktop icons */}
-              <div className="hidden md:flex items-center gap-2 [&>*]:!min-h-0">
+              <div className="hidden md:flex items-center gap-2 h-10">
                 <DarkModeToggle />
                 {isAuthenticated &&
                   <>
