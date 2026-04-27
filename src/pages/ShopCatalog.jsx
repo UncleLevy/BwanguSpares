@@ -7,7 +7,7 @@ import ProductCard from "@/components/shared/ProductCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 
 const CATEGORIES = [
   "engine", "brakes", "suspension", "electrical", "body", "transmission",
@@ -93,7 +93,7 @@ export default function ShopCatalog() {
         image_url: product.image_url,
       });
     }
-    toast.success("Added to cart");
+    notifySuccess("Added to cart");
   };
 
   if (loading) {

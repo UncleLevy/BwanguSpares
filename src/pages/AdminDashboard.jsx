@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import StatsCard from "@/components/analytics/StatsCard";
 import SalesChart from "@/components/analytics/SalesChart";
@@ -129,7 +129,7 @@ export default function AdminDashboard() {
       });
     }
     emailShopStatusUpdate(shop.owner_email, shop.owner_name, shop.name, status);
-    toast.success(`Shop ${status}`);
+    notifySuccess(`Shop ${status}`);
   };
 
   const addRegion = async () => {
@@ -139,7 +139,7 @@ export default function AdminDashboard() {
     await logAudit(user, "add_region", { entity_type: "Region", entity_id: r.id, entity_label: r.name });
     setNewRegion({ name: "", province: "" });
     setRegionDialog(false);
-    toast.success("Region added");
+    notifySuccess("Region added");
   };
 
   const deleteRegion = async (id) => {
@@ -147,12 +147,12 @@ export default function AdminDashboard() {
     await base44.entities.Region.delete(id);
     setRegions(regions.filter(r => r.id !== id));
     await logAudit(user, "delete_region", { entity_type: "Region", entity_id: id, entity_label: r?.name });
-    toast.success("Region deleted");
+    notifySuccess("Region deleted");
   };
 
   const addTown = async () => {
     if (!newTown.name || !newTown.region_id) {
-      toast.error("Please fill in all required fields");
+      notifyError("Please fill in all required fields");
       return;
     }
     const t = await base44.entities.Town.create(newTown);
@@ -160,7 +160,7 @@ export default function AdminDashboard() {
     await logAudit(user, "add_region", { entity_type: "Town", entity_id: t.id, entity_label: t.name });
     setNewTown({ name: "", region_id: "", region_name: "" });
     setTownDialog(false);
-    toast.success("Town added");
+    notifySuccess("Town added");
   };
 
   const deleteTown = async (id) => {
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
     await base44.entities.Town.delete(id);
     setTowns(towns.filter(t => t.id !== id));
     await logAudit(user, "delete_region", { entity_type: "Town", entity_id: id, entity_label: t?.name });
-    toast.success("Town deleted");
+    notifySuccess("Town deleted");
   };
 
   const exportCitiesCsv = () => {
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
       setTowns(prev => [...prev, t]);
       added++;
     }
-    toast.success(`Imported ${added} cities`);
+    notifySuccess(`Imported ${added} cities`);
     setImportingCsv(false);
     e.target.value = "";
   };
@@ -236,7 +236,7 @@ export default function AdminDashboard() {
     });
     setTowns(prev => prev.map(t => t.id === updated.id ? updated : t));
     setSelectedCity(null);
-    toast.success("City updated");
+    notifySuccess("City updated");
   };
 
   const confirmDeleteShop = (shop) => {
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
       entity_label: shopToDelete.name,
       details: `Shop permanently deleted by admin`,
     });
-    toast.success(`Shop "${shopToDelete.name}" has been permanently deleted.`);
+    notifySuccess(`Shop "${shopToDelete.name}" has been permanently deleted.`);
     setDeleteShopDialog(false);
     setShopToDelete(null);
     setDeleting(false);
@@ -268,12 +268,12 @@ export default function AdminDashboard() {
       const res = await base44.functions.invoke("deduplicateData", {});
       const { total_fixed, report } = res.data;
       if (total_fixed === 0) {
-        toast.success("No duplicates found — data is clean!");
+        notifySuccess("No duplicates found — data is clean!");
       } else {
-        toast.success(`Removed ${total_fixed} duplicate(s): ${report.shops.removed} shops, ${report.towns.removed} towns, ${report.regions.removed} regions.`);
+        notifySuccess(`Removed ${total_fixed} duplicate(s): ${report.shops.removed} shops, ${report.towns.removed} towns, ${report.regions.removed} regions.`);
       }
     } catch (e) {
-      toast.error(e.message || "Deduplication failed");
+      notifyError(e.message || "Deduplication failed");
     }
     setDeduping(false);
   };

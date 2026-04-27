@@ -5,7 +5,7 @@ import { Search, SlidersHorizontal, X, FileSearch } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 import ProductCard from "@/components/shared/ProductCard";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import PullToRefresh from "@/components/shared/PullToRefresh";
@@ -136,11 +136,11 @@ export default function BrowseProducts() {
 
   const handleAddToCart = async (product) => {
     if (isZambia === false) {
-      toast.error("Orders are only available within Zambia.");
+      notifyError("Orders are only available within Zambia.");
       return;
     }
     if ((product.stock_quantity || 0) === 0) {
-      toast.error("Out of stock — submit a parts request instead");
+      notifyError("Out of stock — submit a parts request instead");
       return;
     }
     const isAuth = await base44.auth.isAuthenticated();
@@ -150,11 +150,11 @@ export default function BrowseProducts() {
     }
     const u = await base44.auth.me();
     if (u.role === 'shop_owner' || u.role === 'admin') {
-      toast.error("Shop owners and admins cannot place orders");
+      notifyError("Shop owners and admins cannot place orders");
       return;
     }
     // Optimistic: show success immediately
-    toast.success(`${product.name} added to cart!`);
+    notifySuccess(`${product.name} added to cart!`);
     const existing = await base44.entities.CartItem.filter({ buyer_email: u.email, product_id: product.id });
     if (existing.length > 0) {
       const newQty = Math.min(product.stock_quantity, (existing[0].quantity || 1) + 1);

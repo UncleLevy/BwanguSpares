@@ -6,7 +6,7 @@ import { ShoppingCart, Store, Check, FileSearch } from "lucide-react";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 import PartsRequestForm from "@/components/parts/PartsRequestForm";
 import WishlistButton from "@/components/products/WishlistButton";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
@@ -64,12 +64,12 @@ export default function ProductDetail() {
     if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("ProductDetail") + `?id=${id}`); return; }
     const user = await base44.auth.me();
     if ((product.stock_quantity || 0) < qty) {
-      toast.error(`Only ${product.stock_quantity} unit(s) available. Submit a parts request for more.`);
+      notifyError(`Only ${product.stock_quantity} unit(s) available. Submit a parts request for more.`);
       return;
     }
     // Optimistic feedback immediately
     setAddingToCart(true);
-    toast.success(`${product.name} added to cart!`);
+    notifySuccess(`${product.name} added to cart!`);
     try {
       const existing = await base44.entities.CartItem.filter({ buyer_email: user.email, product_id: product.id });
       if (existing.length > 0) {

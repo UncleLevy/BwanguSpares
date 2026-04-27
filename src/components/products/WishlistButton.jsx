@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Heart } from "lucide-react";
 import { base44 } from "@/api/base44Client";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 
 export default function WishlistButton({ product, className = "" }) {
   const [isInWishlist, setIsInWishlist] = useState(false);
@@ -49,7 +49,7 @@ export default function WishlistButton({ product, className = "" }) {
         if (wishlist.length > 0) {
           await base44.entities.Wishlist.delete(wishlist[0].id);
           setIsInWishlist(false);
-          toast.success("Removed from wishlist");
+          notifySuccess("Removed from wishlist");
         }
       } else {
         await base44.entities.Wishlist.create({
@@ -63,10 +63,10 @@ export default function WishlistButton({ product, className = "" }) {
           category: product.category
         });
         setIsInWishlist(true);
-        toast.success("Added to wishlist");
+        notifySuccess("Added to wishlist");
       }
     } catch (error) {
-      toast.error("Failed to update wishlist");
+      notifyError("Failed to update wishlist");
     } finally {
       setLoading(false);
     }

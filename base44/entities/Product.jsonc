@@ -11,6 +11,9 @@
     "price": {
       "type": "number"
     },
+    "original_price": {
+      "type": "number"
+    },
     "part_number": {
       "type": "string"
     },
@@ -135,10 +138,10 @@
       "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
     "update": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "true"
     },
     "delete": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
+      "formula": "true"
     },
     "create": {
       "created_by": "{{user.email}}"

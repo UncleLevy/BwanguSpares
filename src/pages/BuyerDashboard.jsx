@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import BuyerOrdersView from "@/components/dashboard/BuyerOrdersView";
 import BuyerPartsRequests from "@/components/parts/BuyerPartsRequests";
@@ -113,7 +113,7 @@ export default function BuyerDashboard() {
           await Promise.all(pendingOrders.map(ord => base44.entities.Order.update(ord.id, { status: "confirmed" })));
           const updated = await base44.entities.Order.filter({ buyer_email: u.email }, "-created_date", 50);
           setOrders(updated);
-          toast.success("Payment successful! Your order has been confirmed.");
+          notifySuccess("Payment successful! Your order has been confirmed.");
         }
         // Clean URL
         window.history.replaceState({}, "", window.location.pathname);
@@ -183,9 +183,9 @@ export default function BuyerDashboard() {
          });
        const updatedUser = await base44.auth.me();
        setUser(updatedUser);
-       toast.success("✓ Profile updated successfully!");
+       notifySuccess("Profile updated successfully!");
      } catch (error) {
-       toast.error("✗ Failed to update profile. Please try again.");
+       notifyError("Failed to update profile. Please try again.");
      } finally {
        setSubmitting(false);
      }
@@ -200,7 +200,7 @@ export default function BuyerDashboard() {
       });
 
       if (existingReview.length > 0) {
-        toast.error("You've already reviewed this order");
+        notifyError("You've already reviewed this order");
         setSubmitting(false);
         return;
       }
@@ -233,11 +233,11 @@ export default function BuyerDashboard() {
       if (shops[0]?.owner_email) {
         emailNewReviewToShop(shops[0].owner_email, reviewOrder.shop_name, user.full_name, reviewData.rating, reviewData.comment);
       }
-      toast.success("Review submitted successfully!");
+      notifySuccess("Review submitted successfully!");
       setReviewDialog(false);
       setReviewOrder(null);
     } catch (error) {
-      toast.error("Failed to submit review");
+      notifyError("Failed to submit review");
     }
     setSubmitting(false);
   };
@@ -427,7 +427,7 @@ export default function BuyerDashboard() {
                         const { file_url } = await base44.integrations.Core.UploadFile({ file });
                         setProfileForm(f => ({ ...f, profile_picture_url: file_url }));
                         setUploadingPicture(false);
-                        toast.success("Photo uploaded!");
+                        notifySuccess("Photo uploaded!");
                       }} />
                     </label>
                   </div>
@@ -496,7 +496,7 @@ export default function BuyerDashboard() {
                       body: `Hello ${user.full_name},\n\nYou requested a password reset for your BwanguSpares account.\n\nPlease use your login page to reset your password, or contact support at admin@bwangu.com if you need help.\n\nBwanguSpares Team`
                     });
                     setPasswordResetSent(true);
-                    toast.success("Password reset email sent!");
+                    notifySuccess("Password reset email sent!");
                   }} className="dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
                     Send Password Reset Email
                   </Button>
@@ -604,13 +604,13 @@ export default function BuyerDashboard() {
                        image_url: item.image_url,
                      });
                    }
-                   toast.success("Items added to cart. Redirecting to checkout...");
+                   notifySuccess("Items added to cart. Redirecting to checkout...");
                    // Redirect to cart with checkout open
                    setTimeout(() => {
                      window.location.href = createPageUrl("Cart");
                    }, 1000);
                  } catch (error) {
-                   toast.error("Failed to restore items. Please try again.");
+                   notifyError("Failed to restore items. Please try again.");
                  }
                  setRetryPaymentSubmitting(false);
                }}

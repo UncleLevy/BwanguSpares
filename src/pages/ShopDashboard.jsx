@@ -21,7 +21,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter
 } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "sonner";
+import { notifySuccess, notifyError } from "@/components/shared/NotificationToast";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import MobileSelect from "@/components/shared/MobileSelect";
 import PullToRefresh from "@/components/shared/PullToRefresh";
@@ -194,7 +194,7 @@ export default function ShopDashboard() {
     } else {
       setTechForm({ ...techForm, photo_url: file_url });
     }
-    toast.success("Photo uploaded");
+    notifySuccess("Photo uploaded");
     setUploading(false);
   };
 
@@ -208,7 +208,7 @@ export default function ShopDashboard() {
       imgs[index] = file_url;
       return { ...prev, image_urls: imgs };
     });
-    toast.success(`Photo ${index + 2} uploaded`);
+    notifySuccess(`Photo ${index + 2} uploaded`);
     setUploading(false);
   };
 
@@ -249,12 +249,12 @@ export default function ShopDashboard() {
     };
     if (editProduct) {
       const id = editProduct.id;
-      await updateProduct(id, data, () => base44.entities.Product.update(id, data), () => toast.error("Failed to update product"));
-      toast.success("Product updated");
+      await updateProduct(id, data, () => base44.entities.Product.update(id, data), () => notifyError("Failed to update product"));
+      notifySuccess("Product updated");
     } else {
       const created = await base44.entities.Product.create(data);
       setProducts(prev => [created, ...prev]);
-      toast.success("Product added");
+      notifySuccess("Product added");
     }
     setProductDialog(false);
     setEditProduct(null);
@@ -264,8 +264,8 @@ export default function ShopDashboard() {
   };
 
   const deleteProduct = async (id) => {
-    await removeProduct(id, () => base44.entities.Product.delete(id), () => toast.error("Failed to delete product"));
-    toast.success("Product deleted");
+    await removeProduct(id, () => base44.entities.Product.delete(id), () => notifyError("Failed to delete product"));
+    notifySuccess("Product deleted");
   };
 
   const openEditProduct = (p) => {
@@ -305,12 +305,12 @@ export default function ShopDashboard() {
     };
     if (editTech) {
       const id = editTech.id;
-      await updateTechnician(id, data, () => base44.entities.Technician.update(id, data), () => toast.error("Failed to update technician"));
-      toast.success("Technician updated");
+      await updateTechnician(id, data, () => base44.entities.Technician.update(id, data), () => notifyError("Failed to update technician"));
+      notifySuccess("Technician updated");
     } else {
       const created = await base44.entities.Technician.create(data);
       setTechnicians(prev => [created, ...prev]);
-      toast.success("Technician added");
+      notifySuccess("Technician added");
     }
     setTechDialog(false);
     setEditTech(null);
@@ -319,8 +319,8 @@ export default function ShopDashboard() {
   };
 
   const deleteTech = async (id) => {
-    await removeTechnician(id, () => base44.entities.Technician.delete(id), () => toast.error("Failed to delete technician"));
-    toast.success("Technician deleted");
+    await removeTechnician(id, () => base44.entities.Technician.delete(id), () => notifyError("Failed to delete technician"));
+    notifySuccess("Technician deleted");
   };
 
   const openEditTech = (t) => {
@@ -355,14 +355,14 @@ export default function ShopDashboard() {
       order.id,
       { status: newStatus },
       () => base44.entities.Order.update(order.id, { status: newStatus }),
-      () => toast.error("Failed to update order status")
+      () => notifyError("Failed to update order status")
     );
     emailOrderStatusUpdate(order.buyer_email, order.buyer_name, order, newStatus);
-    toast.success("Order status updated");
+    notifySuccess("Order status updated");
   };
 
   const confirmCancelOrder = async () => {
-    if (!cancelReason.trim()) { toast.error("Please provide a cancellation reason"); return; }
+    if (!cancelReason.trim()) { notifyError("Please provide a cancellation reason"); return; }
     setSavingCancel(true);
     setOrders(prev => prev.map(o => o.id === cancelOrder.id ? { ...o, status: 'cancelled', cancellation_reason: cancelReason } : o));
     await base44.entities.Order.update(cancelOrder.id, { status: 'cancelled', cancellation_reason: cancelReason });
@@ -400,9 +400,9 @@ export default function ShopDashboard() {
         shop_name: cancelOrder.shop_name,
       });
 
-      toast.success("Order cancelled & site credit of K" + amount.toLocaleString() + " added to buyer's wallet");
+      notifySuccess("Order cancelled & site credit of K" + amount.toLocaleString() + " added to buyer's wallet");
     } else {
-      toast.success("Order cancelled");
+      notifySuccess("Order cancelled");
     }
 
     emailOrderStatusUpdate(cancelOrder.buyer_email, cancelOrder.buyer_name, { ...cancelOrder, cancellation_reason: cancelReason }, 'cancelled');
@@ -425,7 +425,7 @@ export default function ShopDashboard() {
     setSavingTracking(true);
     await base44.entities.Order.update(trackingOrder.id, trackingForm);
     setOrders(orders.map(o => o.id === trackingOrder.id ? { ...o, ...trackingForm } : o));
-    toast.success("Tracking information updated");
+    notifySuccess("Tracking information updated");
     setTrackingDialog(false);
     setSavingTracking(false);
   };
@@ -460,9 +460,9 @@ export default function ShopDashboard() {
     const tierNames = { free: "Basic (Free)", standard: "Standard", premium: "Premium" };
     if (shops.length >= maxShops) {
       if (maxShops < 5) {
-        toast.error(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to Premium to add up to 5 branches.`);
+        notifyError(`${tierNames[subscription?.tier || "free"]} plan allows only ${maxShops} shop${maxShops > 1 ? 's' : ''}. Upgrade to Premium to add up to 5 branches.`);
       } else {
-        toast.error("You've reached the maximum of 5 shops on the Premium plan. Contact us for an Enterprise plan.");
+        notifyError("You've reached the maximum of 5 shops on the Premium plan. Contact us for an Enterprise plan.");
       }
       return;
     }
@@ -480,9 +480,9 @@ export default function ShopDashboard() {
       setShops([...shops, newShop]);
       setShowNewShopDialog(false);
       setNewShopForm({ name: "", phone: "", address: "", region: "", town: "" });
-      toast.success("✓ Branch added successfully. Awaiting admin approval.");
+      notifySuccess("Branch added successfully. Awaiting admin approval.");
     } catch (error) {
-      toast.error("✗ Failed to add branch. Please try again.");
+      notifyError("Failed to add branch. Please try again.");
     }
     setSavingBranch(false);
   };
@@ -509,10 +509,10 @@ export default function ShopDashboard() {
       window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
 
-      toast.success("Report downloaded successfully");
+      notifySuccess("Report downloaded successfully");
       setReportDialog(false);
     } catch (error) {
-      toast.error("Failed to generate report");
+      notifyError("Failed to generate report");
     }
     setGeneratingReport(false);
   };
