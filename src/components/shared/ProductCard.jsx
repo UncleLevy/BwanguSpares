@@ -5,7 +5,6 @@ import { Package, ShoppingCart, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import WishlistButton from "@/components/products/WishlistButton";
-import WatchlistPartButton from "@/components/products/WatchlistPartButton";
 
 const conditionColors = {
   new: "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700",
@@ -48,12 +47,9 @@ export default function ProductCard({ product, onAddToCart, user }) {
             </div>
           )}
 
-          <div className="absolute top-2 right-2 flex flex-col gap-1.5" onClick={(e) => e.preventDefault()}>
+          <div className="absolute top-2 right-2" onClick={(e) => e.preventDefault()}>
             <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
               <WishlistButton product={product} />
-            </div>
-            <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
-              <WatchlistPartButton product={product} userEmail={user?.email} iconOnly />
             </div>
           </div>
         </div>
