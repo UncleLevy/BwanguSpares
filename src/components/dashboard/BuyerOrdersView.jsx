@@ -177,7 +177,7 @@ export default function BuyerOrdersView({ orders, setOrders, user, onReview, onR
           </div>
         )}
 
-        <Dialog open={deleteDialog} onOpenChange={setDeleteDialog}>
+        <Dialog open={deleteDialog} onOpenChange={(open) => !open && setDeleteDialog(false)}>
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Delete Pending Order?</DialogTitle>
