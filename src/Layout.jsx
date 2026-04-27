@@ -176,12 +176,15 @@ export default function Layout({ children, currentPageName }) {
                   <Link key={l.label} to={l.href}
                     aria-label={l.label}
                     aria-current={isActive ? "page" : undefined}
-                    className={`px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
+                    className={`relative px-4 py-2 text-sm font-medium rounded-xl transition-all duration-200 ${
                       isActive
                         ? "text-white bg-gradient-to-r from-cyan-600 to-blue-600 shadow-md shadow-cyan-500/30 font-semibold"
                         : "text-slate-600 dark:text-slate-400 hover:text-cyan-600 hover:bg-cyan-50/80 dark:hover:text-cyan-400 dark:hover:bg-cyan-900/20"
                     }`}>
                     {l.label}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-0.5 bg-white/70 rounded-full" />
+                    )}
                   </Link>
                 );
               })}
