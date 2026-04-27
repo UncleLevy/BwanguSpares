@@ -349,13 +349,6 @@ export default function Layout({ children, currentPageName }) {
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator />
-                        <div className="px-2 py-1.5">
-                          <button className="w-full flex items-center gap-2 text-sm">
-                            <DarkModeToggle />
-                            <span className="text-sm">Dark Mode</span>
-                          </button>
-                        </div>
-                        <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={() => base44.auth.redirectToLogin()} className="text-blue-600 font-medium flex items-center gap-2">
                           <User className="w-4 h-4" /> Sign In
                         </DropdownMenuItem>
