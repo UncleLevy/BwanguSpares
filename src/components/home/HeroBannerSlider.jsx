@@ -70,7 +70,10 @@ export default function BannerAdsSection() {
         )}
       </div>
         
-      <div className="relative w-screen -mx-4 sm:-mx-6 lg:-mx-8 overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 group shadow-2xl">
+      <div
+        className="relative overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 group shadow-2xl"
+        style={{ width: "100vw", position: "relative", left: "50%", transform: "translateX(-50%)" }}
+      >
           {/* Animated slide */}
           <motion.div 
             className="relative w-full h-64 sm:h-80 lg:h-96 overflow-hidden"
