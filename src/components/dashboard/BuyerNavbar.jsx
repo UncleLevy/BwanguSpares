@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Package, LogOut, User, ChevronDown } from "lucide-react";
+import { Package, LogOut, User, ChevronDown, ShoppingCart, MessageSquare, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -36,7 +36,23 @@ export default function BuyerNavbar({ user }) {
             </div>
           </Link>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Mobile navigation shortcuts */}
+            <div className="flex sm:hidden gap-1">
+              <Link to={createPageUrl("BuyerDashboard") + "?view=orders"} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <LayoutDashboard className="w-5 h-5" />
+              </Link>
+              <Link to={createPageUrl("BuyerDashboard") + "?view=messages"} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <MessageSquare className="w-5 h-5" />
+              </Link>
+              <Link to={createPageUrl("BuyerDashboard") + "?view=cart"} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <ShoppingCart className="w-5 h-5" />
+              </Link>
+              <Link to={createPageUrl("BuyerDashboard") + "?view=profile"} className="p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+                <User className="w-5 h-5" />
+              </Link>
+            </div>
+
             <DarkModeToggle />
             
             <DropdownMenu>
