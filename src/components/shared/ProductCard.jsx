@@ -5,7 +5,6 @@ import { Package, ShoppingCart, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import WishlistButton from "@/components/products/WishlistButton";
-import WatchlistPartButton from "@/components/products/WatchlistPartButton";
 
 const conditionColors = {
   new: "bg-emerald-50 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700",
@@ -83,23 +82,21 @@ export default function ProductCard({ product, onAddToCart, user }) {
         </div>
 
         {/* Actions */}
-        <div className="flex gap-2 mt-1 pt-3 border-t border-slate-100 dark:border-slate-700">
-          <WatchlistPartButton product={product} userEmail={user?.email} disabled={!canAddToCart} />
-          {canAddToCart && (
+        {canAddToCart && (
+          <div className="mt-1 pt-3 border-t border-slate-100 dark:border-slate-700">
             <Button
               size="sm"
               variant="outline"
               disabled={isOutOfStock}
-              className="flex-1 h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
-                         hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform px-2"
+              className="w-full h-9 text-xs border-blue-200 dark:border-blue-800 text-blue-600 dark:text-blue-400
+                         hover:bg-blue-50 dark:hover:bg-blue-900/30 active:scale-95 transition-transform"
               onClick={(e) => { e.preventDefault(); onAddToCart?.(product); }}
             >
-              <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
-              <span className="hidden sm:inline ml-1.5">{isOutOfStock ? "Out of stock" : "Add to Cart"}</span>
-              <span className="sm:hidden ml-1">{isOutOfStock ? "Sold" : "Add"}</span>
+              <ShoppingCart className="w-3.5 h-3.5 shrink-0 mr-1.5" />
+              {isOutOfStock ? "Out of stock" : "Add to Cart"}
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
