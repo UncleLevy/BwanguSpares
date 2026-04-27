@@ -15,43 +15,45 @@ function useContextNavItems({ user, cartCount, location }) {
   const path = location.pathname;
   const search = new URLSearchParams(location.search);
   const currentView = search.get("view");
+  
+  const homeItem = { label: "Home", icon: Home, page: "Home" };
 
   if (path === createPageUrl("BuyerDashboard") || path.startsWith("/BuyerDashboard")) {
     return [
+      homeItem,
       { label: "Orders",   icon: ShoppingCart,  isView: true, view: "orders" },
       { label: "Wallet",   icon: Wallet,         isView: true, view: "wallet" },
       { label: "Messages", icon: MessageSquare,  isView: true, view: "messages" },
-      { label: "Parts",    icon: FileSearch,     isView: true, view: "parts_requests" },
       { label: "Profile",  icon: User,           isView: true, view: "profile" },
-    ].map(s => ({
+    ].map((s, i) => ({
       ...s,
-      active: currentView === s.view || (!currentView && s.view === "orders"),
+      active: i === 0 ? false : (currentView === s.view || (!currentView && s.view === "orders")),
     }));
   }
 
   if (path === createPageUrl("ShopDashboard") || path.startsWith("/ShopDashboard")) {
     return [
+      homeItem,
       { label: "Overview",  icon: LayoutDashboard, isView: true, view: "overview" },
       { label: "Products",  icon: Package,          isView: true, view: "products" },
       { label: "Orders",    icon: ShoppingCart,     isView: true, view: "orders" },
       { label: "Messages",  icon: MessageSquare,    isView: true, view: "messages" },
-      { label: "Analytics", icon: BarChart3,        isView: true, view: "analytics" },
-    ].map(s => ({
+    ].map((s, i) => ({
       ...s,
-      active: currentView === s.view || (!currentView && s.view === "overview"),
+      active: i === 0 ? false : (currentView === s.view || (!currentView && s.view === "overview")),
     }));
   }
 
   if (path === createPageUrl("AdminDashboard") || path.startsWith("/AdminDashboard")) {
     return [
+      homeItem,
       { label: "Overview", icon: LayoutDashboard, isView: true, view: "overview" },
       { label: "Shops",    icon: Store,            isView: true, view: "shops" },
       { label: "Orders",   icon: ShoppingCart,     isView: true, view: "orders" },
       { label: "Users",    icon: User,             isView: true, view: "users" },
-      { label: "Reports",  icon: ClipboardList,    isView: true, view: "reports" },
-    ].map(s => ({
+    ].map((s, i) => ({
       ...s,
-      active: currentView === s.view || (!currentView && s.view === "overview"),
+      active: i === 0 ? false : (currentView === s.view || (!currentView && s.view === "overview")),
     }));
   }
 
@@ -59,7 +61,7 @@ function useContextNavItems({ user, cartCount, location }) {
   const isAdmin     = user?.role === "admin";
 
   return [
-    { label: "Home",    icon: Home,         page: "Home" },
+    homeItem,
     { label: "Browse",  icon: Search,       page: "BrowseProducts" },
     { label: "Nearby",  icon: Navigation,   page: "FindNearby" },
     { label: "Cart",    icon: ShoppingCart, page: "Cart", badge: cartCount, hidden: isShopOwner || isAdmin },
