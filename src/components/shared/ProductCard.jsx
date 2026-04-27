@@ -48,7 +48,7 @@ export default function ProductCard({ product, onAddToCart, user }) {
             </div>
           )}
 
-          <div className="absolute top-2 right-2 flex flex-col gap-1.5">
+          <div className="absolute top-2 right-2 flex flex-col gap-1.5" onClick={(e) => e.preventDefault()}>
             <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-full p-1.5 shadow-sm">
               <WishlistButton product={product} />
             </div>
