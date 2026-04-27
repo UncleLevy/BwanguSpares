@@ -19,7 +19,7 @@ const TECH_PARTNERS = [
     name: "Airtel Money",
     description: "Mobile Payments",
     url: "https://airtel.africa",
-    logo: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Airtel_Africa_logo.svg/320px-Airtel_Africa_logo.svg.png",
+    logo: "https://media.base44.com/images/public/699f775333a30acfe3b73c4e/4ffd53be0_image.png",
     bg: "bg-red-50 dark:bg-red-50",
   },
   {
