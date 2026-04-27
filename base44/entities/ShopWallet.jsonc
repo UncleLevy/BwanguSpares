@@ -38,6 +38,10 @@
       "type": "number",
       "default": 0,
       "description": "Total platform fees collected (ZMW)"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [

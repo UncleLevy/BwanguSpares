@@ -24,6 +24,10 @@
       "type": "number",
       "default": 0,
       "description": "Total amount spent from wallet"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000
     }
   },
   "required": [
