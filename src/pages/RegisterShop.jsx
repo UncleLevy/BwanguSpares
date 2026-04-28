@@ -35,9 +35,19 @@ export default function RegisterShop() {
 
   useEffect(() => {
     (async () => {
+      const params = new URLSearchParams(window.location.search);
+      const ref = params.get("ref");
       const isAuth = await base44.auth.isAuthenticated();
-      if (!isAuth) { base44.auth.redirectToLogin(createPageUrl("RegisterShop")); return; }
+      if (!isAuth) {
+        base44.auth.redirectToLogin(createPageUrl("RegisterShop") + (ref ? `?ref=${ref}` : ""));
+        return;
+      }
       const u = await base44.auth.me();
+      // Auto-assign shop_owner role for users coming via the shop CTA
+      if (ref === "shop_owner" && u.role !== "shop_owner" && u.role !== "admin") {
+        await base44.auth.updateMe({ role: "shop_owner" });
+        u.role = "shop_owner";
+      }
       setUser(u);
       const [r, shops, bannedCheck] = await Promise.all([
         base44.entities.Region.list(),

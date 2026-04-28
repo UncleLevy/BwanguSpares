@@ -113,6 +113,23 @@ export default function HeroSection() {
               </button>
             ))}
           </div>
+
+          {/* Shop owner CTA */}
+          <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 max-w-lg">
+            <div className="w-9 h-9 rounded-xl bg-amber-400/20 flex items-center justify-center shrink-0">
+              <span className="text-lg">🏪</span>
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-white text-sm font-semibold leading-tight">Own a spare parts shop?</p>
+              <p className="text-blue-100/70 text-xs mt-0.5">List your products and reach thousands of buyers.</p>
+            </div>
+            <button
+              onClick={() => navigate(createPageUrl("RegisterShop") + "?ref=shop_owner")}
+              className="shrink-0 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+            >
+              Open a Shop →
+            </button>
+          </div>
         </div>
       </div>
     </section>
