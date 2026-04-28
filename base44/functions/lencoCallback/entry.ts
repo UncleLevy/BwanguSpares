@@ -2,34 +2,43 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const LENCO_API_KEY = Deno.env.get("LENCO_API_KEY");
 const LENCO_BASE_URL = "https://api.lenco.co/access/v2";
+const WEBHOOK_SECRET = "b15d68e81283a85d3399c4ef23085ebf62fbfadf6eac136118d1606cacbf16ef";
 
 /**
- * Lenco Broadpay payment verification & order fulfilment handler.
+ * Lenco Broadpay webhook + manual callback handler.
  *
- * Called from the frontend after:
- *   - Lenco hosted checkout returns to callback_url
- *   - 3DS redirect returns to the app
- *   - Frontend polls for card/momo status and wants server-side confirmation
+ * Handles two call modes:
+ *   1. Webhook from Lenco (no auth header, has X-Lenco-Signature or body.reference)
+ *   2. Manual call from frontend (has Base44 auth token, body.reference)
  *
- * Payload: { reference }
- *
- * This function is IDEMPOTENT — if the order is already "confirmed" it returns
- * success immediately without re-processing.
+ * Always idempotent — if order is already "confirmed" returns success immediately.
  */
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user) {
-      return Response.json({ error: "Unauthorized" }, { status: 401 });
-    }
 
-    const { reference } = await req.json();
+    // Parse body once
+    const body = await req.json().catch(() => ({}));
+    const reference = body.reference || body.data?.reference || body.transactionRef;
+
     if (!reference) {
       return Response.json({ error: "reference is required" }, { status: 400 });
     }
 
-    // --- 1. Find the pending order by reference (stored in stripe_session_id) ---
+    // Determine if this is an authenticated frontend call or a webhook call
+    const authHeader = req.headers.get("Authorization") || "";
+    const isWebhook = !authHeader.startsWith("Bearer ") || authHeader === "Bearer undefined";
+
+    if (!isWebhook) {
+      // Frontend-initiated: verify the user is authenticated
+      const user = await base44.auth.me();
+      if (!user) {
+        return Response.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
+    // Webhook calls proceed without user auth — they come from Lenco servers
+
+    // --- 1. Find the order by reference ---
     const orders = await base44.asServiceRole.entities.Order.filter({ stripe_session_id: reference });
     if (orders.length === 0) {
       return Response.json({ error: "Order not found for this reference" }, { status: 404 });
@@ -109,7 +118,6 @@ Deno.serve(async (req) => {
           total_fees_deducted: parseFloat(((w.total_fees_deducted || 0) + feeAmount).toFixed(2)),
         });
       } else {
-        // Auto-create wallet if it doesn't exist
         const shop = await base44.asServiceRole.entities.Shop.get(finalShopId).catch(() => null);
         await base44.asServiceRole.entities.ShopWallet.create({
           shop_id: finalShopId,

@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useOptimisticList } from "@/components/shared/useOptimistic";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet, Truck, MapPin } from "lucide-react";
+import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet, Truck, MapPin, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import CardPaymentForm from "@/components/checkout/CardPaymentForm";
 import AppHeader from "@/components/shared/AppHeader";
 import { Button } from "@/components/ui/button";
@@ -34,6 +34,8 @@ export default function Cart() {
   const [cardStatus, setCardStatus] = useState(null); // null | "pending" | "3ds" | "successful" | "failed"
   const [momoStatus, setMomoStatus] = useState(null); // null | "pending" | "pay-offline" | "successful" | "failed"
   const [momoPolling, setMomoPolling] = useState(false);
+  const [paymentOverlay, setPaymentOverlay] = useState(null); // null | { status: "processing"|"success"|"failed"|"timeout", reference, message }
+  const pollingRef = useRef(false);
   const [appliedCoupon, setAppliedCoupon] = useState(null);
   const [couponError, setCouponError] = useState("");
   const [regions, setRegions] = useState([]);
@@ -241,78 +243,93 @@ export default function Cart() {
     }
   };
 
+  /**
+   * Poll the DB order (by stripe_session_id = reference) every 2.5s for up to 2 min.
+   * The webhook (lencoCallback) will update order.status → "confirmed" when payment lands.
+   * Returns "confirmed" | "failed" | "timeout".
+   */
+  const pollOrderStatus = async (reference) => {
+    const POLL_INTERVAL = 2500;
+    const MAX_WAIT_MS = 120_000; // 2 minutes
+    const startTime = Date.now();
+    pollingRef.current = true;
+
+    while (pollingRef.current && Date.now() - startTime < MAX_WAIT_MS) {
+      await new Promise(r => setTimeout(r, POLL_INTERVAL));
+      try {
+        const orders = await base44.entities.Order.filter({ stripe_session_id: reference });
+        if (orders.length > 0) {
+          const status = orders[0].status;
+          if (status === "confirmed") return "confirmed";
+          if (status === "failed" || status === "cancelled") return "failed";
+        }
+      } catch (_) {
+        // network blip — keep polling
+      }
+    }
+    return pollingRef.current ? "timeout" : "cancelled";
+  };
+
   const handleCheckout = async () => {
-    if (!form.region) { 
-      notifyError("Region Required", "Please select your region");
-      return; 
-    }
-    if (!form.address.trim()) { 
-      notifyError("Address Required", "Please enter your delivery address");
-      return; 
-    }
-    if (!form.phone.trim()) { 
-      notifyError("Phone Required", "Please enter your phone number");
-      return; 
-    }
-    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) { 
-      notifyError("Invalid Phone", "Enter a valid phone number (e.g. +260 7XX XXX XXX)");
-      return; 
+    if (!form.region) { notifyError("Region Required", "Please select your region"); return; }
+    if (!form.address.trim()) { notifyError("Address Required", "Please enter your delivery address"); return; }
+    if (!form.phone.trim()) { notifyError("Phone Required", "Please enter your phone number"); return; }
+    if (!/^\+?\d{7,15}$/.test(form.phone.replace(/\s/g, ""))) {
+      notifyError("Invalid Phone", "Enter a valid phone number (e.g. +260 7XX XXX XXX)"); return;
     }
     if (paymentMethod === "mobile_money" && !momoPhone.trim()) {
-      notifyError("Mobile Money Required", "Please enter your mobile money number");
-      return;
+      notifyError("Mobile Money Required", "Please enter your mobile money number"); return;
     }
-    if (useWallet && walletAmount <= 0) {
-      notifyError("Invalid Amount", "Please enter a valid wallet amount");
-      return;
-    }
-    if (useWallet && walletAmount > walletBalance) {
-      notifyError("Insufficient Balance", "Your wallet doesn't have enough balance");
-      return;
-    }
+    if (useWallet && walletAmount <= 0) { notifyError("Invalid Amount", "Please enter a valid wallet amount"); return; }
+    if (useWallet && walletAmount > walletBalance) { notifyError("Insufficient Balance", "Your wallet doesn't have enough balance"); return; }
+    if (isZambia === false) { notifyError("Orders Unavailable", "Orders are only available within Zambia."); return; }
 
-    // Block non-Zambian users
-    if (isZambia === false) {
-      notifyError("Orders Unavailable", "Orders are only available within Zambia.");
-      return;
-    }
-
-    // Block checkout inside iframe (preview) - open in new tab instead
     if (window.self !== window.top) {
       window.open(window.location.href, "_blank");
       notifyInfo("Opening New Tab", "Please complete your checkout in the new tab");
       return;
     }
-    
+
     setSubmitting(true);
+
     try {
       const allItems = items.map(i => ({
-        product_id: i.product_id,
-        product_name: i.product_name,
-        shop_id: i.shop_id,
-        shop_name: i.shop_name,
-        price: i.price || 0,
-        quantity: i.quantity || 1,
-        image_url: i.image_url || '',
+        product_id: i.product_id, product_name: i.product_name,
+        shop_id: i.shop_id, shop_name: i.shop_name,
+        price: i.price || 0, quantity: i.quantity || 1, image_url: i.image_url || '',
       }));
-
       const deliveryAddress = `${form.town ? form.town + ", " : ""}${regions.find(r => r.id === form.region)?.name || ""} - ${form.address}`;
 
-      // Handle mobile money via Lenco direct push
+      // ── WALLET-ONLY ────────────────────────────────────────────────────────
+      if (paymentMethod === "wallet" && useWallet && walletAmount >= total) {
+        const response = await base44.functions.invoke('walletPaymentCheckout', {
+          items: allItems, deliveryAddress, deliveryPhone: form.phone,
+          notes: form.notes, couponCode: appliedCoupon?.code || "",
+          discountAmount, total, shippingOption, shippingCost,
+        });
+        if (response.data.success) {
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
+          }
+          clearPaymentState();
+          notifyPaymentSuccess();
+          setSubmitting(false);
+          setTimeout(() => navigate(createPageUrl("OrderSuccess")), 1500);
+        } else {
+          notifyError("Payment Failed", response.data.error || "Wallet payment could not be processed");
+          setSubmitting(false);
+        }
+        return;
+      }
+
+      // ── MOBILE MONEY ───────────────────────────────────────────────────────
       if (paymentMethod === "mobile_money") {
         const response = await base44.functions.invoke('lencoMomoCollect', {
-          phone: momoPhone,
-          operator: momoOperator,
-          amount: total,
-          items: allItems,
-          delivery_address: deliveryAddress,
-          delivery_phone: form.phone,
-          notes: form.notes,
-          coupon_code: appliedCoupon?.code || "",
-          discount_amount: discountAmount,
-          total,
-          shippingOption,
-          shippingCost,
+          phone: momoPhone, operator: momoOperator, amount: total,
+          items: allItems, delivery_address: deliveryAddress,
+          delivery_phone: form.phone, notes: form.notes,
+          coupon_code: appliedCoupon?.code || "", discount_amount: discountAmount,
+          total, shippingOption, shippingCost,
         });
 
         if (!response.data.success) {
@@ -322,197 +339,156 @@ export default function Cart() {
         }
 
         const { reference } = response.data;
-        // Save payment state for recovery
         savePaymentState({ reference, type: 'momo', items, total });
-        setMomoStatus("pay-offline");
-        notifyInfo("Payment Pending", "Approval required on your phone");
-
-        // Poll for status every 5s for up to 2 minutes
-        setMomoPolling(true);
         setSubmitting(false);
-        const maxAttempts = 24;
-        for (let i = 0; i < maxAttempts; i++) {
-          await new Promise(r => setTimeout(r, 5000));
-          const statusRes = await base44.functions.invoke('lencoMomoStatus', { reference });
-          const txStatus = statusRes.data?.status;
-          setMomoStatus(txStatus);
 
-          if (txStatus === "successful") {
-             // lencoMomoStatus already confirmed the order & cleared the cart server-side
-             if (appliedCoupon) {
-               await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
-             }
-             clearPaymentState();
-             setMomoStatus("successful");
-             setMomoPolling(false);
-             notifyPaymentSuccess(reference);
-             setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
-             break;
-          } else if (txStatus === "failed") {
-            setMomoStatus("failed");
-            setMomoPolling(false);
-            notifyError("Payment Declined", "Mobile money payment was declined. Please try again.");
-            break;
+        // Show processing overlay and poll the DB
+        setPaymentOverlay({ status: "processing", reference, message: "Approve the payment prompt on your phone…" });
+        const result = await pollOrderStatus(reference);
+
+        if (result === "confirmed") {
+          if (appliedCoupon) {
+            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
           }
-          // "pending" or "pay-offline" — keep polling
+          clearPaymentState();
+          setPaymentOverlay({ status: "success", reference, message: "Payment confirmed! Redirecting…" });
+          setTimeout(() => navigate(createPageUrl("OrderSuccess") + `?order=${reference}`), 1500);
+        } else if (result === "failed") {
+          setPaymentOverlay({ status: "failed", reference, message: "Payment was declined. Please try again." });
+        } else {
+          setPaymentOverlay({ status: "timeout", reference, message: "Payment confirmation timed out. If you were charged, contact support with ref: " + reference });
         }
-
-        setMomoPolling(false);
         return;
       }
 
-      // Handle wallet-only payment
-      if (paymentMethod === "wallet" && useWallet && walletAmount >= total) {
-        const response = await base44.functions.invoke('walletPaymentCheckout', {
-          items: allItems,
-          deliveryAddress: deliveryAddress,
-          deliveryPhone: form.phone,
-          notes: form.notes,
-          couponCode: appliedCoupon?.code || "",
-          discountAmount: discountAmount,
-          total: total,
-          shippingOption: shippingOption,
-          shippingCost: shippingCost,
-        });
-
-        if (response.data.success) {
-           // Clear cart
-           if (appliedCoupon) {
-             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-           }
-           for (const item of items) {
-             await base44.entities.CartItem.delete(item.id);
-           }
-           clearPaymentState();
-           notifyPaymentSuccess();
-           setSubmitting(false);
-           // Redirect to order success page with smooth transition
-           setTimeout(() => {
-             navigate(createPageUrl("OrderSuccess"));
-           }, 1500);
-        } else {
-          notifyError("Payment Failed", response.data.error || "Wallet payment could not be processed");
-          setSubmitting(false);
-        }
-      } else {
-        // Card payment via Lenco card collection (JWE encrypted)
-        if (!cardDetails.cardNumber || !cardDetails.cardExpiryMonth || !cardDetails.cardExpiryYear || !cardDetails.cardCvv) {
-          notifyError("Card Details Missing", "Please enter your full card details");
-          setSubmitting(false);
-          return;
-        }
-
-        const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
-
-        notifyPaymentProcessing();
-        setCardStatus("pending");
-        const response = await base44.functions.invoke('lencoCardCollect', {
-          cardNumber: cardDetails.cardNumber,
-          cardExpiryMonth: cardDetails.cardExpiryMonth,
-          cardExpiryYear: cardDetails.cardExpiryYear,
-          cardCvv: cardDetails.cardCvv,
-          billingCity: cardDetails.billingCity,
-          amount: amountToChargeCard,
-          currency: "ZMW",
-          items: allItems,
-          delivery_address: deliveryAddress,
-          delivery_phone: form.phone,
-          notes: form.notes,
-          coupon_code: appliedCoupon?.code || "",
-          discount_amount: discountAmount,
-          total,
-          shippingOption,
-          shippingCost,
-          useWallet,
-          walletAmount: useWallet ? walletAmount : 0,
-        });
-
-        const result = response.data;
-
-        if (result.error) {
-          setCardStatus("failed");
-          notifyError("Card Error", result.error);
-          setSubmitting(false);
-          if (!isOnline) {
-            savePaymentState({ ...result, type: 'card', items, total });
-            notifyInfo("Offline Mode", "Payment state saved. Retry when online.");
-          }
-          return;
-        }
-
-        // Save payment state for recovery
-        if (result.reference) {
-          savePaymentState({ ...result, type: 'card', items, total });
-        }
-
-        // 3DS redirect — server will handle cart clearing & order confirmation on return
-         if (result.status === "3ds-auth-required" && result.redirectUrl) {
-           setCardStatus("3ds");
-           if (appliedCoupon) {
-             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-           }
-           notifyInfo("Verifying Payment", "Redirecting to 3D Secure verification…");
-           setSubmitting(false);
-           // Store reference so the return URL handler can call lencoCallback
-           savePaymentState({ reference: result.reference, type: 'card_3ds', items, total });
-           setTimeout(() => { window.location.replace(result.redirectUrl); }, 1000);
-           return;
-         }
-
-        // Helper to finalize a successful card payment
-        const finalizeCardPayment = async (reference) => {
-          setCardStatus("successful");
-          const cbRes = await base44.functions.invoke('lencoCallback', { reference });
-          if (cbRes.data?.success || cbRes.data?.already_processed) {
-            if (appliedCoupon) {
-              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
-            }
-            clearPaymentState();
-            notifyPaymentSuccess(reference);
-            setSubmitting(false);
-            setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
-          } else {
-            notifyError("Confirmation Failed", "Payment succeeded but order confirmation failed. Please contact support.");
-            setSubmitting(false);
-          }
-        };
-
-        if (result.status === "successful") {
-          await finalizeCardPayment(result.reference);
-          return;
-        } else if (result.status === "failed") {
-          setCardStatus("failed");
-          notifyError("Payment Declined", "Your card was declined. Please try again.");
-          setSubmitting(false);
-        } else {
-          // pending — poll lencoMomoStatus until resolved (up to 2 min)
-          setCardStatus("pending");
-          notifyInfo("Processing", "Payment is being processed…");
-          setSubmitting(false);
-          const maxAttempts = 24;
-          for (let i = 0; i < maxAttempts; i++) {
-            await new Promise(r => setTimeout(r, 5000));
-            const statusRes = await base44.functions.invoke('lencoMomoStatus', { reference: result.reference }).catch(() => null);
-            const txStatus = statusRes?.data?.status;
-            if (txStatus === "successful") {
-              await finalizeCardPayment(result.reference);
-              return;
-            } else if (txStatus === "failed") {
-              setCardStatus("failed");
-              notifyError("Payment Declined", "Your card payment was declined. Please try again.");
-              return;
-            }
-          }
-          // Timed out
-          setCardStatus("failed");
-          notifyError("Payment Timeout", "Payment verification timed out. If you were charged, please contact support with reference: " + result.reference);
-        }
+      // ── CARD ───────────────────────────────────────────────────────────────
+      if (!cardDetails.cardNumber || !cardDetails.cardExpiryMonth || !cardDetails.cardExpiryYear || !cardDetails.cardCvv) {
+        notifyError("Card Details Missing", "Please enter your full card details");
+        setSubmitting(false);
+        return;
       }
+
+      const amountToChargeCard = useWallet ? Math.max(0, total - walletAmount) : total;
+
+      // Show processing overlay immediately
+      setPaymentOverlay({ status: "processing", reference: null, message: "Sending payment to bank…" });
+
+      const response = await base44.functions.invoke('lencoCardCollect', {
+        cardNumber: cardDetails.cardNumber, cardExpiryMonth: cardDetails.cardExpiryMonth,
+        cardExpiryYear: cardDetails.cardExpiryYear, cardCvv: cardDetails.cardCvv,
+        billingCity: cardDetails.billingCity, amount: amountToChargeCard, currency: "ZMW",
+        items: allItems, delivery_address: deliveryAddress,
+        delivery_phone: form.phone, notes: form.notes,
+        coupon_code: appliedCoupon?.code || "", discount_amount: discountAmount,
+        total, shippingOption, shippingCost, useWallet, walletAmount: useWallet ? walletAmount : 0,
+      });
+
+      const result = response.data;
+
+      if (result.error) {
+        setPaymentOverlay({ status: "failed", reference: null, message: result.error });
+        setSubmitting(false);
+        return;
+      }
+
+      if (result.reference) savePaymentState({ ...result, type: 'card', items, total });
+
+      // 3DS redirect
+      if (result.status === "3ds-auth-required" && result.redirectUrl) {
+        if (appliedCoupon) {
+          await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
+        }
+        savePaymentState({ reference: result.reference, type: 'card_3ds', items, total });
+        setPaymentOverlay({ status: "processing", reference: result.reference, message: "Redirecting to 3D Secure verification…" });
+        setSubmitting(false);
+        setTimeout(() => { window.location.replace(result.redirectUrl); }, 1000);
+        return;
+      }
+
+      if (result.status === "failed") {
+        setPaymentOverlay({ status: "failed", reference: result.reference, message: "Your card was declined. Please try again." });
+        setSubmitting(false);
+        return;
+      }
+
+      // status is "successful" or "pending" — poll DB for webhook confirmation
+      const reference = result.reference;
+      setPaymentOverlay({ status: "processing", reference, message: "Processing payment… waiting for bank confirmation." });
+      setSubmitting(false);
+
+      const dbResult = await pollOrderStatus(reference);
+
+      if (dbResult === "confirmed") {
+        if (appliedCoupon) {
+          await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
+        }
+        clearPaymentState();
+        setPaymentOverlay({ status: "success", reference, message: "Payment confirmed! Redirecting…" });
+        setTimeout(() => navigate(createPageUrl("OrderSuccess") + `?order=${reference}`), 1500);
+      } else if (dbResult === "failed") {
+        setPaymentOverlay({ status: "failed", reference, message: "Payment was declined. Please try again." });
+      } else {
+        setPaymentOverlay({ status: "timeout", reference, message: "Confirmation timed out. If you were charged, contact support with ref: " + reference });
+      }
+
     } catch (error) {
+      console.error("Checkout error:", error);
       notifyError("Checkout Error", "Payment failed. Please try again.");
+      setPaymentOverlay(null);
       setSubmitting(false);
     }
   };
+
+  // Payment processing full-screen overlay
+  if (paymentOverlay) {
+    const isProcessing = paymentOverlay.status === "processing";
+    const isSuccess = paymentOverlay.status === "success";
+    const isFailed = paymentOverlay.status === "failed" || paymentOverlay.status === "timeout";
+
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white dark:bg-slate-900 px-6 text-center">
+        <div className="mb-6">
+          {isProcessing && (
+            <div className="w-20 h-20 mx-auto rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center mb-4">
+              <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
+            </div>
+          )}
+          {isSuccess && (
+            <div className="w-20 h-20 mx-auto rounded-full bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center mb-4">
+              <CheckCircle2 className="w-10 h-10 text-emerald-500" />
+            </div>
+          )}
+          {isFailed && (
+            <div className="w-20 h-20 mx-auto rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-4">
+              <XCircle className="w-10 h-10 text-red-500" />
+            </div>
+          )}
+        </div>
+        <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+          {isProcessing ? "Processing Payment" : isSuccess ? "Payment Confirmed!" : "Payment Failed"}
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 max-w-xs mb-6">{paymentOverlay.message}</p>
+        {paymentOverlay.reference && (
+          <p className="text-xs text-slate-400 mb-6">Ref: {paymentOverlay.reference}</p>
+        )}
+        {isProcessing && (
+          <div className="flex gap-1 mt-2">
+            {[0,1,2].map(i => (
+              <div key={i} className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+            ))}
+          </div>
+        )}
+        {isFailed && (
+          <Button
+            onClick={() => { setPaymentOverlay(null); pollingRef.current = false; }}
+            className="bg-blue-600 hover:bg-blue-700 rounded-xl"
+          >
+            Try Again
+          </Button>
+        )}
+      </div>
+    );
+  }
 
   if (loading) return (
     <div className="max-w-3xl mx-auto px-4 py-12">
@@ -755,17 +731,7 @@ export default function Cart() {
                            className="mt-2 rounded-xl bg-white dark:bg-slate-700/50 border-slate-200 dark:border-slate-600"
                          />
                        </div>
-                       {momoStatus && (
-                         <div className={`p-3 rounded-lg border text-center text-sm font-medium ${
-                           momoStatus === "successful" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 text-emerald-700 dark:text-emerald-300" :
-                           momoStatus === "failed" ? "bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-400" :
-                           "bg-yellow-50 dark:bg-yellow-900/20 border-yellow-300 text-yellow-700 dark:text-yellow-300 animate-pulse"
-                         }`}>
-                           {momoStatus === "successful" && "✅ Payment successful! Redirecting…"}
-                           {momoStatus === "failed" && "❌ Payment failed or was declined. Please try again."}
-                           {(momoStatus === "pay-offline" || momoStatus === "pending") && "⏳ Waiting for approval on your phone…"}
-                         </div>
-                       )}
+
                        <p className="text-xs text-green-700 dark:text-green-400">
                          📲 A payment prompt of <strong>K{total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> will be sent to your phone. Approve it to complete the order.
                        </p>
@@ -777,18 +743,6 @@ export default function Cart() {
                  {paymentMethod === "card" && (
                    <div className="space-y-2">
                      <CardPaymentForm value={cardDetails} onChange={setCardDetails} />
-                     {cardStatus && (
-                       <div className={`p-3 rounded-lg border text-center text-sm font-medium ${
-                         cardStatus === "successful" ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 text-emerald-700 dark:text-emerald-300" :
-                         cardStatus === "failed" ? "bg-red-50 dark:bg-red-900/20 border-red-300 text-red-700 dark:text-red-400" :
-                         "bg-blue-50 dark:bg-blue-900/20 border-blue-300 text-blue-700 dark:text-blue-300 animate-pulse"
-                       }`}>
-                         {cardStatus === "successful" && "✅ Payment successful! Redirecting…"}
-                         {cardStatus === "failed" && "❌ Card was declined. Please try again."}
-                         {cardStatus === "3ds" && "🔐 Redirecting to 3D Secure verification…"}
-                         {cardStatus === "pending" && "⏳ Processing payment…"}
-                       </div>
-                     )}
                    </div>
                  )}
 
@@ -834,7 +788,7 @@ export default function Cart() {
 
                  <Button
                    onClick={handleCheckout}
-                   disabled={submitting || momoPolling || (paymentMethod === "wallet" && !useWallet) || !isOnline}
+                   disabled={submitting || (paymentMethod === "wallet" && !useWallet) || !isOnline}
                    className={`w-full h-12 md:h-10 rounded-xl text-sm md:text-base gap-2 font-semibold transition-all active:scale-95 ${
                      !isOnline ? "bg-slate-400 cursor-not-allowed opacity-60" :
                      paymentMethod === "card" ? "bg-blue-600 hover:bg-blue-700" :
@@ -842,9 +796,9 @@ export default function Cart() {
                      "bg-purple-600 hover:bg-purple-700"
                    }`}
                  >
-                   {submitting || momoPolling ? (
+                   {submitting ? (
                      <>
-                       <span className="inline-block animate-spin">⏳</span>
+                       <Loader2 className="w-4 h-4 animate-spin" />
                        <span className="hidden sm:inline">Processing…</span>
                      </>
                    ) : !isOnline ? (
