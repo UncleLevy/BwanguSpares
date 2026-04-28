@@ -111,20 +111,20 @@ export default function HeroSection() {
             ))}
           </div>
 
-          {/* Divider */}
-          <div className="mt-10 border-t border-white/10 max-w-lg" />
-
           {/* Shop owner CTA */}
-          <div className="mt-6 flex items-center gap-4 max-w-lg">
-            <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-semibold">Own a spare parts shop?</p>
-              <p className="text-blue-100/60 text-xs mt-0.5">List your products and reach thousands of buyers.</p>
+          <div className="mt-10 max-w-lg p-5 rounded-2xl bg-white/10 backdrop-blur-sm border border-amber-400/30">
+            <div className="flex items-center gap-3 mb-4">
+              <span className="text-2xl">🏪</span>
+              <div>
+                <p className="text-white font-bold text-base leading-tight">Own a spare parts shop?</p>
+                <p className="text-blue-100/70 text-sm mt-0.5">List your products and reach thousands of buyers across Zambia.</p>
+              </div>
             </div>
             <button
               onClick={() => navigate(createPageUrl("RegisterShop") + "?ref=shop_owner")}
-              className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 text-xs font-bold rounded-xl transition-colors whitespace-nowrap"
+              className="w-full py-3 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 font-bold rounded-xl transition-colors text-sm"
             >
-              🏪 Open a Shop
+              Open a Shop on BwanguSpares →
             </button>
           </div>
 
