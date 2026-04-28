@@ -2,7 +2,7 @@ import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
 const LENCO_API_KEY = Deno.env.get("LENCO_API_KEY");
 const LENCO_BASE_URL = "https://api.lenco.co/access/v2";
-const WEBHOOK_SECRET = "b15d68e81283a85d3399c4ef23085ebf62fbfadf6eac136118d1606cacbf16ef";
+const WEBHOOK_SECRET = Deno.env.get("LENCO_WEBHOOK_SECRET");
 
 /**
  * Lenco Broadpay webhook + manual callback handler.
@@ -35,8 +35,23 @@ Deno.serve(async (req) => {
       if (!user) {
         return Response.json({ error: "Unauthorized" }, { status: 401 });
       }
+    } else {
+      // Webhook call: verify Lenco signature
+      const signature = req.headers.get("X-Lenco-Signature") || req.headers.get("x-lenco-signature");
+      if (WEBHOOK_SECRET && signature) {
+        const encoder = new TextEncoder();
+        const key = await crypto.subtle.importKey(
+          "raw", encoder.encode(WEBHOOK_SECRET), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]
+        );
+        const rawBody = JSON.stringify(body);
+        const sigBytes = await crypto.subtle.sign("HMAC", key, encoder.encode(rawBody));
+        const expected = Array.from(new Uint8Array(sigBytes)).map(b => b.toString(16).padStart(2, "0")).join("");
+        if (signature !== expected) {
+          console.warn("Invalid webhook signature");
+          return Response.json({ error: "Invalid signature" }, { status: 401 });
+        }
+      }
     }
-    // Webhook calls proceed without user auth — they come from Lenco servers
 
     // --- 1. Find the order by reference ---
     const orders = await base44.asServiceRole.entities.Order.filter({ stripe_session_id: reference });
