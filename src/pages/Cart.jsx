@@ -338,16 +338,20 @@ export default function Cart() {
           setMomoStatus(txStatus);
 
           if (txStatus === "successful") {
-             if (appliedCoupon) {
-               await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+             // Server-side: verify, update order, clear cart
+             const cbRes = await base44.functions.invoke('lencoCallback', { reference });
+             if (cbRes.data?.success) {
+               if (appliedCoupon) {
+                 await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+               }
+               clearPaymentState();
+               notifyPaymentSuccess(reference);
+               setMomoPolling(false);
+               setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
+             } else {
+               notifyError("Confirmation Failed", "Payment succeeded but order confirmation failed. Please contact support.");
+               setMomoPolling(false);
              }
-             // Delete cart items
-             for (const item of items) await base44.entities.CartItem.delete(item.id);
-             clearPaymentState();
-             notifyPaymentSuccess(reference);
-             setMomoPolling(false);
-             // Redirect to order success page with smooth transition
-             setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
              break;
           } else if (txStatus === "failed") {
             notifyError("Payment Declined", "Mobile money payment was declined. Please try again.");
@@ -444,31 +448,36 @@ export default function Cart() {
           savePaymentState({ ...result, type: 'card', items, total });
         }
 
-        // 3DS redirect
+        // 3DS redirect — server will handle cart clearing & order confirmation on return
          if (result.status === "3ds-auth-required" && result.redirectUrl) {
            setCardStatus("3ds");
-           // Clear coupon & cart optimistically, redirect to 3DS page
            if (appliedCoupon) {
              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
            }
-           for (const item of items) await base44.entities.CartItem.delete(item.id);
            notifyInfo("Verifying Payment", "Redirecting to 3D Secure verification…");
            setSubmitting(false);
+           // Store reference so the return URL handler can call lencoCallback
+           savePaymentState({ reference: result.reference, type: 'card_3ds', items, total });
            setTimeout(() => { window.location.replace(result.redirectUrl); }, 1000);
            return;
          }
 
         if (result.status === "successful") {
           setCardStatus("successful");
-          if (appliedCoupon) {
-            await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+          // Server-side: verify payment, update order, clear cart
+          const cbRes = await base44.functions.invoke('lencoCallback', { reference: result.reference });
+          if (cbRes.data?.success) {
+            if (appliedCoupon) {
+              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+            }
+            clearPaymentState();
+            notifyPaymentSuccess(result.reference);
+            setSubmitting(false);
+            setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${result.reference}`); }, 1500);
+          } else {
+            notifyError("Confirmation Failed", "Payment succeeded but order confirmation failed. Please contact support.");
+            setSubmitting(false);
           }
-          for (const item of items) await base44.entities.CartItem.delete(item.id);
-          clearPaymentState();
-          notifyPaymentSuccess();
-          setSubmitting(false);
-          // Redirect to order success page with smooth transition
-          setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${result.reference}`); }, 1500);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");

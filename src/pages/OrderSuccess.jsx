@@ -11,15 +11,22 @@ export default function OrderSuccess() {
   const [order, setOrder] = useState(null);
   const [countdown, setCountdown] = useState(5);
 
+  // Support both ?orderId= and ?order= (reference) params
   const orderId = searchParams.get('orderId');
+  const orderRef = searchParams.get('order');
 
   useEffect(() => {
     if (orderId) {
       base44.entities.Order.filter({ id: orderId }).then(orders => {
         if (orders.length > 0) setOrder(orders[0]);
       });
+    } else if (orderRef) {
+      // Look up by Lenco reference (stored in stripe_session_id)
+      base44.entities.Order.filter({ stripe_session_id: orderRef }).then(orders => {
+        if (orders.length > 0) setOrder(orders[0]);
+      });
     }
-  }, [orderId]);
+  }, [orderId, orderRef]);
 
   useEffect(() => {
     const timer = setInterval(() => {
