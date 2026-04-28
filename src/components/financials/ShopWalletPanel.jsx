@@ -13,40 +13,28 @@ export default function ShopWalletPanel({ shop: initialShop, orders }) {
   useEffect(() => {
     if (!shop?.id) return;
     (async () => {
-      // Sync wallet from all delivered orders (all payment methods)
-      const deliveredOrders = orders.filter(o => o.status === "delivered");
-      const totalEarned = deliveredOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
-
-      let wallets = await base44.entities.ShopWallet.filter({ shop_id: shop.id });
-      let w = wallets[0];
+      // Read wallet for fee rate and paid-out amount (read-only)
+      const wallets = await base44.entities.ShopWallet.filter({ shop_id: shop.id });
+      const w = wallets[0];
 
       const feeRate = w?.platform_fee_rate ?? 5;
+      const deliveredOrders = orders.filter(o => o.status === "delivered");
+      const totalEarned = deliveredOrders.reduce((s, o) => s + (o.total_amount || 0), 0);
       const fees = totalEarned * (feeRate / 100);
       const netEarned = totalEarned - fees;
       const paidOutAmount = w?.total_paid_out || 0;
       const pending = Math.max(0, netEarned - paidOutAmount);
 
-      if (!w) {
-        w = await base44.entities.ShopWallet.create({
-          shop_id: shop.id,
-          shop_name: shop.name,
-          owner_email: shop.owner_email,
-          total_earned: netEarned,
-          total_paid_out: 0,
-          pending_balance: pending,
-          platform_fee_rate: 5,
-          total_fees_deducted: fees,
-        });
-      } else {
-        await base44.entities.ShopWallet.update(w.id, {
-          total_earned: netEarned,
-          pending_balance: pending,
-          total_fees_deducted: fees,
-        });
-        w = { ...w, total_earned: netEarned, pending_balance: pending, total_fees_deducted: fees };
-      }
+      // Compute values locally — do not write back (shop_owner has no update permission)
+      setWallet({
+        ...(w || {}),
+        platform_fee_rate: feeRate,
+        total_earned: netEarned,
+        total_fees_deducted: fees,
+        total_paid_out: paidOutAmount,
+        pending_balance: pending,
+      });
 
-      setWallet(w);
       const p = await base44.entities.Payout.filter({ shop_id: shop.id }, "-created_date", 20);
       setPayouts(p);
       setLoading(false);
