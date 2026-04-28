@@ -157,18 +157,23 @@ export default function ShopDashboard() {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     (async () => {
       const isAuth = await base44.auth.isAuthenticated();
+      if (!isMounted) return;
       if (!isAuth) { base44.auth.redirectToLogin(window.location.pathname); return; }
       const u = await base44.auth.me();
+      if (!isMounted) return;
       if (u.role === "admin") { navigate(createPageUrl("AdminDashboard")); return; }
       setUser(u);
       // Fetch all shops for this user
       const userShops = await base44.entities.Shop.filter({ owner_email: u.email });
+      if (!isMounted) return;
       setShops(userShops);
       if (!userShops || userShops.length === 0) { navigate(createPageUrl("RegisterShop")); return; }
       // Fetch subscription tier
       const subs = await base44.entities.Subscription.filter({ user_email: u.email });
+      if (!isMounted) return;
       setSubscription(subs[0]);
       // Load the first shop's data
       const firstShop = userShops[0];
@@ -182,9 +187,11 @@ export default function ShopDashboard() {
         base44.entities.Campaign.filter({ shop_id: firstShop.id }),
         base44.entities.DiscountCode.filter({ shop_id: firstShop.id })
       ]);
+      if (!isMounted) return;
       setProducts(p); setTechnicians(t); setOrders(o); setCustomers(c); setCampaigns(camps); setDiscountCodes(codes);
       setLoading(false);
     })();
+    return () => { isMounted = false; };
   }, []);
 
   const handleImageUpload = async (e, isProduct = true) => {
