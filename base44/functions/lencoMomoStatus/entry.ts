@@ -32,24 +32,60 @@ Deno.serve(async (req) => {
 
     console.log(`MoMo status for ${reference}: ${status}`);
 
-    // If successful, update order status
+    // If successful, update order status + credit shop wallet
     if (status === "successful") {
       const orders = await base44.asServiceRole.entities.Order.filter({ stripe_session_id: reference });
       if (orders.length > 0) {
         const order = orders[0];
         if (order.status === "pending") {
-          const actualShopId = order.items?.[0]?.shop_id || order.shop_id;
-          const actualShopName = order.items?.[0]?.shop_name || order.shop_name;
+          const finalShopId = (order.shop_id && order.shop_id !== "PENDING_PAYMENT") ? order.shop_id : (order.items?.[0]?.shop_id || "unknown");
+          const finalShopName = (order.shop_name && order.shop_name !== "Payment Pending") ? order.shop_name : (order.items?.[0]?.shop_name || "");
+
           await base44.asServiceRole.entities.Order.update(order.id, {
             status: "confirmed",
-            shop_id: actualShopId !== "PENDING_PAYMENT" ? actualShopId : order.items?.[0]?.shop_id,
-            shop_name: actualShopName !== "Payment Pending" ? actualShopName : order.items?.[0]?.shop_name,
+            shop_id: finalShopId,
+            shop_name: finalShopName,
           });
+
           // Clear cart
           const cartItems = await base44.asServiceRole.entities.CartItem.filter({ buyer_email: order.buyer_email });
           for (const item of cartItems) {
             await base44.asServiceRole.entities.CartItem.delete(item.id);
           }
+
+          // Credit shop wallet
+          try {
+            const orderTotal = order.total_amount || 0;
+            const wallets = await base44.asServiceRole.entities.ShopWallet.filter({ shop_id: finalShopId });
+            const feeRate = wallets[0]?.platform_fee_rate ?? 5;
+            const feeAmount = parseFloat(((orderTotal * feeRate) / 100).toFixed(2));
+            const netEarned = parseFloat((orderTotal - feeAmount).toFixed(2));
+
+            if (wallets.length > 0) {
+              const w = wallets[0];
+              await base44.asServiceRole.entities.ShopWallet.update(w.id, {
+                total_earned: parseFloat(((w.total_earned || 0) + netEarned).toFixed(2)),
+                pending_balance: parseFloat(((w.pending_balance || 0) + netEarned).toFixed(2)),
+                total_fees_deducted: parseFloat(((w.total_fees_deducted || 0) + feeAmount).toFixed(2)),
+              });
+            } else {
+              const shop = await base44.asServiceRole.entities.Shop.get(finalShopId).catch(() => null);
+              await base44.asServiceRole.entities.ShopWallet.create({
+                shop_id: finalShopId,
+                shop_name: finalShopName,
+                owner_email: shop?.owner_email || "",
+                total_earned: netEarned,
+                pending_balance: netEarned,
+                total_paid_out: 0,
+                platform_fee_rate: feeRate,
+                total_fees_deducted: feeAmount,
+              });
+            }
+            console.log(`ShopWallet credited: shop=${finalShopId}, net=K${netEarned}, ref=${reference}`);
+          } catch (walletErr) {
+            console.warn("ShopWallet credit failed:", walletErr.message);
+          }
+
           console.log(`Order ${order.id} confirmed and cart cleared for ${reference}`);
         }
       }

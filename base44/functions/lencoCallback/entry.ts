@@ -76,11 +76,13 @@ Deno.serve(async (req) => {
     // --- 4. Payment confirmed — update order ---
     const actualShopId = order.items?.[0]?.shop_id || order.shop_id;
     const actualShopName = order.items?.[0]?.shop_name || order.shop_name;
+    const finalShopId = (actualShopId && actualShopId !== "PENDING_PAYMENT") ? actualShopId : (order.items?.[0]?.shop_id || "unknown");
+    const finalShopName = (actualShopName && actualShopName !== "Payment Pending") ? actualShopName : (order.items?.[0]?.shop_name || "");
 
     await base44.asServiceRole.entities.Order.update(order.id, {
       status: "confirmed",
-      shop_id: actualShopId !== "PENDING_PAYMENT" ? actualShopId : (order.items?.[0]?.shop_id || "unknown"),
-      shop_name: actualShopName !== "Payment Pending" ? actualShopName : (order.items?.[0]?.shop_name || ""),
+      shop_id: finalShopId,
+      shop_name: finalShopName,
     });
     console.log(`Order ${order.id} confirmed for payment ${reference}`);
 
@@ -91,9 +93,42 @@ Deno.serve(async (req) => {
     }
     console.log(`Cleared ${cartItems.length} cart items for ${order.buyer_email}`);
 
-    // --- 6. Notify shop owner ---
+    // --- 6. Credit the shop wallet ---
     try {
-      const shopNotifications = await base44.asServiceRole.entities.Notification.filter({ });
+      const orderTotal = order.total_amount || 0;
+      const wallets = await base44.asServiceRole.entities.ShopWallet.filter({ shop_id: finalShopId });
+      const feeRate = wallets[0]?.platform_fee_rate ?? 5;
+      const feeAmount = parseFloat(((orderTotal * feeRate) / 100).toFixed(2));
+      const netEarned = parseFloat((orderTotal - feeAmount).toFixed(2));
+
+      if (wallets.length > 0) {
+        const w = wallets[0];
+        await base44.asServiceRole.entities.ShopWallet.update(w.id, {
+          total_earned: parseFloat(((w.total_earned || 0) + netEarned).toFixed(2)),
+          pending_balance: parseFloat(((w.pending_balance || 0) + netEarned).toFixed(2)),
+          total_fees_deducted: parseFloat(((w.total_fees_deducted || 0) + feeAmount).toFixed(2)),
+        });
+      } else {
+        // Auto-create wallet if it doesn't exist
+        const shop = await base44.asServiceRole.entities.Shop.get(finalShopId).catch(() => null);
+        await base44.asServiceRole.entities.ShopWallet.create({
+          shop_id: finalShopId,
+          shop_name: finalShopName,
+          owner_email: shop?.owner_email || "",
+          total_earned: netEarned,
+          pending_balance: netEarned,
+          total_paid_out: 0,
+          platform_fee_rate: feeRate,
+          total_fees_deducted: feeAmount,
+        });
+      }
+      console.log(`ShopWallet credited: shop=${finalShopId}, net=K${netEarned}, fee=K${feeAmount}, ref=${reference}`);
+    } catch (walletErr) {
+      console.warn("ShopWallet credit failed:", walletErr.message);
+    }
+
+    // --- 7. Notify buyer ---
+    try {
       await base44.asServiceRole.entities.Notification.create({
         user_email: order.buyer_email,
         type: "order_update",
@@ -111,7 +146,7 @@ Deno.serve(async (req) => {
       success: true,
       order_id: order.id,
       payment_status: "successful",
-      message: "Order confirmed and cart cleared.",
+      message: "Order confirmed, cart cleared, and shop wallet credited.",
     });
 
   } catch (error) {
