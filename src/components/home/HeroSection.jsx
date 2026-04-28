@@ -42,19 +42,18 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-t from-blue-950/70 via-transparent to-transparent" />
       </div>
 
-      <div
-        className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14 md:py-36 pt-16 md:pt-[calc(env(safe-area-inset-top,0px)+3.5rem)]"
-      >
-        <div ref={textRef} className="max-w-2xl will-change-transform">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 md:pt-40 md:pb-24">
+        <div ref={textRef} className="will-change-transform">
+
           {/* Badge */}
-          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium mb-4 md:mb-6 border border-white/10">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm text-white/90 text-xs font-medium border border-white/10">
             <MapPin className="w-3 h-3" />
             Zambia's Auto Spares Marketplace
           </div>
 
           {/* Headline */}
           <h1
-            className="text-[2rem] leading-tight md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight"
+            className="mt-5 text-[2.2rem] leading-tight md:text-5xl lg:text-6xl font-extrabold text-white tracking-tight max-w-xl"
             style={{ textShadow: "0 2px 12px rgba(0,0,0,0.45)" }}
           >
             Find the right parts,<br />
@@ -62,17 +61,15 @@ export default function HeroSection() {
           </h1>
 
           <p
-            className="mt-3 text-sm md:text-lg text-blue-100/80 leading-relaxed max-w-md"
+            className="mt-4 text-sm md:text-lg text-blue-100/80 leading-relaxed max-w-md"
             style={{ textShadow: "0 1px 6px rgba(0,0,0,0.4)" }}
           >
             Browse thousands of auto spare parts from verified shops across Zambia.
           </p>
 
           {/* Search bar */}
-          <form onSubmit={handleSearch} className="mt-6 md:mt-8 flex gap-2 max-w-lg">
-            <div
-              className={`relative flex-1 transition-all duration-200 ${focused ? "scale-[1.01]" : ""}`}
-            >
+          <form onSubmit={handleSearch} className="mt-8 flex gap-2 max-w-lg">
+            <div className={`relative flex-1 transition-all duration-200 ${focused ? "scale-[1.01]" : ""}`}>
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
               <input
                 type="search"
@@ -100,7 +97,7 @@ export default function HeroSection() {
           </form>
 
           {/* Quick search chips */}
-          <div className="mt-3.5 flex flex-wrap items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             <span className="text-[11px] text-blue-200/60 mr-0.5">Popular:</span>
             {QUICK_SEARCHES.map((t) => (
               <button
@@ -114,22 +111,23 @@ export default function HeroSection() {
             ))}
           </div>
 
+          {/* Divider */}
+          <div className="mt-10 border-t border-white/10 max-w-lg" />
+
           {/* Shop owner CTA */}
-          <div className="mt-6 flex items-center gap-3 p-4 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 max-w-lg">
-            <div className="w-9 h-9 rounded-xl bg-amber-400/20 flex items-center justify-center shrink-0">
-              <span className="text-lg">🏪</span>
-            </div>
+          <div className="mt-6 flex items-center gap-4 max-w-lg">
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-semibold leading-tight">Own a spare parts shop?</p>
-              <p className="text-blue-100/70 text-xs mt-0.5">List your products and reach thousands of buyers.</p>
+              <p className="text-white text-sm font-semibold">Own a spare parts shop?</p>
+              <p className="text-blue-100/60 text-xs mt-0.5">List your products and reach thousands of buyers.</p>
             </div>
             <button
               onClick={() => navigate(createPageUrl("RegisterShop") + "?ref=shop_owner")}
-              className="shrink-0 px-3 py-1.5 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 text-xs font-bold rounded-lg transition-colors whitespace-nowrap"
+              className="shrink-0 px-4 py-2 bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-900 text-xs font-bold rounded-xl transition-colors whitespace-nowrap"
             >
-              Open a Shop →
+              🏪 Open a Shop
             </button>
           </div>
+
         </div>
       </div>
     </section>
