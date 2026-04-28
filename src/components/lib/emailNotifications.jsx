@@ -939,6 +939,57 @@ export const emailSubscriptionReminderToShop = (shopOwnerEmail, shopName, tier, 
   });
 };
 
+// ─── Appointment Reminders ────────────────────────────────────────────────────
+
+export const emailAppointmentReminder = (buyerEmail, buyerName, appointment, hoursUntil) => {
+  const apptDate = new Date(appointment.scheduled_date || appointment.appointment_date);
+  const formattedDate = apptDate.toLocaleDateString('en-GB', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  const formattedTime = apptDate.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  const isToday = hoursUntil <= 24;
+
+  const content = `
+    <p style="margin:0 0 16px;">Hi <strong>${buyerName || "there"}</strong>,</p>
+    <p style="margin:0 0 16px;">This is a friendly reminder about your upcoming appointment${isToday ? " <strong>today</strong>" : ""}.</p>
+
+    <div style="background:${BRAND.gradient};border-radius:14px;padding:24px;text-align:center;margin:20px 0;">
+      <div style="font-size:36px;margin-bottom:8px;">&#128197;</div>
+      <p style="margin:0;color:rgba(255,255,255,0.85);font-size:12px;text-transform:uppercase;letter-spacing:1px;">Your Appointment</p>
+      <p style="margin:8px 0 4px;color:#fff;font-size:20px;font-weight:800;">${formattedDate}</p>
+      <p style="margin:0;color:#7dd3fc;font-size:16px;font-weight:600;">at ${formattedTime}</p>
+    </div>
+
+    ${infoBox([
+      ["&#128295; Service", appointment.service_type?.replace(/_/g, ' ') || appointment.problem_type?.replace(/_/g, ' ') || "Technician Appointment"],
+      ["&#127981; Shop", appointment.shop_name || "—"],
+      ["&#128205; Location", appointment.location || appointment.delivery_address || "At shop"],
+      ...(appointment.technician_name ? [["&#128736;&#65039; Technician", appointment.technician_name]] : []),
+      ...(appointment.notes ? [["&#128221; Notes", appointment.notes]] : []),
+    ], isToday ? "#059669" : BRAND.primary)}
+
+    ${isToday
+      ? `<div style="background:#f0fdf4;border-radius:10px;border:1px solid #bbf7d0;padding:14px;margin:16px 0;">
+          <p style="margin:0;font-size:13px;color:#166534;font-weight:600;">&#9989; Your appointment is today! Please arrive on time.</p>
+         </div>`
+      : `<div style="background:#eff6ff;border-radius:10px;border:1px solid #bfdbfe;padding:14px;margin:16px 0;">
+          <p style="margin:0;font-size:13px;color:#1e40af;">&#128337; You have <strong>${Math.round(hoursUntil)} hours</strong> until your appointment. Please plan accordingly.</p>
+         </div>`
+    }
+    <p style="font-size:13px;color:#64748b;margin:12px 0 0;">Need to reschedule? Contact the shop or reach us at <a href="mailto:admin@bwangu.com" style="color:#0891b2;">admin@bwangu.com</a>.</p>
+  `;
+
+  return send({
+    to: buyerEmail,
+    subject: `${isToday ? "⏰ Today's" : "📅 Upcoming"} Appointment Reminder – ${formattedDate}`,
+    htmlBody: template({
+      title: isToday ? "Your Appointment is Today!" : "Appointment Reminder",
+      badgeText: "Appointment",
+      badgeColor: isToday ? "#059669" : BRAND.primary,
+      content,
+      cta: { text: "View My Appointments", url: BRAND.appUrl },
+    }),
+  });
+};
+
 export const emailSubscriptionFailureToShop = (shopOwnerEmail, shopName, tier, failureReason) => {
   const content = `
     <p style="margin:0 0 16px;">Hi <strong>${shopName}</strong> team,</p>
