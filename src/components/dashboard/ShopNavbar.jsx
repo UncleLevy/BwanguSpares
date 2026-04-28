@@ -8,8 +8,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
+  DropdownMenuTrigger } from
+"@/components/ui/dropdown-menu";
 import DarkModeToggle from "@/components/shared/DarkModeToggle";
 import { createPageUrl } from "@/utils";
 
@@ -19,7 +19,7 @@ export default function ShopNavbar({ user }) {
 
   useEffect(() => {
     if (!user) return;
-    
+
     const loadUnread = async () => {
       const convs = await base44.entities.Conversation.filter(
         { shop_owner_email: user.email },
@@ -50,13 +50,13 @@ export default function ShopNavbar({ user }) {
       className="sticky top-0 z-50 bg-white dark:bg-slate-900 border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm"
       style={{
         paddingTop: "env(safe-area-inset-top, 0px)"
-      }}
-    >
+      }}>
+      
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 lg:h-16">
           <Link to={createPageUrl("ShopDashboard")} className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
+            <div className="mx-8 rounded-xl w-10 h-10 gradient-blue flex items-center justify-center shadow-lg shadow-purple-500/30">
               <Store className="w-5 h-5 text-white" />
             </div>
             <div className="hidden sm:block">
@@ -72,23 +72,23 @@ export default function ShopNavbar({ user }) {
 
             <Link
               to={createPageUrl("ShopDashboard") + "?view=messages"}
-              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            >
+              className="relative p-2 text-slate-600 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              
               <MessageSquare className="w-5 h-5" />
-              {unreadMessages > 0 && (
-                <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900" />
-              )}
+              {unreadMessages > 0 &&
+              <span className="absolute top-0.5 right-0.5 w-2.5 h-2.5 bg-red-500 rounded-full border border-white dark:border-slate-900" />
+              }
             </Link>
             
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                   <div className="w-7 h-7 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center overflow-hidden">
-                    {user?.profile_picture_url ? (
-                      <img src={user.profile_picture_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
-                    )}
+                    {user?.profile_picture_url ?
+                    <img src={user.profile_picture_url} alt="" className="w-full h-full object-cover" /> :
+
+                    <User className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    }
                   </div>
                   <span className="hidden sm:inline">{user?.full_name?.split(' ')[0]}</span>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -108,6 +108,6 @@ export default function ShopNavbar({ user }) {
           </div>
         </div>
       </div>
-    </header>
-  );
+    </header>);
+
 }
