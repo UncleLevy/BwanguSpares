@@ -3,10 +3,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Home, Package } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { base44 } from '@/api/base44Client';
+import { useQueryClient } from '@tanstack/react-query';
 import { createPageUrl } from '@/utils';
 
 export default function OrderSuccess() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
   const [order, setOrder] = useState(null);
   const [countdown, setCountdown] = useState(5);
@@ -16,12 +18,14 @@ export default function OrderSuccess() {
   const orderRef = searchParams.get('order');
 
   useEffect(() => {
+    // Invalidate all cached queries so dashboard/cart reflect latest data
+    queryClient.invalidateQueries();
+
     if (orderId) {
       base44.entities.Order.filter({ id: orderId }).then(orders => {
         if (orders.length > 0) setOrder(orders[0]);
       });
     } else if (orderRef) {
-      // Look up by Lenco reference (stored in stripe_session_id)
       base44.entities.Order.filter({ stripe_session_id: orderRef }).then(orders => {
         if (orders.length > 0) setOrder(orders[0]);
       });

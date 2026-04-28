@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useOptimisticList } from "@/components/shared/useOptimistic";
 import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 import { createPageUrl } from "@/utils";
 import { ShoppingCart, Trash2, Minus, Plus, ArrowRight, Package, CreditCard, Wallet, Truck, MapPin, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 import CardPaymentForm from "@/components/checkout/CardPaymentForm";
@@ -48,14 +49,17 @@ export default function Cart() {
   const [shippingRates, setShippingRates] = useState([]);
   const [dynamicShippingCost, setDynamicShippingCost] = useState(0);
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     loadCart();
     loadRegionsAndTowns();
     const unsubscribe = base44.entities.CartItem.subscribe((event) => {
-      // Only reload on create events (e.g. item added from another tab).
-      // Delete and update are handled optimistically to avoid race conditions.
       if (event.type === "create") loadCart();
+      // If the webhook deletes cart items server-side, sync UI immediately
+      if (event.type === "delete") {
+        setItems(prev => prev.filter(i => i.id !== event.id));
+      }
     });
     return unsubscribe;
   }, []);
@@ -243,6 +247,24 @@ export default function Cart() {
     }
   };
 
+  /** Clears all cart state — React state, React Query cache, localStorage */
+  const clearAllCartState = useCallback(() => {
+    // Clear React state
+    setItems([]);
+    // Clear React Query cache for cart and orders
+    queryClient.invalidateQueries({ queryKey: ['cart'] });
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
+    queryClient.invalidateQueries({ queryKey: ['cartItems'] });
+    // Clear any persisted payment state from localStorage
+    clearPaymentState();
+    // Clear any other cart-related localStorage keys
+    try {
+      localStorage.removeItem('cart');
+      localStorage.removeItem('cartItems');
+      localStorage.removeItem('pendingOrder');
+    } catch (_) {}
+  }, [queryClient]);
+
   /**
    * Poll the DB order (by stripe_session_id = reference) every 2.5s for up to 2 min.
    * The webhook (lencoCallback) will update order.status → "confirmed" when payment lands.
@@ -311,7 +333,7 @@ export default function Cart() {
           if (appliedCoupon) {
             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
           }
-          clearPaymentState();
+          clearAllCartState();
           notifyPaymentSuccess();
           setSubmitting(false);
           setTimeout(() => navigate(createPageUrl("OrderSuccess")), 1500);
@@ -350,7 +372,7 @@ export default function Cart() {
           if (appliedCoupon) {
             await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
           }
-          clearPaymentState();
+          clearAllCartState();
           setPaymentOverlay({ status: "success", reference, message: "Payment confirmed! Redirecting…" });
           setTimeout(() => navigate(createPageUrl("OrderSuccess") + `?order=${reference}`), 1500);
         } else if (result === "failed") {
@@ -422,7 +444,7 @@ export default function Cart() {
         if (appliedCoupon) {
           await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
         }
-        clearPaymentState();
+        clearAllCartState();
         setPaymentOverlay({ status: "success", reference, message: "Payment confirmed! Redirecting…" });
         setTimeout(() => navigate(createPageUrl("OrderSuccess") + `?order=${reference}`), 1500);
       } else if (dbResult === "failed") {
