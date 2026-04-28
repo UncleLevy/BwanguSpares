@@ -338,22 +338,19 @@ export default function Cart() {
           setMomoStatus(txStatus);
 
           if (txStatus === "successful") {
-             // Server-side: verify, update order, clear cart
-             const cbRes = await base44.functions.invoke('lencoCallback', { reference });
-             if (cbRes.data?.success) {
-               if (appliedCoupon) {
-                 await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
-               }
-               clearPaymentState();
-               notifyPaymentSuccess(reference);
-               setMomoPolling(false);
-               setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
-             } else {
-               notifyError("Confirmation Failed", "Payment succeeded but order confirmation failed. Please contact support.");
-               setMomoPolling(false);
+             // lencoMomoStatus already confirmed the order & cleared the cart server-side
+             if (appliedCoupon) {
+               await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
              }
+             clearPaymentState();
+             setMomoStatus("successful");
+             setMomoPolling(false);
+             notifyPaymentSuccess(reference);
+             setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
              break;
           } else if (txStatus === "failed") {
+            setMomoStatus("failed");
+            setMomoPolling(false);
             notifyError("Payment Declined", "Mobile money payment was declined. Please try again.");
             break;
           }
@@ -462,30 +459,53 @@ export default function Cart() {
            return;
          }
 
-        if (result.status === "successful") {
+        // Helper to finalize a successful card payment
+        const finalizeCardPayment = async (reference) => {
           setCardStatus("successful");
-          // Server-side: verify payment, update order, clear cart
-          const cbRes = await base44.functions.invoke('lencoCallback', { reference: result.reference });
-          if (cbRes.data?.success) {
+          const cbRes = await base44.functions.invoke('lencoCallback', { reference });
+          if (cbRes.data?.success || cbRes.data?.already_processed) {
             if (appliedCoupon) {
-              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 });
+              await base44.entities.DiscountCode.update(appliedCoupon.id, { usage_count: (appliedCoupon.usage_count || 0) + 1 }).catch(() => {});
             }
             clearPaymentState();
-            notifyPaymentSuccess(result.reference);
+            notifyPaymentSuccess(reference);
             setSubmitting(false);
-            setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${result.reference}`); }, 1500);
+            setTimeout(() => { navigate(createPageUrl("OrderSuccess") + `?order=${reference}`); }, 1500);
           } else {
             notifyError("Confirmation Failed", "Payment succeeded but order confirmation failed. Please contact support.");
             setSubmitting(false);
           }
+        };
+
+        if (result.status === "successful") {
+          await finalizeCardPayment(result.reference);
           return;
         } else if (result.status === "failed") {
           setCardStatus("failed");
           notifyError("Payment Declined", "Your card was declined. Please try again.");
+          setSubmitting(false);
         } else {
-          // pending — poll for status
+          // pending — poll lencoMomoStatus until resolved (up to 2 min)
           setCardStatus("pending");
           notifyInfo("Processing", "Payment is being processed…");
+          setSubmitting(false);
+          const maxAttempts = 24;
+          for (let i = 0; i < maxAttempts; i++) {
+            await new Promise(r => setTimeout(r, 5000));
+            const statusRes = await base44.functions.invoke('lencoMomoStatus', { reference: result.reference }).catch(() => null);
+            const txStatus = statusRes?.data?.status;
+            if (txStatus === "successful") {
+              await finalizeCardPayment(result.reference);
+              return;
+            } else if (txStatus === "failed") {
+              setCardStatus("failed");
+              notifyError("Payment Declined", "Your card payment was declined. Please try again.");
+              return;
+            }
+          }
+          // Timed out
+          setCardStatus("failed");
+          notifyError("Payment Timeout", "Payment verification timed out. If you were charged, please contact support with reference: " + result.reference);
         }
       }
     } catch (error) {
