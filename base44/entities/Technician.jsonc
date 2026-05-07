@@ -62,17 +62,8 @@
     "insert": {
       "formula": "(user.role == 'shop_owner' && request.shop_id == user.shop_id) || user.role == 'admin'"
     },
-    "update": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
-    },
-    "delete": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
-    },
     "create": {
       "created_by": "{{user.email}}"
-    },
-    "write": {
-      "formula": "record.shop_id == user.shop_id || user.role == 'admin'"
     },
     "public_read": true
   }

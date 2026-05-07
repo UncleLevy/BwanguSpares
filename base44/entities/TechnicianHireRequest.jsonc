@@ -81,24 +81,43 @@
     "problem_type"
   ],
   "rls": {
-    "select": {
-      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+    "create": {
+      "data.buyer_email": "{{user.email}}"
     },
-    "insert": {
-      "formula": "request.buyer_email == user.email"
+    "read": {
+      "$or": [
+        {
+          "data.buyer_email": "{{user.email}}"
+        },
+        {
+          "data.shop_owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "update": {
-      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
+      "$or": [
+        {
+          "data.buyer_email": "{{user.email}}"
+        },
+        {
+          "data.shop_owner_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
     },
     "delete": {
-      "formula": "user.role == 'admin'"
-    },
-    "create": {
-      "created_by": "{{user.email}}"
-    },
-    "write": {
-      "formula": "record.buyer_email == user.email || record.shop_owner_email == user.email || user.role == 'admin'"
-    },
-    "public_read": true
+      "user_condition": {
+        "role": "admin"
+      }
+    }
   }
 }
