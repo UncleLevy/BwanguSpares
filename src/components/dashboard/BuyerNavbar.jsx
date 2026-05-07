@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
-import { Package, LogOut, User, ChevronDown } from "lucide-react";
+import { Package, LogOut, User, ChevronDown, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -58,6 +58,11 @@ export default function BuyerNavbar({ user }) {
                   Signed in as<br />
                   <span className="font-medium text-slate-900 dark:text-slate-100">{user?.email}</span>
                 </div>
+                <DropdownMenuItem asChild>
+                  <Link to="/" className="flex items-center gap-2">
+                    <Home className="w-4 h-4" /> Back to Home
+                  </Link>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="text-red-600 dark:text-red-400 flex items-center gap-2">
                   <LogOut className="w-4 h-4" /> Sign Out
