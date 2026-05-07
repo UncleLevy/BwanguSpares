@@ -4,9 +4,8 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="https://base44.com/logo_v2.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <!-- Light mode: white navbar; dark mode: dark navbar -->
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)" />
+    <!-- theme-color: updated dynamically by JS below; media queries as fallback -->
+    <meta id="theme-color-meta" name="theme-color" content="#ffffff" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="manifest" href="/manifest.json" />
@@ -192,6 +191,25 @@
 
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      // Sync theme-color meta + html background with dark/light mode class changes
+      (function() {
+        const LIGHT = '#ffffff';
+        const DARK  = '#0f172a';
+        function applyTheme() {
+          var isDark = document.documentElement.classList.contains('dark');
+          var color  = isDark ? DARK : LIGHT;
+          var meta   = document.getElementById('theme-color-meta');
+          if (meta) meta.setAttribute('content', color);
+          document.documentElement.style.backgroundColor = color;
+        }
+        // Run immediately on parse
+        applyTheme();
+        // Watch for class changes (dark-mode toggle)
+        var mo = new MutationObserver(applyTheme);
+        mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+      })();
+    </script>
     <script>
       // Hide splash once React has rendered (root has children)
       const observer = new MutationObserver(() => {

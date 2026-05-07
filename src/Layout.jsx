@@ -160,11 +160,9 @@ export default function Layout({ children, currentPageName }) {
           paddingLeft: "env(safe-area-inset-left, 0px)",
           paddingRight: "env(safe-area-inset-right, 0px)",
           transform: "translateZ(0)",
-          /* Ensure the header background fills behind the status bar on Android */
-          backgroundColor: "var(--header-bg, white)",
         }}>
         
-        <div className="bg-white dark:bg-slate-900 md:bg-white/70 md:dark:bg-slate-900/70 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm h-16 md:h-auto">
+        <div className="bg-white dark:bg-slate-900 md:backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-700/60 shadow-sm h-16 md:h-auto">
           <div className="mx-auto px-3 sm:px-4 w-full max-w-7xl sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 md:h-auto py-3 md:py-4">
             <Link to="/" className="flex items-center gap-2">

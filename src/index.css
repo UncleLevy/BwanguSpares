@@ -85,34 +85,22 @@
   html {
     /* scrollbar-gutter causes layout issues in WebView on Android — disable */
     overflow-x: hidden;
-    /* Fill the status bar area on Android APK — background shows through translucent status bar */
+    /*
+     * Android APK: the status bar is translucent (transparent) with viewport-fit=cover.
+     * The html element's background shows through the status bar area.
+     * Match it to the navbar color so there's no gap/flash.
+     */
     background-color: #ffffff;
+  }
+
+  html.dark {
+    background-color: #0f172a;
   }
 
   body {
     @apply bg-background text-foreground;
     /* Prevent overscroll bounce on Android WebView */
     overscroll-behavior: none;
-  }
-
-  /* On Android APK the status bar is translucent — paint a fixed strip behind it */
-  @supports (padding-top: env(safe-area-inset-top)) {
-    body::before {
-      content: '';
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: env(safe-area-inset-top, 0px);
-      background-color: #ffffff;
-      z-index: 100000;
-    }
-  }
-
-  /* When dark mode is active (class on <html>), paint the strip dark */
-  .dark body::before {
-    background-color: #0f172a;
   }
 
 
@@ -126,11 +114,6 @@
     --nav-bg: rgba(15, 23, 42, 0.97);
     --nav-border: rgba(51, 65, 85, 1);
   }
-}
-
-/* Dark mode: fill the status bar area with dark color */
-html.dark {
-  background-color: #0f172a;
 }
 
 /* ── Mobile tap-target standards (44px minimum) ──────────────────────────── */
