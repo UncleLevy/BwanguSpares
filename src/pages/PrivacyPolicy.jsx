@@ -82,7 +82,7 @@ export default function PrivacyPolicy() {
             <p><strong>Company:</strong> Ikhumbi-Tech Center</p>
             <p><strong>Address:</strong> Flat 15C Kalewa Complex, Ndola, Zambia</p>
             <p><strong>Email:</strong> <a href="mailto:admin@bwangu.com" className="text-emerald-600 dark:text-emerald-400 hover:underline">admin@bwangu.com</a></p>
-            <p><strong>Phone:</strong> <a href="tel:+260763109823" className="text-emerald-600 dark:text-emerald-400 hover:underline">+260 763 109 823</a></p>
+            <p><strong>Phone:</strong> <a href="tel:+260773247860" className="text-emerald-600 dark:text-emerald-400 hover:underline">+260 773 247 860</a></p>
           </div>
         </Section>
 
@@ -308,7 +308,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
               <Phone className="w-4 h-4 text-emerald-500 shrink-0" />
-              <a href="tel:+260763109823" className="text-emerald-600 dark:text-emerald-400 hover:underline">+260 763 109 823</a>
+              <a href="tel:+260773247860" className="text-emerald-600 dark:text-emerald-400 hover:underline">+260 773 247 860</a>
             </p>
             <p className="flex items-start gap-2 text-slate-700 dark:text-slate-300">
               <Shield className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
