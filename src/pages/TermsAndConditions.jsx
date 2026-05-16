@@ -264,7 +264,7 @@ export default function TermsAndConditions() {
             </p>
             <p className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
               <Phone className="w-4 h-4 text-blue-500 shrink-0" />
-              <a href="tel:+260763109823" className="text-blue-600 dark:text-blue-400 hover:underline">+260 763 109 823</a>
+              <a href="tel:+260776247860" className="text-blue-600 dark:text-blue-400 hover:underline">+260 773 247 860</a>
             </p>
             <p className="flex items-start gap-2 text-slate-700 dark:text-slate-300">
               <Shield className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
