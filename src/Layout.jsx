@@ -416,7 +416,7 @@ export default function Layout({ children, currentPageName }) {
               <div className="space-y-2 text-sm">
                 <p className="flex items-center gap-2"><MapPin className="w-4 h-4 shrink-0" /> Flat 15C Kalewa Complex, Ndola</p>
                 <a href="mailto:admin@bwangu.com" className="flex items-center gap-2 hover:text-white transition-colors"><Mail className="w-4 h-4 shrink-0" /> admin@bwangu.com</a>
-                <a href="tel:+260763109823" className="flex items-center gap-2 hover:text-white transition-colors"><Phone className="w-4 h-4 shrink-0" /> +260 763 109 823</a>
+                <a href="tel:+260773247860" className="flex items-center gap-2 hover:text-white transition-colors"><Phone className="w-4 h-4 shrink-0" /> +260 773 247 860</a>
               </div>
             </div>
           </div>
